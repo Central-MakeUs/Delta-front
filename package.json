@@ -1,0 +1,21 @@
+{
+    "name": "cmc-apps",
+    "version": "1.0.0",
+    "private": true,
+    "description": "CMC Apps Monorepo",
+    "scripts": {
+        "web": "pnpm --filter web dev",
+        "app": "pnpm --filter app start",
+        "build:web": "pnpm --filter web build",
+        "lint:web": "pnpm --filter web lint",
+        "lint:app": "pnpm --filter app lint",
+        "install:all": "pnpm install"
+    },
+    "devDependencies": {
+        "pnpm": "^9.0.0"
+    },
+    "engines": {
+        "node": ">=18.0.0",
+        "pnpm": ">=9.0.0"
+    }
+}

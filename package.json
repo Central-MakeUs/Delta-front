@@ -9,6 +9,8 @@
         "build:web": "pnpm --filter web build",
         "lint:web": "pnpm --filter web lint",
         "lint:app": "pnpm --filter app lint",
+        "format:web": "pnpm --filter web format",
+        "format:check:web": "pnpm --filter web format:check",
         "install:all": "pnpm install"
     },
     "devDependencies": {

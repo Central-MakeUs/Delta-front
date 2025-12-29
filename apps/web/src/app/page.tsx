@@ -1,7 +1,13 @@
-import Image from "next/image";
+import Button from "@/shared/components/button/button";
+import { lightTheme } from "@/shared/styles/theme.css";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center">df</div>
+    <div className="flex min-h-screen items-center justify-center">
+      <div className={lightTheme}>
+        <Button size="lg">큰 버튼</Button>
+        <Button size="sm">작은 버튼</Button>
+      </div>
+    </div>
   );
 }

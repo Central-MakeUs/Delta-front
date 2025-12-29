@@ -1,49 +1,32 @@
 import { defineProperties, createSprinkles } from "@vanilla-extract/sprinkles";
+import { vars } from "@/shared/styles/theme.css";
 
-const MIN_WIDTH = 370;
+const space = vars.space;
 
-const createNumberArray = (length: number) => {
-  return Array.from({ length: length }, (_, i) => i + 1);
-};
-
-const numberArray = createNumberArray(MIN_WIDTH);
-const percentArray = Array.from({ length: 100 }, (_, i) => `${i + 1}%`);
-
-const flexProperties = defineProperties({
+const flex = defineProperties({
   properties: {
-    display: ["flex"],
+    display: ["none", "block", "inline-block", "flex"],
     flexDirection: ["row", "column"],
-    justifyContent: [
-      "stretch",
-      "flex-start",
-      "center",
-      "flex-end",
-      "space-around",
-      "space-between",
-    ],
-    alignItems: ["stretch", "flex-start", "center", "flex-end"],
-    flexGrow: [0, 1],
-    flexShrink: [0, 1],
-    flexWrap: ["nowrap", "wrap", "wrap-reverse"],
-    gap: numberArray,
+    justifyContent: ["flex-start", "center", "flex-end", "space-between"],
+    alignItems: ["flex-start", "center", "flex-end", "stretch"],
+    flexWrap: ["nowrap", "wrap"],
+    gap: space,
   },
 });
 
-const layoutProperties = defineProperties({
+const layout = defineProperties({
   properties: {
-    position: ["absolute", "fixed", "relative", "static", "sticky"],
-    width: [...numberArray, ...percentArray],
-    height: [...numberArray, ...percentArray],
-    margin: numberArray,
-    marginTop: numberArray,
-    marginBottom: numberArray,
-    marginRight: numberArray,
-    marginLeft: numberArray,
-    padding: numberArray,
-    paddingTop: numberArray,
-    paddingBottom: numberArray,
-    paddingRight: numberArray,
-    paddingLeft: numberArray,
+    paddingTop: space,
+    paddingBottom: space,
+    paddingLeft: space,
+    paddingRight: space,
+    marginTop: space,
+    marginBottom: space,
+    marginLeft: space,
+    marginRight: space,
+
+    width: ["auto", "100%"],
+    height: ["auto", "100%"],
   },
   shorthands: {
     p: ["paddingTop", "paddingRight", "paddingBottom", "paddingLeft"],
@@ -64,4 +47,5 @@ const layoutProperties = defineProperties({
   },
 });
 
-export const sprinkles = createSprinkles(flexProperties, layoutProperties);
+export const sprinkles = createSprinkles(flex, layout);
+export type Sprinkles = Parameters<typeof sprinkles>[0];

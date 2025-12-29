@@ -1,9 +1,5 @@
 import { globalStyle } from "@vanilla-extract/css";
 
-globalStyle("*", {
-  maxWidth: "var(--max-width)",
-});
-
 /* Box sizing */
 globalStyle("*, *::before, *::after", {
   boxSizing: "border-box",

@@ -9,6 +9,11 @@ globalStyle("body", {
   background: "#eeeeee",
 });
 
+globalStyle("html, body", {
+  fontFamily:
+    'Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif',
+});
+
 export const rootStyle = style({
   width: "100%",
   maxWidth: "430px",

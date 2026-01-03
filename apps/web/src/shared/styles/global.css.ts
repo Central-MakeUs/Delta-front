@@ -3,15 +3,12 @@ import { globalStyle, style } from "@vanilla-extract/css";
 globalStyle("html, body", {
   height: "100%",
   margin: 0,
+  fontFamily:
+    'Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif',
 });
 
 globalStyle("body", {
   background: "#eeeeee",
-});
-
-globalStyle("html, body", {
-  fontFamily:
-    'Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif',
 });
 
 export const rootStyle = style({

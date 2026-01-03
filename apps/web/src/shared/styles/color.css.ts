@@ -38,6 +38,8 @@ export const color = {
   "error-100": style({ color: vars.color.error[100] }),
   "error-500": style({ color: vars.color.error[500] }),
   "error-700": style({ color: vars.color.error[700] }),
+  // ETC Color
+  "login-kakao": style({ color: "#FEE500" }),
 };
 
 export const bgColor = {
@@ -77,4 +79,6 @@ export const bgColor = {
   "error-100": style({ backgroundColor: vars.color.error[100] }),
   "error-500": style({ backgroundColor: vars.color.error[500] }),
   "error-700": style({ backgroundColor: vars.color.error[700] }),
+  // ETC Color
+  "login-kakao": style({ backgroundColor: "#FEE500" }),
 };

@@ -1,77 +1,175 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
-import { fn } from 'storybook/test';
-import Button from './button';
+import type { Meta, StoryObj } from "@storybook/react";
+import { lightTheme } from "@/shared/styles/theme.css";
+import { Button } from "./button";
 
-const meta = {
-  title: 'Example/Button',
+const meta: Meta<typeof Button> = {
+  title: "Components/Button",
   component: Button,
+  tags: ["autodocs"],
   parameters: {
-    layout: 'centered',
-  },
-  tags: ['autodocs'],
-  argTypes: {
-    size: {
-      control: 'select',
-      options: ['sm', 'lg'],
-      description: '버튼 크기',
-    },
-    children: {
-      control: 'text',
-      description: '버튼 텍스트',
-    },
-    disabled: {
-      control: 'boolean',
-      description: '비활성화 여부',
+    layout: "centered",
+    docs: {
+      description: {
+        component: [
+          "Delta Button 컴포넌트입니다.",
+          "`size / tone / fullWidth`를 지원합니다.",
+          "아이콘은 SVG Sprite 기반 `Icon`을 내부에서 렌더링하며, 외부에서는 `icon`, `iconSize`로 제어합니다.",
+          "",
+          "### Props",
+          "- `label: string` (필수)",
+          '- `size?: "32" | "40" | "48" | "60"`',
+          '- `tone?: "surface" | "muted" | "dark" | "kakao"`',
+          "- `fullWidth?: boolean`",
+          "- `icon?: string` (예: `check`, `plus`)",
+          "- `iconSize?: number` (rem 단위, 예: `1.6`)",
+          "- 나머지 버튼 기본 props(`onClick`, `disabled` 등) 지원",
+        ].join("\n"),
+      },
     },
   },
   args: {
-    onClick: fn(),
+    label: "Button",
+    size: "48",
+    tone: "surface",
+    fullWidth: false,
+    disabled: false,
+    icon: undefined,
+    iconSize: 1.8,
   },
-} satisfies Meta<typeof Button>;
+  argTypes: {
+    size: { control: "radio", options: ["32", "40", "48", "60"] },
+    tone: { control: "radio", options: ["surface", "muted", "dark", "kakao"] },
+    fullWidth: { control: "boolean" },
+    disabled: { control: "boolean" },
+
+    icon: {
+      control: "text",
+      description: "아이콘 이름 (예: check, plus, star, kakao)",
+    },
+    iconSize: {
+      control: { type: "number", min: 1.2, max: 3.2, step: 0.1 },
+      description: "아이콘 크기 (rem 단위 숫자, 예: 1.6)",
+    },
+
+    onClick: { action: "clicked" },
+  },
+  decorators: [
+    (Story) => (
+      <div className={lightTheme} style={{ padding: "2.4rem" }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Button>;
 
-export const Default: Story = {
-  args: {
-    children: 'Button',
-  },
-};
+/** 기본(Controls로 조절) */
+export const Playground: Story = {};
 
-export const Small: Story = {
-  args: {
-    size: 'sm',
-    children: 'Small Button',
-  },
-};
-
-export const Large: Story = {
-  args: {
-    size: 'lg',
-    children: 'Large Button',
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    children: 'Disabled Button',
-    disabled: true,
-  },
-};
-
-export const LongText: Story = {
-  args: {
-    children: 'This is a button with longer text',
-  },
-};
-
-export const AllSizes: Story = {
+/** 기존 styled-components 예시의 5가지 케이스 대응 */
+export const FiveCases: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-      <Button size="sm">Small</Button>
-      <Button>Default</Button>
-      <Button size="lg">Large</Button>
+    <div
+      className={lightTheme}
+      style={{ display: "grid", gap: "1.2rem", width: "36rem" }}
+    >
+      {/* 32 / surface */}
+      <Button label="Text" size="32" tone="surface" />
+
+      {/* 40 / surface + icon */}
+      <Button
+        label="Text"
+        size="40"
+        tone="surface"
+        icon="star"
+        iconSize={1.8}
+      />
+
+      {/* 48 / muted + icon */}
+      <Button label="Text" size="48" tone="muted" icon="kakao" iconSize={1.8} />
+
+      {/* 60 / dark */}
+      <Button label="Text" size="60" tone="dark" />
+
+      {/* kakao login (fullWidth) */}
+      <Button
+        label="Kakao로 시작하기"
+        size="48"
+        tone="kakao"
+        icon="kakao"
+        iconSize={1.8}
+        fullWidth
+      />
     </div>
   ),
 };
 
+/** 사이즈별 */
+export const Sizes: Story = {
+  render: () => (
+    <div
+      className={lightTheme}
+      style={{ display: "grid", gap: "1.2rem", width: "36rem" }}
+    >
+      <Button
+        label="Size 32"
+        size="32"
+        tone="surface"
+        icon="star"
+        iconSize={1.6}
+      />
+      <Button
+        label="Size 40"
+        size="40"
+        tone="surface"
+        icon="star"
+        iconSize={1.8}
+      />
+      <Button
+        label="Size 48"
+        size="48"
+        tone="surface"
+        icon="star"
+        iconSize={1.8}
+      />
+      <Button
+        label="Size 60"
+        size="60"
+        tone="surface"
+        icon="star"
+        iconSize={2.0}
+      />
+    </div>
+  ),
+};
+
+/** 톤별 */
+export const Tones: Story = {
+  render: () => (
+    <div
+      className={lightTheme}
+      style={{ display: "grid", gap: "1.2rem", width: "36rem" }}
+    >
+      <Button label="surface" tone="surface" icon="star" fullWidth />
+      <Button label="muted" tone="muted" icon="star" fullWidth />
+      <Button label="dark" tone="dark" icon="star" fullWidth />
+      <Button label="kakao" tone="kakao" icon="kakao" fullWidth />
+    </div>
+  ),
+};
+
+/** 아이콘 크기 예시 */
+export const IconSizes: Story = {
+  render: () => (
+    <div
+      className={lightTheme}
+      style={{ display: "grid", gap: "1.2rem", width: "36rem" }}
+    >
+      <Button label="iconSize 1.4" icon="star" iconSize={1.4} fullWidth />
+      <Button label="iconSize 1.8" icon="star" iconSize={1.8} fullWidth />
+      <Button label="iconSize 2.4" icon="star" iconSize={2.4} fullWidth />
+    </div>
+  ),
+};

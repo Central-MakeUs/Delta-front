@@ -17,6 +17,7 @@ globalStyle(
 );
 
 globalStyle("html", {
+  fontSize: "62.5%",
   padding: 0,
   border: 0,
   verticalAlign: "baseline",

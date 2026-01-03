@@ -1,13 +1,13 @@
 import type { ButtonHTMLAttributes } from "react";
 import clsx from "clsx";
-import * as styles from "./button.css";
-import Icon from "../icon/icon";
+import * as styles from "@/shared/components/button/button.css";
+import Icon from "@/shared/components/icon/icon";
 import type { IconProps } from "@/shared/components/icon/icon";
 
 export type ButtonSize = "32" | "40" | "48" | "60";
 export type ButtonTone = "surface" | "muted" | "dark" | "kakao";
 
-type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
+type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   label: string;
   size?: ButtonSize;
   tone?: ButtonTone;
@@ -27,7 +27,7 @@ export function Button({
   className,
   type = "button",
   ...rest
-}: Props) {
+}: ButtonProps) {
   return (
     <button
       type={type}

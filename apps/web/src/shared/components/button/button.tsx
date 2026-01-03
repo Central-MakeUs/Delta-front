@@ -12,9 +12,8 @@ type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   size?: ButtonSize;
   tone?: ButtonTone;
   fullWidth?: boolean;
-  /** 아이콘 이름 (예: "check", "plus") */
   icon?: IconProps["name"];
-  /** 아이콘 크기 (rem 단위 숫자, 예: 1.6) */
+  /** rem 단위 숫자 */
   iconSize?: number;
 };
 
@@ -36,8 +35,11 @@ export function Button({
       {...rest}
     >
       {icon ? (
-        <span className={styles.iconWrap}>
-          <Icon name={icon} width={iconSize} height={iconSize} />
+        <span
+          className={styles.iconWrap}
+          style={{ [styles.iconSizeVar]: `${iconSize}rem` }}
+        >
+          <Icon name={icon} width="100%" height="100%" />
         </span>
       ) : null}
 

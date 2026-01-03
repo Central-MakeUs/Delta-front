@@ -2,6 +2,11 @@ import { createTheme, createThemeContract } from "@vanilla-extract/css";
 
 export const vars = createThemeContract({
   color: {
+    bg: null,
+    fg: null,
+    brand: null,
+    muted: null,
+    border: null,
     main: {
       50: null,
       100: null,
@@ -28,24 +33,15 @@ export const vars = createThemeContract({
       900: null,
       1000: null,
     },
-    success: {
-      100: null,
-      500: null,
-      700: null,
-    },
-    warning: {
-      100: null,
-      500: null,
-      600: null,
-    },
-    error: {
-      100: null,
-      500: null,
-      700: null,
-    },
+    success: { 100: null, 500: null, 700: null },
+    warning: { 100: null, 500: null, 600: null },
+    error: { 100: null, 500: null, 700: null },
   },
   space: { 0: null, 2: null, 3: null, 4: null, 6: null },
   radius: {
+    sm: null,
+    md: null,
+    lg: null,
     r4: null,
     r8: null,
     r12: null,
@@ -67,84 +63,37 @@ export const vars = createThemeContract({
     e500: null,
   },
   typography: {
-    h1: {
-      fontWeight: null,
-      fontSize: null,
-      letterSpacing: null,
-      lineHeight: null,
-    },
-    h2: {
-      fontWeight: null,
-      fontSize: null,
-      letterSpacing: null,
-      lineHeight: null,
-    },
-    h3: {
-      fontWeight: null,
-      fontSize: null,
-      letterSpacing: null,
-      lineHeight: null,
-    },
+    h1: { fontWeight: null, fontSize: null, letterSpacing: null, lineHeight: null },
+    h2: { fontWeight: null, fontSize: null, letterSpacing: null, lineHeight: null },
+    h3: { fontWeight: null, fontSize: null, letterSpacing: null, lineHeight: null },
     subtitle: {
-      fontWeight: {
-        bold: null,
-        semibold: null,
-      },
+      fontWeight: { bold: null, semibold: null },
       fontSize: null,
       letterSpacing: null,
       lineHeight: null,
     },
     body1: {
-      fontWeight: {
-        bold: null,
-        semibold: null,
-        medium: null,
-        regular: null,
-      },
+      fontWeight: { bold: null, semibold: null, medium: null, regular: null },
       fontSize: null,
       letterSpacing: null,
       lineHeight: null,
     },
     body2: {
-      fontWeight: {
-        bold: null,
-        semibold: null,
-        medium: null,
-        regular: null,
-      },
+      fontWeight: { bold: null, semibold: null, medium: null, regular: null },
       fontSize: null,
       letterSpacing: null,
       lineHeight: null,
     },
     body3: {
-      fontWeight: {
-        bold: null,
-        semibold: null,
-        medium: null,
-        regular: null,
-      },
+      fontWeight: { bold: null, semibold: null, medium: null, regular: null },
       fontSize: null,
       letterSpacing: null,
       lineHeight: null,
     },
-    button1: {
-      fontWeight: null,
-      fontSize: null,
-      letterSpacing: null,
-      lineHeight: null,
-    },
-    button2: {
-      fontWeight: null,
-      fontSize: null,
-      letterSpacing: null,
-      lineHeight: null,
-    },
+    button1: { fontWeight: null, fontSize: null, letterSpacing: null, lineHeight: null },
+    button2: { fontWeight: null, fontSize: null, letterSpacing: null, lineHeight: null },
     caption: {
-      fontWeight: {
-        semibold: null,
-        medium: null,
-        regular: null,
-      },
+      fontWeight: { semibold: null, medium: null, regular: null },
       fontSize: null,
       letterSpacing: null,
       lineHeight: null,
@@ -154,6 +103,11 @@ export const vars = createThemeContract({
 
 export const lightTheme = createTheme(vars, {
   color: {
+    bg: "#fff",
+    fg: "#111827",
+    brand: "#448081",
+    muted: "#F3F4F6",
+    border: "#E5E7EB",
     main: {
       50: "#ffefed",
       100: "#ffcec7",
@@ -180,24 +134,17 @@ export const lightTheme = createTheme(vars, {
       900: "#30323d",
       1000: "#141418",
     },
-    success: {
-      100: "#E6F9F2",
-      500: "#08C481",
-      700: "#068B5C",
-    },
-    warning: {
-      100: "#FFEEC9",
-      500: "#FFC852",
-      600: "#E8B64B",
-    },
-    error: {
-      100: "#FFC5C1",
-      500: "#FF4538",
-      700: "#B53128",
-    },
+    success: { 100: "#E6F9F2", 500: "#08C481", 700: "#068B5C" },
+    warning: { 100: "#FFEEC9", 500: "#FFC852", 600: "#E8B64B" },
+    error: { 100: "#FFC5C1", 500: "#FF4538", 700: "#B53128" },
   },
-  space: { 0: "0", 2: "8px", 3: "12px", 4: "16px", 6: "24px" },
+
+  space: { 0: "0", 2: "0.8rem", 3: "1.2rem", 4: "1.6rem", 6: "2.4rem" },
+
   radius: {
+    sm: "8px",
+    md: "12px",
+    lg: "16px",
     r4: "4px",
     r8: "8px",
     r12: "12px",
@@ -211,93 +158,52 @@ export const lightTheme = createTheme(vars, {
     r64: "64px",
     full: "999px",
   },
+
   shadow: {
-    e100: "0px 2px 4px 0px rgba(0, 0, 0, 0.03), 0px 1px 2px 0px rgba(0, 0, 0, 0.03), 0px 0.5px 0px 0px rgba(0, 0, 0, 0.02)",
-    e200: "0px 1px 2px 0px rgba(0, 0, 0, 0.15)",
-    e300: "0px 4px 14px 0px rgba(0, 0, 0, 0.1), 0px 1px 2px 0px rgba(0, 0, 0, 0.05)",
-    e400: "0px 4px 12px 0px rgba(0, 0, 0, 0.16), 0px 1px 4px 0px rgba(0, 0, 0, 0.03)",
-    e500: "0px 8px 24px 0px rgba(0, 0, 0, 0.2), 0px 4px 8px 0px rgba(0, 0, 0, 0.05)",
+    e100:
+      "0 0.2rem 0.4rem 0 rgba(0, 0, 0, 0.03), 0 0.1rem 0.2rem 0 rgba(0, 0, 0, 0.03), 0 0.05rem 0 0 rgba(0, 0, 0, 0.02)",
+    e200: "0 0.1rem 0.2rem 0 rgba(0, 0, 0, 0.15)",
+    e300:
+      "0 0.4rem 1.4rem 0 rgba(0, 0, 0, 0.1), 0 0.1rem 0.2rem 0 rgba(0, 0, 0, 0.05)",
+    e400:
+      "0 0.4rem 1.2rem 0 rgba(0, 0, 0, 0.16), 0 0.1rem 0.4rem 0 rgba(0, 0, 0, 0.03)",
+    e500:
+      "0 0.8rem 2.4rem 0 rgba(0, 0, 0, 0.2), 0 0.4rem 0.8rem 0 rgba(0, 0, 0, 0.05)",
   },
+
   typography: {
-    h1: {
-      fontWeight: "bold",
-      fontSize: "28px",
-      letterSpacing: "0%",
-      lineHeight: "150%",
-    },
-    h2: {
-      fontWeight: "bold",
-      fontSize: "24px",
-      letterSpacing: "0%",
-      lineHeight: "150%",
-    },
-    h3: {
-      fontWeight: "bold",
-      fontSize: "22px",
-      letterSpacing: "0%",
-      lineHeight: "150%",
-    },
+    h1: { fontWeight: "bold", fontSize: "2.8rem", letterSpacing: "0%", lineHeight: "150%" },
+    h2: { fontWeight: "bold", fontSize: "2.4rem", letterSpacing: "0%", lineHeight: "150%" },
+    h3: { fontWeight: "bold", fontSize: "2.2rem", letterSpacing: "0%", lineHeight: "150%" },
     subtitle: {
-      fontWeight: {
-        bold: "bold",
-        semibold: "600",
-      },
-      fontSize: "20px",
+      fontWeight: { bold: "bold", semibold: "600" },
+      fontSize: "2.0rem",
       letterSpacing: "0%",
       lineHeight: "150%",
     },
     body1: {
-      fontWeight: {
-        bold: "bold",
-        semibold: "600",
-        medium: "500",
-        regular: "400",
-      },
-      fontSize: "18px",
+      fontWeight: { bold: "bold", semibold: "600", medium: "500", regular: "400" },
+      fontSize: "1.8rem",
       letterSpacing: "0%",
       lineHeight: "150%",
     },
     body2: {
-      fontWeight: {
-        bold: "bold",
-        semibold: "600",
-        medium: "500",
-        regular: "400",
-      },
-      fontSize: "16px",
+      fontWeight: { bold: "bold", semibold: "600", medium: "500", regular: "400" },
+      fontSize: "1.6rem",
       letterSpacing: "0%",
       lineHeight: "150%",
     },
     body3: {
-      fontWeight: {
-        bold: "bold",
-        semibold: "600",
-        medium: "500",
-        regular: "400",
-      },
-      fontSize: "14px",
+      fontWeight: { bold: "bold", semibold: "600", medium: "500", regular: "400" },
+      fontSize: "1.4rem",
       letterSpacing: "0%",
       lineHeight: "150%",
     },
-    button1: {
-      fontWeight: "600",
-      fontSize: "16px",
-      letterSpacing: "0%",
-      lineHeight: "150%",
-    },
-    button2: {
-      fontWeight: "600",
-      fontSize: "14px",
-      letterSpacing: "0%",
-      lineHeight: "150%",
-    },
+    button1: { fontWeight: "600", fontSize: "1.6rem", letterSpacing: "0%", lineHeight: "150%" },
+    button2: { fontWeight: "600", fontSize: "1.4rem", letterSpacing: "0%", lineHeight: "150%" },
     caption: {
-      fontWeight: {
-        semibold: "600",
-        medium: "500",
-        regular: "400",
-      },
-      fontSize: "12px",
+      fontWeight: { semibold: "600", medium: "500", regular: "400" },
+      fontSize: "1.2rem",
       letterSpacing: "0%",
       lineHeight: "150%",
     },

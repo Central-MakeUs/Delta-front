@@ -1,5 +1,6 @@
 import React from "react";
 import type { IconName } from "@/shared/constants/icons";
+import * as styles from "@/shared/components/icon/icon.css";
 
 interface IconProps extends React.SVGProps<SVGSVGElement> {
   name: IconName;
@@ -20,7 +21,7 @@ export default function Icon({
   width,
   height,
   fill,
-  className = "",
+  className,
   rotate,
   ariaHidden = true,
   ariaLabel,
@@ -31,14 +32,14 @@ export default function Icon({
 
   const rotateClass =
     rotate === 90
-      ? "rotate-90"
+      ? styles.rotate90
       : rotate === 180
-        ? "rotate-180"
+        ? styles.rotate180
         : rotate === 270
-          ? "rotate-[270deg]"
+          ? styles.rotate270
           : "";
 
-  const combinedClass = ["inline-block", rotateClass, className]
+  const combinedClass = [styles.base, rotateClass, className]
     .filter(Boolean)
     .join(" ");
 

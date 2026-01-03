@@ -1,14 +1,17 @@
 import { recipe } from "@vanilla-extract/recipes";
 import { vars } from "@/shared/styles/theme.css";
+import { typo } from "@/shared/styles/typography.css";
 
 export const button = recipe({
-  base: {
-    border: "none",
-    backgroundColor: vars.color.brand,
-    color: "#fff",
-    fontWeight: 700,
-    borderRadius: vars.radius.md,
-  },
+  base: [
+    typo.button1,
+    {
+      border: "none",
+      backgroundColor: vars.color.main[500],
+      color: "#fff",
+      borderRadius: vars.radius.r12,
+    },
+  ],
   variants: {
     size: {
       sm: { padding: vars.space[3] },

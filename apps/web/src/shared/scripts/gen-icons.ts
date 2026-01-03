@@ -32,7 +32,6 @@ function extractViewBox(svg: string) {
   const vb = attrs.match(/\bviewBox=["']([^"']+)["']/i)?.[1];
   if (vb) return vb;
 
-  // viewBox 없고 width/height만 있으면 fallback
   const w = attrs.match(/\bwidth=["']([^"']+)["']/i)?.[1];
   const h = attrs.match(/\bheight=["']([^"']+)["']/i)?.[1];
   const wn = w ? Number(String(w).replace(/[^\d.]/g, "")) : NaN;
@@ -49,14 +48,14 @@ function extractInner(svg: string) {
     .trim();
 }
 
-// 1) 아이콘 파일 목록
+/* 1) 아이콘 파일 목록 */
 const files = fs
   .readdirSync(iconsDir)
   .filter((f) => f.toLowerCase().endsWith(".svg"))
   .map((f) => ({ file: f, name: path.basename(f, ".svg") }))
   .sort((a, b) => a.name.localeCompare(b.name));
 
-// 2) icons.ts 생성 (네가 하던 거 + 타입까지 추천)
+/* 2) icons.ts 생성 */
 const iconNames = files.map((x) => x.name);
 const iconsContent =
   `export const ICONS = ${JSON.stringify(iconNames, null, 2)} as const;\n` +
@@ -64,7 +63,7 @@ const iconsContent =
 
 fs.writeFileSync(outIconsFile, iconsContent, "utf8");
 
-// 3) sprite.ts 생성 (중요!)
+/* 3) sprite.ts 생성 */
 const symbols = files.map(({ file, name }) => {
   const fullPath = path.join(iconsDir, file);
   const raw = fs.readFileSync(fullPath, "utf8");

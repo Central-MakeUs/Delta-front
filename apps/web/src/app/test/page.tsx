@@ -2,13 +2,12 @@
 import { useState } from "react";
 
 const TestComponent = () => {
-    "use no memo"
     console.log("ChildComponent rendered");
     return <div>TestComponent</div>;
   }
 
 const TestPage = () => {
-    "use no memo"
+    // "use no memo"
   const [count, setCount] = useState(0);
 
   const handleClick = () => {

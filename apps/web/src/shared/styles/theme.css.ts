@@ -36,6 +36,7 @@ export const vars = createThemeContract({
     success: { 100: null, 500: null, 700: null },
     warning: { 100: null, 500: null, 600: null },
     error: { 100: null, 500: null, 700: null },
+    login: { kakao: null },
   },
   space: { 0: null, 2: null, 3: null, 4: null, 6: null },
   radius: {
@@ -63,9 +64,24 @@ export const vars = createThemeContract({
     e500: null,
   },
   typography: {
-    h1: { fontWeight: null, fontSize: null, letterSpacing: null, lineHeight: null },
-    h2: { fontWeight: null, fontSize: null, letterSpacing: null, lineHeight: null },
-    h3: { fontWeight: null, fontSize: null, letterSpacing: null, lineHeight: null },
+    h1: {
+      fontWeight: null,
+      fontSize: null,
+      letterSpacing: null,
+      lineHeight: null,
+    },
+    h2: {
+      fontWeight: null,
+      fontSize: null,
+      letterSpacing: null,
+      lineHeight: null,
+    },
+    h3: {
+      fontWeight: null,
+      fontSize: null,
+      letterSpacing: null,
+      lineHeight: null,
+    },
     subtitle: {
       fontWeight: { bold: null, semibold: null },
       fontSize: null,
@@ -90,8 +106,18 @@ export const vars = createThemeContract({
       letterSpacing: null,
       lineHeight: null,
     },
-    button1: { fontWeight: null, fontSize: null, letterSpacing: null, lineHeight: null },
-    button2: { fontWeight: null, fontSize: null, letterSpacing: null, lineHeight: null },
+    button1: {
+      fontWeight: null,
+      fontSize: null,
+      letterSpacing: null,
+      lineHeight: null,
+    },
+    button2: {
+      fontWeight: null,
+      fontSize: null,
+      letterSpacing: null,
+      lineHeight: null,
+    },
     caption: {
       fontWeight: { semibold: null, medium: null, regular: null },
       fontSize: null,
@@ -137,6 +163,7 @@ export const lightTheme = createTheme(vars, {
     success: { 100: "#E6F9F2", 500: "#08C481", 700: "#068B5C" },
     warning: { 100: "#FFEEC9", 500: "#FFC852", 600: "#E8B64B" },
     error: { 100: "#FFC5C1", 500: "#FF4538", 700: "#B53128" },
+    login: { kakao: "#FEE500" },
   },
 
   space: { 0: "0", 2: "0.8rem", 3: "1.2rem", 4: "1.6rem", 6: "2.4rem" },
@@ -160,51 +187,87 @@ export const lightTheme = createTheme(vars, {
   },
 
   shadow: {
-    e100:
-      "0 0.2rem 0.4rem 0 rgba(0, 0, 0, 0.03), 0 0.1rem 0.2rem 0 rgba(0, 0, 0, 0.03), 0 0.05rem 0 0 rgba(0, 0, 0, 0.02)",
+    e100: "0 0.2rem 0.4rem 0 rgba(0, 0, 0, 0.03), 0 0.1rem 0.2rem 0 rgba(0, 0, 0, 0.03), 0 0.05rem 0 0 rgba(0, 0, 0, 0.02)",
     e200: "0 0.1rem 0.2rem 0 rgba(0, 0, 0, 0.15)",
-    e300:
-      "0 0.4rem 1.4rem 0 rgba(0, 0, 0, 0.1), 0 0.1rem 0.2rem 0 rgba(0, 0, 0, 0.05)",
-    e400:
-      "0 0.4rem 1.2rem 0 rgba(0, 0, 0, 0.16), 0 0.1rem 0.4rem 0 rgba(0, 0, 0, 0.03)",
-    e500:
-      "0 0.8rem 2.4rem 0 rgba(0, 0, 0, 0.2), 0 0.4rem 0.8rem 0 rgba(0, 0, 0, 0.05)",
+    e300: "0 0.4rem 1.4rem 0 rgba(0, 0, 0, 0.1), 0 0.1rem 0.2rem 0 rgba(0, 0, 0, 0.05)",
+    e400: "0 0.4rem 1.2rem 0 rgba(0, 0, 0, 0.16), 0 0.1rem 0.4rem 0 rgba(0, 0, 0, 0.03)",
+    e500: "0 0.8rem 2.4rem 0 rgba(0, 0, 0, 0.2), 0 0.4rem 0.8rem 0 rgba(0, 0, 0, 0.05)",
   },
 
   typography: {
-    h1: { fontWeight: "bold", fontSize: "2.8rem", letterSpacing: "0%", lineHeight: "150%" },
-    h2: { fontWeight: "bold", fontSize: "2.4rem", letterSpacing: "0%", lineHeight: "150%" },
-    h3: { fontWeight: "bold", fontSize: "2.2rem", letterSpacing: "0%", lineHeight: "150%" },
+    h1: {
+      fontWeight: "bold",
+      fontSize: "2.8rem",
+      letterSpacing: "0",
+      lineHeight: "150%",
+    },
+    h2: {
+      fontWeight: "bold",
+      fontSize: "2.4rem",
+      letterSpacing: "0",
+      lineHeight: "150%",
+    },
+    h3: {
+      fontWeight: "bold",
+      fontSize: "2.2rem",
+      letterSpacing: "0",
+      lineHeight: "150%",
+    },
     subtitle: {
       fontWeight: { bold: "bold", semibold: "600" },
       fontSize: "2.0rem",
-      letterSpacing: "0%",
+      letterSpacing: "0",
       lineHeight: "150%",
     },
     body1: {
-      fontWeight: { bold: "bold", semibold: "600", medium: "500", regular: "400" },
+      fontWeight: {
+        bold: "bold",
+        semibold: "600",
+        medium: "500",
+        regular: "400",
+      },
       fontSize: "1.8rem",
-      letterSpacing: "0%",
+      letterSpacing: "0",
       lineHeight: "150%",
     },
     body2: {
-      fontWeight: { bold: "bold", semibold: "600", medium: "500", regular: "400" },
+      fontWeight: {
+        bold: "bold",
+        semibold: "600",
+        medium: "500",
+        regular: "400",
+      },
       fontSize: "1.6rem",
-      letterSpacing: "0%",
+      letterSpacing: "0",
       lineHeight: "150%",
     },
     body3: {
-      fontWeight: { bold: "bold", semibold: "600", medium: "500", regular: "400" },
+      fontWeight: {
+        bold: "bold",
+        semibold: "600",
+        medium: "500",
+        regular: "400",
+      },
       fontSize: "1.4rem",
-      letterSpacing: "0%",
+      letterSpacing: "0",
       lineHeight: "150%",
     },
-    button1: { fontWeight: "600", fontSize: "1.6rem", letterSpacing: "0%", lineHeight: "150%" },
-    button2: { fontWeight: "600", fontSize: "1.4rem", letterSpacing: "0%", lineHeight: "150%" },
+    button1: {
+      fontWeight: "600",
+      fontSize: "1.6rem",
+      letterSpacing: "0",
+      lineHeight: "150%",
+    },
+    button2: {
+      fontWeight: "600",
+      fontSize: "1.4rem",
+      letterSpacing: "0",
+      lineHeight: "150%",
+    },
     caption: {
       fontWeight: { semibold: "600", medium: "500", regular: "400" },
       fontSize: "1.2rem",
-      letterSpacing: "0%",
+      letterSpacing: "0",
       lineHeight: "150%",
     },
   },

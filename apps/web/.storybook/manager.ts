@@ -6,7 +6,7 @@ addons.setConfig({
     base: "light",
     brandTitle: "Delta Design System",
     brandUrl: "https://6958ed998a70eb8f766fada4-kqnrprizoy.chromatic.com/",
-    brandImage: "/logo.svg",
+    brandImage: "/logo-title.svg",
     brandTarget: "_self",
   }),
 });

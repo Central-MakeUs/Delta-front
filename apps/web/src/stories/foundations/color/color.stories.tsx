@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { useMemo, useState } from "react";
 import { lightTheme } from "@/shared/styles/theme.css";
 import { bgColor, color } from "@/shared/styles/color.css";
 import * as styles from "./color.stories.css";
@@ -58,16 +59,28 @@ const ERROR_KEYS = [
   "error-500",
   "error-700",
 ] as const satisfies readonly Key[];
+
 const ETC_KEYS = ["login-kakao"] as const satisfies readonly Key[];
+
+type Group = { id: string; title: string; tokens: readonly Key[] };
+
+const GROUPS: readonly Group[] = [
+  { id: "main", title: "Main Colors", tokens: MAIN_KEYS },
+  { id: "grayscale", title: "Grayscale", tokens: GRAYSCALE_KEYS },
+  { id: "success", title: "Success", tokens: SUCCESS_KEYS },
+  { id: "warning", title: "Warning", tokens: WARNING_KEYS },
+  { id: "error", title: "Error", tokens: ERROR_KEYS },
+  { id: "etc", title: "Etc", tokens: ETC_KEYS },
+] as const;
+
+type TabId = "all" | (typeof GROUPS)[number]["id"];
 
 function ColorBox({ token }: { token: Key }) {
   return (
     <div className={styles.box}>
       <div className={`${styles.swatch} ${bgColor[token]}`} />
       <span className={styles.tokenName}>{token}</span>
-      <span className={`${styles.sampleText} ${color[token]}`}>
-        Sample text
-      </span>
+      <span className={`${styles.sampleText} ${color[token]}`}>test</span>
     </div>
   );
 }
@@ -91,15 +104,53 @@ function ColorGroup({
   );
 }
 
-export const Color: Story = {
-  render: () => (
+function ColorPage() {
+  const [active, setActive] = useState<TabId>("main");
+
+  const activeGroup = useMemo(() => {
+    return GROUPS.find((g) => g.id === active) ?? GROUPS[0];
+  }, [active]);
+
+  return (
     <div className={`${lightTheme} ${styles.page}`}>
-      <ColorGroup title="Main Colors" tokens={MAIN_KEYS} />
-      <ColorGroup title="Grayscale" tokens={GRAYSCALE_KEYS} />
-      <ColorGroup title="Success" tokens={SUCCESS_KEYS} />
-      <ColorGroup title="Warning" tokens={WARNING_KEYS} />
-      <ColorGroup title="Error" tokens={ERROR_KEYS} />
-      <ColorGroup title="Etc" tokens={ETC_KEYS} />
+      <div className={styles.tabs} role="tablist" aria-label="Color categories">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={active === "all"}
+          className={`${styles.tab} ${active === "all" ? styles.tabActive : ""}`}
+          onClick={() => setActive("all")}
+        >
+          All
+        </button>
+
+        {GROUPS.map((g) => (
+          <button
+            key={g.id}
+            type="button"
+            role="tab"
+            aria-selected={active === g.id}
+            className={`${styles.tab} ${active === g.id ? styles.tabActive : ""}`}
+            onClick={() => setActive(g.id)}
+          >
+            {g.title}
+          </button>
+        ))}
+      </div>
+
+      {active === "all" ? (
+        <>
+          {GROUPS.map((g) => (
+            <ColorGroup key={g.id} title={g.title} tokens={g.tokens} />
+          ))}
+        </>
+      ) : (
+        <ColorGroup title={activeGroup.title} tokens={activeGroup.tokens} />
+      )}
     </div>
-  ),
+  );
+}
+
+export const Color: Story = {
+  render: () => <ColorPage />,
 };

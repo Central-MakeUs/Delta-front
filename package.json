@@ -12,7 +12,8 @@
     "format:web": "pnpm --filter web format",
     "format:check:web": "pnpm --filter web format:check",
     "install:all": "pnpm install",
-    "prepare": "husky"
+    "prepare": "husky",
+    "icons:gen": "pnpm -C apps/web icons:gen"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

@@ -1,0 +1,23 @@
+export const ICONS = [
+  "alarm",
+  "apple",
+  "arrow-right",
+  "check-circle",
+  "chevron",
+  "edit",
+  "file-text",
+  "graph-active",
+  "graph-default",
+  "home",
+  "kakao",
+  "log-out",
+  "message-square",
+  "minus",
+  "multiple",
+  "note-active",
+  "note-default",
+  "plus",
+  "search",
+  "user"
+] as const;
+export type IconName = (typeof ICONS)[number];

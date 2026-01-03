@@ -5,9 +5,7 @@ const withVanillaExtract = createVanillaExtractPlugin();
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  reactCompiler: {
-    compilationMode: 'annotation',
-  },
+  reactCompiler: true,
 };
 
 export default withVanillaExtract(nextConfig);

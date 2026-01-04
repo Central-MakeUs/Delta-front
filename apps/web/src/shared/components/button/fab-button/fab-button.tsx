@@ -2,10 +2,10 @@ import type { ButtonHTMLAttributes } from "react";
 import clsx from "clsx";
 import Icon from "@/shared/components/icon/icon";
 import type { IconProps } from "@/shared/components/icon/icon";
-import * as styles from "./fab-button.css";
+import * as styles from "@/shared/components/button/fab-button/fab-button.css";
 
 type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
-  icon: IconProps["name"];
+  icon?: IconProps["name"];
   iconSize?: number;
   label?: string;
 };

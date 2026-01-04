@@ -8,14 +8,14 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   fullWidth?: boolean;
 };
 
-export function SelectButton({
+export const SelectButton = ({
   label,
   active = false,
   fullWidth = false,
   className,
   type = "button",
   ...rest
-}: Props) {
+}: Props) => {
   const ariaPressed = rest["aria-pressed"] ?? active;
 
   return (
@@ -28,4 +28,4 @@ export function SelectButton({
       <span className={styles.label({ active })}>{label}</span>
     </button>
   );
-}
+};

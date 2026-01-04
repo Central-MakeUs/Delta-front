@@ -10,14 +10,14 @@ type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   label?: string;
 };
 
-export function FabButton({
+export const FabButton = ({
   icon = "file",
   iconSize = 2.4,
   label,
   className,
   type = "button",
   ...rest
-}: Props) {
+}: Props) => {
   const ariaLabel = rest["aria-label"] ?? label;
 
   return (
@@ -30,4 +30,4 @@ export function FabButton({
       <Icon name={icon} size={iconSize} className={styles.icon} />
     </button>
   );
-}
+};

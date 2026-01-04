@@ -17,7 +17,7 @@ type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   iconSize?: number;
 };
 
-export function Button({
+export const Button = ({
   label,
   size = "48",
   tone = "surface",
@@ -27,7 +27,7 @@ export function Button({
   className,
   type = "button",
   ...rest
-}: ButtonProps) {
+}: ButtonProps) => {
   return (
     <button
       type={type}
@@ -41,4 +41,4 @@ export function Button({
       <span className={styles.label({ size })}>{label}</span>
     </button>
   );
-}
+};

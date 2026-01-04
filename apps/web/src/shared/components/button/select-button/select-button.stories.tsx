@@ -42,7 +42,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-function PairExample() {
+const PairExample = () => {
   const [selected, setSelected] = useState<"default" | "active">("default");
 
   return (
@@ -61,7 +61,7 @@ function PairExample() {
       />
     </div>
   );
-}
+};
 
 export const Pair: Story = {
   render: () => <PairExample />,

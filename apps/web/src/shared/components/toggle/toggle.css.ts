@@ -16,7 +16,7 @@ export const root = style([
 ]);
 
 export const row = style({
-  display: "inline-flex",
+  display: "flex",
   alignItems: "center",
   gap: "0.6rem",
 });
@@ -46,7 +46,7 @@ export const ghostButton = style([
     alignItems: "center",
     justifyContent: "center",
     flex: "0 0 auto",
-
+    fontFamily: "inherit",
     selectors: {
       "&:disabled": { cursor: "not-allowed", opacity: 0.55 },
       "&:focus-visible": {
@@ -67,12 +67,12 @@ export const pillButton = style([
     cursor: "pointer",
     width: "6rem",
     padding: "0.5rem 1.4rem",
-    display: "inline-flex",
+    display: "flex",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: "25px",
     flex: "0 0 auto",
-
+    fontFamily: "inherit",
     selectors: {
       "&:disabled": { cursor: "not-allowed", opacity: 0.55 },
       "&:focus-visible": {

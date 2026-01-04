@@ -1,6 +1,5 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
-import { color, bgColor } from "@/shared/styles/color.css";
 
 export const page = style({
   minHeight: "100vh",

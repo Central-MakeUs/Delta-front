@@ -5,7 +5,7 @@ import Icon from "@/shared/components/icon/icon";
 import type { IconProps } from "@/shared/components/icon/icon";
 
 export type ButtonSize = "32" | "40" | "48" | "60";
-export type ButtonTone = "surface" | "muted" | "dark" | "kakao";
+export type ButtonTone = "surface" | "default" | "dark" | "kakao";
 
 type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   label: string;
@@ -35,12 +35,11 @@ export function Button({
       {...rest}
     >
       {icon ? (
-        <span
-          className={styles.iconWrap}
-          style={{ [styles.iconSizeVar]: `${iconSize}rem` }}
-        >
-          <Icon name={icon} width="100%" height="100%" />
-        </span>
+        <Icon
+          name={icon}
+          size={iconSize} // ✅ 여기!
+          className={styles.icon} // flex에서 안 찌그러지게
+        />
       ) : null}
 
       <span className={styles.label({ size })}>{label}</span>

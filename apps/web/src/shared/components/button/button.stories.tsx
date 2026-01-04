@@ -18,7 +18,7 @@ const meta: Meta<typeof Button> = {
           "### Props",
           "- `label: string` (필수)",
           '- `size?: "32" | "40" | "48" | "60"`',
-          '- `tone?: "surface" | "muted" | "dark" | "kakao"`',
+          '- `tone?: "surface" | "default" | "dark" | "kakao"`',
           "- `fullWidth?: boolean`",
           "- `icon?: string` (예: `check`, `plus`)",
           "- `iconSize?: number` (rem 단위, 예: `1.6`)",
@@ -38,7 +38,10 @@ const meta: Meta<typeof Button> = {
   },
   argTypes: {
     size: { control: "radio", options: ["32", "40", "48", "60"] },
-    tone: { control: "radio", options: ["surface", "muted", "dark", "kakao"] },
+    tone: {
+      control: "radio",
+      options: ["surface", "default", "dark", "kakao"],
+    },
     fullWidth: { control: "boolean" },
     disabled: { control: "boolean" },
 
@@ -65,10 +68,8 @@ const meta: Meta<typeof Button> = {
 export default meta;
 type Story = StoryObj<typeof Button>;
 
-/** 기본(Controls로 조절) */
 export const Playground: Story = {};
 
-/** 기존 styled-components 예시의 5가지 케이스 대응 */
 export const FiveCases: Story = {
   render: () => (
     <div
@@ -87,8 +88,14 @@ export const FiveCases: Story = {
         iconSize={1.8}
       />
 
-      {/* 48 / muted + icon */}
-      <Button label="Text" size="48" tone="muted" icon="kakao" iconSize={1.8} />
+      {/* 48 / default + icon */}
+      <Button
+        label="Text"
+        size="48"
+        tone="default"
+        icon="kakao"
+        iconSize={1.8}
+      />
 
       {/* 60 / dark */}
       <Button label="Text" size="60" tone="dark" />
@@ -153,7 +160,7 @@ export const Tones: Story = {
       style={{ display: "grid", gap: "1.2rem", width: "36rem" }}
     >
       <Button label="surface" tone="surface" icon="star" fullWidth />
-      <Button label="muted" tone="muted" icon="star" fullWidth />
+      <Button label="default" tone="default" icon="star" fullWidth />
       <Button label="dark" tone="dark" icon="star" fullWidth />
       <Button label="kakao" tone="kakao" icon="kakao" fullWidth />
     </div>

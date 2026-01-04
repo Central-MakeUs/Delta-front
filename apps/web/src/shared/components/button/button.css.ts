@@ -1,9 +1,14 @@
 import { recipe } from "@vanilla-extract/recipes";
 import { createVar, style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
+import { typo } from "@/shared/styles/typography.css";
 
-/** iconSize(rem)를 Button에서 style로 주입하기 위한 CSS 변수 */
 export const iconSizeVar = createVar();
+
+export const icon = style({
+  flexShrink: 0,
+  display: "block",
+});
 
 export const button = recipe({
   base: {
@@ -13,10 +18,8 @@ export const button = recipe({
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
-    /* 텍스트/아이콘이 currentColor 따라가게 */
     color: "inherit",
     backgroundColor: "transparent",
-    /* 공통 */
     borderRadius: vars.radius.r12,
     gap: "0.8rem",
     padding: "0.8rem 1.2rem",
@@ -36,7 +39,6 @@ export const button = recipe({
         minHeight: "3.2rem",
         padding: "0.6rem 1.2rem",
         borderRadius: vars.radius.r8,
-        gap: "1.2rem",
       },
       "40": {
         minHeight: "4.0rem",
@@ -54,7 +56,7 @@ export const button = recipe({
         minHeight: "6.0rem",
         padding: "0.8rem 1.2rem",
         borderRadius: vars.radius.r12,
-        gap: "1.2rem",
+        gap: "0.8rem",
       },
     },
 
@@ -63,7 +65,7 @@ export const button = recipe({
         backgroundColor: vars.color.grayscale[50],
         color: vars.color.grayscale[700],
       },
-      muted: {
+      default: {
         backgroundColor: vars.color.grayscale[100],
         color: vars.color.grayscale[800],
       },
@@ -97,41 +99,11 @@ export const label = recipe({
   },
   variants: {
     size: {
-      "32": {
-        fontSize: vars.typography.caption.fontSize,
-        fontWeight: vars.typography.caption.fontWeight.semibold,
-        letterSpacing: vars.typography.caption.letterSpacing,
-        lineHeight: vars.typography.caption.lineHeight,
-      },
-      "40": {
-        fontSize: vars.typography.body3.fontSize,
-        fontWeight: vars.typography.body3.fontWeight.semibold,
-        letterSpacing: vars.typography.body3.letterSpacing,
-        lineHeight: vars.typography.body3.lineHeight,
-      },
-      "48": {
-        fontSize: vars.typography.button1.fontSize,
-        fontWeight: vars.typography.button1.fontWeight,
-        letterSpacing: vars.typography.button1.letterSpacing,
-        lineHeight: vars.typography.button1.lineHeight,
-      },
-      "60": {
-        fontSize: vars.typography.body1.fontSize,
-        fontWeight: vars.typography.body1.fontWeight.bold,
-        letterSpacing: vars.typography.body1.letterSpacing,
-        lineHeight: vars.typography.body1.lineHeight,
-      },
+      "32": typo.caption.semibold,
+      "40": typo.body3.semibold,
+      "48": typo.button1,
+      "60": typo.body1.bold,
     },
   },
   defaultVariants: { size: "48" },
-});
-
-export const iconWrap = style({
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  /* Button.tsx에서 iconSizeVar로 주입 */
-  width: iconSizeVar,
-  height: iconSizeVar,
-  flexShrink: 0,
 });

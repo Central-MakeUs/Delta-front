@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes } from "react";
 import clsx from "clsx";
-import * as styles from "@/shared/components/button/button.css";
+import * as styles from "@/shared/components/button/button/button.css";
 import Icon from "@/shared/components/icon/icon";
 import type { IconProps } from "@/shared/components/icon/icon";
 

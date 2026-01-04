@@ -1,4 +1,4 @@
-import { Button } from "@/shared/components/button/button";
+import { Button } from "@/shared/components/button/button/button";
 import { lightTheme } from "@/shared/styles/theme.css";
 
 export default function Home() {

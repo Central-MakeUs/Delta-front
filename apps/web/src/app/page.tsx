@@ -1,12 +1,22 @@
-import { Button } from "@/shared/components/button/button/button";
-import { lightTheme } from "@/shared/styles/theme.css";
+"use client";
 
-const Home = () => {
+import { useState } from "react";
+import { Toggle } from "@/shared/components/toggle/toggle";
+
+type QuestionType = "objective" | "subjective";
+
+export const Home = () => {
+  const [type, setType] = useState<QuestionType>("objective");
+
   return (
-    <div className={lightTheme}>
-      <Button label="Text" size="32" tone="surface" />
-      <Button label="Text" size="40" icon="star" />
-    </div>
+    <Toggle<QuestionType>
+      value={type}
+      onValueChange={setType}
+      options={[
+        { value: "objective", label: "객관식" },
+        { value: "subjective", label: "주관식" },
+      ]}
+    />
   );
 };
 

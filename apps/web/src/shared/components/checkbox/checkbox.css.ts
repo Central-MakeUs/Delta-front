@@ -31,7 +31,6 @@ export const checkbox = style({
   flexShrink: 0,
   gap: "0.625rem",
   padding: "0.625rem",
-//   border: `0.2rem solid ${vars.color.grayscale[300]}`,
   backgroundColor: vars.color.grayscale[0],
   borderRadius: vars.radius.r4,
   transition: "all 0.2s ease",

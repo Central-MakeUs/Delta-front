@@ -17,6 +17,7 @@ export const ICONS = [
   "note-active",
   "note-default",
   "plus",
+  "file",
   "search",
   "user",
   "star",

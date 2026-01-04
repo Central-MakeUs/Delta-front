@@ -16,9 +16,12 @@ export function SelectButton({
   type = "button",
   ...rest
 }: Props) {
+  const ariaPressed = rest["aria-pressed"] ?? active;
+
   return (
     <button
       type={type}
+      aria-pressed={ariaPressed}
       className={clsx(styles.selectButton({ active, fullWidth }), className)}
       {...rest}
     >

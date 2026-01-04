@@ -35,11 +35,7 @@ export function Button({
       {...rest}
     >
       {icon ? (
-        <Icon
-          name={icon}
-          size={iconSize} // ✅ 여기!
-          className={styles.icon} // flex에서 안 찌그러지게
-        />
+        <Icon name={icon} size={iconSize} className={styles.icon} />
       ) : null}
 
       <span className={styles.label({ size })}>{label}</span>

@@ -1,83 +1,85 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
+import { typo } from "@/shared/styles/typography.css";
+import { color, bgColor } from "@/shared/styles/color.css";
 
-const GAP = "0.6rem";
-const TRACK_PAD = "0.2rem";
+export const root = style([
+  bgColor["main-50"],
+  {
+    display: "flex",
+    flex: "0 0 auto",
+    placeSelf: "start",
+    justifySelf: "start",
+    padding: "0.2rem",
+    borderRadius: "17px",
+  },
+]);
 
-export const root = style({
-  display: "flex",
-  padding: TRACK_PAD,
-  backgroundColor: vars.color.main[50],
-  borderRadius: "17px",
-  maxWidth: "11.2rem",
-});
-
-export const track = style({
-  position: "relative",
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr",
-  gap: GAP,
+export const row = style({
+  display: "inline-flex",
   alignItems: "center",
+  gap: "0.6rem",
 });
 
-export const indicator = style({
-  position: "absolute",
-  top: 0,
-  bottom: 0,
-  left: 0,
+export const rowRightActive = style({
+  paddingLeft: "1rem",
+});
 
-  width: `calc((100% - ${GAP}) / 2)`,
-  borderRadius: "25px",
-  backgroundColor: vars.color.main[400],
+export const rowLeftActive = style({
+  paddingRight: "1rem",
+});
 
-  transform: "translateX(0)",
-  transition: "transform 160ms ease",
+export const label = style({
+  whiteSpace: "nowrap",
+  wordBreak: "keep-all",
+});
 
-  selectors: {
-    [`${track}[data-active="right"] &`]: {
-      transform: `translateX(calc(100% + ${GAP}))`,
+export const ghostButton = style([
+  typo.caption.medium,
+  color["main-200"],
+  {
+    border: 0,
+    background: "transparent",
+    cursor: "pointer",
+    padding: "0.5rem 0",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flex: "0 0 auto",
+
+    selectors: {
+      "&:disabled": { cursor: "not-allowed", opacity: 0.55 },
+      "&:focus-visible": {
+        outline: `2px solid ${vars.color.main[400]}`,
+        outlineOffset: "2px",
+        borderRadius: "25px",
+      },
     },
   },
-});
+]);
 
-export const button = style({
-  position: "relative",
-  zIndex: 1,
+export const pillButton = style([
+  typo.caption.semibold,
+  color["grayscale-0"],
+  bgColor["main-400"],
+  {
+    border: 0,
+    cursor: "pointer",
+    width: "6rem",
+    padding: "0.5rem 1.4rem",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "25px",
+    flex: "0 0 auto",
 
-  width: "6rem",
-  height: "2.8rem",
-  padding: "0.3rem 0.8rem",
-
-  border: 0,
-  background: "transparent",
-  cursor: "pointer",
-  borderRadius: "25px",
-
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-
-  fontSize: vars.typography.caption.fontSize,
-  lineHeight: vars.typography.caption.lineHeight,
-  letterSpacing: vars.typography.caption.letterSpacing,
-
-  color: vars.color.main[200],
-  fontWeight: vars.typography.caption.fontWeight.medium,
-
-  selectors: {
-    '&[data-state="on"]': {
-      color: vars.color.grayscale[0],
-      fontWeight: vars.typography.caption.fontWeight.semibold,
-    },
-
-    "&:disabled": {
-      cursor: "not-allowed",
-      opacity: 0.55,
-    },
-
-    "&:focus-visible": {
-      outline: `2px solid ${vars.color.main[400]}`,
-      outlineOffset: "2px",
+    selectors: {
+      "&:disabled": { cursor: "not-allowed", opacity: 0.55 },
+      "&:focus-visible": {
+        outline: `2px solid ${vars.color.main[400]}`,
+        outlineOffset: "2px",
+        borderRadius: "25px",
+      },
     },
   },
-});
+]);

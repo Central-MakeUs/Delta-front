@@ -5,6 +5,7 @@ export const ICONS = [
   "check-circle",
   "chevron",
   "edit",
+  "file",
   "file-text",
   "graph-active",
   "graph-default",
@@ -17,9 +18,8 @@ export const ICONS = [
   "note-active",
   "note-default",
   "plus",
-  "file",
   "search",
-  "user",
   "star",
+  "user"
 ] as const;
 export type IconName = (typeof ICONS)[number];

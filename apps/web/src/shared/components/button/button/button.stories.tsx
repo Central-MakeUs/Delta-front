@@ -80,22 +80,10 @@ export const FiveCases: Story = {
       <Button label="Text" size="32" tone="surface" />
 
       {/* 40 / surface + icon */}
-      <Button
-        label="Text"
-        size="40"
-        tone="surface"
-        icon="star"
-        iconSize={1.8}
-      />
+      <Button label="Text" size="40" tone="surface" icon="star" />
 
       {/* 48 / default + icon */}
-      <Button
-        label="Text"
-        size="48"
-        tone="default"
-        icon="kakao"
-        iconSize={1.8}
-      />
+      <Button label="Text" size="48" tone="default" icon="kakao" />
 
       {/* 60 / dark */}
       <Button label="Text" size="60" tone="dark" />
@@ -106,7 +94,6 @@ export const FiveCases: Story = {
         size="48"
         tone="kakao"
         icon="kakao"
-        iconSize={1.8}
         fullWidth
       />
     </div>
@@ -127,20 +114,8 @@ export const Sizes: Story = {
         icon="star"
         iconSize={1.6}
       />
-      <Button
-        label="Size 40"
-        size="40"
-        tone="surface"
-        icon="star"
-        iconSize={1.8}
-      />
-      <Button
-        label="Size 48"
-        size="48"
-        tone="surface"
-        icon="star"
-        iconSize={1.8}
-      />
+      <Button label="Size 40" size="40" tone="surface" icon="star" />
+      <Button label="Size 48" size="48" tone="surface" icon="star" />
       <Button
         label="Size 60"
         size="60"

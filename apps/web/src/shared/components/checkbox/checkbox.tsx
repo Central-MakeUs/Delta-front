@@ -31,7 +31,7 @@ export const Checkbox = ({
   };
 
   return (
-    <label className={clsx(styles.container, containerClassName)}>
+    <label className={clsx(styles.container(), containerClassName)}>
       <input
         ref={inputRef}
         type="checkbox"
@@ -41,11 +41,11 @@ export const Checkbox = ({
         onChange={handleChange}
         {...rest}
       />
-      <span className={clsx(styles.checkbox, className)}>
+      <span className={clsx(styles.checkbox(), className)}>
           <Icon
             name={icon}
             size={1.6}
-            className={styles.icon}
+            className={styles.icon()}
           />
       </span>
       {label && (

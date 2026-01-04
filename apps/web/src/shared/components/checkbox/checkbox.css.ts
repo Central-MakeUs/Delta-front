@@ -3,12 +3,14 @@ import { recipe } from "@vanilla-extract/recipes";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 
-export const container = style({
-  display: "inline-flex",
-  alignItems: "center",
-  gap: "0.8rem",
-  cursor: "pointer",
-  userSelect: "none",
+export const container = recipe({
+  base: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "0.8rem",
+    cursor: "pointer",
+    userSelect: "none",
+  },
 });
 
 export const input = style({
@@ -21,83 +23,87 @@ export const input = style({
   pointerEvents: "none",
 });
 
-export const checkbox = style({
-  position: "relative",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: "2.4rem",
-  height: "2.4rem",
-  flexShrink: 0,
-  gap: "0.625rem",
-  padding: "0.625rem",
-  backgroundColor: vars.color.grayscale[0],
-  borderRadius: vars.radius.r4,
-  transition: "all 0.2s ease",
-  cursor: "pointer",
+export const checkbox = recipe({
+  base: {
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "2.4rem",
+    height: "2.4rem",
+    flexShrink: 0,
+    gap: "1rem",
+    padding: "1rem",
+    backgroundColor: vars.color.grayscale[0],
+    borderRadius: vars.radius.r4,
+    transition: "all 0.2s ease",
+    cursor: "pointer",
 
-  selectors: {
-    [`${input}:checked + &`]: {
-      borderColor: vars.color.main[500],
-      backgroundColor: vars.color.main[500],
-      color: vars.color.grayscale[0],
-    },
-    [`${input}:indeterminate + &`]: {
-      borderColor: vars.color.main[500],
-      backgroundColor: vars.color.main[500],
-      color: vars.color.grayscale[0],
-    },
-    [`${input}:disabled + &`]: {
-      borderColor: vars.color.grayscale[200],
-      backgroundColor: vars.color.grayscale[100],
-      cursor: "not-allowed",
-      opacity: 0.6,
-    },
-    [`${input}:checked:disabled + &`]: {
-      borderColor: vars.color.grayscale[300],
-      backgroundColor: vars.color.grayscale[200],
-    },
-    [`${input}:focus-visible + &`]: {
-      outline: `0.2rem solid ${vars.color.main[500]}`,
-      outlineOffset: "0.2rem",
+    selectors: {
+      [`${input}:checked + &`]: {
+        borderColor: vars.color.main[500],
+        backgroundColor: vars.color.main[500],
+        color: vars.color.grayscale[0],
+      },
+      [`${input}:indeterminate + &`]: {
+        borderColor: vars.color.main[500],
+        backgroundColor: vars.color.main[500],
+        color: vars.color.grayscale[0],
+      },
+      [`${input}:disabled + &`]: {
+        borderColor: vars.color.grayscale[200],
+        backgroundColor: vars.color.grayscale[100],
+        cursor: "not-allowed",
+        opacity: 0.6,
+      },
+      [`${input}:checked:disabled + &`]: {
+        borderColor: vars.color.grayscale[300],
+        backgroundColor: vars.color.grayscale[200],
+      },
+      [`${input}:focus-visible + &`]: {
+        outline: `0.2rem solid ${vars.color.main[500]}`,
+        outlineOffset: "0.2rem",
+      },
     },
   },
 });
 
-export const icon = style({
-  position: "relative",
-  display: "block",
-  width: "1.6rem",
-  height: "1.6rem",
-  marginTop: "-0.375rem",
-  marginBottom: "-0.375rem",
-  marginLeft: "-0.375rem",
-  marginRight: "-0.375rem",
-  color: vars.color.grayscale[400],
-  flexShrink: 0,
+export const icon = recipe({
+  base: {
+    position: "relative",
+    display: "block",
+    width: "1.6rem",
+    height: "1.6rem",
+    marginTop: "-0.6rem",
+    marginBottom: "-0.6rem",
+    marginLeft: "-0.6rem",
+    marginRight: "-0.6rem",
+    color: vars.color.grayscale[400],
+    flexShrink: 0,
 
-  selectors: {
-    [`${input}:checked + ${checkbox} &`]: {
-      color: vars.color.grayscale[0],
-    },
-    [`${input}:indeterminate + ${checkbox} &`]: {
-      color: vars.color.grayscale[0],
-    },
-    [`${input}:disabled + ${checkbox} &`]: {
-      color: vars.color.grayscale[400],
-    },
-    [`${input}:checked:disabled + ${checkbox} &`]: {
-      color: vars.color.grayscale[400],
+    selectors: {
+      [`${input}:checked + ${checkbox()} &`]: {
+        color: vars.color.grayscale[0],
+      },
+      [`${input}:indeterminate + ${checkbox()} &`]: {
+        color: vars.color.grayscale[0],
+      },
+      [`${input}:disabled + ${checkbox()} &`]: {
+        color: vars.color.grayscale[400],
+      },
+      [`${input}:checked:disabled + ${checkbox()} &`]: {
+        color: vars.color.grayscale[400],
+      },
     },
   },
 });
 
 // SVG 요소에 stroke 색상 적용
-globalStyle(`${icon} svg`, {
+globalStyle(`${icon()} svg`, {
   stroke: "currentColor",
 });
 
-globalStyle(`${icon} path`, {
+globalStyle(`${icon()} path`, {
   stroke: "currentColor",
 });
 

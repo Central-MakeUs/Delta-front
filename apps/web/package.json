@@ -11,7 +11,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "icons:gen": "tsx src/shared/scripts/gen-icons.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.14",
@@ -50,6 +51,7 @@
     "prettier": "^3.3.3",
     "storybook": "^10.1.10",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^4.0.16"
   }

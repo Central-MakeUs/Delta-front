@@ -15,7 +15,7 @@ export interface IconProps extends React.SVGProps<SVGSVGElement> {
   ariaLabel?: string;
 }
 
-export default function Icon({
+const Icon = ({
   name,
   size,
   width,
@@ -26,7 +26,7 @@ export default function Icon({
   ariaHidden = true,
   ariaLabel,
   ...rest
-}: IconProps) {
+}: IconProps) => {
   const computedWidth = width ?? size ?? 2.4;
   const computedHeight = height ?? size ?? 2.4;
 
@@ -66,4 +66,6 @@ export default function Icon({
       <use href={`#icon-${name}`} />
     </svg>
   );
-}
+};
+
+export default Icon;

@@ -3,7 +3,7 @@
 import clsx from "clsx";
 import * as s from "@/shared/components/number-choice/number-choice.css";
 
-type Props = {
+type NumberChoiceProps = {
   value: number;
   selected?: boolean;
   disabled?: boolean;
@@ -21,8 +21,13 @@ export const NumberChoice = ({
   className,
   onSelect,
   ariaLabel,
-}: Props) => {
+}: NumberChoiceProps) => {
   const text = label ?? `${value}번`;
+
+  const handleClick = () => {
+    if (disabled) return;
+    onSelect?.(value);
+  };
 
   return (
     <button
@@ -36,10 +41,7 @@ export const NumberChoice = ({
         selected ? s.active : s.inactive,
         className
       )}
-      onClick={() => {
-        if (disabled) return;
-        onSelect?.(value);
-      }}
+      onClick={handleClick}
     >
       <span className={s.label}>{text}</span>
     </button>

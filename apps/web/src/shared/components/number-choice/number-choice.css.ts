@@ -46,3 +46,11 @@ export const label = style({
   wordBreak: "keep-all",
   display: "inline-block",
 });
+
+export const root = style({
+  width: "100%",
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+});

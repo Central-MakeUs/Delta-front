@@ -1,49 +1,41 @@
 "use client";
 
+import { useMemo } from "react";
 import clsx from "clsx";
-import * as s from "@/shared/components/number-choice/number-choice.css";
+import { NumberButton } from "@/shared/components/button/number-button/number-button";
+import * as gs from "@/shared/components/number-choice/number-choice.css";
 
 type NumberChoiceProps = {
-  value: number;
-  selected?: boolean;
+  count?: number;
+  value: number | null;
+  onValueChange: (next: number) => void;
   disabled?: boolean;
-  label?: string;
   className?: string;
-  onSelect?: (value: number) => void;
-  ariaLabel?: string;
 };
 
 export const NumberChoice = ({
+  count = 5,
   value,
-  selected = false,
+  onValueChange,
   disabled = false,
-  label,
   className,
-  onSelect,
-  ariaLabel,
 }: NumberChoiceProps) => {
-  const text = label ?? `${value}번`;
-
-  const handleClick = () => {
-    if (disabled) return;
-    onSelect?.(value);
-  };
+  const numbers = useMemo(
+    () => Array.from({ length: Math.max(0, count) }, (_, i) => i + 1),
+    [count]
+  );
 
   return (
-    <button
-      type="button"
-      disabled={disabled}
-      aria-pressed={selected}
-      aria-label={ariaLabel ?? text}
-      data-state={selected ? "on" : "off"}
-      className={clsx(
-        s.buttonBase,
-        selected ? s.active : s.inactive,
-        className
-      )}
-      onClick={handleClick}
-    >
-      <span className={s.label}>{text}</span>
-    </button>
+    <div className={clsx(gs.root, className)}>
+      {numbers.map((n) => (
+        <NumberButton
+          key={n}
+          value={n}
+          selected={value === n}
+          disabled={disabled}
+          onSelect={onValueChange}
+        />
+      ))}
+    </div>
   );
 };

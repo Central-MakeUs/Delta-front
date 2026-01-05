@@ -45,21 +45,6 @@ export const checkbox = recipe({
         backgroundColor: vars.color.main[500],
         color: vars.color.grayscale[0],
       },
-      [`${input}:indeterminate + &`]: {
-        borderColor: vars.color.main[500],
-        backgroundColor: vars.color.main[500],
-        color: vars.color.grayscale[0],
-      },
-      [`${input}:disabled + &`]: {
-        borderColor: vars.color.grayscale[200],
-        backgroundColor: vars.color.grayscale[100],
-        cursor: "not-allowed",
-        opacity: 0.6,
-      },
-      [`${input}:checked:disabled + &`]: {
-        borderColor: vars.color.grayscale[300],
-        backgroundColor: vars.color.grayscale[200],
-      },
       [`${input}:focus-visible + &`]: {
         outline: `0.2rem solid ${vars.color.main[500]}`,
         outlineOffset: "0.2rem",
@@ -85,26 +70,11 @@ export const icon = recipe({
       [`${input}:checked + ${checkbox()} &`]: {
         color: vars.color.grayscale[0],
       },
-      [`${input}:indeterminate + ${checkbox()} &`]: {
-        color: vars.color.grayscale[0],
-      },
-      [`${input}:disabled + ${checkbox()} &`]: {
-        color: vars.color.grayscale[400],
-      },
       [`${input}:checked:disabled + ${checkbox()} &`]: {
         color: vars.color.grayscale[400],
       },
     },
   },
-});
-
-// SVG 요소에 stroke 색상 적용
-globalStyle(`${icon()} svg`, {
-  stroke: "currentColor",
-});
-
-globalStyle(`${icon()} path`, {
-  stroke: "currentColor",
 });
 
 export const labelText = recipe({
@@ -120,7 +90,6 @@ export const labelText = recipe({
       },
     },
   },
-
   variants: {
     size: {
       md: typo.body2.regular,

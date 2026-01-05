@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { NumberButton } from "./number-button";
 
 const meta = {
-  title: "Components/NumberButton",
+  title: "Shared/Button/NumberButton",
   component: NumberButton,
   tags: ["autodocs"],
   parameters: {

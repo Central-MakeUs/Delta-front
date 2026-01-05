@@ -3,7 +3,7 @@ import { useState } from "react";
 import { NumberChoice } from "@/shared/components/number-choice/number-choice";
 
 const meta = {
-  title: "Components/NumberChoice",
+  title: "Shared/NumberChoice",
   component: NumberChoice,
   tags: ["autodocs"],
   parameters: {

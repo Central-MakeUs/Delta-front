@@ -34,7 +34,7 @@ export const checkbox = recipe({
     flexShrink: 0,
     gap: "1rem",
     padding: "1rem",
-    backgroundColor: vars.color.grayscale[0],
+    backgroundColor: vars.color.grayscale[50],
     borderRadius: vars.radius.r4,
     transition: "all 0.2s ease",
     cursor: "pointer",

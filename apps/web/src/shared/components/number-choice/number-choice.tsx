@@ -1,5 +1,3 @@
-"use client";
-
 import { useMemo } from "react";
 import clsx from "clsx";
 import { NumberButton } from "@/shared/components/button/number-button/number-button";

@@ -1,5 +1,3 @@
-"use client";
-
 import clsx from "clsx";
 import * as s from "@/shared/components/button/number-button/number-button.css";
 

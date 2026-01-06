@@ -12,7 +12,7 @@ export const progressBar = recipe({
 export const segment = recipe({
   base: {
     height: "0.8rem",
-    borderRadius: "9999px",
+    borderRadius: vars.radius.full,
     flexShrink: 0,
     border: "none",
     padding: 0,

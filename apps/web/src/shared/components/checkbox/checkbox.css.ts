@@ -1,4 +1,4 @@
-import { style, globalStyle } from "@vanilla-extract/css";
+import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
@@ -59,10 +59,7 @@ export const icon = recipe({
     display: "block",
     width: "1.6rem",
     height: "1.6rem",
-    marginTop: "-0.6rem",
-    marginBottom: "-0.6rem",
-    marginLeft: "-0.6rem",
-    marginRight: "-0.6rem",
+    padding: "0.4rem",
     color: vars.color.grayscale[400],
     flexShrink: 0,
 

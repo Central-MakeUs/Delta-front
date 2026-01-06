@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import "@/shared/styles/global.css";
 import QueryProvider from "@/shared/utils/query-provider";
 import { SPRITE } from "@/shared/constants/sprite";
+import { lightTheme } from "@/shared/styles/theme.css";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -27,7 +28,7 @@ const SvgSpriteInjector = () => {
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="ko">
+    <html lang="ko" className={lightTheme}>
       <body>
         <SvgSpriteInjector />
 

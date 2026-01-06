@@ -10,7 +10,7 @@ const OPTIONS = [
 ] as const;
 
 const meta = {
-  title: "Components/Toggle",
+  title: "Shared/Toggle",
   component: Toggle,
   tags: ["autodocs"],
   parameters: {

@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import clsx from "clsx";
 import { useControllableState } from "@/shared/components/toggle/hooks/use-controllable-state";
+import { useToggleIndicator } from "@/shared/components/toggle/hooks/use-toggle-indicator";
 import * as s from "@/shared/components/toggle/toggle.css";
 
 type ToggleOption<T extends string> = {
@@ -43,26 +44,35 @@ export const Toggle = <T extends string>({
 
   const leftOn = current === left.value;
   const rightOn = current === right.value;
-  const leftRef = useRef<HTMLButtonElement | null>(null);
-  const rightRef = useRef<HTMLButtonElement | null>(null);
+
+  const leftFocusRef = useRef<HTMLButtonElement | null>(null);
+  const rightFocusRef = useRef<HTMLButtonElement | null>(null);
+
+  const { rowRef, leftRef, rightRef, indicatorStyle } = useToggleIndicator({
+    activeSide: rightOn ? "right" : "left",
+    disabled,
+  });
 
   const select = (next: T) => {
-    if (disabled) return;
+    if (disabled) return false;
     const opt = next === left.value ? left : right;
-    if (opt.disabled) return;
+    if (opt.disabled) return false;
     setCurrent(next);
+    return true;
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
     e.preventDefault();
+
     if (e.key === "ArrowLeft") {
-      select(left.value);
-      leftRef.current?.focus();
+      const ok = select(left.value);
+      if (ok) leftFocusRef.current?.focus();
       return;
     }
-    select(right.value);
-    rightRef.current?.focus();
+
+    const ok = select(right.value);
+    if (ok) rightFocusRef.current?.focus();
   };
 
   return (
@@ -70,13 +80,20 @@ export const Toggle = <T extends string>({
       {name ? <input type="hidden" name={name} value={current} /> : null}
 
       <div
+        ref={rowRef}
         role="radiogroup"
         aria-label={ariaLabel}
         className={clsx(s.row, rightOn ? s.rowRightActive : s.rowLeftActive)}
         onKeyDown={onKeyDown}
+        style={indicatorStyle}
       >
+        <div aria-hidden className={s.indicator} />
+
         <button
-          ref={leftRef}
+          ref={(el) => {
+            leftRef.current = el;
+            leftFocusRef.current = el;
+          }}
           type="button"
           role="radio"
           aria-checked={leftOn}
@@ -89,7 +106,10 @@ export const Toggle = <T extends string>({
         </button>
 
         <button
-          ref={rightRef}
+          ref={(el) => {
+            rightRef.current = el;
+            rightFocusRef.current = el;
+          }}
           type="button"
           role="radio"
           aria-checked={rightOn}

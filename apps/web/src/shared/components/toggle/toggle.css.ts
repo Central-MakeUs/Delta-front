@@ -1,7 +1,11 @@
-import { style } from "@vanilla-extract/css";
+import { createVar, style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 import { color, bgColor } from "@/shared/styles/color.css";
+
+export const indicatorXVar = createVar();
+export const indicatorWVar = createVar();
+export const indicatorOpacityVar = createVar();
 
 export const root = style([
   bgColor["main-50"],
@@ -10,24 +14,43 @@ export const root = style([
     flex: "0 0 auto",
     placeSelf: "start",
     justifySelf: "start",
-    padding: "0.2rem",
+    padding: "0 0.2rem",
     borderRadius: "17px",
   },
 ]);
 
 export const row = style({
+  position: "relative",
   display: "flex",
   alignItems: "center",
-  gap: "0.6rem",
+  gap: "0.8rem",
 });
 
-export const rowRightActive = style({
-  paddingLeft: "1rem",
-});
+export const indicator = style([
+  bgColor["main-400"],
+  {
+    position: "absolute",
+    top: "0.2rem",
+    bottom: "0.2rem",
+    left: 0,
 
-export const rowLeftActive = style({
-  paddingRight: "1rem",
-});
+    width: indicatorWVar,
+    borderRadius: "25px",
+
+    transform: `translateX(${indicatorXVar})`,
+    opacity: indicatorOpacityVar,
+    transition: "transform 160ms ease, width 160ms ease, opacity 120ms ease",
+
+    "@media": {
+      "(prefers-reduced-motion: reduce)": {
+        transition: "none",
+      },
+    },
+  },
+]);
+
+export const rowRightActive = style({ paddingLeft: "1rem" });
+export const rowLeftActive = style({ paddingRight: "1rem" });
 
 export const label = style({
   whiteSpace: "nowrap",
@@ -38,6 +61,8 @@ export const ghostButton = style([
   typo.caption.medium,
   color["main-200"],
   {
+    position: "relative",
+    zIndex: 1,
     border: 0,
     background: "transparent",
     cursor: "pointer",
@@ -61,11 +86,13 @@ export const ghostButton = style([
 export const pillButton = style([
   typo.caption.semibold,
   color["grayscale-0"],
-  bgColor["main-400"],
   {
+    position: "relative",
+    zIndex: 1,
     border: 0,
     cursor: "pointer",
     width: "6rem",
+    height: "2.8rem",
     padding: "0.5rem 1.4rem",
     display: "flex",
     alignItems: "center",
@@ -73,6 +100,7 @@ export const pillButton = style([
     borderRadius: "25px",
     flex: "0 0 auto",
     fontFamily: "inherit",
+    background: "transparent",
     selectors: {
       "&:disabled": { cursor: "not-allowed", opacity: 0.55 },
       "&:focus-visible": {

@@ -4,7 +4,7 @@ import { lightTheme } from "@/shared/styles/theme.css";
 import { Checkbox } from "./checkbox";
 
 const meta: Meta<typeof Checkbox> = {
-  title: "Components/Checkbox",
+  title: "Shared/Checkbox",
   component: Checkbox,
   tags: ["autodocs"],
   parameters: {

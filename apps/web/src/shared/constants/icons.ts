@@ -3,6 +3,7 @@ export const ICONS = [
   "apple",
   "arrow-right",
   "check-circle",
+  "check-mark",
   "chevron",
   "edit",
   "file",

@@ -2,12 +2,13 @@ import {  style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 import { recipe } from "@vanilla-extract/recipes";
+import { bgColor, color } from "@/shared/styles/color.css";
 
 export const container = recipe({
   base: {
     display: "flex",
     alignItems: "flex-start",
-    gap: "3.375rem",
+    gap: "5.4rem",
     position: "relative",
   },
   variants: {
@@ -26,44 +27,22 @@ export const container = recipe({
 });
 
 export const inputWrapper = recipe({
-  base: {
+  base: [
+    bgColor["grayscale-0"],
+    {
     display: "flex",
     alignItems: "flex-start",
     alignSelf: "stretch",
-    backgroundColor: vars.color.grayscale[0],
     border: `0.1rem solid ${vars.color.grayscale[100]}`,
-    borderRadius: vars.radius.r12,
+    borderRadius: vars.radius.md,
     flex: 1,
     flexGrow: 1,
     justifyContent: "space-between",
-    padding: "1.6rem 2.0rem",
+    padding: "1.6rem",
     position: "relative",
-    transition: "all 0.2s ease",
-
-    selectors: {
-      "&:focus-within": {
-        borderColor: vars.color.main[500],
-        outline: `0.2rem solid ${vars.color.main[500]}`,
-        outlineOffset: "0.2rem",
-      },
-      "&:hover:not(:focus-within)": {
-        borderColor: vars.color.grayscale[200],
-      },
     },
-  },
+  ],
   variants: {
-    error: {
-      true: {
-        borderColor: vars.color.error[500],
-        selectors: {
-          "&:focus-within": {
-            borderColor: vars.color.error[500],
-            outline: `0.2rem solid ${vars.color.error[500]}`,
-          },
-        },
-      },
-      false: {},
-    },
     disabled: {
       true: {
         backgroundColor: vars.color.grayscale[100],
@@ -75,7 +54,6 @@ export const inputWrapper = recipe({
     },
   },
   defaultVariants: {
-    error: false,
     disabled: false,
   },
 });
@@ -83,16 +61,13 @@ export const inputWrapper = recipe({
 export const input = recipe({
   base: [
     typo.body2.regular,
+    color["grayscale-900"],
     {
-      color: vars.color.grayscale[900],
-      backgroundColor: "transparent",
-      border: "none",
       outline: "none",
       flex: 1,
       width: "100%",
       padding: 0,
       margin: 0,
-
       selectors: {
         "&::placeholder": {
           color: vars.color.grayscale[400],
@@ -114,7 +89,7 @@ export const textWrapper = style([
     color: vars.color.grayscale[400],
     flex: 1,
     justifyContent: "center",
-    marginTop: "-0.0625rem", // -1px
+    marginTop: "-0.1rem", // -1px
     position: "relative",
   },
 ]);

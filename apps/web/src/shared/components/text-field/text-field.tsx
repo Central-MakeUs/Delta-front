@@ -8,13 +8,11 @@ export interface TextFieldProps
     "size" | "type"
   > {
   placeholder?: string;
-  error?: boolean;
   fullWidth?: boolean;
 }
 
 export const TextField = ({
   placeholder,
-  error = false,
   fullWidth = false,
   disabled = false,
   ...rest
@@ -22,7 +20,7 @@ export const TextField = ({
   return (
     <div className={clsx(styles.container({ fullWidth }))}>
       <div
-        className={clsx(styles.inputWrapper({ error, disabled }))}
+        className={clsx(styles.inputWrapper({ disabled }))}
       >
         <input
           type="text"

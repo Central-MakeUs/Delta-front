@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
+import TabBar from "@/shared/components/tab-bar/tab-bar";
 import {
-  TabBar,
   type TabBarProps,
   type TabItem,
 } from "@/shared/components/tab-bar/tab-bar";

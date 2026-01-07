@@ -48,7 +48,7 @@ export const CardGraph01 = ({
 
             <button type="button" className={s.action} onClick={onActionClick}>
               <span className={s.actionText}>남은 문제 오답하기</span>
-              <Icon name="chevron" className={s.actionIcon} />
+              <Icon size={2} name="chevron" className={s.actionIcon} />
             </button>
           </div>
 

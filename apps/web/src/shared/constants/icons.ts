@@ -11,6 +11,7 @@ export const ICONS = [
   "graph-active",
   "graph-default",
   "home",
+  "home-active",
   "kakao",
   "log-out",
   "message-square",

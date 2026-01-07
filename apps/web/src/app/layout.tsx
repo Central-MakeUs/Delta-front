@@ -5,6 +5,7 @@ import "@/shared/styles/global.css";
 import QueryProvider from "@/shared/utils/query-provider";
 import { SPRITE } from "@/shared/constants/sprite";
 import { lightTheme } from "@/shared/styles/theme.css";
+import BottomNav from "@/shared/components/bottom-nav/bottom-nav";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -34,6 +35,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 
         <div className={rootStyle}>
           <QueryProvider>{children}</QueryProvider>
+          <BottomNav />
         </div>
       </body>
     </html>

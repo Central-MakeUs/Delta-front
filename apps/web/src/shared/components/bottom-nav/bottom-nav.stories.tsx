@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import type { CSSProperties } from "react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import BottomNavItem from "@/shared/components/bottom-nav/bottom-nav-item";
 import type { IconProps } from "@/shared/components/icon/icon";
@@ -47,8 +47,6 @@ const BottomNavPreview = ({
 }) => {
   const [activeKey, setActiveKey] = useState<NavKey>(initialActiveKey);
 
-  const items = useMemo(() => ITEMS, []);
-
   return (
     <nav
       className={s.root}
@@ -57,7 +55,7 @@ const BottomNavPreview = ({
     >
       <div className={s.container}>
         <div className={s.list}>
-          {items.map((item) => {
+          {ITEMS.map((item) => {
             const isActive = item.key === activeKey;
 
             return (

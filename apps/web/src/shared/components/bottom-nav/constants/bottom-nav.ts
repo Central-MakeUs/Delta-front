@@ -3,6 +3,7 @@ import { GRAPH_TABS, ROUTES, type GraphTab } from "@/shared/constants/routes";
 
 export type IconName = IconProps["name"];
 export type NavKey = "home" | "note" | "graph";
+
 export type NavItem = {
   key: NavKey;
   label: string;
@@ -17,6 +18,7 @@ export const isGraphTab = (value: string | null): value is GraphTab => {
 export const getIsBottomNavHidden = (pathname: string) => {
   if (pathname === ROUTES.AUTH.LOGIN) return true;
   if (pathname.startsWith(ROUTES.WRONG.CREATE)) return true;
+
   if (pathname.startsWith(`${ROUTES.WRONG.ROOT}/`)) {
     const segments = pathname.split("/").filter(Boolean);
     if (segments.length === 2) return true;
@@ -41,7 +43,7 @@ export const createBottomNavItems = (
       key: "home",
       label: "홈",
       href: ROUTES.HOME,
-      iconName: () => "home-active",
+      iconName: (isActive) => (isActive ? "home-active" : "home-default"),
     },
     {
       key: "note",

@@ -150,4 +150,10 @@ export const typo = {
       lineHeight: vars.typography.caption.lineHeight,
     }),
   },
+  captionXs: style({
+    fontSize: vars.typography.captionXs.fontSize,
+    fontWeight: vars.typography.captionXs.fontWeight.semibold,
+    letterSpacing: vars.typography.captionXs.letterSpacing,
+    lineHeight: vars.typography.captionXs.lineHeight,
+  }),
 };

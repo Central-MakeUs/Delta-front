@@ -125,6 +125,12 @@ export const vars = createThemeContract({
       letterSpacing: null,
       lineHeight: null,
     },
+    captionXs: {
+      fontWeight: { semibold: null },
+      fontSize: null,
+      letterSpacing: null,
+      lineHeight: null,
+    },
   },
 });
 
@@ -274,6 +280,12 @@ export const lightTheme = createTheme(vars, {
         regular: "400",
       },
       fontSize: "1.2rem",
+      letterSpacing: "0",
+      lineHeight: "150%",
+    },
+    captionXs: {
+      fontWeight: { semibold: "600" },
+      fontSize: "1.0rem",
       letterSpacing: "0",
       lineHeight: "150%",
     },

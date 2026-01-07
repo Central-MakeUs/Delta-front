@@ -15,6 +15,7 @@ export const ICONS = [
   "home-default",
   "kakao",
   "log-out",
+  "logo-default",
   "message-square",
   "minus",
   "multiple",

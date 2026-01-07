@@ -6,6 +6,7 @@ import { rootStyle } from "@/shared/styles/global.css";
 import type { Metadata } from "next";
 import QueryProvider from "@/shared/utils/query-provider";
 import BottomNav from "@/shared/components/bottom-nav/bottom-nav";
+import AppBarGate from "@/shared/components/app-bar/app-bar-gate";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -34,8 +35,11 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <SvgSpriteInjector />
 
         <div className={rootStyle}>
-          <QueryProvider>{children}</QueryProvider>
-          <BottomNav />
+          <QueryProvider>
+            <AppBarGate />
+            {children}
+            <BottomNav />
+          </QueryProvider>
         </div>
       </body>
     </html>

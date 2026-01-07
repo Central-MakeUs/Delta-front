@@ -23,7 +23,7 @@ export const BarGraph01 = ({
   tipOverlapRem = 1.2,
   label,
   minPercent = 10,
-  maxPercent = 90,
+  maxPercent = 85,
 }: BarGraph01Props) => {
   const rawPercent = clamp(percent, 0, 100);
 

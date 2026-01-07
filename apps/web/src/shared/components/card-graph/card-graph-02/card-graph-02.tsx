@@ -3,14 +3,14 @@ import BarGraph02 from "@/shared/components/bar-graph/bar-graph-02/bar-graph-02"
 import * as s from "@/shared/components/card-graph/card-graph-02/card-graph-02.css";
 
 export type CardGraph02Item = {
-  value: number; // 막대 값
-  title: string; // 아래 단원명
-  valueLabel?: string; // "10개" 같은 텍스트 (미지정 시 `${value}개`)
-  tone?: "active" | "inactive"; // 미지정 시 1등 active, 나머지 inactive
+  value: number;
+  title: string;
+  valueLabel?: string;
+  tone?: "active" | "inactive";
 };
 
 type CardGraph02Props = {
-  items: readonly CardGraph02Item[]; // 상위 4개 사용 (부족하면 빈값으로 채움)
+  items: readonly CardGraph02Item[];
   className?: string;
   ariaLabel?: string;
 };
@@ -36,14 +36,22 @@ export const CardGraph02 = ({
     }
   );
 
-  const maxValue = normalized[0]?.value > 0 ? normalized[0].value : 1;
+  const maxInList = Math.max(0, ...normalized.map((x) => x.value));
+  const maxValue = maxInList > 0 ? maxInList : 1;
+
+  const allZero = maxInList <= 0;
 
   return (
     <section className={clsx(s.root, className)} aria-label={ariaLabel}>
       <div className={s.barsRow}>
         {normalized.map((item, i) => {
           const rank = pad2(i + 1);
-          const tone = item.tone ?? (i === 0 ? "active" : "inactive");
+
+          const tone =
+            item.tone ??
+            (allZero ? "inactive" : i === 0 ? "active" : "inactive");
+
+          const showCrown = !allZero && i === 0;
 
           return (
             <div key={rank} className={s.barCol}>
@@ -53,7 +61,7 @@ export const CardGraph02 = ({
                   maxValue={maxValue}
                   valueLabel={item.valueLabel ?? `${item.value}개`}
                   tone={tone}
-                  showCrown={i === 0}
+                  showCrown={showCrown}
                 />
               </div>
 

@@ -112,7 +112,6 @@ export const vector = style([
   {
     position: "absolute",
     left: 0,
-    top: "-0.6rem",
     width: "26.6rem",
     height: "16.5rem",
     opacity: 0.8,

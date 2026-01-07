@@ -154,16 +154,6 @@ export const SwappedMinMax: Story = {
   render: (args) => <BarGraph01 {...args} />,
 };
 
-export const TipOverlapVariants: Story = {
-  name: "Tip Overlap Variants",
-  args: {
-    percent: 70,
-    label: "16/24",
-    tipOverlapRem: 2.0,
-  },
-  render: (args) => <BarGraph01 {...args} />,
-};
-
 export const WithoutLabel: Story = {
   name: "No label",
   args: {

@@ -9,6 +9,7 @@ export const ICONS = [
   "edit",
   "file",
   "file-text",
+  "filter",
   "graph-active",
   "graph-default",
   "home-active",

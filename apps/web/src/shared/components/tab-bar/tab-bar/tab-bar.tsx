@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { ReactNode } from "react";
 import clsx from "clsx";
-import * as styles from "@/shared/components/tab-bar/tab-bar.css";
+import * as styles from "@/shared/components/tab-bar/tab-bar/tab-bar.css";
 import { TabButton } from "@/shared/components/button/tab-button/tab-button";
 import { useControllableState } from "@/shared/components/toggle/hooks/use-controllable-state";
 

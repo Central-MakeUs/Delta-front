@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import TabBar from "@/shared/components/tab-bar/tab-bar";
-import type { TabBarProps, TabItem } from "@/shared/components/tab-bar/tab-bar";
+import TabBar from "@/shared/components/tab-bar/tab-bar/tab-bar";
+import type {
+  TabBarProps,
+  TabItem,
+} from "@/shared/components/tab-bar/tab-bar/tab-bar";
 
 type TabValue = "최다 오답 단원" | "최다 오답 유형" | "Disabled";
 

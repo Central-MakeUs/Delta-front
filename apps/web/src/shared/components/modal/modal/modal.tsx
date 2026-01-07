@@ -12,7 +12,7 @@ export interface ModalProps {
   confirmLabel?: string;
   onCancel?: () => void;
   onConfirm?: () => void;
-  size?: "sm" | "md" | "lg";
+  size?: "md";
   className?: string;
   overlayClassName?: string;
 }

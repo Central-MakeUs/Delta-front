@@ -64,6 +64,7 @@ export const contentContainer = style({
   justifyContent: "center",
   alignItems: "center",
   width: "100%",
+  gap: "0.8rem",
 });
 
 export const iconContainer = style({
@@ -81,6 +82,7 @@ export const textContainer = style({
   flexDirection: "column",
   alignItems: "center",
   width: "100%",
+  gap: "0.4rem",
 });
 
 export const title = style([

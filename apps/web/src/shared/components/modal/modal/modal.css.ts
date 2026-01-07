@@ -24,8 +24,6 @@ export const modal = recipe({
       display: "flex",
       flexDirection: "column",
       alignItems: "flex-start",
-      padding: 0,
-      position: "relative",
       width: "32.4rem",
       borderRadius: vars.radius.r16,
       boxShadow: vars.shadow.e300,
@@ -34,14 +32,8 @@ export const modal = recipe({
   ],
   variants: {
     size: {
-      sm: {
-        width: "28rem",
-      },
       md: {
         width: "32.4rem",
-      },
-      lg: {
-        width: "40rem",
       },
     },
   },
@@ -57,8 +49,6 @@ export const header = style({
   padding: "2.0rem 2.0rem 1.6rem",
   gap: "0.8rem",
   width: "100%",
-  flex: "none",
-  alignSelf: "stretch",
 });
 
 export const titleRow = style({
@@ -66,11 +56,7 @@ export const titleRow = style({
   flexDirection: "row",
   justifyContent: "space-between",
   alignItems: "flex-start",
-  padding: 0,
-  gap: "0.4rem",
   width: "100%",
-  flex: "none",
-  alignSelf: "stretch",
 });
 
 export const title = style([
@@ -79,9 +65,6 @@ export const title = style([
   {
     margin: "0 auto",
     width: "100%",
-    height: "2.7rem",
-    flex: "none",
-    flexGrow: 1,
   },
 ]);
 
@@ -90,11 +73,8 @@ export const description = style([
   color["grayscale-500"],
   {
     width: "100%",
-    height: "2.4rem",
     display: "flex",
     alignItems: "center",
-    flex: "none",
-    alignSelf: "stretch",
   },
 ]);
 
@@ -103,20 +83,15 @@ export const footer = style({
   flexDirection: "column",
   alignItems: "flex-start",
   padding: "0 2.0rem 2.0rem",
-  gap: "1.6rem",
   width: "100%",
-  flex: "none",
-  alignSelf: "stretch",
 });
 
 export const buttonContainer = style({
   display: "flex",
   flexDirection: "row",
   alignItems: "flex-start",
-  padding: 0,
   gap: "1.2rem",
   width: "100%",
-  alignSelf: "stretch",
 });
 
 export const buttonWrapper = style({

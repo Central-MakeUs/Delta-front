@@ -104,9 +104,7 @@ export const LogoutModal: Story = {
             title="로그아웃"
             description="정말 로그아웃할까요?"
             cancelLabel="취소"
-            confirmLabel="확인"
-            onCancel={() => console.log("취소 클릭")}
-            onConfirm={() => console.log("확인 클릭")}
+            confirmLabel="로그아웃"
           />
         </>
       );
@@ -130,7 +128,6 @@ export const WithoutDescription: Story = {
             title="알림"
             cancelLabel="닫기"
             confirmLabel="확인"
-            onConfirm={() => console.log("확인 클릭")}
           />
         </>
       );

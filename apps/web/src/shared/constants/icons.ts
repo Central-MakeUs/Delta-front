@@ -4,6 +4,7 @@ export const ICONS = [
   "arrow-right",
   "check-circle",
   "chevron",
+  "crown",
   "edit",
   "file",
   "file-text",

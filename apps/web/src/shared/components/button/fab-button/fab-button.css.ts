@@ -29,7 +29,7 @@ export const fabDock = style({
   width: "100%",
   maxWidth: "43rem",
   minWidth: "37rem",
-  zIndex: 10,
+  zIndex: 11,
   display: "flex",
   justifyContent: "flex-end",
   paddingRight: vars.space[4],

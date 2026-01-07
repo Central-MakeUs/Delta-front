@@ -1,16 +1,18 @@
 import * as s from "@/shared/components/app-bar/app-bar.css";
 
+export interface TextActionProps {
+  label: string;
+  tone?: "action" | "skip";
+  onClick?: () => void;
+  ariaLabel?: string;
+}
+
 const TextAction = ({
   label,
   tone = "action",
   onClick,
   ariaLabel,
-}: {
-  label: string;
-  tone?: "action" | "skip";
-  onClick?: () => void;
-  ariaLabel?: string;
-}) => {
+}: TextActionProps) => {
   const textClass = tone === "skip" ? s.skipText : s.actionText;
 
   if (typeof onClick !== "function") {

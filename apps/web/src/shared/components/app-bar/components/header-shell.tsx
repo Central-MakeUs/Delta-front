@@ -7,19 +7,21 @@ import type {
   AppBarVariant,
 } from "@/shared/components/app-bar/types/app-bar";
 
+export interface HeaderShellProps {
+  variant: AppBarVariant;
+  surface: AppBarSurface;
+  ariaLabel: string;
+  className?: string;
+  children: ReactNode;
+}
+
 export const HeaderShell = ({
   variant,
   surface,
   ariaLabel,
   className,
   children,
-}: {
-  variant: AppBarVariant;
-  surface: AppBarSurface;
-  ariaLabel: string;
-  className?: string;
-  children: ReactNode;
-}) => {
+}: HeaderShellProps) => {
   return (
     <header
       className={clsx(s.root({ variant, surface }), className)}

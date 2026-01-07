@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { FabButton } from "@/shared/components/button/fab-button/fab-button";
 
 const meta = {
-  title: "Components/FabButton",
+  title: "Shared/Button/FabButton",
   component: FabButton,
   tags: ["autodocs"],
   parameters: {

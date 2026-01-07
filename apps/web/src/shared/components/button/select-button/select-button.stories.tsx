@@ -3,7 +3,7 @@ import { useState } from "react";
 import { SelectButton } from "@/shared/components/button/select-button/select-button";
 
 const meta = {
-  title: "Components/SelectButton",
+  title: "Shared/Button/SelectButton",
   component: SelectButton,
   tags: ["autodocs"],
   parameters: {

@@ -16,6 +16,7 @@ export const ICONS = [
   "log-out",
   "message-square",
   "minus",
+  "modal-icon",
   "multiple",
   "note-active",
   "note-default",

@@ -2,11 +2,11 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import { lightTheme } from "@/shared/styles/theme.css";
 import { Button } from "@/shared/components/button/button/button";
-import { Modal } from "./modal";
+import { CompleteModal } from "./complete-modal";
 
-const meta: Meta<typeof Modal> = {
-  title: "Shared/Modal/Modal",
-  component: Modal,
+const meta: Meta<typeof CompleteModal> = {
+  title: "Shared/Modal/CompleteModal",
+  component: CompleteModal,
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -64,11 +64,11 @@ const meta: Meta<typeof Modal> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Modal>;
+type Story = StoryObj<typeof CompleteModal>;
 
 export const Default: Story = {
   render: (args) => {
-    const DefaultModalComponent = () => {
+    const DefaultCompleteModalComponent = () => {
       const [isOpen, setIsOpen] = useState(args.isOpen ?? true);
       return (
         <>
@@ -77,7 +77,7 @@ export const Default: Story = {
             onClick={() => setIsOpen(true)}
             style={{ margin: "2.4rem" }}
           />
-          <Modal
+          <CompleteModal
             {...args}
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
@@ -85,56 +85,53 @@ export const Default: Story = {
         </>
       );
     };
-    return <DefaultModalComponent />;
+    return <DefaultCompleteModalComponent />;
   },
 };
 
-export const LogoutModal: Story = {
+export const WrongCompleteModal: Story = {
   render: () => {
-    const LogoutModalComponent = () => {
+    const WrongCompleteModalComponent = () => {
       const [isOpen, setIsOpen] = useState(false);
       return (
         <>
           <div style={{ padding: "2.4rem" }}>
             <Button label="모달 열기" onClick={() => setIsOpen(true)} />
           </div>
-          <Modal
+          <CompleteModal
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
-            title="로그아웃"
-            description="정말 로그아웃할까요?"
-            cancelLabel="취소"
+            title="오답을 완료할까요?"
+            description="입력한 풀이는 저장되며, 오답이 완료 처리돼요."
+            cancelLabel="아니요"
             confirmLabel="확인"
-            onCancel={() => console.log("취소 클릭")}
-            onConfirm={() => console.log("확인 클릭")}
           />
         </>
       );
     };
-    return <LogoutModalComponent />;
+    return <WrongCompleteModalComponent />;
   },
 };
 
 export const WithoutDescription: Story = {
   render: () => {
-    const WithoutDescriptionComponent = () => {
+    const WithoutDescriptionCompleteModalComponent = () => {
       const [isOpen, setIsOpen] = useState(false);
       return (
         <>
           <div style={{ padding: "2.4rem" }}>
             <Button label="모달 열기" onClick={() => setIsOpen(true)} />
           </div>
-          <Modal
+          <CompleteModal
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
-            title="알림"
+            title="제목"
             cancelLabel="닫기"
             confirmLabel="확인"
-            onConfirm={() => console.log("확인 클릭")}
           />
         </>
       );
     };
-    return <WithoutDescriptionComponent />;
+    return <WithoutDescriptionCompleteModalComponent />;
   },
 };

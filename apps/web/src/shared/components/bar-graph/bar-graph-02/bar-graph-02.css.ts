@@ -1,12 +1,12 @@
 import { createVar, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 import { vars } from "@/shared/styles/theme.css";
+import { typo } from "@/shared/styles/typography.css";
+import { color, bgColor } from "@/shared/styles/color.css";
 
 export const barHeightVar = createVar();
 
 const BAR_PX = "clamp(0.8rem, 2vw, 1.4rem)";
-const CHIP_PX = "clamp(0.6rem, 1.5vw, 0.8rem)";
-const CHIP_FONT = "clamp(1.0rem, 2.2vw, 1.2rem)";
 
 export const bar = recipe({
   base: {
@@ -54,21 +54,25 @@ export const crown = style({
   justifyContent: "center",
 });
 
-export const chip = style({
-  padding: `0.4rem ${CHIP_PX}`,
-  backgroundColor: vars.color.grayscale[0],
-  borderRadius: vars.radius.r24,
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  flexShrink: 0,
-  width: "max-content",
-});
+export const chip = style([
+  bgColor["grayscale-0"],
+  {
+    padding: `0.4rem 0.8rem`,
+    borderRadius: vars.radius.r24,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+    width: "max-content",
+  },
+]);
 
-export const chipText = style({
-  fontSize: CHIP_FONT,
-  fontWeight: 600,
-  lineHeight: "1.8rem",
-  color: vars.color.grayscale[900],
-  whiteSpace: "nowrap",
-});
+export const chipText = style([
+  typo.caption.semibold,
+  color["grayscale-900"],
+  {
+    fontWeight: 600,
+    lineHeight: "1.8rem",
+    whiteSpace: "nowrap",
+  },
+]);

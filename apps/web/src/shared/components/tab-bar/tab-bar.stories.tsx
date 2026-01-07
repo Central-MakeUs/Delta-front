@@ -1,10 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
-import {
-  TabBar,
-  type TabBarProps,
-  type TabItem,
-} from "@/shared/components/tab-bar/tab-bar";
+import TabBar from "@/shared/components/tab-bar/tab-bar";
+import type { TabBarProps, TabItem } from "@/shared/components/tab-bar/tab-bar";
 
 type TabValue = "최다 오답 단원" | "최다 오답 유형" | "Disabled";
 
@@ -16,6 +13,25 @@ const tabs: readonly TabItem<TabValue>[] = [
 
 const BoundTabBar = (props: TabBarProps<TabValue>) => {
   return <TabBar<TabValue> {...props} />;
+};
+
+const RightSlotButton = ({ onClick }: { onClick: () => void }) => {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        marginLeft: "auto",
+        background: "transparent",
+        border: "none",
+        padding: 0,
+        cursor: "pointer",
+        whiteSpace: "nowrap",
+      }}
+    >
+      전체 보기
+    </button>
+  );
 };
 
 const ControlledExample = (args: TabBarProps<TabValue>) => {
@@ -55,6 +71,7 @@ const meta = {
           "- `tabs` 배열을 기반으로 탭 버튼을 렌더링합니다.",
           "- `value/onValueChange`를 전달하면 Controlled로 동작합니다.",
           "- `defaultValue`를 전달하면 Uncontrolled로 동작합니다.",
+          "- `rightSlot`을 사용하면 우측 영역에 액션(예: 전체 보기 버튼)을 주입할 수 있습니다.",
           "- 버튼 간 간격(gap)은 0.4rem이며, 컨테이너는 자식 요소 기준(Hug) 크기입니다.",
         ].join("\n"),
       },
@@ -63,10 +80,16 @@ const meta = {
   args: {
     tabs,
     ariaLabel: "tab bar",
+    rightSlot: undefined,
   },
   argTypes: {
     tabs: { control: "object", description: "탭 목록 (value/label/disabled)" },
     ariaLabel: { control: "text", description: "tablist aria-label" },
+    rightSlot: {
+      control: false,
+      description: "우측 슬롯(전체 보기 등) 주입용 ReactNode",
+      table: { type: { summary: "ReactNode" } },
+    },
     className: { control: false },
     value: { control: false },
     defaultValue: { control: false },
@@ -86,7 +109,30 @@ export const Uncontrolled: Story = {
   ),
 };
 
+export const UncontrolledWithRightSlot: Story = {
+  name: "Uncontrolled + rightSlot",
+  render: (args) => (
+    <div style={{ padding: "2.0rem" }}>
+      <BoundTabBar
+        {...args}
+        defaultValue="최다 오답 단원"
+        rightSlot={<RightSlotButton onClick={() => console.log("view all")} />}
+      />
+    </div>
+  ),
+};
+
 export const Controlled: Story = {
   name: "Controlled (value/onValueChange)",
   render: (args) => <ControlledExample {...args} />,
+};
+
+export const ControlledWithRightSlot: Story = {
+  name: "Controlled + rightSlot",
+  render: (args) => (
+    <ControlledExample
+      {...args}
+      rightSlot={<RightSlotButton onClick={() => console.log("view all")} />}
+    />
+  ),
 };

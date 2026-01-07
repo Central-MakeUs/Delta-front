@@ -7,6 +7,7 @@ const meta = {
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
+    nextjs: { appDirectory: true },
     docs: {
       description: {
         component: `

@@ -23,17 +23,13 @@ export const CardGraph02 = ({
   ariaLabel = "card graph 02",
 }: CardGraph02Props) => {
   const normalized: CardGraph02Item[] = Array.from({ length: 4 }).map(
-    (_, i) => {
-      const item = items[i];
-      return (
-        item ?? {
-          value: 0,
-          title: "",
-          valueLabel: "0개",
-          tone: "inactive",
-        }
-      );
-    }
+    (_, i) =>
+      items[i] ?? {
+        value: 0,
+        title: "",
+        valueLabel: "0개",
+        tone: "inactive",
+      }
   );
 
   const maxInList = Math.max(0, ...normalized.map((x) => x.value));
@@ -47,11 +43,15 @@ export const CardGraph02 = ({
         {normalized.map((item, i) => {
           const rank = pad2(i + 1);
 
-          const tone =
-            item.tone ??
-            (allZero ? "inactive" : i === 0 ? "active" : "inactive");
+          const inferredTone: "active" | "inactive" = allZero
+            ? "inactive"
+            : item.value === maxInList
+              ? "active"
+              : "inactive";
 
-          const showCrown = !allZero && i === 0;
+          const tone = item.tone ?? inferredTone;
+
+          const showCrown = !allZero && item.value === maxInList;
 
           return (
             <div key={rank} className={s.barCol}>

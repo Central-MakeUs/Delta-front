@@ -125,6 +125,12 @@ export const typo = {
     lineHeight: vars.typography.button2.lineHeight,
   }),
   caption: {
+    bold: style({
+      fontSize: vars.typography.caption.fontSize,
+      fontWeight: vars.typography.caption.fontWeight.bold,
+      letterSpacing: vars.typography.caption.letterSpacing,
+      lineHeight: vars.typography.caption.lineHeight,
+    }),
     semibold: style({
       fontSize: vars.typography.caption.fontSize,
       fontWeight: vars.typography.caption.fontWeight.semibold,

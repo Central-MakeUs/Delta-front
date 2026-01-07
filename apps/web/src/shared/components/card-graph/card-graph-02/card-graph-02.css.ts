@@ -59,6 +59,7 @@ export const crown = style([
 
 export const rank = style([
   color["grayscale-700"],
+  typo.caption.bold,
   {
     fontSize: "1.2rem",
     fontWeight: 700,
@@ -96,7 +97,7 @@ export const listRank = style([
 ]);
 
 export const listText = style([
-  color["grayscale-600"],
+  color["grayscale-700"],
   typo.body3.semibold,
   {
     minWidth: 0,

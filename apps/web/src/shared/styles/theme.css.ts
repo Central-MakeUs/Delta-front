@@ -120,7 +120,7 @@ export const vars = createThemeContract({
       lineHeight: null,
     },
     caption: {
-      fontWeight: { semibold: null, medium: null, regular: null },
+      fontWeight: { bold: null, semibold: null, medium: null, regular: null },
       fontSize: null,
       letterSpacing: null,
       lineHeight: null,
@@ -267,7 +267,12 @@ export const lightTheme = createTheme(vars, {
       lineHeight: "150%",
     },
     caption: {
-      fontWeight: { semibold: "600", medium: "500", regular: "400" },
+      fontWeight: {
+        bold: "700",
+        semibold: "600",
+        medium: "500",
+        regular: "400",
+      },
       fontSize: "1.2rem",
       letterSpacing: "0",
       lineHeight: "150%",

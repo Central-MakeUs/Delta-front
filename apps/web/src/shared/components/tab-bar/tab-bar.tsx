@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import type { ReactNode } from "react";
 import clsx from "clsx";
 import * as styles from "@/shared/components/tab-bar/tab-bar.css";
 import { TabButton } from "@/shared/components/button/tab-button/tab-button";
@@ -6,7 +7,7 @@ import { useControllableState } from "@/shared/components/toggle/hooks/use-contr
 
 export type TabItem<T extends string> = {
   value: T;
-  label: React.ReactNode;
+  label: ReactNode;
   disabled?: boolean;
 };
 
@@ -74,3 +75,5 @@ const TabBarImpl = <T extends string>({
     </div>
   );
 };
+
+export default TabBar;

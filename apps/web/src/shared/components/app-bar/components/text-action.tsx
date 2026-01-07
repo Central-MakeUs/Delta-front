@@ -1,6 +1,6 @@
 import * as s from "@/shared/components/app-bar/app-bar.css";
 
-export const TextAction = ({
+const TextAction = ({
   label,
   tone = "action",
   onClick,

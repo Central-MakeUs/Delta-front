@@ -1,7 +1,6 @@
 "use client";
 
 import type { ButtonHTMLAttributes, MouseEvent } from "react";
-import { useCallback, useMemo } from "react";
 import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
 import { ROUTES } from "@/shared/constants/routes";
@@ -13,12 +12,6 @@ type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
   icon?: IconProps["name"];
   iconSize?: number;
   label?: string;
-};
-
-const normalizePath = (path: string) => {
-  if (!path) return "/";
-  if (path.length > 1 && path.endsWith("/")) return path.slice(0, -1);
-  return path;
 };
 
 const FabButton = ({
@@ -33,34 +26,28 @@ const FabButton = ({
   const pathname = usePathname();
   const router = useRouter();
 
-  const isVisible = useMemo(() => {
-    const current = normalizePath(pathname ?? "/");
-    return current === ROUTES.HOME || current === ROUTES.WRONG.ROOT;
-  }, [pathname]);
+  if (pathname !== ROUTES.HOME && pathname !== ROUTES.WRONG.ROOT) return null;
 
-  const handleClick = useCallback(
-    (e: MouseEvent<HTMLButtonElement>) => {
-      onClick?.(e);
-      if (e.defaultPrevented) return;
-      router.push(ROUTES.WRONG.CREATE);
-    },
-    [onClick, router]
-  );
-
-  if (!isVisible) return null;
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    onClick?.(e);
+    if (e.defaultPrevented) return;
+    router.push(ROUTES.WRONG.CREATE);
+  };
 
   const ariaLabel = rest["aria-label"] ?? label;
 
   return (
-    <button
-      type={type}
-      className={clsx(styles.fabButton, className)}
-      aria-label={ariaLabel}
-      onClick={handleClick}
-      {...rest}
-    >
-      <Icon name={icon} size={iconSize} className={styles.icon} />
-    </button>
+    <div className={styles.fabDock}>
+      <button
+        type={type}
+        className={clsx(styles.fabButton, className)}
+        aria-label={ariaLabel}
+        onClick={handleClick}
+        {...rest}
+      >
+        <Icon name={icon} size={iconSize} className={styles.icon} />
+      </button>
+    </div>
   );
 };
 

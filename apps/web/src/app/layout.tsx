@@ -8,7 +8,6 @@ import QueryProvider from "@/shared/utils/query-provider";
 import BottomNav from "@/shared/components/bottom-nav/bottom-nav";
 import AppBarGate from "@/shared/components/app-bar/app-bar-gate";
 import FabButton from "@/shared/components/button/fab-button/fab-button";
-import * as s from "@/shared/styles/root-layout.css";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -42,9 +41,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
             {children}
             <BottomNav />
 
-            <div className={s.fabDock}>
-              <FabButton />
-            </div>
+            <FabButton />
           </QueryProvider>
         </div>
       </body>

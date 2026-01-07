@@ -14,7 +14,7 @@ const meta: Meta<typeof Modal> = {
       description: {
         component: [
           "Delta Modal 컴포넌트입니다.",
-          "`title / description / cancelLabel / confirmLabel / size`를 지원합니다.",
+          "`title / description / cancelLabel / confirmLabel / size(md로 고정)`를 지원합니다.",
           "ESC 키 또는 오버레이 클릭으로 닫을 수 있습니다.",
           "Vanilla Extract를 사용하여 스타일링되었습니다.",
           "",
@@ -27,7 +27,7 @@ const meta: Meta<typeof Modal> = {
           "- `confirmLabel?: string` (기본값: '확인')",
           "- `onCancel?: () => void`",
           "- `onConfirm?: () => void`",
-          '- `size?: "sm" | "md" | "lg"` (기본값: "md")',
+          '- `size?: "md"` (고정)',
         ].join("\n"),
       },
     },

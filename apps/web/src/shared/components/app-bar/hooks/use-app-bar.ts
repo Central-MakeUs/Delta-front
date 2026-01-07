@@ -1,7 +1,5 @@
-"use client";
-
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import type { AppBarProps } from "@/shared/components/app-bar/app-bar";
+import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
 import { ROUTES } from "@/shared/constants/routes";
 import {
   getWrongRouteMatch,

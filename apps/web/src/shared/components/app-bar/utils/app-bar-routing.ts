@@ -23,13 +23,12 @@ export const parseProgress = (searchParams: URLSearchParams) => {
 };
 
 export const getWrongRouteMatch = (pathname: string) => {
-  // /wrong/create* 는 상세/수정 매치에서 제외
   if (pathname.startsWith(ROUTES.WRONG.CREATE))
     return { type: "create" as const };
 
   if (!pathname.startsWith(ROUTES.WRONG.ROOT)) return { type: "none" as const };
 
-  const segments = pathname.split("/").filter(Boolean); // ["wrong", ...]
+  const segments = pathname.split("/").filter(Boolean);
   if (segments.length === 1) return { type: "list" as const };
 
   // /wrong/[id]

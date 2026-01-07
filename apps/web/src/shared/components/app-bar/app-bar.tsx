@@ -1,207 +1,146 @@
-"use client";
-
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import Icon from "@/shared/components/icon/icon";
 import ProgressBar from "@/shared/components/progress-bar/progress-bar";
-import BackButton from "@/shared/components/app-bar/back-button/back-button";
+
 import * as s from "@/shared/components/app-bar/app-bar.css";
 import {
   APP_BAR_DEFAULT_ARIA_LABEL,
   APP_BAR_SKIP_LABEL,
-} from "@/shared/components/app-bar/utils/app-bar-config";
+} from "@/shared/components/app-bar/constants/app-bar";
 
-type CommonProps = {
-  className?: string;
-  ariaLabel?: string;
-  surface?: "solid" | "transparent";
-};
-
-type BasicProps = CommonProps & {
-  variant: "basic";
-  title: string;
-  onBack?: () => void;
-};
-
-type BasicActionProps = CommonProps & {
-  variant: "basicAction";
-  title: string;
-  actionLabel: string; // "수정하기"
-  onBack?: () => void;
-  onActionClick?: () => void;
-  actionAriaLabel?: string;
-};
-
-type DefaultProps = CommonProps & {
-  variant: "default";
-  onLogoClick?: () => void;
-  onUserClick?: () => void;
-};
-
-type ProgressProps = CommonProps & {
-  variant: "progress";
-  total: number;
-  currentStep: number; // 1-base
-  onBack?: () => void;
-  /** step=1에서는 false로 내려서 "건너뛰기" 자체를 숨김 */
-  showSkip?: boolean;
-  onSkip?: () => void;
-  skipLabel?: string;
-
-  onStepChange?: (nextStep: number) => void;
-};
-
-type TitleOnlyProps = CommonProps & {
-  variant: "title";
-  title: string;
-};
-
-export type AppBarProps =
-  | BasicProps
-  | BasicActionProps
-  | DefaultProps
-  | ProgressProps
-  | TitleOnlyProps;
+import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
+import HeaderShell from "@/shared/components/app-bar/components/header-shell";
+import LeftGroup from "@/shared/components/app-bar/components/left-group";
+import TextAction from "@/shared/components/app-bar/components/text-action";
+import BackButton from "@/shared/components/app-bar/components/back-button";
 
 export const AppBar = (props: AppBarProps) => {
   const router = useRouter();
+
   const ariaLabel = props.ariaLabel ?? APP_BAR_DEFAULT_ARIA_LABEL;
   const surface = props.surface ?? "solid";
+  const backFallback = () => router.back();
 
-  const handleBack = () => {
-    if (
-      props.variant === "basic" ||
-      props.variant === "basicAction" ||
-      props.variant === "progress"
-    ) {
-      props.onBack?.();
-      if (!props.onBack) router.back();
+  switch (props.variant) {
+    case "basic": {
+      const onBack = props.onBack ?? backFallback;
+
+      return (
+        <HeaderShell
+          variant="basic"
+          surface={surface}
+          ariaLabel={ariaLabel}
+          className={props.className}
+        >
+          <LeftGroup title={props.title} onBack={onBack} />
+        </HeaderShell>
+      );
     }
-  };
 
-  if (props.variant === "basic") {
-    return (
-      <header
-        className={clsx(s.root({ variant: "basic", surface }), props.className)}
-        aria-label={ariaLabel}
-      >
-        <BackButton onClick={handleBack} />
-        <span className={s.title}>{props.title}</span>
-      </header>
-    );
-  }
+    case "basicAction": {
+      const onBack = props.onBack ?? backFallback;
+      const actionAriaLabel = props.actionAriaLabel ?? props.actionLabel;
 
-  if (props.variant === "basicAction") {
-    const actionAriaLabel = props.actionAriaLabel ?? props.actionLabel;
+      return (
+        <HeaderShell
+          variant="basicAction"
+          surface={surface}
+          ariaLabel={ariaLabel}
+          className={props.className}
+        >
+          <LeftGroup title={props.title} onBack={onBack} />
+          <TextAction
+            label={props.actionLabel}
+            tone="action"
+            onClick={props.onActionClick}
+            ariaLabel={actionAriaLabel}
+          />
+        </HeaderShell>
+      );
+    }
 
-    return (
-      <header
-        className={clsx(
-          s.root({ variant: "basicAction", surface }),
-          props.className
-        )}
-        aria-label={ariaLabel}
-      >
-        <div className={s.leftGroup}>
-          <BackButton onClick={handleBack} />
-          <span className={s.title}>{props.title}</span>
-        </div>
-
-        {typeof props.onActionClick === "function" ? (
+    case "default": {
+      return (
+        <HeaderShell
+          variant="default"
+          surface={surface}
+          ariaLabel={ariaLabel}
+          className={props.className}
+        >
           <button
             type="button"
-            className={s.buttonReset}
-            aria-label={actionAriaLabel}
-            onClick={props.onActionClick}
+            className={clsx(s.buttonReset, s.logo)}
+            aria-label="홈"
+            onClick={props.onLogoClick}
           >
-            <span className={s.actionText}>{props.actionLabel}</span>
+            <Icon name="logo-default" width={6.8} />
           </button>
-        ) : (
-          <span className={s.actionText}>{props.actionLabel}</span>
-        )}
-      </header>
-    );
-  }
 
-  if (props.variant === "default") {
-    return (
-      <header
-        className={clsx(
-          s.root({ variant: "default", surface }),
-          props.className
-        )}
-        aria-label={ariaLabel}
-      >
-        <button
-          type="button"
-          className={clsx(s.buttonReset, s.logo)}
-          aria-label="홈"
-          onClick={props.onLogoClick}
+          <button
+            type="button"
+            className={s.rightIconButton}
+            aria-label="내 정보"
+            onClick={props.onUserClick}
+          >
+            <Icon name="user" size={2.4} className={s.icon} />
+          </button>
+        </HeaderShell>
+      );
+    }
+
+    case "progress": {
+      const onBack = props.onBack ?? backFallback;
+      const skipLabel = props.skipLabel ?? APP_BAR_SKIP_LABEL;
+      const showSkip = props.showSkip ?? true;
+
+      return (
+        <HeaderShell
+          variant="progress"
+          surface={surface}
+          ariaLabel={ariaLabel}
+          className={props.className}
         >
-          <Icon name="logo-default" width={6.8} className={s.icon} />
-        </button>
+          <div className={s.leftSlot}>
+            <BackButton onClick={onBack} />
+          </div>
 
-        <button
-          type="button"
-          className={clsx(s.rightIconButton, s.icon)}
-          aria-label="내 정보"
-          onClick={props.onUserClick}
+          <div className={s.centerSlot}>
+            <ProgressBar
+              total={props.total}
+              currentStep={props.currentStep}
+              onStepChange={props.onStepChange}
+              ariaLabel="진행도"
+            />
+          </div>
+
+          <div className={s.rightSlot}>
+            {showSkip && typeof props.onSkip === "function" ? (
+              <TextAction
+                label={skipLabel}
+                tone="skip"
+                onClick={props.onSkip}
+                ariaLabel={skipLabel}
+              />
+            ) : null}
+          </div>
+        </HeaderShell>
+      );
+    }
+
+    case "title": {
+      return (
+        <HeaderShell
+          variant="title"
+          surface={surface}
+          ariaLabel={ariaLabel}
+          className={props.className}
         >
-          <Icon name="user" size={2.4} className={s.icon} />
-        </button>
-      </header>
-    );
+          <span className={s.title}>{props.title}</span>
+        </HeaderShell>
+      );
+    }
   }
-
-  if (props.variant === "progress") {
-    const skipLabel = props.skipLabel ?? APP_BAR_SKIP_LABEL;
-    const showSkip = props.showSkip ?? true;
-
-    return (
-      <header
-        className={clsx(
-          s.root({ variant: "progress", surface }),
-          props.className
-        )}
-        aria-label={ariaLabel}
-      >
-        <div className={s.leftSlot}>
-          <BackButton onClick={handleBack} />
-        </div>
-
-        <div className={s.centerSlot}>
-          <ProgressBar
-            total={props.total}
-            currentStep={props.currentStep}
-            onStepChange={props.onStepChange}
-            ariaLabel="진행도"
-          />
-        </div>
-
-        <div className={s.rightSlot}>
-          {showSkip && typeof props.onSkip === "function" ? (
-            <button
-              type="button"
-              className={s.buttonReset}
-              aria-label={skipLabel}
-              onClick={props.onSkip}
-            >
-              <span className={s.skipText}>{skipLabel}</span>
-            </button>
-          ) : null}
-        </div>
-      </header>
-    );
-  }
-
-  return (
-    <header
-      className={clsx(s.root({ variant: "title", surface }), props.className)}
-      aria-label={ariaLabel}
-    >
-      <span className={s.title}>{props.title}</span>
-    </header>
-  );
 };
 
 export default AppBar;

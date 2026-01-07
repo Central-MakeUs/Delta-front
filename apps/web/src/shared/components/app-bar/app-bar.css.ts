@@ -6,31 +6,35 @@ import {
   APP_BAR_HEIGHT,
   APP_BAR_PADDING_X,
   APP_BAR_SIDE_SLOT_WIDTH,
-} from "@/shared/components/app-bar/utils/app-bar-config";
+} from "@/shared/components/app-bar/constants/app-bar";
 
 export const root = recipe({
-  base: {
-    width: "100%",
-    height: APP_BAR_HEIGHT,
-    display: "flex",
-    alignItems: "center",
-    paddingLeft: APP_BAR_PADDING_X,
-    paddingRight: APP_BAR_PADDING_X,
-    boxSizing: "border-box",
-  },
+  base: [
+    bgColor["grayscale-0"],
+    {
+      width: "100%",
+      height: APP_BAR_HEIGHT,
+      display: "flex",
+      alignItems: "center",
+      paddingLeft: APP_BAR_PADDING_X,
+      paddingRight: APP_BAR_PADDING_X,
+      boxSizing: "border-box",
+    },
+  ],
   variants: {
     surface: {
-      solid: [bgColor["grayscale-0"]],
+      solid: {},
       transparent: {
         background: "transparent",
-        borderBottom: "none",
       },
     },
     variant: {
-      basic: { justifyContent: "flex-start", gap: "1.2rem" },
+      basic: { justifyContent: "flex-start" },
       basicAction: { justifyContent: "space-between" },
       default: { justifyContent: "space-between" },
       progress: { justifyContent: "space-between" },
+
+      // title-only는 타이틀만 렌더
       title: { justifyContent: "flex-start" },
     },
   },
@@ -87,13 +91,21 @@ export const rightIconButton = style([
   },
 ]);
 
+/** "수정하기" 등 우측 액션 텍스트 */
 export const actionText = style([
   typo.body3.medium,
   color["grayscale-400"],
   { whiteSpace: "nowrap" },
 ]);
 
-export const sideSlot = style({
+/** progress "건너뛰기" 텍스트 */
+export const skipText = style([
+  typo.body3.medium,
+  color["grayscale-300"],
+  { whiteSpace: "nowrap" },
+]);
+
+const sideSlot = style({
   width: APP_BAR_SIDE_SLOT_WIDTH,
   display: "flex",
   alignItems: "center",
@@ -109,9 +121,3 @@ export const centerSlot = style({
   justifyContent: "center",
   minWidth: 0,
 });
-
-export const skipText = style([
-  typo.body3.medium,
-  color["grayscale-300"],
-  { whiteSpace: "nowrap" },
-]);

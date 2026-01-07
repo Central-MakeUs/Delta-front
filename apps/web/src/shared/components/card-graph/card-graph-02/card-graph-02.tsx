@@ -72,12 +72,16 @@ export const CardGraph02 = ({
       </div>
 
       <div className={s.list}>
-        {normalized.map((item, i) => (
-          <div key={i} className={s.listItem}>
-            <span className={s.listRank}>{pad2(i + 1)}</span>
-            <span className={s.listText}>{item.title}</span>
-          </div>
-        ))}
+        {normalized.map((item, i) => {
+          const rank = pad2(i + 1);
+
+          return (
+            <div key={rank} className={s.listItem}>
+              <span className={s.listRank}>{rank}</span>
+              <span className={s.listText}>{item.title}</span>
+            </div>
+          );
+        })}
       </div>
     </section>
   );

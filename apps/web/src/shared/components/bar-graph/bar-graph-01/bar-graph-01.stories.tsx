@@ -70,7 +70,7 @@ const meta = {
         "시각적 표현 최대치. percent=100일 때 visualPercent가 이 값에 가까워지도록 리매핑합니다(0~100 clamp).",
       table: {
         type: { summary: "number" },
-        defaultValue: { summary: "90" },
+        defaultValue: { summary: "85" },
       },
     },
     tipOverlapRem: {

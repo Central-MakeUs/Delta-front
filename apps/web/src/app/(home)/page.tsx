@@ -10,9 +10,9 @@ import CardGraph02, {
   type CardGraph02Item,
 } from "@/shared/components/card-graph/card-graph-02/card-graph-02";
 
-const Home = () => {
-  type TabValue = "최다 오답 단원" | "최다 오답 유형";
+type TabValue = "최다 오답 단원" | "최다 오답 유형";
 
+const Home = () => {
   const tabs: readonly TabItem<TabValue>[] = [
     { value: "최다 오답 단원", label: "최다 오답 단원" },
     { value: "최다 오답 유형", label: "최다 오답 유형" },

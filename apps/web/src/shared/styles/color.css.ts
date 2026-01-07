@@ -40,7 +40,7 @@ export const color = {
   "error-700": style({ color: vars.color.error[700] }),
   // ETC Color
   "login-kakao": style({ color: vars.color.login.kakao }),
-  "etc-crown": style({ backgroundColor: vars.color.etc.crown }),
+  "etc-crown": style({ color: vars.color.etc.crown }),
 };
 
 export const bgColor = {

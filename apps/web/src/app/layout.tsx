@@ -42,12 +42,8 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
             {children}
             <BottomNav />
 
-            <div className={s.overlay}>
-              <div className={s.overlayInner}>
-                <div className={s.fabWrapper}>
-                  <FabButton />
-                </div>
-              </div>
+            <div className={s.fabDock}>
+              <FabButton />
             </div>
           </QueryProvider>
         </div>

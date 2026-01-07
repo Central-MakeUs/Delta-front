@@ -1,0 +1,111 @@
+import { style } from "@vanilla-extract/css";
+import { vars } from "@/shared/styles/theme.css";
+import { bgColor, color } from "@/shared/styles/color.css";
+
+export const root = style([
+  bgColor["grayscale-0"],
+  {
+    padding: "1.6rem",
+    borderRadius: vars.radius.r12,
+    boxShadow: `inset 0 0 0 0.1rem ${vars.color.grayscale[200]}`,
+    display: "flex",
+    flexDirection: "column",
+    gap: "1.0rem",
+  },
+]);
+
+export const barsRow = style({
+  width: "100%",
+  display: "flex",
+  alignItems: "flex-end",
+  gap: "1.3rem",
+});
+
+export const barCol = style({
+  flex: "1 1 0",
+  minWidth: 0,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-end",
+  alignItems: "center",
+  gap: "0.4rem",
+});
+
+export const barWrap = style({
+  width: "100%",
+  position: "relative",
+  display: "flex",
+  minWidth: 0,
+});
+
+export const barGraph = style({
+  width: "100%",
+});
+
+export const crown = style([
+  color["etc-crown"],
+  {
+    position: "absolute",
+    top: "1.2rem",
+    left: "50%",
+    transform: "translateX(-50%)",
+    width: "1.6rem",
+    height: "1.6rem",
+    zIndex: 2,
+    pointerEvents: "none",
+  },
+]);
+
+export const rank = style([
+  color["grayscale-700"],
+  {
+    fontSize: "1.2rem",
+    fontWeight: 700,
+    lineHeight: "1.8rem",
+    whiteSpace: "nowrap",
+  },
+]);
+
+export const list = style([
+  bgColor["grayscale-50"],
+  {
+    width: "100%",
+    padding: "1.2rem",
+    borderRadius: vars.radius.r12,
+
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    columnGap: "2.0rem",
+    rowGap: "1.7rem",
+  },
+]);
+
+export const listItem = style({
+  minWidth: 0,
+  display: "flex",
+  alignItems: "center",
+  gap: "0.8rem",
+});
+
+export const listRank = style([
+  color["grayscale-600"],
+  {
+    fontSize: "1.6rem",
+    fontWeight: 700,
+    lineHeight: "2.4rem",
+    whiteSpace: "nowrap",
+  },
+]);
+
+export const listText = style([
+  color["grayscale-600"],
+  {
+    fontSize: "1.4rem",
+    fontWeight: 600,
+    lineHeight: "2.1rem",
+    minWidth: 0,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+]);

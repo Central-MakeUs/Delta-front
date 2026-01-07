@@ -3,11 +3,13 @@ import { assignInlineVars } from "@vanilla-extract/dynamic";
 import * as s from "@/shared/components/bar-graph/bar-graph-01/bar-graph-01.css";
 
 type BarGraph01Props = {
-  current: number;
-  total: number;
+  percent: number;
   className?: string;
   ariaLabel?: string;
   tipOverlapRem?: number;
+  label?: string;
+  minPercent?: number;
+  maxPercent?: number;
 };
 
 const clamp = (value: number, min: number, max: number) => {
@@ -15,19 +17,22 @@ const clamp = (value: number, min: number, max: number) => {
 };
 
 export const BarGraph01 = ({
-  current,
-  total,
+  percent,
   className,
   ariaLabel = "progress",
   tipOverlapRem = 1.2,
+  label,
+  minPercent = 10,
+  maxPercent = 90,
 }: BarGraph01Props) => {
-  const safeTotal = total > 0 ? total : 1;
-  const safeCurrent = clamp(current, 0, safeTotal);
+  const rawPercent = clamp(percent, 0, 100);
 
-  const percent = clamp((safeCurrent / safeTotal) * 100, 0, 100);
-  const label = `${safeCurrent}/${safeTotal}`;
-
-  const showTip = percent > 0;
+  const min = clamp(minPercent, 0, 100);
+  const max = clamp(maxPercent, 0, 100);
+  const lo = Math.min(min, max);
+  const hi = Math.max(min, max);
+  const visualPercent = lo + (rawPercent / 100) * (hi - lo);
+  const showTip = visualPercent > 0;
 
   return (
     <div
@@ -35,17 +40,17 @@ export const BarGraph01 = ({
       role="progressbar"
       aria-label={ariaLabel}
       aria-valuemin={0}
-      aria-valuemax={safeTotal}
-      aria-valuenow={safeCurrent}
+      aria-valuemax={100}
+      aria-valuenow={rawPercent}
       style={assignInlineVars({
-        [s.fillPercentVar]: `${percent}%`,
+        [s.fillPercentVar]: `${visualPercent}%`,
         [s.tipOverlapVar]: `${tipOverlapRem}rem`,
       })}
     >
       <div className={s.track} aria-hidden />
-      {percent > 0 && <div className={s.fill} aria-hidden />}
+      {visualPercent > 0 && <div className={s.fill} aria-hidden />}
       {showTip && <div className={s.tip} aria-hidden />}
-      <span className={s.label}>{label}</span>
+      {label && <span className={s.label}>{label}</span>}
     </div>
   );
 };

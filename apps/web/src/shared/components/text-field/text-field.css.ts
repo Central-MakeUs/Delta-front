@@ -1,4 +1,4 @@
-import {  style } from "@vanilla-extract/css";
+
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 import { recipe } from "@vanilla-extract/recipes";
@@ -8,7 +8,6 @@ export const container = recipe({
   base: {
     display: "flex",
     alignItems: "flex-start",
-    gap: "5.4rem",
     position: "relative",
   },
   variants: {
@@ -40,6 +39,11 @@ export const inputWrapper = recipe({
     justifyContent: "space-between",
     padding: "1.6rem",
     position: "relative",
+    selectors: {
+      "&:focus-within": {
+        borderColor: vars.color.grayscale[400],
+      },
+    },
     },
   ],
   variants: {
@@ -61,7 +65,7 @@ export const inputWrapper = recipe({
 export const input = recipe({
   base: [
     typo.body2.regular,
-    color["grayscale-900"],
+    color["grayscale-700"],
     {
       outline: "none",
       flex: 1,
@@ -80,17 +84,3 @@ export const input = recipe({
     },
   ],
 });
-
-export const textWrapper = style([
-  typo.body2.regular,
-  {
-    display: "flex",
-    alignItems: "center",
-    color: vars.color.grayscale[400],
-    flex: 1,
-    justifyContent: "center",
-    marginTop: "-0.1rem", // -1px
-    position: "relative",
-  },
-]);
-

@@ -57,9 +57,7 @@ export const Default: Story = {
     const DefaultComponent = () => {
       const [value, setValue] = useState("");
       return (
-        <div
-          className={lightTheme}
-        >
+        <div>
           <TextField
             placeholder="이름을 입력하세요"
             value={value}
@@ -78,7 +76,6 @@ export const Disabled: Story = {
   render: () => {
     return (
       <div
-        className={lightTheme}
         style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}
       >
         <TextField placeholder="Disabled 상태" disabled />
@@ -94,9 +91,7 @@ export const FullWidth: Story = {
     const FullWidthComponent = () => {
       const [value, setValue] = useState("");
       return (
-        <div
-          className={lightTheme}
-        >
+        <div>
           <TextField
             placeholder="전체 너비 사용"
             fullWidth

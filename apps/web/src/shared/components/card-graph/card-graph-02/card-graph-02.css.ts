@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 import { bgColor, color } from "@/shared/styles/color.css";
+import { typo } from "@/shared/styles/typography.css";
 
 export const root = style([
   bgColor["grayscale-0"],
@@ -72,7 +73,6 @@ export const list = style([
     width: "100%",
     padding: "1.2rem",
     borderRadius: vars.radius.r12,
-
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
     columnGap: "2.0rem",
@@ -88,21 +88,17 @@ export const listItem = style({
 });
 
 export const listRank = style([
-  color["grayscale-600"],
+  color["grayscale-700"],
+  typo.body2.bold,
   {
-    fontSize: "1.6rem",
-    fontWeight: 700,
-    lineHeight: "2.4rem",
     whiteSpace: "nowrap",
   },
 ]);
 
 export const listText = style([
   color["grayscale-600"],
+  typo.body3.semibold,
   {
-    fontSize: "1.4rem",
-    fontWeight: 600,
-    lineHeight: "2.1rem",
     minWidth: 0,
     overflow: "hidden",
     textOverflow: "ellipsis",

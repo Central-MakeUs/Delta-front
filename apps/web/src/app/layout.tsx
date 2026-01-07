@@ -1,10 +1,10 @@
-import "@/shared/styles/index.css.ts";
-import { rootStyle } from "@/shared/styles/global.css";
-import type { Metadata } from "next";
+import "@/shared/styles/index.css";
 import "@/shared/styles/global.css";
-import QueryProvider from "@/shared/utils/query-provider";
 import { SPRITE } from "@/shared/constants/sprite";
 import { lightTheme } from "@/shared/styles/theme.css";
+import { rootStyle } from "@/shared/styles/global.css";
+import type { Metadata } from "next";
+import QueryProvider from "@/shared/utils/query-provider";
 import BottomNav from "@/shared/components/bottom-nav/bottom-nav";
 
 export const metadata: Metadata = {

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { FabButton } from "@/shared/components/button/fab-button/fab-button";
+import FabButton from "@/shared/components/button/fab-button/fab-button";
 
 const meta = {
   title: "Shared/Button/FabButton",

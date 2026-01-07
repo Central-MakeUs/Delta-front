@@ -5,7 +5,7 @@ import AppBar from "@/shared/components/app-bar/app-bar";
 import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
 
 const meta: Meta<AppBarProps> = {
-  title: "Shared/app-bar",
+  title: "Shared/AppBar",
   component: AppBar as ComponentType<AppBarProps>,
   tags: ["autodocs"],
   parameters: {

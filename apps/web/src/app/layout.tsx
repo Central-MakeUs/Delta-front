@@ -7,6 +7,8 @@ import type { Metadata } from "next";
 import QueryProvider from "@/shared/utils/query-provider";
 import BottomNav from "@/shared/components/bottom-nav/bottom-nav";
 import AppBarGate from "@/shared/components/app-bar/app-bar-gate";
+import FabButton from "@/shared/components/button/fab-button/fab-button";
+import * as s from "@/shared/styles/root-layout.css";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -39,6 +41,14 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
             <AppBarGate />
             {children}
             <BottomNav />
+
+            <div className={s.overlay}>
+              <div className={s.overlayInner}>
+                <div className={s.fabWrapper}>
+                  <FabButton />
+                </div>
+              </div>
+            </div>
           </QueryProvider>
         </div>
       </body>

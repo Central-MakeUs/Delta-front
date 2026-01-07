@@ -43,8 +43,6 @@ export const item = style({
   justifyContent: "center",
   alignItems: "center",
   gap: "0.4rem",
-
-  background: "transparent",
   border: "none",
   padding: 0,
   cursor: "pointer",

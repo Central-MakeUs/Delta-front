@@ -1,13 +1,12 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
-import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 import { bgColor, color } from "@/shared/styles/color.css";
 import {
   APP_BAR_HEIGHT,
   APP_BAR_PADDING_X,
   APP_BAR_SIDE_SLOT_WIDTH,
-} from "./utils/app-bar-config";
+} from "@/shared/components/app-bar/utils/app-bar-config";
 
 export const root = recipe({
   base: {

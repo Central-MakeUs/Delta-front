@@ -2,15 +2,14 @@
 
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-
 import Icon from "@/shared/components/icon/icon";
 import ProgressBar from "@/shared/components/progress-bar/progress-bar";
-
-import * as s from "./app-bar.css";
+import BackButton from "@/shared/components/app-bar/back-button/back-button";
+import * as s from "@/shared/components/app-bar/app-bar.css";
 import {
   APP_BAR_DEFAULT_ARIA_LABEL,
   APP_BAR_SKIP_LABEL,
-} from "./utils/app-bar-config";
+} from "@/shared/components/app-bar/utils/app-bar-config";
 
 type CommonProps = {
   className?: string;
@@ -63,19 +62,6 @@ export type AppBarProps =
   | DefaultProps
   | ProgressProps
   | TitleOnlyProps;
-
-const BackButton = ({ onClick }: { onClick: () => void }) => {
-  return (
-    <button
-      type="button"
-      className={s.buttonReset}
-      aria-label="뒤로가기"
-      onClick={onClick}
-    >
-      <Icon name="chevron" rotate={180} size={2.4} className={s.icon} />
-    </button>
-  );
-};
 
 export const AppBar = (props: AppBarProps) => {
   const router = useRouter();

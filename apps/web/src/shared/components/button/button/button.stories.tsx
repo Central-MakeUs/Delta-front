@@ -3,7 +3,7 @@ import { lightTheme } from "@/shared/styles/theme.css";
 import { Button } from "@/shared/components/button/button/button";
 
 const meta: Meta<typeof Button> = {
-  title: "Components/Button",
+  title: "Shared/Button/Button",
   component: Button,
   tags: ["autodocs"],
   parameters: {

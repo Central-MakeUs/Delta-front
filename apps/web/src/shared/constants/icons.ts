@@ -29,6 +29,7 @@ export const ICONS = [
   "plus",
   "search",
   "star",
+  "triangle",
   "user",
   "wrong-check"
 ] as const;

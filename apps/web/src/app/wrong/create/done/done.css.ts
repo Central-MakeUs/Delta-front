@@ -7,24 +7,9 @@ export const page = style({
   display: "flex",
   flexDirection: "column",
   gap: "2.4rem",
+  paddingTop: "env(safe-area-inset-top)",
+  paddingBottom: "env(safe-area-inset-bottom)",
 });
-
-export const hero = style({
-  display: "flex",
-  alignItems: "center",
-  gap: "1.6rem",
-});
-
-export const checkBadge = style([
-  {
-    width: "4rem",
-    height: "4rem",
-    borderRadius: vars.radius.full,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-]);
 
 export const textBlock = style({
   display: "flex",

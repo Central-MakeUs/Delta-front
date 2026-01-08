@@ -2,25 +2,26 @@
 
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import Icon from "@/shared/components/icon/icon";
 import { color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
 import DoneIllustration from "@/app/wrong/create/done/components/done-illustration";
 import * as s from "./done.css";
+import { ROUTES } from "@/shared/constants/routes";
 import { Button } from "@/shared/components/button/button/button";
 
 const WrongCreateDonePage = () => {
   const router = useRouter();
 
+  const handleGoCreate = () => {
+    router.push(ROUTES.WRONG.CREATE);
+  };
+
+  const handleGoHome = () => {
+    router.push(ROUTES.HOME);
+  };
+
   return (
     <div className={s.page}>
-      <div className={s.hero}>
-        <Icon name="01" width={7.2} height={5.8} />
-        <div className={s.checkBadge}>
-          <Icon name="wrong-check" size={4} />
-        </div>
-      </div>
-
       <DoneIllustration />
 
       <div className={s.textBlock}>
@@ -33,8 +34,12 @@ const WrongCreateDonePage = () => {
       </div>
 
       <div className={s.actions}>
-        <Button tone="dark" label="문제 계속 등록하기" />
-        <Button tone="default" label="홈으로" />
+        <Button
+          tone="dark"
+          label="문제 계속 등록하기"
+          onClick={handleGoCreate}
+        />
+        <Button tone="default" label="홈으로" onClick={handleGoHome} />
       </div>
     </div>
   );

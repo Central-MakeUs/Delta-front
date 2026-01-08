@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { color } from "@/shared/styles/color.css";
+import { bgGradient, color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
 
 export const page = style({
@@ -17,7 +17,7 @@ export const page = style({
       right: 0,
       bottom: 0,
       height: "34.3rem",
-      background: "linear-gradient(180deg, #ffffff 0%, #ffdbd6 100%)",
+      background: bgGradient["login-bg"],
       zIndex: 0,
       pointerEvents: "none",
     },

@@ -84,3 +84,7 @@ export const bgColor = {
   "login-kakao": style({ backgroundColor: vars.color.login.kakao }),
   "etc-crown": style({ backgroundColor: vars.color.etc.crown }),
 };
+
+export const bgGradient = {
+  "login-bg": vars.color.login.bgGradient,
+} as const;

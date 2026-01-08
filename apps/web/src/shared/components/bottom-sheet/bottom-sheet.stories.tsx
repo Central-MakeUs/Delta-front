@@ -5,7 +5,7 @@ import { Button } from "@/shared/components/button/button/button";
 import { BottomSheet } from "./bottom-sheet";
 
 const meta: Meta<typeof BottomSheet> = {
-  title: "Shared/BottomSheet",
+  title: "Shared/BottomSheet/BottomSheet",
   component: BottomSheet,
   tags: ["autodocs"],
   parameters: {
@@ -25,7 +25,7 @@ const meta: Meta<typeof BottomSheet> = {
           "- `title: string` (필수)",
           "- `description?: string`",
           "- `confirmLabel?: string` (기본값: '확인')",
-          "- `cancelLabel?: string` (기본값: '더 써볼래요')",
+          "- `cancelLabel?: string` (기본값: '취소')",
           "- `onConfirm?: () => void`",
           "- `onCancel?: () => void`",
           "- `disabled?: boolean`",
@@ -35,11 +35,11 @@ const meta: Meta<typeof BottomSheet> = {
   },
   args: {
     isOpen: true,
-    title: "정말 세모를 탈퇴하실건가요?",
+    title: "제목",
     description:
-      "탈퇴 시 계정 및 이용 기록은 모두 삭제되며, 삭제된 데이터는 복구가 불가능해요. 또한 탈퇴 후 동일 계정의 재가입 시 제한을 받을 수 있어요. 탈퇴를 진행할까요?",
-    confirmLabel: "탈퇴하기",
-    cancelLabel: "더 써볼래요",
+      "내용",
+    confirmLabel: "확인",
+    cancelLabel: "취소",
     disabled: false,
   },
   argTypes: {
@@ -68,29 +68,6 @@ const meta: Meta<typeof BottomSheet> = {
 export default meta;
 type Story = StoryObj<typeof BottomSheet>;
 
-export const Playground: Story = {
-  render: (args) => {
-    const PlaygroundComponent = () => {
-      const [isOpen, setIsOpen] = useState(args.isOpen ?? true);
-      return (
-        <>
-          <Button
-            label="바텀 시트 열기"
-            onClick={() => setIsOpen(true)}
-            style={{ margin: "2.4rem" }}
-          />
-          <BottomSheet
-            {...args}
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-          />
-        </>
-      );
-    };
-    return <PlaygroundComponent />;
-  },
-};
-
 /** 기본 바텀 시트 */
 export const Default: Story = {
   render: () => {
@@ -104,7 +81,7 @@ export const Default: Story = {
           <BottomSheet
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
-            title="제목목"
+            title="제목"
             description="내용"
             confirmLabel="확인"
             cancelLabel="취소"
@@ -159,7 +136,6 @@ export const Disabled: Story = {
             confirmLabel="탈퇴하기"
             cancelLabel="더 써볼래요"
             disabled
-            onConfirm={() => console.log("확인 클릭")}
           />
         </>
       );

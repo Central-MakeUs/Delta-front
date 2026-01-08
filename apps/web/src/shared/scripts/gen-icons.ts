@@ -45,8 +45,6 @@ function extractInner(svg: string) {
   return svg
     .replace(/^[\s\S]*?<svg\b[^>]*>/i, "")
     .replace(/<\/svg>\s*$/i, "")
-    .replace(/stroke="[^"]*"/g, 'stroke="currentColor"')
-    .replace(/fill="[^"]*"/g, 'fill="currentColor"')
     .trim();
 }
 

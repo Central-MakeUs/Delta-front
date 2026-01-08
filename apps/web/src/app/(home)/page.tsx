@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { TabItem } from "@/shared/components/tab-bar/tab-bar";
-import TabBar from "@/shared/components/tab-bar/tab-bar";
+import type { TabItem } from "@/shared/components/tab-bar/tab-bar/tab-bar";
+import TabBar from "@/shared/components/tab-bar/tab-bar/tab-bar";
 import CardGraph01 from "@/shared/components/card-graph/card-graph-01/card-graph-01";
 import ViewAllButton from "@/app/(home)/components/view-all-button/view-all-button";
 import * as s from "@/app/(home)/home.css";

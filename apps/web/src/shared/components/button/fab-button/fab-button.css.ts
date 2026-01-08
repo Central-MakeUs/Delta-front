@@ -14,6 +14,7 @@ export const fabButton = style({
   justifyContent: "center",
   color: vars.color.grayscale[0],
   cursor: "pointer",
+  pointerEvents: "auto",
 });
 
 export const icon = style({

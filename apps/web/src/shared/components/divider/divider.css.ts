@@ -27,21 +27,14 @@ export const divider = recipe({
   },
 });
 
-export const stack = style({
-  padding: "2.0rem",
-  display: "flex",
-  flexDirection: "column",
-  gap: "1.6rem",
-  background: "#fff",
-});
-
-export const label = style([typo.caption.medium, color["grayscale-500"]]);
-
-export const customBlock = style([
-  bgColor["grayscale-100"],
+export const stack = style([
+  bgColor["grayscale-0"],
   {
-    width: "14rem",
-    height: "0.8rem",
-    borderRadius: "8px",
+    padding: "2.0rem",
+    display: "flex",
+    flexDirection: "column",
+    gap: "1.6rem",
   },
 ]);
+
+export const label = style([typo.caption.medium, color["grayscale-500"]]);

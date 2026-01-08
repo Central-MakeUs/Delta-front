@@ -1,5 +1,3 @@
-"use client";
-
 import clsx from "clsx";
 import * as s from "@/shared/components/divider/divider.css";
 import { bgColor } from "@/shared/styles/color.css";

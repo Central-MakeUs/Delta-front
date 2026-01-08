@@ -2,13 +2,14 @@ import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 import { color } from "@/shared/styles/color.css";
-
-const LABEL_WIDTH_REM = 9.4;
-const GAP_REM = 1.2;
-const DASH_REM = 0.4;
-const DASH_GAP_REM = 0.4;
-const SEPARATOR_GAP_REM = 0.8; // 그래프 ↔ 선 간격
-const ROW_GAP_REM = 1.6; // 그래프 ↔ 그래프 간 전체 간격
+import {
+  LABEL_WIDTH_REM,
+  GAP_REM,
+  DASH_REM,
+  DASH_GAP_REM,
+  SEPARATOR_GAP_REM,
+  ROW_GAP_REM,
+} from "@/shared/components/bar-graph/bar-graph-horizontal/constants/bar-style";
 
 export const page = style({
   minHeight: "100dvh",
@@ -31,7 +32,17 @@ export const content = style({
 
 export const title = style([typo.subtitle.bold, color["grayscale-900"]]);
 
-export const titleSection = style({});
+export const titleSection = style({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+});
+
+export const grapWrap = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: "2rem",
+});
 
 export const graphList = style({
   position: "relative",

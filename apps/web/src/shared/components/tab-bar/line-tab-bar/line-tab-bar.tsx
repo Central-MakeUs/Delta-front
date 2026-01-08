@@ -8,13 +8,13 @@ import { typo } from "@/shared/styles/typography.css";
 import { color } from "@/shared/styles/color.css";
 import { useControllableState } from "@/shared/components/toggle/hooks/use-controllable-state";
 
-type TabItem<T extends string> = {
+export type TabItem<T extends string> = {
   value: T;
   label: string;
   disabled?: boolean;
 };
 
-type LineTabBarProps<T extends string> = {
+export type LineTabBarProps<T extends string> = {
   items: readonly [TabItem<T>, ...TabItem<T>[]];
   value?: T;
   defaultValue?: T;

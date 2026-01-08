@@ -12,11 +12,11 @@ export const root = style({
   width: "100%",
   display: "flex",
   alignItems: "center",
-  gap: `${GAP_REM}rem`, // ✅ rem로
+  gap: `${GAP_REM}rem`,
 });
 
 export const labelArea = style({
-  width: `${LABEL_WIDTH_REM}rem`, // ✅ rem로 (고정폭)
+  width: `${LABEL_WIDTH_REM}rem`,
   display: "flex",
   alignItems: "center",
 });

@@ -36,7 +36,7 @@ const CloseIcon = () => (
     />
   </svg>
 );
-
+// pull 이후 지울 예정
 const CheckIcon = () => (
   <svg
     width="24"

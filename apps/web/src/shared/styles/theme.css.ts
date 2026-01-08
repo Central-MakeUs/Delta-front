@@ -33,6 +33,9 @@ export const vars = createThemeContract({
       900: null,
       1000: null,
     },
+    overDim: {
+      40: null,
+    },
     success: { 100: null, 500: null, 700: null },
     warning: { 100: null, 500: null, 600: null },
     error: { 100: null, 500: null, 700: null },
@@ -166,6 +169,9 @@ export const lightTheme = createTheme(vars, {
       800: "#3f4150",
       900: "#30323d",
       1000: "#141418",
+    },
+    overDim: {
+      40: "#11111166",
     },
     success: { 100: "#E6F9F2", 500: "#08C481", 700: "#068B5C" },
     warning: { 100: "#FFEEC9", 500: "#FFC852", 600: "#E8B64B" },

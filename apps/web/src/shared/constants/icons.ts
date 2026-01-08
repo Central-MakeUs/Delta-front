@@ -18,6 +18,7 @@ export const ICONS = [
   "logo-default",
   "message-square",
   "minus",
+  "modal-icon",
   "multiple",
   "note-active",
   "note-default",

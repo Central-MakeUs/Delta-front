@@ -1,48 +1,70 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
 import * as s from "@/app/graph/graph.css";
 import LineTabBar from "@/shared/components/tab-bar/line-tab-bar/line-tab-bar";
 import BarGraphHorizontal from "@/shared/components/bar-graph/bar-graph-horizontal/bar-graph-horizontal";
 import Filter from "@/shared/components/filter/filter";
 import WrongStatus from "@/app/graph/components/wrong-status/wrong-status";
+import { mockList } from "@/app/graph/data/mock-list";
+import { GRAPH_TABS, ROUTES, type GraphTab } from "@/shared/constants/routes";
+
+const isGraphTab = (v: string | null): v is GraphTab =>
+  v === GRAPH_TABS.UNIT || v === GRAPH_TABS.WRONG;
+
+const TITLE_BY_TAB: Record<GraphTab, string> = {
+  [GRAPH_TABS.UNIT]: "단원별 분석 그래프",
+  [GRAPH_TABS.WRONG]: "유형별 분석 그래프",
+};
 
 const GraphPage = () => {
-  const [tab, setTab] = useState<"unit" | "type">("unit");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const urlTab = searchParams.get("tab");
+  const tab: GraphTab = isGraphTab(urlTab) ? urlTab : GRAPH_TABS.UNIT;
+
+  const all = mockList.flatMap((g) => g.rows.map((r) => r.value));
+  const domainMin = all.length > 0 ? Math.min(...all) : 0;
+  const domainMax = all.length > 0 ? Math.max(...all) : 1;
 
   return (
     <div className={s.page}>
       <div className={s.stickyTop}>
         <LineTabBar
           items={[
-            { value: "unit", label: "단원별" },
-            { value: "type", label: "유형별" },
+            { value: GRAPH_TABS.UNIT, label: "단원별" },
+            { value: GRAPH_TABS.WRONG, label: "유형별" },
           ]}
           value={tab}
-          onValueChange={setTab}
+          onValueChange={(next) => {
+            router.replace(ROUTES.GRAPH.tab(next));
+          }}
           ariaLabel="학습 탭"
         />
       </div>
 
       <div className={s.content}>
         <div className={s.titleSection}>
-          <h1 className={s.title}>단원별 분석 그래프</h1>
+          <h1 className={s.title}>{TITLE_BY_TAB[tab]}</h1>
           <Filter label="기본순" background="transparent" icon="chevron" />
         </div>
+
         <div className={s.grapWrap}>
           <WrongStatus />
+
           <div className={s.graphList}>
-            {Array.from({ length: 9 }).map((_, i) => (
-              <div key={i} className={s.graphRow}>
+            {mockList.map((g) => (
+              <div key={g.id} className={s.graphRow}>
                 <div className={s.graphRowInner}>
                   <BarGraphHorizontal
-                    label="공통수학1"
-                    rows={[
-                      { value: 8, valueLabel: "8개", tone: "active" },
-                      { value: 7, valueLabel: "7개", tone: "inactive" },
-                    ]}
-                    minBarWidthRem={12.0}
-                    maxBarWidthRem={22.6}
+                    label={g.label}
+                    rows={g.rows}
+                    minValue={domainMin}
+                    maxValue={domainMax}
+                    minBarWidthRem={7}
+                    maxBarWidthRem={26}
                   />
                 </div>
               </div>

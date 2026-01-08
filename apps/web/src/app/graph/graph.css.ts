@@ -12,7 +12,6 @@ import {
 } from "@/shared/components/bar-graph/bar-graph-horizontal/constants/bar-style";
 
 export const page = style({
-  minHeight: "100dvh",
   backgroundColor: vars.color.bg,
 });
 

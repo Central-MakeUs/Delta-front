@@ -29,11 +29,17 @@ const LoginPage = () => {
 
         <section className={s.actions} aria-label="소셜 로그인">
           <Button
+            icon="kakao"
             label="Kakao로 시작하기"
             tone="kakao"
             onClick={onKakaoStart}
           />
-          <Button label="Apple로 시작하기" tone="dark" onClick={onAppleStart} />
+          <Button
+            icon="apple"
+            label="Apple로 시작하기"
+            tone="dark"
+            onClick={onAppleStart}
+          />
         </section>
       </div>
     </main>

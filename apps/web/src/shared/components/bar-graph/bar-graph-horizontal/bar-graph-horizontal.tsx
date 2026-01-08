@@ -7,6 +7,7 @@ import { typo } from "@/shared/styles/typography.css";
 import { color } from "@/shared/styles/color.css";
 
 type BarRow = {
+  id: string;
   value: number;
   valueLabel?: string;
   tone?: "active" | "inactive";
@@ -68,7 +69,7 @@ const BarGraphHorizontal = ({
 
       <div className={s.barsArea}>
         <div className={s.barsColumn}>
-          {rows.map((row, idx) => {
+          {rows.map((row) => {
             const raw = toSafeNumber(row.value);
             const safeValue = clamp(raw, safeMin, safeMax);
             const ratio = clamp((safeValue - safeMin) / range, 0, 1);
@@ -78,12 +79,13 @@ const BarGraphHorizontal = ({
               minBarWidthRem,
               maxBarWidthRem
             );
+
             const isActive = (row.tone ?? "inactive") === "active";
             const labelText = row.valueLabel ?? formatValueLabel(raw);
 
             return (
               <div
-                key={`${labelText}-${idx}`}
+                key={row.id} // ✅ index 제거
                 className={s.bar({ tone: row.tone ?? "inactive" })}
                 style={assignInlineVars({ [s.barWidthVar]: `${widthRem}rem` })}
               >

@@ -21,8 +21,8 @@ const meta = {
   args: {
     label: "공통수학1",
     rows: [
-      { value: 8, tone: "active" },
-      { value: 7, tone: "inactive" },
+      { id: "row-active", value: 8, tone: "active" },
+      { id: "row-inactive", value: 7, tone: "inactive" },
     ],
     minBarWidthRem: 12.0,
     maxBarWidthRem: 22.6,
@@ -52,8 +52,13 @@ export const WithValueLabelOverride: Story = {
   name: "With valueLabel override",
   args: {
     rows: [
-      { value: 8, valueLabel: "8개", tone: "active" },
-      { value: 7, valueLabel: "7개", tone: "inactive" },
+      { id: "override-active", value: 8, valueLabel: "8개", tone: "active" },
+      {
+        id: "override-inactive",
+        value: 7,
+        valueLabel: "7개",
+        tone: "inactive",
+      },
     ],
   },
 };
@@ -62,8 +67,8 @@ export const CustomFormatter: Story = {
   name: "Custom formatValueLabel",
   args: {
     rows: [
-      { value: 12, tone: "active" },
-      { value: 4, tone: "inactive" },
+      { id: "fmt-active", value: 12, tone: "active" },
+      { id: "fmt-inactive", value: 4, tone: "inactive" },
     ],
     formatValueLabel: (v: number) => `${v}문항`,
   },
@@ -73,8 +78,8 @@ export const FixedDomain: Story = {
   name: "Fixed domain (minValue/maxValue)",
   args: {
     rows: [
-      { value: 3, tone: "active" },
-      { value: 1, tone: "inactive" },
+      { id: "fixed-active", value: 3, tone: "active" },
+      { id: "fixed-inactive", value: 1, tone: "inactive" },
     ],
     minValue: 0,
     maxValue: 10,
@@ -86,8 +91,8 @@ export const WideRange: Story = {
   args: {
     label: "대수",
     rows: [
-      { value: 30, tone: "active" },
-      { value: 2, tone: "inactive" },
+      { id: "wide-active", value: 30, tone: "active" },
+      { id: "wide-inactive", value: 2, tone: "inactive" },
     ],
     minValue: 0,
     maxValue: 30,

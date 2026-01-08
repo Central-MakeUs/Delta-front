@@ -37,7 +37,7 @@ export const titleSection = style({
   justifyContent: "space-between",
 });
 
-export const grapWrap = style({
+export const graphWrap = style({
   display: "flex",
   flexDirection: "column",
   gap: "2rem",

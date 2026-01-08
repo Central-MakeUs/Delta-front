@@ -2,11 +2,11 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import { lightTheme } from "@/shared/styles/theme.css";
 import { Button } from "@/shared/components/button/button/button";
-import { BottomSheet } from "./bottom-sheet";
+  import BottomSheetWithdraw from "./bottom-sheet-withdraw";
 
-const meta: Meta<typeof BottomSheet> = {
-  title: "Shared/BottomSheet/BottomSheet",
-  component: BottomSheet,
+const meta: Meta<typeof BottomSheetWithdraw> = {
+  title: "Shared/BottomSheet/BottomSheetWithdraw",
+  component: BottomSheetWithdraw,
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -66,7 +66,7 @@ const meta: Meta<typeof BottomSheet> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof BottomSheet>;
+type Story = StoryObj<typeof BottomSheetWithdraw>;
 
 /** 기본 바텀 시트 */
 export const Default: Story = {
@@ -78,7 +78,7 @@ export const Default: Story = {
           <div style={{ padding: "2.4rem" }}>
             <Button label="바텀 시트 열기" onClick={() => setIsOpen(true)} />
           </div>
-          <BottomSheet
+          <BottomSheetWithdraw
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
             title="제목"
@@ -103,7 +103,7 @@ export const WithdrawMembership: Story = {
           <div style={{ padding: "2.4rem" }}>
             <Button label="바텀 시트 열기" onClick={() => setIsOpen(true)} />
           </div>
-          <BottomSheet
+          <BottomSheetWithdraw
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
             title="정말 세모를 탈퇴하실건가요?"
@@ -128,7 +128,7 @@ export const Disabled: Story = {
           <div style={{ padding: "2.4rem" }}>
             <Button label="바텀 시트 열기" onClick={() => setIsOpen(true)} />
           </div>
-          <BottomSheet
+          <BottomSheetWithdraw
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
             title="정말 세모를 탈퇴하실건가요?"

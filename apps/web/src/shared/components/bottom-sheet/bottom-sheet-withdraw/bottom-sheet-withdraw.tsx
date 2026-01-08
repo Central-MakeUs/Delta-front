@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { Button } from "@/shared/components/button/button/button";
-import * as styles from "./bottom-sheet.css";
+import * as styles from "./bottom-sheet-withdraw.css";
 
 export interface BottomSheetProps {
   isOpen: boolean;
@@ -19,7 +19,7 @@ export interface BottomSheetProps {
 
 const ANIMATION_DURATION = 300;
 
-export const BottomSheet = ({
+export const BottomSheetWithdraw = ({
   isOpen,
   onClose,
   title,
@@ -185,5 +185,5 @@ export const BottomSheet = ({
   );
 };
 
-export default BottomSheet;
+export default BottomSheetWithdraw;
 

@@ -11,6 +11,8 @@ export const ICONS = [
   "file-text",
   "graph-active",
   "graph-default",
+  "graphic-camera",
+  "graphic-gallery",
   "home-active",
   "home-default",
   "kakao",

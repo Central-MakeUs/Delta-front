@@ -23,14 +23,23 @@ const LABELS = [
 
 type Label = (typeof LABELS)[number];
 
+const CHECK_ITEMS = ["다항식", "방정식과 부등식", "도형의 방정식"] as const;
+type CheckItem = (typeof CHECK_ITEMS)[number];
+
 const Step2 = ({ onNext }: Step2Props) => {
+  // TODO: 다음 버튼 클릭 시 이동
   const [selected, setSelected] = useState<Label | null>(null);
-  const [checked1, setChecked1] = useState(false);
-  const [checked2, setChecked2] = useState(true);
-  const [checked3, setChecked3] = useState(false);
+
+  const [selectedItem, setSelectedItem] = useState<CheckItem | null>("다항식");
+
   const onToggle = (label: Label) => {
     setSelected((prev) => (prev === label ? null : label));
   };
+
+  const onSelectItem =
+    (item: CheckItem) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSelectedItem(e.target.checked ? item : null);
+    };
 
   return (
     <div className={s.container}>
@@ -45,18 +54,24 @@ const Step2 = ({ onNext }: Step2Props) => {
           />
         ))}
       </div>
+
       <Divider />
+
       <div className={s.checkSection}>
         <div className={s.checkTitleSection}>
           <Icon name="triangle" size={2} className={s.icon} />
           <p className={s.checkTitle}>공통수학1</p>
         </div>
+
         <div className={s.checkList}>
-          <Checkbox
-            label="체크됨"
-            checked={checked2}
-            onChange={(e) => setChecked2(e.target.checked)}
-          />
+          {CHECK_ITEMS.map((item) => (
+            <Checkbox
+              key={item}
+              label={item}
+              checked={selectedItem === item}
+              onChange={onSelectItem(item)}
+            />
+          ))}
         </div>
       </div>
     </div>

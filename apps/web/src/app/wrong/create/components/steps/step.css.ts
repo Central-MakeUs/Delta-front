@@ -40,11 +40,6 @@ export const checkTitle = style([typo.body2.medium, color["grayscale-700"]]);
 export const checkList = style({
   alignItems: "center",
   gap: "1.6rem",
-  display: "flex",
-});
-
-export const checkItem = style({
-  alignItems: "center",
-  gap: "0.8rem",
+  padding: "0 1.6rem",
   display: "flex",
 });

@@ -1,34 +1,55 @@
 "use client";
 
-import ActionCard from "@/shared/components/action-card/action-card";
-import * as s from "./create.css";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import TitleSection from "@/app/wrong/create/components/title-section/title-section";
+import { parseProgress } from "@/shared/components/app-bar/utils/app-bar-routing";
+import { WRONG_CREATE_STEP_COPY } from "@/app/wrong/create/constants/step-copy";
+
+import Step1 from "@/app/wrong/create/components/steps/step-1";
+import Step2 from "@/app/wrong/create/components/steps/step-2";
+import Step3 from "@/app/wrong/create/components/steps/step-3";
+import Step4 from "@/app/wrong/create/components/steps/step-4";
+
+import * as s from "@/app/wrong/create/create.css";
+
+const clamp = (value: number, min: number, max: number) => {
+  return Math.min(Math.max(value, min), max);
+};
 
 const WrongCreatePage = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const sp = useSearchParams();
+
+  const { total, currentStep } = parseProgress(
+    new URLSearchParams(sp.toString())
+  );
+
+  const goStep = (nextStep: number) => {
+    const safe = clamp(nextStep, 1, total);
+    const params = new URLSearchParams(sp.toString());
+    params.set("step", String(safe));
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const copy =
+    WRONG_CREATE_STEP_COPY[currentStep as keyof typeof WRONG_CREATE_STEP_COPY];
+
   return (
     <div className={s.page}>
-      <div className={s.titleSection}>
-        <h1 className={s.title}>오답 등록</h1>
-        <span className={s.subTtitle}>
-          사진 촬영 또는 갤러리에서 문제를 선택해주세요.
-        </span>
-      </div>
-      <div className={s.cardSection}>
-        <ActionCard
-          title="사진 촬영"
-          iconName="graphic-camera"
-          onClick={() => {
-            // 카메라 플로우로 이동
-          }}
-        />
+      <TitleSection title={copy.title} subTitle={copy.subTitle} />
 
-        <ActionCard
-          title="앨범에서 선택"
-          iconName="graphic-gallery"
-          onClick={() => {
-            // 앨범 선택 모달로 이동
-          }}
+      {currentStep === 1 ? <Step1 onNext={() => goStep(2)} /> : null}
+      {currentStep === 2 ? <Step2 onNext={() => goStep(3)} /> : null}
+      {currentStep === 3 ? (
+        <Step3 onPrev={() => goStep(2)} onNext={() => goStep(4)} />
+      ) : null}
+      {currentStep === 4 ? (
+        <Step4
+          onPrev={() => goStep(3)}
+          onComplete={() => router.push("/wrong")}
         />
-      </div>
+      ) : null}
     </div>
   );
 };

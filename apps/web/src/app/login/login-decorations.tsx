@@ -9,7 +9,6 @@ export const LoginDecorations = () => {
           src="/login/vector-14.svg"
           alt=""
           fill
-          sizes="100vw"
           style={{ objectFit: "contain" }}
         />
       </div>
@@ -19,7 +18,6 @@ export const LoginDecorations = () => {
           src="/login/pencil.svg"
           alt=""
           fill
-          sizes="100vw"
           style={{ objectFit: "contain" }}
         />
       </div>
@@ -29,7 +27,6 @@ export const LoginDecorations = () => {
           src="/login/multiply.svg"
           alt=""
           fill
-          sizes="100vw"
           style={{ objectFit: "contain" }}
         />
       </div>
@@ -39,7 +36,6 @@ export const LoginDecorations = () => {
           src="/login/minus.svg"
           alt=""
           fill
-          sizes="100vw"
           style={{ objectFit: "contain" }}
         />
       </div>
@@ -49,7 +45,6 @@ export const LoginDecorations = () => {
           src="/login/plus.svg"
           alt=""
           fill
-          sizes="100vw"
           style={{ objectFit: "contain" }}
         />
       </div>
@@ -59,7 +54,6 @@ export const LoginDecorations = () => {
           src="/login/divide.svg"
           alt=""
           fill
-          sizes="100vw"
           style={{ objectFit: "contain" }}
         />
       </div>

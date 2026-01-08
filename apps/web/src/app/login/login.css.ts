@@ -84,7 +84,7 @@ export const pencil = style([
 export const multiply = style([
   deco,
   {
-    left: "5.8rem",
+    left: "4.5rem",
     top: "20.1rem",
     width: "6.4rem",
     height: "6.4rem",
@@ -97,9 +97,9 @@ export const minus = style([
   {
     left: "24.3rem",
     top: "43.8rem",
-    width: "12.0rem",
-    height: "3.6rem",
-    transform: "rotate(7deg)",
+    width: "13rem",
+    height: "4.5rem",
+    transform: "rotate(4deg)",
   },
 ]);
 

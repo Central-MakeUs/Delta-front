@@ -1,4 +1,5 @@
 export const ICONS = [
+  "01",
   "alarm",
   "apple",
   "arrow-right",
@@ -26,6 +27,7 @@ export const ICONS = [
   "plus",
   "search",
   "star",
-  "user"
+  "user",
+  "wrong-check"
 ] as const;
 export type IconName = (typeof ICONS)[number];

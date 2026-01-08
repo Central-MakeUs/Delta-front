@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { FabButton } from "@/shared/components/button/fab-button/fab-button";
+import FabButton from "@/shared/components/button/fab-button/fab-button";
 
 const meta = {
   title: "Shared/Button/FabButton",
@@ -7,6 +7,7 @@ const meta = {
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
+    nextjs: { appDirectory: true },
     docs: {
       description: {
         component: `

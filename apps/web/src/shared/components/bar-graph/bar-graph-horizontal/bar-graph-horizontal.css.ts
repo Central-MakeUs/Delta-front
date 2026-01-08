@@ -17,26 +17,6 @@ export const labelArea = style({
   alignItems: "center",
 });
 
-export const connector = style({
-  position: "relative",
-  width: "0.2rem",
-  backgroundColor: vars.color.grayscale[200],
-  alignSelf: "stretch",
-
-  selectors: {
-    "&::before": {
-      content: '""',
-      position: "absolute",
-      left: "-1.2rem",
-      top: "50%",
-      transform: "translateY(-50%)",
-      width: "1.2rem",
-      height: "0.2rem",
-      backgroundColor: vars.color.grayscale[200],
-    },
-  },
-});
-
 export const barsArea = style({
   flex: 1,
   display: "flex",
@@ -46,6 +26,7 @@ export const barsColumn = style({
   width: "100%",
   display: "flex",
   flexDirection: "column",
+  padding: "1.1rem 0",
   gap: "1rem",
 });
 
@@ -54,7 +35,6 @@ export const bar = recipe({
     width: `min(100%, ${barWidthVar})`,
     padding: "0.4rem 0.8rem",
     borderRadius: "12px",
-
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "center",

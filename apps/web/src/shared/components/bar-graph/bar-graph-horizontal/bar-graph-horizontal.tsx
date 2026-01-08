@@ -17,14 +17,10 @@ type BarGraphHorizontalProps = {
   label: string;
   rows: readonly [BarRow, ...BarRow[]];
   maxValue?: number;
-
-  /** 보정용: bar 길이 최소/최대(rem) */
   minBarWidthRem?: number;
   maxBarWidthRem?: number;
-
   className?: string;
   ariaLabel?: string;
-  showConnector?: boolean;
 };
 
 const clamp = (v: number, min: number, max: number) =>
@@ -40,7 +36,6 @@ export const BarGraphHorizontal = ({
   maxBarWidthRem = 22.6,
   className,
   ariaLabel = "bar graph horizontal",
-  showConnector = true,
 }: BarGraphHorizontalProps) => {
   const values = rows.map((r) => toSafeNumber(r.value));
   const computedMax = Math.max(...values, 0);
@@ -58,8 +53,6 @@ export const BarGraphHorizontal = ({
         </span>
       </div>
 
-      {showConnector ? <div className={s.connector} aria-hidden /> : null}
-
       <div className={s.barsArea}>
         <div className={s.barsColumn}>
           {rows.map((row, idx) => {
@@ -67,7 +60,6 @@ export const BarGraphHorizontal = ({
             const safeValue = clamp(raw, 0, safeMax);
             const ratio = clamp(safeValue / safeMax, 0, 1);
 
-            /* 최솟값/최댓값 보정: 0이어도 최소 길이 보장 + 최대 길이 제한 */
             const widthRem = clamp(
               minBarWidthRem + ratio * (maxBarWidthRem - minBarWidthRem),
               minBarWidthRem,

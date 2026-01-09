@@ -19,6 +19,9 @@ export const root = recipe({
       paddingLeft: APP_BAR_PADDING_X,
       paddingRight: APP_BAR_PADDING_X,
       boxSizing: "border-box",
+      position: "sticky",
+      top: 0,
+      zIndex: 10,
     },
   ],
   variants: {

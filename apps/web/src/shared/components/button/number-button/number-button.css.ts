@@ -6,14 +6,15 @@ import { bgColor, color } from "@/shared/styles/color.css";
 export const buttonBase = style({
   border: 0,
   cursor: "pointer",
-  padding: "10px",
+  padding: "1rem",
   borderRadius: vars.radius.r8,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   userSelect: "none",
   flex: "0 0 auto",
-  width: "6.5rem",
+  maxWidth: "100%",
+  width: "100%",
   height: "4rem",
   transition:
     "background-color 120ms ease, color 120ms ease, opacity 120ms ease",
@@ -45,4 +46,5 @@ export const label = style({
   whiteSpace: "nowrap",
   wordBreak: "keep-all",
   display: "inline-block",
+  width: "4.5rem",
 });

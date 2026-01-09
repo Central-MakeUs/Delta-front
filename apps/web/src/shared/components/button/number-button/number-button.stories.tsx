@@ -81,10 +81,3 @@ export const Disabled: Story = {
     disabled: true,
   },
 };
-
-export const CustomLabel: Story = {
-  name: "Custom label",
-  args: {
-    label: "1번(보기)",
-  },
-};

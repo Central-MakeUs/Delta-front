@@ -32,6 +32,7 @@ export const NumberChoice = ({
           selected={value === n}
           disabled={disabled}
           onSelect={onValueChange}
+          className={gs.item}
         />
       ))}
     </div>

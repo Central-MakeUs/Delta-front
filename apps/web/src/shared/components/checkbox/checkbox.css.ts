@@ -32,8 +32,7 @@ export const checkbox = recipe({
     width: "2.4rem",
     height: "2.4rem",
     flexShrink: 0,
-    gap: "1rem",
-    padding: "1rem",
+    padding: "0.4rem",
     backgroundColor: vars.color.grayscale[50],
     borderRadius: vars.radius.r4,
     transition: "all 0.2s ease",
@@ -59,7 +58,6 @@ export const icon = recipe({
     display: "block",
     width: "1.6rem",
     height: "1.6rem",
-    padding: "0.4rem",
     color: vars.color.grayscale[400],
     flexShrink: 0,
 
@@ -97,4 +95,3 @@ export const labelText = recipe({
     size: "md",
   },
 });
-

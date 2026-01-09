@@ -19,7 +19,7 @@ export const useBottomNav = () => {
   const activeKey = useMemo(() => getBottomNavActiveKey(pathname), [pathname]);
 
   const tabParam = searchParams.get("tab");
-  const graphTab = isGraphTab(tabParam) ? tabParam : GRAPH_TABS.WRONG;
+  const graphTab = isGraphTab(tabParam) ? tabParam : GRAPH_TABS.UNIT;
 
   const items = useMemo(() => createBottomNavItems(graphTab), [graphTab]);
 

@@ -17,7 +17,7 @@ const meta: Meta<typeof Button> = {
           "",
           "### Props",
           "- `label: string` (필수)",
-          '- `size?: "32" | "40" | "48" | "60"`',
+          '- `size?: "32" | "40" | "48" | "56" | "60"`',
           '- `tone?: "surface" | "default" | "dark" | "kakao"`',
           "- `fullWidth?: boolean`",
           "- `icon?: string` (예: `check`, `plus`)",
@@ -37,7 +37,7 @@ const meta: Meta<typeof Button> = {
     iconSize: 1.8,
   },
   argTypes: {
-    size: { control: "radio", options: ["32", "40", "48", "60"] },
+    size: { control: "radio", options: ["32", "40", "48", "56", "60"] },
     tone: {
       control: "radio",
       options: ["surface", "default", "dark", "kakao"],

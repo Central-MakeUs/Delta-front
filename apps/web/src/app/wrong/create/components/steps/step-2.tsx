@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { ChangeEvent } from "react";
 import Chip from "@/shared/components/chip/chip";
 import Divider from "@/shared/components/divider/divider";
 import Icon from "@/shared/components/icon/icon";
@@ -8,7 +9,7 @@ import Checkbox from "@/shared/components/checkbox/checkbox";
 import * as s from "./step.css";
 
 type Step2Props = {
-  onNext: () => void;
+  onNextEnabledChange?: (enabled: boolean) => void;
 };
 
 const LABELS = [
@@ -26,19 +27,28 @@ type Label = (typeof LABELS)[number];
 const CHECK_ITEMS = ["다항식", "방정식과 부등식", "도형의 방정식"] as const;
 type CheckItem = (typeof CHECK_ITEMS)[number];
 
-const Step2 = ({ onNext }: Step2Props) => {
-  // TODO: 다음 버튼 클릭 시 이동
+const Step2 = ({ onNextEnabledChange }: Step2Props) => {
   const [selected, setSelected] = useState<Label | null>(null);
+  const [selectedItem, setSelectedItem] = useState<CheckItem | null>(null);
 
-  const [selectedItem, setSelectedItem] = useState<CheckItem | null>("다항식");
+  const computeEnabled = (
+    nextLabel: Label | null,
+    nextItem: CheckItem | null
+  ) => Boolean(nextLabel && nextItem);
 
   const onToggle = (label: Label) => {
-    setSelected((prev) => (prev === label ? null : label));
+    setSelected((prev) => {
+      const nextLabel = prev === label ? null : label;
+      onNextEnabledChange?.(computeEnabled(nextLabel, selectedItem));
+      return nextLabel;
+    });
   };
 
   const onSelectItem =
-    (item: CheckItem) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSelectedItem(e.target.checked ? item : null);
+    (item: CheckItem) => (e: ChangeEvent<HTMLInputElement>) => {
+      const nextItem = e.target.checked ? item : null;
+      setSelectedItem(nextItem);
+      onNextEnabledChange?.(computeEnabled(selected, nextItem));
     };
 
   return (

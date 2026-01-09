@@ -8,10 +8,8 @@ export const button = style({
   justifyContent: "center",
   gap: "0.8rem",
   padding: "1.6rem",
-
   border: `0.1rem solid ${vars.color.grayscale[100]}`,
   borderRadius: vars.radius.r12,
-
   cursor: "pointer",
 
   selectors: {
@@ -32,7 +30,6 @@ export const inputWrapper = style({
   alignItems: "center",
   justifyContent: "center",
   padding: "1.6rem",
-
   border: `0.1rem solid ${vars.color.grayscale[100]}`,
   borderRadius: vars.radius.r12,
 });
@@ -47,7 +44,7 @@ export const input = style({
 
   selectors: {
     "&::placeholder": {
-      color: vars.color.grayscale[300],
+      color: vars.color.grayscale[100],
       opacity: 1,
     },
   },

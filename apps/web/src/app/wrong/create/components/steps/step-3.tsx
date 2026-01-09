@@ -6,8 +6,7 @@ import DirectAddButton from "../direct-add-button/direct-add-button";
 import * as s from "./step.css";
 
 type Step3TypeProps = {
-  onNext: () => void;
-  onPrev: () => void;
+  onNextEnabledChange?: (enabled: boolean) => void;
 };
 
 const TYPE_LABELS = [
@@ -19,10 +18,7 @@ const TYPE_LABELS = [
   "방정식",
 ] as const;
 
-export const Step3Type = ({
-  onNext: _onNext,
-  onPrev: _onPrev,
-}: Step3TypeProps) => {
+export const Step3Type = ({ onNextEnabledChange }: Step3TypeProps) => {
   const [labels, setLabels] = useState<string[]>(() => [...TYPE_LABELS]);
   const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
 
@@ -44,6 +40,11 @@ export const Step3Type = ({
     setDraft("");
   };
 
+  const selectLabel = (label: string) => {
+    setSelectedLabel(label);
+    onNextEnabledChange?.(true); // ✅ 선택되면 다음 활성
+  };
+
   const commitAdd = () => {
     const next = draft.trim();
     if (!next) {
@@ -52,7 +53,7 @@ export const Step3Type = ({
     }
 
     setLabels((prev) => (prev.includes(next) ? prev : [...prev, next]));
-    setSelectedLabel(next);
+    selectLabel(next); // ✅ 추가 후 자동 선택 + 다음 활성
     closeAdd();
   };
 
@@ -65,7 +66,8 @@ export const Step3Type = ({
             size="56"
             label={label}
             tone={selectedLabel === label ? "dark" : "surface"}
-            onClick={() => setSelectedLabel(label)}
+            aria-pressed={selectedLabel === label}
+            onClick={() => selectLabel(label)}
           />
         ))}
 

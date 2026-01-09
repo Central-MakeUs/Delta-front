@@ -1,6 +1,7 @@
 type Step4Props = {
   onPrev: () => void;
   onComplete: () => void;
+  onNextEnabledChange?: (enabled: boolean) => void;
 };
 
 const Step4 = ({ onPrev, onComplete }: Step4Props) => {

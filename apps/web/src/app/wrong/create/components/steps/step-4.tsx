@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import TextField from "@/shared/components/text-field/text-field";
 import Image from "next/image";

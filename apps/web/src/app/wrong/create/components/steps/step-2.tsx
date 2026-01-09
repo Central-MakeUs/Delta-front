@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import type { ChangeEvent } from "react";
 import Chip from "@/shared/components/chip/chip";

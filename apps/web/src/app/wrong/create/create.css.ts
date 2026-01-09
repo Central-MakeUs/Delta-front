@@ -6,7 +6,6 @@ export const page = style({
   flexDirection: "column",
   gap: "2.8rem",
   padding: "2rem 0",
-  height: "calc(100dvh - 5.4rem)",
 });
 
 export const cardSection = style({

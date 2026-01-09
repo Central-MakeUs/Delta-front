@@ -1,5 +1,3 @@
-"use client";
-
 import { useMemo, useState } from "react";
 import { Button } from "@/shared/components/button/button/button";
 import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";

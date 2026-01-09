@@ -2,6 +2,7 @@ import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 import { color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
+import { vars } from "@/shared/styles/theme.css";
 
 export const container = style({
   width: "100%",
@@ -127,4 +128,49 @@ export const checkReveal = recipe({
     },
   },
   defaultVariants: { open: false },
+});
+
+export const step4Container = style({
+  alignItems: "center",
+  gap: "2.4rem",
+  padding: "0 1.6rem",
+  display: "flex",
+  flexDirection: "column",
+});
+
+export const image = style({
+  width: "100%",
+  height: "auto",
+  display: "block",
+  borderRadius: vars.radius.r12,
+  border: `0.1rem solid ${vars.color.grayscale[50]}`,
+});
+
+export const explanationTitle = style([
+  typo.body2.semibold,
+  color["grayscale-700"],
+  { width: "100%" },
+]);
+
+export const explanationSection = style({
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  gap: "2rem",
+  alignItems: "stretch",
+});
+
+export const explanationContent = style({
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  gap: "1.2rem",
+  alignItems: "stretch",
+});
+
+export const numberTitleRow = style({
+  width: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
 });

@@ -29,7 +29,10 @@ type CheckItem = (typeof CHECK_ITEMS)[number];
 
 const Step2 = ({ onNextEnabledChange }: Step2Props) => {
   const [selected, setSelected] = useState<Label | null>(null);
+
   const [selectedItem, setSelectedItem] = useState<CheckItem | null>(null);
+
+  const isOpen = selected !== null;
 
   const computeEnabled = (
     nextLabel: Label | null,
@@ -37,11 +40,10 @@ const Step2 = ({ onNextEnabledChange }: Step2Props) => {
   ) => Boolean(nextLabel && nextItem);
 
   const onToggle = (label: Label) => {
-    setSelected((prev) => {
-      const nextLabel = prev === label ? null : label;
-      onNextEnabledChange?.(computeEnabled(nextLabel, selectedItem));
-      return nextLabel;
-    });
+    const nextLabel = selected === label ? null : label;
+    setSelected(nextLabel);
+    setSelectedItem(null);
+    onNextEnabledChange?.(false);
   };
 
   const onSelectItem =
@@ -65,23 +67,27 @@ const Step2 = ({ onNextEnabledChange }: Step2Props) => {
         ))}
       </div>
 
-      <Divider />
+      <div className={s.dividerReveal({ open: isOpen })}>
+        <Divider />
+      </div>
 
-      <div className={s.checkSection}>
-        <div className={s.checkTitleSection}>
-          <Icon name="triangle" size={2} className={s.icon} />
-          <p className={s.checkTitle}>공통수학1</p>
-        </div>
+      <div className={s.checkReveal({ open: isOpen })}>
+        <div className={s.checkSection}>
+          <div className={s.checkTitleSection}>
+            <Icon name="triangle" size={2} className={s.icon} />
+            <p className={s.checkTitle}>{selected ?? ""}</p>
+          </div>
 
-        <div className={s.checkList}>
-          {CHECK_ITEMS.map((item) => (
-            <Checkbox
-              key={item}
-              label={item}
-              checked={selectedItem === item}
-              onChange={onSelectItem(item)}
-            />
-          ))}
+          <div className={s.checkList}>
+            {CHECK_ITEMS.map((item) => (
+              <Checkbox
+                key={item}
+                label={item}
+                checked={selectedItem === item}
+                onChange={onSelectItem(item)}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -25,7 +25,11 @@ export const stepShell = style({
 
 export const stepContent = style({
   minHeight: 0,
-  overflowY: "auto",
+  scrollbarWidth: "none",
+  msOverflowStyle: "none",
+  selectors: {
+    "&::-webkit-scrollbar": { display: "none" },
+  },
   paddingBottom: "9.6rem",
 });
 

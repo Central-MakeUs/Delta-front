@@ -11,6 +11,7 @@ export const hero = style({
   paddingTop: `calc(${APP_BAR_HEIGHT} + env(safe-area-inset-top))`,
   paddingBottom: "2.0rem",
   display: "flex",
+  zIndex: 0,
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",

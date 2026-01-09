@@ -4,7 +4,6 @@ import { typo } from "@/shared/styles/typography.css";
 import { color } from "@/shared/styles/color.css";
 
 export const page = style({
-  minHeight: "100dvh",
   display: "flex",
   flexDirection: "column",
 });
@@ -12,9 +11,12 @@ export const page = style({
 export const content = style({
   flex: 1,
   marginTop: "-2.0rem",
+  position: "relative",
+  zIndex: 2,
   padding: "2.0rem 1.6rem",
   borderTopLeftRadius: vars.radius.r20,
   borderTopRightRadius: vars.radius.r20,
+  boxSizing: "border-box",
 });
 
 export const stack = style({
@@ -51,10 +53,4 @@ export const emailText = style([typo.caption.regular, color["grayscale-500"]]);
 export const menuList = style({
   display: "flex",
   flexDirection: "column",
-});
-
-export const divider = style({
-  height: "0.1rem",
-  width: "100%",
-  backgroundColor: vars.color.border,
 });

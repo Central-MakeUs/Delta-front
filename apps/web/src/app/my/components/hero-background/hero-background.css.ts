@@ -13,7 +13,6 @@ export const pinwheel = style({
   top: "6.4rem",
   width: "6.0rem",
   height: "6.0rem",
-  opacity: 0.25,
 });
 
 export const diagonal1 = style({
@@ -22,9 +21,11 @@ export const diagonal1 = style({
   top: "1.0rem",
   width: "22.0rem",
   height: "22.0rem",
-  opacity: 0.5,
   borderTopRightRadius: vars.radius.r12,
   borderBottomRightRadius: vars.radius.r12,
+
+  transform: "rotate(0deg)",
+  transformOrigin: "center",
 });
 
 export const diagonal2 = style({
@@ -33,5 +34,4 @@ export const diagonal2 = style({
   top: "10.0rem",
   width: "20.0rem",
   height: "8.0rem",
-  opacity: 0.5,
 });

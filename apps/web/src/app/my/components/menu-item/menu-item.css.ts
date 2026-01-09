@@ -11,11 +11,6 @@ export const item = style({
   alignItems: "center",
   justifyContent: "space-between",
   gap: "1.2rem",
-
-  selectors: {
-    "&:active": { opacity: 0.7 },
-    "&:disabled": { cursor: "not-allowed", opacity: 0.5 },
-  },
 });
 
 export const left = style({

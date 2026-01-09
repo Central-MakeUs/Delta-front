@@ -12,6 +12,7 @@ import Step3 from "@/app/wrong/create/components/steps/step-3";
 import Step4 from "@/app/wrong/create/components/steps/step-4";
 import { Button } from "@/shared/components/button/button/button";
 
+import { ROUTES } from "@/shared/constants/routes";
 import * as s from "@/app/wrong/create/create.css";
 
 export type StepProps = {
@@ -54,7 +55,7 @@ const WrongCreatePage = () => {
     if (currentStep === 3) goStep(4);
     if (currentStep === 4) {
       setIsNextEnabled(false);
-      router.push("/wrong");
+      router.push(ROUTES.WRONG.CREATE_DONE);
     }
   };
 

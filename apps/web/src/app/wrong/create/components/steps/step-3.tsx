@@ -1,22 +1,13 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/shared/components/button/button/button";
 import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";
-import * as s from "./step.css";
+import * as s from "@/app/wrong/create/components/steps/step.css";
 import { StepProps } from "@/app/wrong/create/page";
-
-const TYPE_LABELS = [
-  "그래프",
-  "공통수학2",
-  "대수",
-  "도형",
-  "절댓값",
-  "방정식",
-] as const;
+import { WRONG_TYPE_LABELS } from "@/app/wrong/create/constants/option-labels";
 
 export const Step3Type = ({ onNextEnabledChange }: StepProps) => {
-  const [labels, setLabels] = useState<string[]>(() => [...TYPE_LABELS]);
+  const [labels, setLabels] = useState<string[]>(() => [...WRONG_TYPE_LABELS]);
   const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
-
   const [isAdding, setIsAdding] = useState(false);
   const [draft, setDraft] = useState("");
 

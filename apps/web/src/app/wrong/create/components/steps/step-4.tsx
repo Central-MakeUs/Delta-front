@@ -7,16 +7,12 @@ import { Toggle } from "@/shared/components/toggle/toggle";
 import { NumberChoice } from "@/shared/components/number-choice/number-choice";
 import TextAreaField from "@/shared/components/text-area-field/text-area-field";
 import { StepProps } from "@/app/wrong/create/page";
+import { TOGGLE_OPTIONS } from "@/app/wrong/create/constants/option-labels";
 
 type ToggleValue = "objective" | "subjective";
-const OPTIONS = [
-  { value: "objective", label: "객관식" },
-  { value: "subjective", label: "주관식" },
-] as const;
 
 const Step4 = ({ onNextEnabledChange }: StepProps) => {
   const [type, setType] = useState<ToggleValue>("objective");
-
   const [answerChoice, setAnswerChoice] = useState<number | null>(null);
   const [answerText, setAnswerText] = useState("");
 
@@ -41,7 +37,7 @@ const Step4 = ({ onNextEnabledChange }: StepProps) => {
     <div className={s.step4Container}>
       <Image
         src={SampleImg}
-        alt="Step4 안내 이미지"
+        alt="문제 이미지 샘플"
         width={SampleImg.width}
         height={SampleImg.height}
         className={s.image}
@@ -56,7 +52,7 @@ const Step4 = ({ onNextEnabledChange }: StepProps) => {
             <Toggle<ToggleValue>
               value={type}
               onValueChange={handleTypeChange}
-              options={OPTIONS}
+              options={TOGGLE_OPTIONS}
             />
           </div>
 

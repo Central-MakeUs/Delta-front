@@ -6,25 +6,16 @@ import Icon from "@/shared/components/icon/icon";
 import Checkbox from "@/shared/components/checkbox/checkbox";
 import * as s from "@/app/wrong/create/components/steps/step.css";
 import { StepProps } from "@/app/wrong/create/page";
+import {
+  MATH_SUBJECT_LABELS,
+  CHECK_ITEMS,
+} from "@/app/wrong/create/constants/option-labels";
 
-const LABELS = [
-  "공통수학1",
-  "공통수학2",
-  "대수",
-  "미적분I",
-  "확률과 통계",
-  "미적분II",
-  "기하",
-] as const;
-
-type Label = (typeof LABELS)[number];
-
-const CHECK_ITEMS = ["다항식", "방정식과 부등식", "도형의 방정식"] as const;
+type Label = (typeof MATH_SUBJECT_LABELS)[number];
 type CheckItem = (typeof CHECK_ITEMS)[number];
 
 const Step2 = ({ onNextEnabledChange }: StepProps) => {
   const [selected, setSelected] = useState<Label | null>(null);
-
   const [selectedItem, setSelectedItem] = useState<CheckItem | null>(null);
 
   const isOpen = selected !== null;
@@ -51,7 +42,7 @@ const Step2 = ({ onNextEnabledChange }: StepProps) => {
   return (
     <div className={s.container}>
       <div className={s.chipGrid}>
-        {LABELS.map((label) => (
+        {MATH_SUBJECT_LABELS.map((label) => (
           <Chip
             key={label}
             shape="pill"

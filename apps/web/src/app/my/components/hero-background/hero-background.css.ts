@@ -5,33 +5,42 @@ export const wrap = style({
   position: "absolute",
   inset: 0,
   pointerEvents: "none",
-});
-
-export const pinwheel = style({
-  position: "absolute",
-  left: "0.8rem",
-  top: "6.4rem",
-  width: "6.0rem",
-  height: "6.0rem",
+  containerType: "inline-size",
+  containerName: "hero-bg",
 });
 
 export const diagonal1 = style({
   position: "absolute",
-  right: "-2.0rem",
-  top: "1.0rem",
-  width: "22.0rem",
-  height: "22.0rem",
+  right: "-4.7rem",
+  top: "-4.7rem",
+  width: "33.8rem",
+  height: "33.8rem",
   borderTopRightRadius: vars.radius.r12,
   borderBottomRightRadius: vars.radius.r12,
+  overflow: "hidden",
+  "@container": {
+    "hero-bg (max-width: 405px)": {
+      right: "-7rem",
+    },
+  },
+});
 
-  transform: "rotate(0deg)",
-  transformOrigin: "center",
+export const pinwheel = style({
+  position: "absolute",
+  left: "-0.8rem",
+  top: "6.4rem",
+  width: "8rem",
+  height: "8rem",
+});
+
+export const diagonal1Narrow = style({
+  right: "-6rem",
 });
 
 export const diagonal2 = style({
   position: "absolute",
-  right: "4.0rem",
-  top: "10.0rem",
-  width: "20.0rem",
+  left: "-3.0rem",
+  top: "20.0rem",
+  width: "25.0rem",
   height: "8.0rem",
 });

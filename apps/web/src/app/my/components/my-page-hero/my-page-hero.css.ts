@@ -1,5 +1,4 @@
 import { style } from "@vanilla-extract/css";
-import { vars } from "@/shared/styles/theme.css";
 
 const APP_BAR_HEIGHT = "5.4rem";
 
@@ -7,7 +6,7 @@ export const hero = style({
   position: "relative",
   height: "25.8rem",
   overflow: "hidden",
-  background: `linear-gradient(143deg, ${vars.color.main[100]} 0%, ${vars.color.main[200]} 100%)`,
+  background: `linear-gradient(143deg, #fdd8d2ff 0%, #FFB4A9 91%, #FFB4A9 100%), #ffffff`,
   paddingTop: `calc(${APP_BAR_HEIGHT} + env(safe-area-inset-top))`,
   paddingBottom: "2.0rem",
   display: "flex",

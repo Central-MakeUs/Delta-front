@@ -60,7 +60,7 @@ export const textarea = style([
   color["grayscale-700"],
   {
     width: "100%",
-    minHeight: "18rem",
+    minHeight: "17.6rem",
     border: 0,
     outline: "none",
     padding: 0,

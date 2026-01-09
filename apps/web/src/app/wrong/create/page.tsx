@@ -87,7 +87,7 @@ const WrongCreatePage = () => {
               fullWidth
               label="다음"
               tone={isNextEnabled ? "dark" : "surface"}
-              aria-disabled={!isNextEnabled}
+              disabled={!isNextEnabled}
               tabIndex={isNextEnabled ? 0 : -1}
               onClick={handleNext}
               className={!isNextEnabled ? s.nextDisabled : undefined}

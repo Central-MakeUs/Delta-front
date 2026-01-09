@@ -21,6 +21,7 @@ export const root = recipe({
       boxSizing: "border-box",
       position: "sticky",
       top: 0,
+      zIndex: 10,
     },
   ],
   variants: {

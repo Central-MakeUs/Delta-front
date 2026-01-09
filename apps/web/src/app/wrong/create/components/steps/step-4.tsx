@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import TextField from "@/shared/components/text-field/text-field";
 import Image from "next/image";
@@ -15,22 +17,72 @@ const Step4 = ({ onNextEnabledChange }: StepProps) => {
   const [type, setType] = useState<ToggleValue>("objective");
   const [answerChoice, setAnswerChoice] = useState<number | null>(null);
   const [answerText, setAnswerText] = useState("");
+  const [solutionText, setSolutionText] = useState("");
 
-  const handleTypeChange = (next: ToggleValue) => {
-    setType(next);
+  const computeEnabled = (next: {
+    type: ToggleValue;
+    answerChoice: number | null;
+    answerText: string;
+    solutionText: string;
+  }) => {
+    const hasAnswer =
+      next.type === "objective"
+        ? next.answerChoice !== null
+        : next.answerText.trim().length > 0;
+
+    const hasSolution = next.solutionText.trim().length > 0;
+
+    return hasAnswer && hasSolution;
+  };
+
+  const handleTypeChange = (nextType: ToggleValue) => {
+    setType(nextType);
     setAnswerChoice(null);
     setAnswerText("");
-    onNextEnabledChange?.(false);
+
+    const nextState = {
+      type: nextType,
+      answerChoice: null,
+      answerText: "",
+      solutionText,
+    };
+    onNextEnabledChange?.(computeEnabled(nextState));
   };
 
-  const handleChoiceChange = (next: number) => {
-    setAnswerChoice(next);
-    onNextEnabledChange?.(true);
+  const handleChoiceChange = (nextChoice: number) => {
+    setAnswerChoice(nextChoice);
+
+    const nextState = {
+      type,
+      answerChoice: nextChoice,
+      answerText,
+      solutionText,
+    };
+    onNextEnabledChange?.(computeEnabled(nextState));
   };
 
-  const handleAnswerTextChange = (next: string) => {
-    setAnswerText(next);
-    onNextEnabledChange?.(next.trim().length > 0);
+  const handleAnswerTextChange = (nextAnswerText: string) => {
+    setAnswerText(nextAnswerText);
+
+    const nextState = {
+      type,
+      answerChoice,
+      answerText: nextAnswerText,
+      solutionText,
+    };
+    onNextEnabledChange?.(computeEnabled(nextState));
+  };
+
+  const handleSolutionChange = (nextSolution: string) => {
+    setSolutionText(nextSolution);
+
+    const nextState = {
+      type,
+      answerChoice,
+      answerText,
+      solutionText: nextSolution,
+    };
+    onNextEnabledChange?.(computeEnabled(nextState));
   };
 
   return (
@@ -73,7 +125,12 @@ const Step4 = ({ onNextEnabledChange }: StepProps) => {
 
         <div className={s.explanationContent}>
           <span className={s.explanationTitle}>풀이</span>
-          <TextAreaField fullWidth placeholder="풀이를 입력해주세요." />
+          <TextAreaField
+            fullWidth
+            placeholder="풀이를 입력해주세요."
+            value={solutionText}
+            onChange={(e) => handleSolutionChange(e.target.value)}
+          />
         </div>
       </div>
     </div>

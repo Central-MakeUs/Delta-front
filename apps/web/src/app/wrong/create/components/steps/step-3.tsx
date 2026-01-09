@@ -1,4 +1,6 @@
-import { useMemo, useState } from "react";
+"use client";
+
+import { useState } from "react";
 import { Button } from "@/shared/components/button/button/button";
 import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";
 import * as s from "@/app/wrong/create/components/steps/step.css";
@@ -11,10 +13,7 @@ export const Step3Type = ({ onNextEnabledChange }: StepProps) => {
   const [isAdding, setIsAdding] = useState(false);
   const [draft, setDraft] = useState("");
 
-  const normalizedLabels = useMemo(
-    () => labels.map((v) => v.trim()).filter(Boolean),
-    [labels]
-  );
+  const normalizedLabels = labels.map((v) => v.trim()).filter(Boolean);
 
   const openAdd = () => {
     setIsAdding(true);

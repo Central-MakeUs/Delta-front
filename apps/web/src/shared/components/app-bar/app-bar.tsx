@@ -1,5 +1,8 @@
+"use client";
+
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { ROUTES } from "@/shared/constants/routes";
 import Icon from "@/shared/components/icon/icon";
 import ProgressBar from "@/shared/components/progress-bar/progress-bar";
 
@@ -17,24 +20,35 @@ import BackButton from "@/shared/components/app-bar/components/back-button";
 
 export const AppBar = (props: AppBarProps) => {
   const router = useRouter();
-
+  const pathname = usePathname();
   const ariaLabel = props.ariaLabel ?? APP_BAR_DEFAULT_ARIA_LABEL;
   const surface = props.surface ?? "solid";
   const backFallback = () => router.back();
+  const isMy = pathname.startsWith(ROUTES.MY.ROOT);
+  const shellClassName = clsx(props.className, isMy && s.fixedOnMy);
+
+  const renderShell = (
+    variant: AppBarProps["variant"],
+    children: React.ReactNode
+  ) => {
+    return (
+      <HeaderShell
+        variant={variant}
+        surface={surface}
+        ariaLabel={ariaLabel}
+        className={shellClassName}
+      >
+        {children}
+      </HeaderShell>
+    );
+  };
 
   switch (props.variant) {
     case "basic": {
       const onBack = props.onBack ?? backFallback;
-
-      return (
-        <HeaderShell
-          variant="basic"
-          surface={surface}
-          ariaLabel={ariaLabel}
-          className={props.className}
-        >
-          <LeftGroup title={props.title} onBack={onBack} />
-        </HeaderShell>
+      return renderShell(
+        "basic",
+        <LeftGroup title={props.title} onBack={onBack} />
       );
     }
 
@@ -42,13 +56,9 @@ export const AppBar = (props: AppBarProps) => {
       const onBack = props.onBack ?? backFallback;
       const actionAriaLabel = props.actionAriaLabel ?? props.actionLabel;
 
-      return (
-        <HeaderShell
-          variant="basicAction"
-          surface={surface}
-          ariaLabel={ariaLabel}
-          className={props.className}
-        >
+      return renderShell(
+        "basicAction",
+        <>
           <LeftGroup title={props.title} onBack={onBack} />
           <TextAction
             label={props.actionLabel}
@@ -56,18 +66,14 @@ export const AppBar = (props: AppBarProps) => {
             onClick={props.onActionClick}
             ariaLabel={actionAriaLabel}
           />
-        </HeaderShell>
+        </>
       );
     }
 
     case "default": {
-      return (
-        <HeaderShell
-          variant="default"
-          surface={surface}
-          ariaLabel={ariaLabel}
-          className={props.className}
-        >
+      return renderShell(
+        "default",
+        <>
           <button
             type="button"
             className={clsx(s.buttonReset, s.logo)}
@@ -85,7 +91,7 @@ export const AppBar = (props: AppBarProps) => {
           >
             <Icon name="user" size={2.4} className={s.icon} />
           </button>
-        </HeaderShell>
+        </>
       );
     }
 
@@ -94,13 +100,9 @@ export const AppBar = (props: AppBarProps) => {
       const skipLabel = props.skipLabel ?? APP_BAR_SKIP_LABEL;
       const showSkip = props.showSkip ?? true;
 
-      return (
-        <HeaderShell
-          variant="progress"
-          surface={surface}
-          ariaLabel={ariaLabel}
-          className={props.className}
-        >
+      return renderShell(
+        "progress",
+        <>
           <div className={s.leftSlot}>
             <BackButton onClick={onBack} />
           </div>
@@ -124,20 +126,14 @@ export const AppBar = (props: AppBarProps) => {
               />
             ) : null}
           </div>
-        </HeaderShell>
+        </>
       );
     }
 
     case "title": {
-      return (
-        <HeaderShell
-          variant="title"
-          surface={surface}
-          ariaLabel={ariaLabel}
-          className={props.className}
-        >
-          <span className={s.title}>{props.title}</span>
-        </HeaderShell>
+      return renderShell(
+        "title",
+        <span className={s.title}>{props.title}</span>
       );
     }
   }

@@ -6,6 +6,7 @@ export const ICONS = [
   "check-mark",
   "chevron",
   "crown",
+  "default-profile",
   "edit",
   "file",
   "file-text",

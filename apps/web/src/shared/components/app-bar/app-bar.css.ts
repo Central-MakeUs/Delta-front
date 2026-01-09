@@ -8,6 +8,22 @@ import {
   APP_BAR_SIDE_SLOT_WIDTH,
 } from "@/shared/components/app-bar/constants/app-bar";
 
+export const fixedOnMy = style({
+  selectors: {
+    "&&": {
+      position: "fixed",
+      top: 0,
+      left: "50%",
+      transform: "translateX(-50%)",
+      width: "100%",
+      maxWidth: "43rem",
+      zIndex: 10,
+      backgroundColor: "transparent",
+      boxSizing: "border-box",
+    },
+  },
+});
+
 export const root = recipe({
   base: [
     bgColor["grayscale-0"],
@@ -19,6 +35,9 @@ export const root = recipe({
       paddingLeft: APP_BAR_PADDING_X,
       paddingRight: APP_BAR_PADDING_X,
       boxSizing: "border-box",
+      position: "sticky",
+      top: 0,
+      zIndex: 10,
     },
   ],
   variants: {

@@ -43,3 +43,11 @@ export const checkList = style({
   padding: "0 1.6rem",
   display: "flex",
 });
+
+export const buttonGrid = style({
+  display: "grid",
+  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+  columnGap: "1.2rem",
+  rowGap: "1.6rem",
+  padding: "0 1.6rem",
+});

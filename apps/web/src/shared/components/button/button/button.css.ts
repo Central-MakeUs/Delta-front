@@ -52,6 +52,12 @@ export const button = recipe({
         borderRadius: vars.radius.r12,
         gap: "0.8rem",
       },
+      "56": {
+        minHeight: "6.0rem",
+        padding: "0.8rem 1.2rem",
+        borderRadius: vars.radius.r12,
+        gap: "0.8rem",
+      },
       "60": {
         minHeight: "6.0rem",
         padding: "0.8rem 1.2rem",
@@ -102,6 +108,7 @@ export const label = recipe({
       "32": typo.caption.semibold,
       "40": typo.body3.semibold,
       "48": typo.button1,
+      "56": typo.body2.medium,
       "60": typo.body1.bold,
     },
   },

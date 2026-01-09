@@ -27,6 +27,7 @@ export const ICONS = [
   "note-active",
   "note-default",
   "plus",
+  "plus-circle",
   "search",
   "star",
   "triangle",

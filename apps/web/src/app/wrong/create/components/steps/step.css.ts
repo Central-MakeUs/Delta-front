@@ -27,10 +27,6 @@ export const chipGrid = style({
   padding: "0 1.6rem",
 });
 
-export const chipItem = style({
-  width: "100%",
-});
-
 export const icon = style([color["grayscale-700"]]);
 
 export const checkSection = style({
@@ -100,9 +96,7 @@ export const checkReveal = recipe({
     overflow: "hidden",
     maxHeight: 0,
     opacity: 0,
-
     transform: "translateY(10rem)",
-
     pointerEvents: "none",
     willChange: "max-height, opacity, transform",
 

@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { vars } from "@/shared/styles/theme.css";
+import { bgColor } from "@/shared/styles/color.css";
 
 export const page = style({
   display: "flex",
@@ -32,17 +32,18 @@ export const stepContent = style({
   paddingBottom: "9.6rem",
 });
 
-export const nextSection = style({
-  position: "fixed",
-  maxWidth: "43rem",
-  width: "100%",
-  margin: "0 auto",
-  bottom: 0,
-  zIndex: 10,
-  padding: "0 1.6rem",
-  paddingBottom: "1.6rem",
-  backgroundColor: vars.color.grayscale[0],
-});
+export const nextSection = style([
+  bgColor["grayscale-0"],
+  {
+    position: "fixed",
+    maxWidth: "43rem",
+    width: "100%",
+    margin: "0 auto",
+    bottom: 0,
+    zIndex: 10,
+    padding: "1.6rem",
+  },
+]);
 
 export const nextDisabled = style({
   pointerEvents: "none",

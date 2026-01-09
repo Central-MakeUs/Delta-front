@@ -14,6 +14,10 @@ import { Button } from "@/shared/components/button/button/button";
 
 import * as s from "@/app/wrong/create/create.css";
 
+export type StepProps = {
+  onNextEnabledChange?: (enabled: boolean) => void;
+};
+
 const clamp = (value: number, min: number, max: number) => {
   return Math.min(Math.max(value, min), max);
 };
@@ -30,7 +34,6 @@ const WrongCreatePage = () => {
   const [isNextEnabled, setIsNextEnabled] = useState(false);
 
   const goStep = (nextStep: number) => {
-    // ✅ effect 대신 여기서 리셋
     setIsNextEnabled(false);
 
     const safe = clamp(nextStep, 1, total);
@@ -72,11 +75,7 @@ const WrongCreatePage = () => {
           ) : null}
 
           {currentStep === 4 ? (
-            <Step4
-              onPrev={() => goStep(3)}
-              onComplete={() => router.push("/wrong")}
-              onNextEnabledChange={setIsNextEnabled}
-            />
+            <Step4 onNextEnabledChange={setIsNextEnabled} />
           ) : null}
         </div>
 

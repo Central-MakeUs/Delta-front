@@ -6,11 +6,8 @@ import Chip from "@/shared/components/chip/chip";
 import Divider from "@/shared/components/divider/divider";
 import Icon from "@/shared/components/icon/icon";
 import Checkbox from "@/shared/components/checkbox/checkbox";
-import * as s from "./step.css";
-
-type Step2Props = {
-  onNextEnabledChange?: (enabled: boolean) => void;
-};
+import * as s from "@/app/wrong/create/components/steps/step.css";
+import { StepProps } from "@/app/wrong/create/page";
 
 const LABELS = [
   "공통수학1",
@@ -27,7 +24,7 @@ type Label = (typeof LABELS)[number];
 const CHECK_ITEMS = ["다항식", "방정식과 부등식", "도형의 방정식"] as const;
 type CheckItem = (typeof CHECK_ITEMS)[number];
 
-const Step2 = ({ onNextEnabledChange }: Step2Props) => {
+const Step2 = ({ onNextEnabledChange }: StepProps) => {
   const [selected, setSelected] = useState<Label | null>(null);
 
   const [selectedItem, setSelectedItem] = useState<CheckItem | null>(null);

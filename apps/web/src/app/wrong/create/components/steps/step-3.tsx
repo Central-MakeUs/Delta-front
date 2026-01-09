@@ -2,12 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { Button } from "@/shared/components/button/button/button";
-import DirectAddButton from "../direct-add-button/direct-add-button";
+import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";
 import * as s from "./step.css";
-
-type Step3TypeProps = {
-  onNextEnabledChange?: (enabled: boolean) => void;
-};
+import { StepProps } from "@/app/wrong/create/page";
 
 const TYPE_LABELS = [
   "그래프",
@@ -18,7 +15,7 @@ const TYPE_LABELS = [
   "방정식",
 ] as const;
 
-export const Step3Type = ({ onNextEnabledChange }: Step3TypeProps) => {
+export const Step3Type = ({ onNextEnabledChange }: StepProps) => {
   const [labels, setLabels] = useState<string[]>(() => [...TYPE_LABELS]);
   const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
 
@@ -42,7 +39,7 @@ export const Step3Type = ({ onNextEnabledChange }: Step3TypeProps) => {
 
   const selectLabel = (label: string) => {
     setSelectedLabel(label);
-    onNextEnabledChange?.(true); // ✅ 선택되면 다음 활성
+    onNextEnabledChange?.(true);
   };
 
   const commitAdd = () => {
@@ -53,7 +50,7 @@ export const Step3Type = ({ onNextEnabledChange }: Step3TypeProps) => {
     }
 
     setLabels((prev) => (prev.includes(next) ? prev : [...prev, next]));
-    selectLabel(next); // ✅ 추가 후 자동 선택 + 다음 활성
+    selectLabel(next);
     closeAdd();
   };
 

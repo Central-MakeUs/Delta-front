@@ -1,5 +1,5 @@
 import ActionCard from "@/shared/components/action-card/action-card";
-import * as s from "../../create.css";
+import * as s from "@/app/wrong/create/create.css";
 
 type Step1Props = {
   onNext: () => void;

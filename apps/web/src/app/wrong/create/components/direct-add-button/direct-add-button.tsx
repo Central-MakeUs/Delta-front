@@ -6,7 +6,7 @@ import type { ButtonHTMLAttributes, ComponentProps } from "react";
 import Icon from "@/shared/components/icon/icon";
 import { bgColor, color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
-import * as s from "./direct-add-button.css";
+import * as s from "@/app/wrong/create/components/direct-add-button/direct-add-button.css";
 
 type IconName = ComponentProps<typeof Icon>["name"];
 
@@ -70,7 +70,6 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
         )}
         onClick={() => inputRef.current?.focus()}
       >
-        {/* ✅ input 모드: 아이콘 렌더링 자체가 없음 */}
         <input
           ref={inputRef}
           className={clsx(s.input, typo.body2.medium, color["grayscale-400"])}

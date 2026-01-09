@@ -3,16 +3,12 @@
 import { useState } from "react";
 import TextField from "@/shared/components/text-field/text-field";
 import Image from "next/image";
-import * as s from "./step.css";
+import * as s from "@/app/wrong/create/components/steps/step.css";
 import SampleImg from "@/shared/assets/images/wrong-sample.png";
 import { Toggle } from "@/shared/components/toggle/toggle";
 import { NumberChoice } from "@/shared/components/number-choice/number-choice";
-
-type Step4Props = {
-  onPrev: () => void;
-  onComplete: () => void;
-  onNextEnabledChange?: (enabled: boolean) => void;
-};
+import TextAreaField from "@/shared/components/text-area-field/text-area-field";
+import { StepProps } from "@/app/wrong/create/page";
 
 type ToggleValue = "objective" | "subjective";
 const OPTIONS = [
@@ -20,9 +16,29 @@ const OPTIONS = [
   { value: "subjective", label: "주관식" },
 ] as const;
 
-const Step4 = ({ onPrev, onComplete }: Step4Props) => {
+const Step4 = ({ onNextEnabledChange }: StepProps) => {
   const [type, setType] = useState<ToggleValue>("objective");
-  const [answer, setAnswer] = useState<number | null>(null);
+
+  const [answerChoice, setAnswerChoice] = useState<number | null>(null);
+  const [answerText, setAnswerText] = useState("");
+
+  const handleTypeChange = (next: ToggleValue) => {
+    setType(next);
+    setAnswerChoice(null);
+    setAnswerText("");
+    onNextEnabledChange?.(false);
+  };
+
+  const handleChoiceChange = (next: number) => {
+    setAnswerChoice(next);
+    onNextEnabledChange?.(true);
+  };
+
+  const handleAnswerTextChange = (next: string) => {
+    setAnswerText(next);
+    onNextEnabledChange?.(next.trim().length > 0);
+  };
+
   return (
     <div className={s.step4Container}>
       <Image
@@ -33,23 +49,38 @@ const Step4 = ({ onPrev, onComplete }: Step4Props) => {
         className={s.image}
         priority
       />
+
       <div className={s.explanationSection}>
         <div className={s.explanationContent}>
           <div className={s.numberTitleRow}>
             <span className={s.explanationTitle}>정답</span>
+
             <Toggle<ToggleValue>
               value={type}
-              onValueChange={setType}
+              onValueChange={handleTypeChange}
               options={OPTIONS}
             />
           </div>
-          <NumberChoice value={answer} onValueChange={setAnswer} />
+
+          {type === "objective" ? (
+            <NumberChoice
+              value={answerChoice}
+              onValueChange={handleChoiceChange}
+            />
+          ) : (
+            <TextField
+              fullWidth
+              placeholder="정답을 입력해주세요."
+              value={answerText}
+              onChange={(e) => handleAnswerTextChange(e.target.value)}
+            />
+          )}
         </div>
+
         <div className={s.explanationContent}>
           <span className={s.explanationTitle}>풀이</span>
-          <TextField placeholder="풀이를 입력해주세요." />
+          <TextAreaField fullWidth placeholder="풀이를 입력해주세요." />
         </div>
-        <div />
       </div>
     </div>
   );

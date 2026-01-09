@@ -5,6 +5,7 @@ import { typo } from "@/shared/styles/typography.css";
 import { color, bgColor } from "@/shared/styles/color.css";
 
 export const label = style({
+  color: "inherit",
   whiteSpace: "nowrap",
   wordBreak: "keep-all",
 });
@@ -55,16 +56,16 @@ export const chip = recipe({
     },
 
     state: {
-      default: [bgColor["grayscale-50"], color["grayscale-700"]],
-      active: [bgColor["main-100"], color["main-500"]],
+      default: {},
+      active: {},
     },
 
     /**
-     * - auto: 기존 state 그대로
+     * - auto: state 기반 색을 compoundVariants로 부여
      * - solid: 공통수학1 같은 "메인 솔리드"
      * - white / white-accent: 10개 / 8개 같은 하얀 배경 칩
-     * - surface: state 무시하고 항상 회색 서피스
-     * - soft: state 무시하고 항상 메인 soft
+     * - surface: 항상 회색 서피스
+     * - soft: 항상 메인 soft
      */
     tone: {
       auto: {},
@@ -108,19 +109,24 @@ export const chip = recipe({
       style: { padding: "0.4rem 0.8rem", borderRadius: vars.radius.r6 },
     },
 
-    // -------- typography weight tweaks --------
-    // lg active는 600
+    // -------- auto tone: state 기반 색/배경 --------
     {
-      variants: { size: "lg", state: "active", tone: "auto" },
-      style: typo.body3.semibold,
+      variants: { tone: "auto", state: "default" },
+      style: [bgColor["grayscale-50"], color["grayscale-700"]],
     },
-    // lg active + soft 강제도 600
     {
-      variants: { size: "lg", tone: "soft" },
+      variants: { tone: "auto", state: "active" },
+      style: [bgColor["main-100"], color["main-500"]],
+    },
+
+    // -------- typography weight tweaks --------
+    // lg는 active일 때 semibold
+    {
+      variants: { size: "lg", state: "active" },
       style: typo.body3.semibold,
     },
 
-    // -------- xs surface 텍스트는 더 진하게 (#30323D) --------
+    // -------- xs default(auto) 텍스트는 더 진하게 --------
     {
       variants: { size: "xs", tone: "auto", state: "default" },
       style: color["grayscale-900"],

@@ -87,6 +87,10 @@ export const bgColor = {
   "etc-crown": style({ backgroundColor: vars.color.etc.crown }),
 };
 
+export const myGradient = {
+  "my-bg": vars.color.etc.myGradient,
+} as const;
+
 export const bgGradient = {
   "login-bg": vars.color.login.bgGradient,
 } as const;

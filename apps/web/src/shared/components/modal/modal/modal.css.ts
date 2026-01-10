@@ -7,15 +7,15 @@ import { bgColor, color } from "@/shared/styles/color.css";
 export const overlay = style([
   bgColor["overDim-40"],
   {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  display: "flex",  
-  alignItems: "center",
-  justifyContent: "center",
-  zIndex: 1000,
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1000,
   },
 ]);
 
@@ -100,4 +100,3 @@ export const buttonWrapper = style({
   flex: 1,
   minWidth: 0,
 });
-

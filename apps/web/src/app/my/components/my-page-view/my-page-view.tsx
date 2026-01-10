@@ -4,10 +4,10 @@ import { useState } from "react";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { bgColor } from "@/shared/styles/color.css";
-import * as s from "./my-page-view.css";
-import { MyPageHero } from "../my-page-hero/my-page-hero";
-import { MyPageCard } from "../my-page-card/my-page-card";
-import MenuItem from "../menu-item/menu-item";
+import * as s from "@/app/my/components/my-page-view/my-page-view.css";
+import MyPageHero from "@/app/my/components/my-page-hero/my-page-hero";
+import MyPageCard from "@/app/my/components/my-page-card/my-page-card";
+import MenuItem from "@/app/my/components/menu-item/menu-item";
 import Modal from "@/shared/components/modal/modal/modal";
 import Icon from "@/shared/components/icon/icon";
 

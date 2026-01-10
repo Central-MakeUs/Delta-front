@@ -3,7 +3,7 @@
 import clsx from "clsx";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import * as s from "./hero-background.css";
+import * as s from "@/app/my/components/hero-background/hero-background.css";
 
 const useViewportMaxWidth = (maxWidthPx: number) => {
   const [matched, setMatched] = useState(false);

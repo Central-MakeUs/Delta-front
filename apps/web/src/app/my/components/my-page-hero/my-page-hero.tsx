@@ -1,11 +1,9 @@
-"use client";
-
 import clsx from "clsx";
 import { color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
-import * as s from "./my-page-hero.css";
-import HeroBackground from "../hero-background/hero-background";
-import { ProfileAvatar } from "../profile-avatar/profile-avatar";
+import * as s from "@/app/my/components/my-page-hero/my-page-hero.css";
+import HeroBackground from "@/app/my/components/hero-background/hero-background";
+import ProfileAvatar from "@/app/my/components/profile-avatar/profile-avatar";
 
 type MyPageHeroProps = {
   title: string;
@@ -14,10 +12,7 @@ type MyPageHeroProps = {
   onBack: () => void;
 };
 
-export const MyPageHero = ({
-  userName,
-  profileImageUrl = null,
-}: MyPageHeroProps) => {
+const MyPageHero = ({ userName, profileImageUrl = null }: MyPageHeroProps) => {
   return (
     <header className={s.hero}>
       <HeroBackground />
@@ -30,3 +25,5 @@ export const MyPageHero = ({
     </header>
   );
 };
+
+export default MyPageHero;

@@ -1,14 +1,13 @@
-import MyPageView from "./components/my-page-view/my-page-view";
+import MyPageView from "@/app/my/components/my-page-view/my-page-view";
+
+const MOCK_USER = {
+  userName: "김수학",
+  linkedEmail: "mathlove@kakao.com",
+  profileImageUrl: null as string | null,
+} as const;
 
 const MyPagePage = async () => {
-  // TODO: 실제 세션/유저 데이터로 교체
-  return (
-    <MyPageView
-      userName="김수학"
-      linkedEmail="mathlove@kakao.com"
-      profileImageUrl={null}
-    />
-  );
+  return <MyPageView {...MOCK_USER} />;
 };
 
 export default MyPagePage;

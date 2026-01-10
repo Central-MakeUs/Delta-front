@@ -1,18 +1,26 @@
+import Image from "next/image";
 import Icon from "@/shared/components/icon/icon";
-import * as s from "./profile-avatar.css";
+import * as s from "@/app/my/components/profile-avatar/profile-avatar.css";
 
 type ProfileAvatarProps = {
   src?: string | null;
   alt: string;
 };
 
-export const ProfileAvatar = ({ src, alt }: ProfileAvatarProps) => {
+const ProfileAvatar = ({ src, alt }: ProfileAvatarProps) => {
   const hasImage = typeof src === "string" && src.length > 0;
 
   return (
     <div className={s.avatar}>
       {hasImage ? (
-        <img className={s.image} src={src} alt={alt} />
+        <Image
+          className={s.image}
+          src={src}
+          alt={alt}
+          width={92}
+          height={92}
+          sizes="92px"
+        />
       ) : (
         <div className={s.fallback} aria-label={alt}>
           <Icon name="default-profile" size={9.2} />
@@ -21,3 +29,5 @@ export const ProfileAvatar = ({ src, alt }: ProfileAvatarProps) => {
     </div>
   );
 };
+
+export default ProfileAvatar;

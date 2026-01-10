@@ -5,7 +5,6 @@ export const item = style({
   border: "none",
   background: "transparent",
   cursor: "pointer",
-
   padding: "1.2rem 0",
   display: "flex",
   alignItems: "center",

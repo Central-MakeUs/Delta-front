@@ -86,3 +86,7 @@ export const bgColor = {
   "login-kakao": style({ backgroundColor: vars.color.login.kakao }),
   "etc-crown": style({ backgroundColor: vars.color.etc.crown }),
 };
+
+export const myGradient = {
+  "my-bg": vars.color.etc.myGradient,
+} as const;

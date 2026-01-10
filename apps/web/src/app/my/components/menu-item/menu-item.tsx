@@ -1,11 +1,9 @@
-"use client";
-
 import clsx from "clsx";
 import type { ComponentProps } from "react";
 import Icon from "@/shared/components/icon/icon";
 import { color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
-import * as s from "./menu-item.css";
+import * as s from "@/app/my/components/menu-item/menu-item.css";
 
 type IconName = ComponentProps<typeof Icon>["name"];
 

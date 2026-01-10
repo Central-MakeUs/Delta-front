@@ -40,7 +40,7 @@ export const vars = createThemeContract({
     warning: { 100: null, 500: null, 600: null },
     error: { 100: null, 500: null, 700: null },
     login: { kakao: null },
-    etc: { crown: null },
+    etc: { crown: null, myGradient: null },
   },
   space: { 0: null, 2: null, 3: null, 4: null, 6: null },
   radius: {
@@ -177,7 +177,11 @@ export const lightTheme = createTheme(vars, {
     warning: { 100: "#FFEEC9", 500: "#FFC852", 600: "#E8B64B" },
     error: { 100: "#FFC5C1", 500: "#FF4538", 700: "#B53128" },
     login: { kakao: "#FEE500" },
-    etc: { crown: "#FFC852" },
+    etc: {
+      crown: "#FFC852",
+      myGradient:
+        "linear-gradient(143deg, #fdd8d2ff 0%, #FFB4A9 91%, #FFB4A9 100%), #ffffff",
+    },
   },
 
   space: { 0: "0", 2: "0.8rem", 3: "1.2rem", 4: "1.6rem", 6: "2.4rem" },

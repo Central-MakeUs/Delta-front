@@ -1,16 +1,15 @@
+"use client";
+
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-
 import Icon from "@/shared/components/icon/icon";
 import ProgressBar from "@/shared/components/progress-bar/progress-bar";
-
 import * as s from "@/shared/components/app-bar/app-bar.css";
 import {
   APP_BAR_DEFAULT_ARIA_LABEL,
   APP_BAR_SKIP_LABEL,
 } from "@/shared/components/app-bar/constants/app-bar";
-
 import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
 import HeaderShell from "@/shared/components/app-bar/components/header-shell";
 import LeftGroup from "@/shared/components/app-bar/components/left-group";

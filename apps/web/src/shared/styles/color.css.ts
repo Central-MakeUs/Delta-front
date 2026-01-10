@@ -90,3 +90,7 @@ export const bgColor = {
 export const myGradient = {
   "my-bg": vars.color.etc.myGradient,
 } as const;
+
+export const bgGradient = {
+  "login-bg": vars.color.login.bgGradient,
+} as const;

@@ -1,8 +1,7 @@
-"use client";
-
 import clsx from "clsx";
-import { usePathname, useRouter } from "next/navigation";
-import { ROUTES } from "@/shared/constants/routes";
+import { useRouter } from "next/navigation";
+import type { ReactNode } from "react";
+
 import Icon from "@/shared/components/icon/icon";
 import ProgressBar from "@/shared/components/progress-bar/progress-bar";
 
@@ -18,18 +17,16 @@ import LeftGroup from "@/shared/components/app-bar/components/left-group";
 import TextAction from "@/shared/components/app-bar/components/text-action";
 import BackButton from "@/shared/components/app-bar/components/back-button";
 
-export const AppBar = (props: AppBarProps) => {
+const AppBar = (props: AppBarProps) => {
   const router = useRouter();
-  const pathname = usePathname();
   const ariaLabel = props.ariaLabel ?? APP_BAR_DEFAULT_ARIA_LABEL;
   const surface = props.surface ?? "solid";
   const backFallback = () => router.back();
-  const isMy = pathname.startsWith(ROUTES.MY.ROOT);
-  const shellClassName = clsx(props.className, isMy && s.fixedOnMy);
+  const shellClassName = props.className;
 
   const renderShell = (
     variant: AppBarProps["variant"],
-    children: React.ReactNode
+    children: ReactNode
   ) => {
     return (
       <HeaderShell

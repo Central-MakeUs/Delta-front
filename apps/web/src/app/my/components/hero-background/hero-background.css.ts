@@ -19,7 +19,10 @@ export const diagonal1 = style({
   borderBottomRightRadius: vars.radius.r12,
   overflow: "hidden",
   "@container": {
-    "hero-bg (max-width: 405px)": {
+    "hero-bg (min-width: 401px) and (max-width: 410px)": {
+      right: "-6rem",
+    },
+    "hero-bg (max-width: 400px)": {
       right: "-7rem",
     },
   },

@@ -183,7 +183,7 @@ export const lightTheme = createTheme(vars, {
     etc: {
       crown: "#FFC852",
       myGradient:
-        "linear-gradient(143deg, #fdd8d2ff 0%, #FFB4A9 91%, #FFB4A9 100%), #ffffff",
+        "linear-gradient(143deg, #fdd8d2ff 0%, #FFB4A9 91%, #FFB4A9 100%)",
     },
   },
 

@@ -6,10 +6,8 @@ import HeroBackground from "@/app/my/components/hero-background/hero-background"
 import ProfileAvatar from "@/app/my/components/profile-avatar/profile-avatar";
 
 type MyPageHeroProps = {
-  title: string;
   userName: string;
   profileImageUrl?: string | null;
-  onBack: () => void;
 };
 
 const MyPageHero = ({ userName, profileImageUrl = null }: MyPageHeroProps) => {

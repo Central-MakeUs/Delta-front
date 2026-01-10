@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
 import { bgColor } from "@/shared/styles/color.css";
 import * as s from "@/app/my/components/my-page-view/my-page-view.css";
 import MyPageHero from "@/app/my/components/my-page-hero/my-page-hero";
@@ -25,12 +24,9 @@ const MyPageView = ({
   userName,
   linkedEmail,
   profileImageUrl = null,
-  onBack,
   onLogout,
   onWithdraw,
 }: MyPageViewProps) => {
-  const router = useRouter();
-
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
@@ -39,11 +35,6 @@ const MyPageView = ({
 
   const openWithdrawModal = () => setIsWithdrawModalOpen(true);
   const closeWithdrawModal = () => setIsWithdrawModalOpen(false);
-
-  const handleBack = () => {
-    if (onBack) return onBack();
-    router.back();
-  };
 
   const handleLogoutClick = () => {
     openLogoutModal();
@@ -66,12 +57,7 @@ const MyPageView = ({
   return (
     <>
       <div className={clsx(bgColor["grayscale-0"], s.page)}>
-        <MyPageHero
-          title="내 정보"
-          userName={userName}
-          profileImageUrl={profileImageUrl}
-          onBack={handleBack}
-        />
+        <MyPageHero userName={userName} profileImageUrl={profileImageUrl} />
 
         <main className={clsx(bgColor["grayscale-0"], s.content)}>
           <div className={s.stack}>

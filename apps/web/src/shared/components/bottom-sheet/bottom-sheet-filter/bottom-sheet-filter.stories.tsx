@@ -84,7 +84,9 @@ export const Default: Story = {
       const [isOpen, setIsOpen] = useState(false);
       const [selectedChapters, setSelectedChapters] = useState<string[]>([]);
       const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-      const [selectedDropdown, setSelectedDropdown] = useState<string[]>([]);
+      const [selectedDropdown, setSelectedDropdown] = useState<
+        Record<string, string[]>
+      >({});
 
       const chapterFilters = [
         { id: "1", label: "1단원" },
@@ -107,7 +109,6 @@ export const Default: Story = {
 
       const dropdownSection = {
         id: "math1",
-        title: "공통수학1",
         options: [
           { id: "poly1", label: "다항식" },
           { id: "eq1", label: "방정식과 부등식" },
@@ -126,7 +127,14 @@ export const Default: Story = {
             <div style={{ marginTop: "1rem" }}>
               <p>선택된 단원: {selectedChapters.join(", ")}</p>
               <p>선택된 유형: {selectedTypes.join(", ") || "없음"}</p>
-              <p>선택된 드롭다운: {selectedDropdown.join(", ") || "없음"}</p>
+              <p>
+                선택된 드롭다운:{" "}
+                {Object.entries(selectedDropdown)
+                  .map(
+                    ([chapter, options]) => `${chapter}: ${options.join(", ")}`
+                  )
+                  .join(" | ") || "없음"}
+              </p>
             </div>
           </div>
           <BottomSheetFilter
@@ -141,7 +149,7 @@ export const Default: Story = {
             onReset={() => {
               setSelectedChapters([]);
               setSelectedTypes([]);
-              setSelectedDropdown([]);
+              setSelectedDropdown({});
             }}
             onApply={(filters) => {
               setSelectedChapters(filters.chapters);
@@ -194,4 +202,3 @@ export const WithoutDropdown: Story = {
     return <WithoutDropdownComponent />;
   },
 };
-

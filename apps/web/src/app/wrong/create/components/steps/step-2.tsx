@@ -45,6 +45,7 @@ const Step2 = ({ onNextEnabledChange }: StepProps) => {
         {MATH_SUBJECT_LABELS.map((label) => (
           <Chip
             key={label}
+            fullWidth={true}
             shape="pill"
             label={label}
             state={selected === label ? "active" : "default"}

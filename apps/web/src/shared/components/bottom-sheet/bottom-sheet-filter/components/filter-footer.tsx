@@ -20,6 +20,8 @@ export const FilterFooter = ({
           label="초기화"
           size="48"
           tone="default"
+          icon="reset"
+          iconSize={2.4}
           onClick={onReset}
           disabled={isClosing}
           className={styles.resetButtonOverride}
@@ -36,4 +38,3 @@ export const FilterFooter = ({
     </div>
   );
 };
-

@@ -1,4 +1,4 @@
-import { keyframes, style } from "@vanilla-extract/css";
+import { globalStyle, keyframes, style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 import { bgColor, color } from "@/shared/styles/color.css";
@@ -383,6 +383,10 @@ export const resetButtonOverride = style({
   width: "134px",
   minWidth: "134px",
   flexGrow: 0,
+});
+
+globalStyle(`${resetButtonOverride} svg`, {
+  stroke: vars.color.grayscale[700],
 });
 
 export const applyButtonOverride = style({

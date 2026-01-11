@@ -1,4 +1,5 @@
 export const ICONS = [
+  "01",
   "alarm",
   "apple",
   "arrow-right",
@@ -6,12 +7,15 @@ export const ICONS = [
   "check-mark",
   "chevron",
   "crown",
+  "default-profile",
   "edit",
   "file",
   "file-text",
   "filter",
   "graph-active",
   "graph-default",
+  "graphic-camera",
+  "graphic-gallery",
   "home-active",
   "home-default",
   "kakao",
@@ -24,8 +28,11 @@ export const ICONS = [
   "note-active",
   "note-default",
   "plus",
+  "plus-circle",
   "search",
   "star",
-  "user"
+  "triangle",
+  "user",
+  "wrong-check"
 ] as const;
 export type IconName = (typeof ICONS)[number];

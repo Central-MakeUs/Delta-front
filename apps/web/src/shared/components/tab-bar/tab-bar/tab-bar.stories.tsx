@@ -62,7 +62,7 @@ const ControlledExample = (args: TabBarProps<TabValue>) => {
 };
 
 const meta = {
-  title: "Shared/TabBar",
+  title: "Shared/TabBar/TabBar",
   component: BoundTabBar,
   tags: ["autodocs"],
   parameters: {

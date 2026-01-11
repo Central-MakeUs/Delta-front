@@ -3,11 +3,10 @@ import clsx from "clsx";
 import Icon, { IconProps } from "@/shared/components/icon/icon";
 import * as styles from "./checkbox.css";
 
-export interface CheckboxProps
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    "size" | "type"
-  > {
+export interface CheckboxProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "size" | "type"
+> {
   icon?: IconProps["name"];
   label?: string;
 }
@@ -39,18 +38,11 @@ export const Checkbox = ({
         {...rest}
       />
       <span className={clsx(styles.checkbox())}>
-          <Icon
-            name={icon}
-            size={1.6}
-            className={styles.icon()}
-          />
+        <Icon name={icon} size={1.6} className={styles.icon()} />
       </span>
-      {label && (
-        <span className={styles.labelText()}>{label}</span>
-      )}
+      {label && <span className={styles.labelText()}>{label}</span>}
     </label>
   );
 };
 
 export default Checkbox;
-

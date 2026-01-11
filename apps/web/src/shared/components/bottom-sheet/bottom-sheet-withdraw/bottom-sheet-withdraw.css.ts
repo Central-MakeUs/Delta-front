@@ -174,7 +174,12 @@ export const cancelText = style([
       "&:hover": {
         color: vars.color.grayscale[700],
       },
+      "&:disabled": {
+        cursor: "not-allowed",
+      },
+      "&:disabled:hover": {
+        color: vars.color.grayscale[500],
+      },
     },
   },
 ]);
-

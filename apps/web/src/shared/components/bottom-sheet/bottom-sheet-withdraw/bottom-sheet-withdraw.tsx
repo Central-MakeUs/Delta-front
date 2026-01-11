@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import clsx from "clsx";
 import { Button } from "@/shared/components/button/button/button";
 import * as styles from "./bottom-sheet-withdraw.css";
@@ -36,8 +36,11 @@ export const BottomSheetWithdraw = ({
   const prevIsOpenRef = useRef(isOpen);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevBodyOverflowRef = useRef<string | null>(null);
+  const bottomSheetRef = useRef<HTMLDivElement>(null);
+  const previousActiveElementRef = useRef<HTMLElement | null>(null);
 
   const shouldRender = isOpen || isClosing;
+  const titleId = useId();
 
   useEffect(() => {
     const prevIsOpen = prevIsOpenRef.current;
@@ -112,6 +115,26 @@ export const BottomSheetWithdraw = ({
     };
   }, [isOpen, isClosing, onClose]);
 
+  // 포커스 관리
+  useEffect(() => {
+    if (isOpen && !isClosing) {
+      // 오픈 시 이전 포커스 저장
+      previousActiveElementRef.current =
+        (document.activeElement as HTMLElement) || null;
+
+      // 바텀시트에 포커스 이동
+      requestAnimationFrame(() => {
+        bottomSheetRef.current?.focus();
+      });
+    } else if (!isOpen && !isClosing && previousActiveElementRef.current) {
+      // 클로즈 시 이전 포커스 복귀
+      requestAnimationFrame(() => {
+        previousActiveElementRef.current?.focus();
+        previousActiveElementRef.current = null;
+      });
+    }
+  }, [isOpen, isClosing]);
+
   if (!shouldRender) return null;
 
   const handleClose = () => {
@@ -147,6 +170,11 @@ export const BottomSheetWithdraw = ({
       onClick={handleOverlayClick}
     >
       <div
+        ref={bottomSheetRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
         className={clsx(
           styles.bottomSheet,
           isClosing && styles.bottomSheetClosing,
@@ -155,12 +183,14 @@ export const BottomSheetWithdraw = ({
       >
         <div className={styles.contentContainer}>
           <div className={styles.textContainer}>
-            <h2 className={styles.title}>{title}</h2>
+            <h2 id={titleId} className={styles.title}>
+              {title}
+            </h2>
             {description && (
               <div className={styles.descriptionWrapper}>
                 <p className={styles.description}>
                   {description.split("<br/>").map((line, index, array) => (
-                    <React.Fragment key={index}>
+                    <React.Fragment key={`${index}-${line}`}>
                       {line}
                       {index < array.length - 1 && <br />}
                     </React.Fragment>

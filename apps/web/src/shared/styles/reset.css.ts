@@ -74,6 +74,19 @@ globalStyle("input, button, textarea, select", {
   background: "none",
 });
 
+globalStyle("button, a, input, textarea, select, [role='button']", {
+  WebkitTapHighlightColor: "transparent",
+});
+
+globalStyle("button:active, a:active, [role='button']:active", {
+  backgroundColor: "transparent",
+});
+
+globalStyle("button, input, textarea, select", {
+  WebkitAppearance: "none",
+  appearance: "none",
+});
+
 globalStyle("button", {
   cursor: "pointer",
 });

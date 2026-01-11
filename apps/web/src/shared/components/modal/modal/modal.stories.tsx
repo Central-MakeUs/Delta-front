@@ -77,11 +77,7 @@ export const Default: Story = {
             onClick={() => setIsOpen(true)}
             style={{ margin: "2.4rem" }}
           />
-          <Modal
-            {...args}
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-          />
+          <Modal {...args} isOpen={isOpen} onClose={() => setIsOpen(false)} />
         </>
       );
     };

@@ -106,25 +106,27 @@ export const buttonContainer = style({
   width: "100%",
 });
 
-export const confirmButtonOverride = style({
-  backgroundColor: vars.color.main[500],
-  color: vars.color.grayscale[0],
-  width: "100%",
-  height: "4.8rem",
+export const confirmButtonOverride = style([
+  bgColor["main-500"],
+  color["grayscale-0"],
+  {
+    width: "100%",
+    height: "4.8rem",
 
-  selectors: {
-    "&:hover:not(:disabled)": {
-      backgroundColor: vars.color.main[600],
-    },
-    "&:active:not(:disabled)": {
-      backgroundColor: vars.color.main[700],
-    },
-    "&:disabled": {
-      backgroundColor: vars.color.grayscale[100],
-      color: vars.color.grayscale[500],
+    selectors: {
+      "&:hover:not(:disabled)": {
+        backgroundColor: vars.color.main[600],
+      },
+      "&:active:not(:disabled)": {
+        backgroundColor: vars.color.main[700],
+      },
+      "&:disabled": {
+        backgroundColor: vars.color.grayscale[100],
+        color: vars.color.grayscale[500],
+      },
     },
   },
-});
+]);
 
 export const cancelText = style([
   typo.body3.medium,

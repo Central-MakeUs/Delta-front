@@ -4,7 +4,7 @@ import * as styles from "@/shared/components/button/button/button.css";
 import Icon from "@/shared/components/icon/icon";
 import type { IconProps } from "@/shared/components/icon/icon";
 
-export type ButtonSize = "32" | "40" | "48" | "60";
+export type ButtonSize = "32" | "40" | "48" | "56" | "60";
 export type ButtonTone = "surface" | "default" | "dark" | "kakao";
 
 type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {

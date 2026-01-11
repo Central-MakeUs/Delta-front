@@ -11,6 +11,15 @@ type UseAppBarResult =
   | { isHidden: true; props?: never }
   | { isHidden: false; props: AppBarProps };
 
+const clamp = (value: number, min: number, max: number) => {
+  return Math.min(Math.max(value, min), max);
+};
+
+const buildUrl = (pathname: string, params: URLSearchParams) => {
+  const qs = params.toString();
+  return qs ? `${pathname}?${qs}` : pathname;
+};
+
 export const useAppBar = (): UseAppBarResult => {
   const router = useRouter();
   const pathname = usePathname();
@@ -47,9 +56,23 @@ export const useAppBar = (): UseAppBarResult => {
   const wrongMatch = getWrongRouteMatch(pathname);
 
   if (wrongMatch.type === "create") {
-    const { total, currentStep } = parseProgress(
-      new URLSearchParams(sp.toString())
-    );
+    const params = new URLSearchParams(sp.toString());
+    const { total, currentStep } = parseProgress(params);
+
+    const replaceStep = (nextStep: number) => {
+      const safe = clamp(nextStep, 1, total);
+      const nextParams = new URLSearchParams(sp.toString());
+      nextParams.set("step", String(safe));
+      router.replace(buildUrl(pathname, nextParams), { scroll: false });
+    };
+
+    const handleBack = () => {
+      if (currentStep > 1) {
+        replaceStep(currentStep - 1);
+        return;
+      }
+      router.back();
+    };
 
     return {
       isHidden: false,
@@ -57,8 +80,8 @@ export const useAppBar = (): UseAppBarResult => {
         variant: "progress",
         total,
         currentStep,
-        onBack: () => router.back(),
-        /* 첫 인덱스에서만 건너뛰기 숨김 */
+        onStepChange: replaceStep,
+        onBack: handleBack,
         showSkip: currentStep !== 1,
         onSkip: () => router.push(ROUTES.WRONG.CREATE_DONE),
       },
@@ -68,7 +91,10 @@ export const useAppBar = (): UseAppBarResult => {
   if (wrongMatch.type === "list") {
     return {
       isHidden: false,
-      props: { variant: "title", title: "오답 목록" },
+      props: {
+        variant: "title",
+        title: "오답 목록",
+      },
     };
   }
 

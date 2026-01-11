@@ -14,7 +14,7 @@ export const button = recipe({
   base: {
     border: "none",
     cursor: "pointer",
-    display: "inline-flex",
+    display: "flex",
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
@@ -23,12 +23,18 @@ export const button = recipe({
     borderRadius: vars.radius.r12,
     gap: "0.8rem",
     padding: "0.8rem 1.2rem",
-
+    transition:
+      "background-color 180ms cubic-bezier(0.2, 0, 0, 1), color 180ms cubic-bezier(0.2, 0, 0, 1)",
     selectors: {
       "&:disabled": {
         cursor: "not-allowed",
         backgroundColor: vars.color.grayscale[100],
         color: vars.color.grayscale[500],
+      },
+    },
+    "@media": {
+      "(prefers-reduced-motion: reduce)": {
+        transition: "none",
       },
     },
   },
@@ -48,6 +54,12 @@ export const button = recipe({
       },
       "48": {
         minHeight: "4.8rem",
+        padding: "0.8rem 1.2rem",
+        borderRadius: vars.radius.r12,
+        gap: "0.8rem",
+      },
+      "56": {
+        minHeight: "6.0rem",
         padding: "0.8rem 1.2rem",
         borderRadius: vars.radius.r12,
         gap: "0.8rem",
@@ -102,6 +114,7 @@ export const label = recipe({
       "32": typo.caption.semibold,
       "40": typo.body3.semibold,
       "48": typo.button1,
+      "56": typo.body2.medium,
       "60": typo.body1.bold,
     },
   },

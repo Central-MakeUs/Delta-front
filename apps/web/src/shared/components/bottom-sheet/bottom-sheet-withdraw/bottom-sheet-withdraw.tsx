@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { Button } from "@/shared/components/button/button/button";
 import * as styles from "./bottom-sheet-withdraw.css";
 
-export interface BottomSheetProps {
+export interface BottomSheetWithdrawProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
@@ -31,7 +31,7 @@ export const BottomSheetWithdraw = ({
   className,
   overlayClassName,
   disabled = false,
-}: BottomSheetProps) => {
+}: BottomSheetWithdrawProps) => {
   const [isClosing, setIsClosing] = useState(false);
   const prevIsOpenRef = useRef(isOpen);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -189,12 +189,14 @@ export const BottomSheetWithdraw = ({
             {description && (
               <div className={styles.descriptionWrapper}>
                 <p className={styles.description}>
-                  {description.split("<br/>").map((line, index, array) => (
-                    <React.Fragment key={`${index}-${line}`}>
-                      {line}
-                      {index < array.length - 1 && <br />}
-                    </React.Fragment>
-                  ))}
+                  {description
+                    .split("<br/>")
+                    .map((line: string, index: number, array: string[]) => (
+                      <React.Fragment key={`${index}-${line}`}>
+                        {line}
+                        {index < array.length - 1 && <br />}
+                      </React.Fragment>
+                    ))}
                 </p>
               </div>
             )}

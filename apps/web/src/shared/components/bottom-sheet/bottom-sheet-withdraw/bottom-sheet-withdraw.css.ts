@@ -1,43 +1,8 @@
-import { keyframes, style } from "@vanilla-extract/css";
+import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 import { bgColor, color } from "@/shared/styles/color.css";
-
-const slideUp = keyframes({
-  from: {
-    transform: "translateY(100%)",
-  },
-  to: {
-    transform: "translateY(0)",
-  },
-});
-
-const slideDown = keyframes({
-  from: {
-    transform: "translateY(0)",
-  },
-  to: {
-    transform: "translateY(100%)",
-  },
-});
-
-const fadeIn = keyframes({
-  from: {
-    opacity: 0,
-  },
-  to: {
-    opacity: 1,
-  },
-});
-
-const fadeOut = keyframes({
-  from: {
-    opacity: 1,
-  },
-  to: {
-    opacity: 0,
-  },
-});
+import { slideUp, slideDown, fadeIn, fadeOut } from "../styles/animations.css";
 
 export const overlay = style([
   bgColor["overDim-40"],

@@ -33,7 +33,7 @@ export const bottomSheet = style([
     flexDirection: "column",
     alignItems: "flex-start",
     padding: 0,
-    borderRadius: "24px 24px 0 0",
+    borderRadius: "2.4rem 2.4rem 0 0",
     zIndex: 1001,
     overflow: "auto",
     animation: `${slideUp} 0.3s ease-out`,
@@ -49,7 +49,7 @@ export const frameContainer = style({
   flexDirection: "column",
   alignItems: "center",
   padding: 0,
-  gap: "20px",
+  gap: "0rem",
   width: "100%",
   position: "relative",
 });
@@ -60,8 +60,8 @@ export const headerFrame = style([
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
-    padding: "20px 16px",
-    gap: "10px",
+    padding: "2rem 1.6rem",
+    gap: "1rem",
     width: "100%",
     flex: "none",
     alignSelf: "stretch",
@@ -94,8 +94,8 @@ export const title = style([
 export const closeButton = style([
   color["grayscale-900"],
   {
-    width: "24px",
-    height: "24px",
+    width: "2.4rem",
+    height: "2.4rem",
     flex: "none",
     order: 1,
     flexGrow: 0,
@@ -115,7 +115,7 @@ export const contentFrame = style({
   flexDirection: "column",
   alignItems: "flex-start",
   padding: 0,
-  gap: "20px",
+  gap: "2rem",
   width: "100%",
   flex: "none",
   order: 0,
@@ -127,8 +127,8 @@ export const sectionFrame = style({
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
-  padding: "0 16px",
-  gap: "16px",
+  padding: "0 1.6rem",
+  gap: "1.6rem",
   width: "100%",
   flex: "none",
   alignSelf: "stretch",
@@ -140,7 +140,7 @@ export const sectionTitle = style([
   color["grayscale-800"],
   {
     width: "100%",
-    height: "24px",
+    height: "2.4rem",
     flex: "none",
     order: 0,
     alignSelf: "stretch",
@@ -155,7 +155,7 @@ export const chipContainer = style({
   alignItems: "flex-start",
   alignContent: "flex-start",
   padding: 0,
-  gap: "12px",
+  gap: "1.2rem",
   width: "100%",
   flex: "none",
   order: 1,
@@ -163,42 +163,11 @@ export const chipContainer = style({
   flexGrow: 0,
 });
 
-export const chip = style([
-  typo.body3.medium,
-  bgColor["grayscale-50"],
-  color["grayscale-700"],
-  {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "8px 16px",
-    gap: "8px",
-    height: "37px",
-    borderRadius: "12px",
-    flex: "none",
-    cursor: "pointer",
-  },
-]);
-
-export const chipSelected = style([
-  typo.body3.semibold,
-  bgColor["main-100"],
-  color["main-500"],
-]);
-
-export const chipText = style({
-  textAlign: "center",
-  flex: "none",
-  order: 0,
-  flexGrow: 0,
-});
-
 export const dropdownSection = style({
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
-  gap: "10px",
+  gap: "1rem",
   width: "100%",
   flex: "none",
   order: 1,
@@ -211,7 +180,7 @@ export const dropdownHeader = style({
   flexDirection: "row",
   alignItems: "center",
   padding: 0,
-  gap: "8px",
+  gap: "0.8rem",
   width: "100%",
   flex: "none",
   order: 0,
@@ -220,8 +189,8 @@ export const dropdownHeader = style({
 });
 
 export const triangleIcon = style({
-  width: "16px",
-  height: "16px",
+  width: "1.6rem",
+  height: "1.6rem",
   flex: "none",
   order: 0,
   flexGrow: 0,
@@ -247,66 +216,10 @@ export const checkboxList = style({
   flexDirection: "row",
   alignItems: "center",
   padding: 0,
-  gap: "16px",
+  gap: "1.6rem",
   width: "100%",
   flexWrap: "wrap",
 });
-
-export const checkboxItem = style({
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
-  padding: 0,
-  gap: "8px",
-  flex: "none",
-  cursor: "pointer",
-});
-
-export const checkbox = style([
-  bgColor["grayscale-50"],
-  {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "10px",
-    gap: "10px",
-    width: "24px",
-    height: "24px",
-    borderRadius: "6px",
-    border: `1.33333px solid ${vars.color.grayscale[400]}`,
-    flex: "none",
-    order: 0,
-    flexGrow: 0,
-  },
-]);
-
-export const checkboxChecked = style({
-  backgroundColor: vars.color.grayscale[50],
-  borderColor: vars.color.grayscale[400],
-});
-
-export const checkboxIcon = style({
-  width: "16px",
-  height: "16px",
-  flex: "none",
-  order: 0,
-  flexGrow: 0,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: vars.color.grayscale[900],
-});
-
-export const checkboxLabel = style([
-  typo.body3.medium,
-  color["grayscale-700"],
-  {
-    flex: "none",
-    order: 1,
-    flexGrow: 0,
-  },
-]);
 
 export const divider = style([
   bgColor["grayscale-50"],
@@ -323,8 +236,8 @@ export const footerFrame = style([
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
-    padding: "20px 16px",
-    gap: "10px",
+    padding: "2rem 1.6rem",
+    gap: "1rem",
     width: "100%",
     position: "sticky",
     bottom: 0,
@@ -336,7 +249,7 @@ export const buttonContainer = style({
   flexDirection: "row",
   alignItems: "flex-start",
   padding: 0,
-  gap: "10px",
+  gap: "1rem",
   width: "100%",
   flex: "none",
   order: 0,
@@ -345,8 +258,8 @@ export const buttonContainer = style({
 });
 
 export const resetButtonOverride = style({
-  width: "134px",
-  minWidth: "134px",
+  width: "13.4rem",
+  minWidth: "13.4rem",
   flexGrow: 0,
 });
 

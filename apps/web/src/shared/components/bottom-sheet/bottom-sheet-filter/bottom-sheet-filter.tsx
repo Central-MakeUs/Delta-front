@@ -7,12 +7,7 @@ import { FilterHeader } from "./components/filter-header";
 import { FilterSection } from "./components/filter-section";
 import { FilterFooter } from "./components/filter-footer";
 
-export type {
-  FilterOption,
-  CheckboxOption,
-  DropdownSection,
-  BottomSheetFilterProps,
-} from "./types";
+export type { DropdownSection, BottomSheetFilterProps } from "./types";
 
 export const BottomSheetFilter = ({
   isOpen,

@@ -9,8 +9,12 @@ const meta: Meta<typeof BottomSheetSort> = {
   component: BottomSheetSort,
   tags: ["autodocs"],
   parameters: {
-    layout: "centered",
+    layout: "fullscreen",
     docs: {
+      story: {
+        inline: false,
+        height: "70vh",
+      },
       description: {
         component: [
           "정렬 옵션을 선택할 수 있는 BottomSheet 컴포넌트입니다.",
@@ -134,4 +138,3 @@ export const NoSelection: Story = {
     return <NoSelectionComponent />;
   },
 };
-

@@ -28,12 +28,13 @@ export const bottomSheet = style([
   {
     position: "relative",
     width: "100%",
+    maxHeight: "54rem",
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
     padding: "0 0 2rem",
     gap: "1rem",
-    borderRadius: "2.4rem 2.4rem 0 0",
+    borderRadius: "24px 24px 0 0",
     zIndex: 1001,
     overflow: "auto",
     animation: `${slideUp} 0.3s ease-out`,
@@ -126,7 +127,6 @@ export const listFrame = style({
 
 export const listItem = style({
   display: "flex",
-  flexDirection: "row",
   alignItems: "center",
   padding: 0,
   gap: "1rem",

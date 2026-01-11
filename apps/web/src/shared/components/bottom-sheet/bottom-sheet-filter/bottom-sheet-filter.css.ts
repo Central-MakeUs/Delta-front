@@ -29,6 +29,7 @@ export const bottomSheet = style([
   {
     position: "relative",
     width: "100%",
+    maxHeight: "56rem",
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
@@ -106,7 +107,6 @@ export const closeButton = style([
     background: "transparent",
     border: "none",
     padding: 0,
-    color: vars.color.grayscale[900],
   },
 ]);
 
@@ -213,7 +213,6 @@ export const dropdownTitle = style([
 
 export const checkboxList = style({
   display: "flex",
-  flexDirection: "row",
   alignItems: "center",
   padding: 0,
   gap: "1.6rem",

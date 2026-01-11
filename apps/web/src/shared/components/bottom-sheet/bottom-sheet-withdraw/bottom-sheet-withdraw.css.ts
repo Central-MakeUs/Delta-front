@@ -29,7 +29,7 @@ export const bottomSheet = style([
   {
     position: "relative",
     width: "100%",
-    maxHeight: "80vh",
+    maxHeight: "54rem",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",

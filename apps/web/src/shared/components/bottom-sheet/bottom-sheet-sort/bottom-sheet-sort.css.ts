@@ -1,5 +1,4 @@
 import { keyframes, style } from "@vanilla-extract/css";
-import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 import { bgColor, color } from "@/shared/styles/color.css";
 
@@ -144,7 +143,6 @@ export const closeButton = style([
     background: "transparent",
     border: "none",
     padding: 0,
-    color: vars.color.grayscale[900],
   },
 ]);
 
@@ -166,13 +164,16 @@ export const listItem = style({
   flexDirection: "row",
   alignItems: "center",
   padding: 0,
-  gap: "10px",
+  gap: "1rem",
   width: "100%",
   height: "24px",
   flex: "none",
   alignSelf: "stretch",
   flexGrow: 0,
   cursor: "pointer",
+  background: "transparent",
+  border: "none",
+  textAlign: "left",
 });
 
 export const listItemSelected = style({
@@ -206,7 +207,5 @@ export const checkIcon = style([
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: vars.color.grayscale[900],
   },
 ]);
-

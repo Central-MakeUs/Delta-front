@@ -150,17 +150,25 @@ export const BottomSheetSort = ({
             </div>
           </div>
 
-          <div className={styles.listFrame}>
+          <div
+            className={styles.listFrame}
+            role="listbox"
+            aria-label="정렬 옵션"
+          >
             {options.map((option) => {
               const isSelected = option.id === selectedOptionId;
               return (
-                <div
+                <button
+                  type="button"
                   key={option.id}
                   className={clsx(
                     styles.listItem,
                     isSelected && styles.listItemSelected
                   )}
                   onClick={() => handleOptionClick(option.id)}
+                  role="option"
+                  aria-selected={isSelected}
+                  disabled={isClosing}
                 >
                   <span
                     className={clsx(
@@ -175,7 +183,7 @@ export const BottomSheetSort = ({
                       <Icon name="check-mark" size={2.4} />
                     </div>
                   )}
-                </div>
+                </button>
               );
             })}
           </div>

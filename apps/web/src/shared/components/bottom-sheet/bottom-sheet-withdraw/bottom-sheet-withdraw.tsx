@@ -34,16 +34,17 @@ export const BottomSheetWithdraw = ({
 }: BottomSheetProps) => {
   const [isClosing, setIsClosing] = useState(false);
   const prevIsOpenRef = useRef(isOpen);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prevBodyOverflowRef = useRef<string | null>(null);
 
   const shouldRender = isOpen || isClosing;
 
   useEffect(() => {
     const prevIsOpen = prevIsOpenRef.current;
-    
+
     if (isOpen !== prevIsOpen) {
       prevIsOpenRef.current = isOpen;
-      
+
       if (isOpen) {
         setIsClosing((prev) => {
           if (prev) {
@@ -62,13 +63,17 @@ export const BottomSheetWithdraw = ({
 
   useEffect(() => {
     if (isOpen) {
+      if (prevBodyOverflowRef.current === null) {
+        prevBodyOverflowRef.current = document.body.style.overflow;
+      }
       document.body.style.overflow = "hidden";
     }
 
     if (isClosing) {
       timeoutRef.current = setTimeout(() => {
         setIsClosing(false);
-        document.body.style.overflow = "unset";
+        document.body.style.overflow = prevBodyOverflowRef.current ?? "";
+        prevBodyOverflowRef.current = null;
       }, ANIMATION_DURATION);
 
       return () => {
@@ -76,12 +81,17 @@ export const BottomSheetWithdraw = ({
           clearTimeout(timeoutRef.current);
           timeoutRef.current = null;
         }
+        // 언마운트/중단 시에도 복구 보장
+        document.body.style.overflow = prevBodyOverflowRef.current ?? "";
+        prevBodyOverflowRef.current = null;
       };
     }
 
     return () => {
-      if (!isOpen && !isClosing) {
-        document.body.style.overflow = "unset";
+      // 언마운트 포함: 항상 복구
+      if (!isOpen) {
+        document.body.style.overflow = prevBodyOverflowRef.current ?? "";
+        prevBodyOverflowRef.current = null;
       }
     };
   }, [isOpen, isClosing]);
@@ -186,4 +196,3 @@ export const BottomSheetWithdraw = ({
 };
 
 export default BottomSheetWithdraw;
-

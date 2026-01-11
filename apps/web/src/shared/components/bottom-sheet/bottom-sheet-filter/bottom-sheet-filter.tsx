@@ -84,6 +84,8 @@ export const BottomSheetFilter = ({
         overlayClassName
       )}
       onClick={handleOverlayClick}
+      role="dialog"
+      aria-modal="true"
     >
       <div
         className={clsx(

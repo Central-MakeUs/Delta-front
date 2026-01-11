@@ -3,14 +3,11 @@ export type FilterOption = {
   label: string;
 };
 
-export type CheckboxOption = {
-  id: string;
-  label: string;
-};
+export type CheckboxOption = FilterOption;
 
 export type DropdownSection = {
   id: string;
-  options: CheckboxOption[];
+  options: FilterOption[];
   defaultOpen?: boolean;
 };
 

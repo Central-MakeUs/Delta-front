@@ -67,7 +67,6 @@ export const useBottomSheetFilter = ({
     selectedTypeIds,
     selectedDropdownIds,
     dropdownSection?.defaultOpen,
-    dropdownSection,
   ]);
 
   useEffect(() => {

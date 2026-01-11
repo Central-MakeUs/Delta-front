@@ -89,9 +89,7 @@ export const useBottomSheetFilter = ({
     }
 
     return () => {
-      if (!isOpen && !isClosing) {
-        document.body.style.overflow = "unset";
-      }
+      document.body.style.overflow = "unset";
     };
   }, [isOpen, isClosing]);
 

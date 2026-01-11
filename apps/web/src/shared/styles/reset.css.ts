@@ -78,10 +78,6 @@ globalStyle("button, a, input, textarea, select, [role='button']", {
   WebkitTapHighlightColor: "transparent",
 });
 
-globalStyle("button:active, a:active, [role='button']:active", {
-  backgroundColor: "transparent",
-});
-
 globalStyle("button, input, textarea, select", {
   WebkitAppearance: "none",
   appearance: "none",
@@ -93,4 +89,9 @@ globalStyle("button", {
 
 globalStyle("input, textarea", {
   outline: "none",
+});
+
+globalStyle("label, label *", {
+  WebkitTapHighlightColor: "transparent",
+  userSelect: "none",
 });

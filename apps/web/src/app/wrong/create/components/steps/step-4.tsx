@@ -1,89 +1,83 @@
 "use client";
 
-import { useState } from "react";
-import TextField from "@/shared/components/text-field/text-field";
 import Image from "next/image";
-import * as s from "@/app/wrong/create/components/steps/step.css";
-import SampleImg from "@/shared/assets/images/wrong-sample.png";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import TextField from "@/shared/components/text-field/text-field";
+import TextAreaField from "@/shared/components/text-area-field/text-area-field";
 import { Toggle } from "@/shared/components/toggle/toggle";
 import { NumberChoice } from "@/shared/components/number-choice/number-choice";
-import TextAreaField from "@/shared/components/text-area-field/text-area-field";
 import { StepProps } from "@/app/wrong/create/page";
 import { TOGGLE_OPTIONS } from "@/app/wrong/create/constants/option-labels";
+import SampleImg from "@/shared/assets/images/wrong-sample.png";
+import * as s from "@/app/wrong/create/components/steps/step.css";
 
 type ToggleValue = "objective" | "subjective";
 
+type FormState = {
+  type: ToggleValue;
+  answerChoice: number | null;
+  answerText: string;
+  solutionText: string;
+};
+
 const Step4 = ({ onNextEnabledChange }: StepProps) => {
-  const [type, setType] = useState<ToggleValue>("objective");
-  const [answerChoice, setAnswerChoice] = useState<number | null>(null);
-  const [answerText, setAnswerText] = useState("");
-  const [solutionText, setSolutionText] = useState("");
+  const [form, setForm] = useState<FormState>({
+    type: "objective",
+    answerChoice: null,
+    answerText: "",
+    solutionText: "",
+  });
 
-  const computeEnabled = (next: {
-    type: ToggleValue;
-    answerChoice: number | null;
-    answerText: string;
-    solutionText: string;
-  }) => {
+  const updateForm = useCallback((patch: Partial<FormState>) => {
+    setForm((prev) => ({ ...prev, ...patch }));
+  }, []);
+
+  const isNextEnabled = useMemo(() => {
     const hasAnswer =
-      next.type === "objective"
-        ? next.answerChoice !== null
-        : next.answerText.trim().length > 0;
+      form.type === "objective"
+        ? form.answerChoice !== null
+        : form.answerText.trim().length > 0;
 
-    const hasSolution = next.solutionText.trim().length > 0;
+    const hasSolution = form.solutionText.trim().length > 0;
 
     return hasAnswer && hasSolution;
-  };
+  }, [form]);
 
-  const handleTypeChange = (nextType: ToggleValue) => {
-    setType(nextType);
-    setAnswerChoice(null);
-    setAnswerText("");
+  useEffect(() => {
+    onNextEnabledChange?.(isNextEnabled);
+  }, [isNextEnabled, onNextEnabledChange]);
 
-    const nextState = {
-      type: nextType,
-      answerChoice: null,
-      answerText: "",
-      solutionText,
-    };
-    onNextEnabledChange?.(computeEnabled(nextState));
-  };
+  const handleTypeChange = useCallback(
+    (nextType: ToggleValue) => {
+      updateForm({
+        type: nextType,
+        answerChoice: null,
+        answerText: "",
+      });
+    },
+    [updateForm]
+  );
 
-  const handleChoiceChange = (nextChoice: number) => {
-    setAnswerChoice(nextChoice);
+  const handleChoiceChange = useCallback(
+    (nextChoice: number) => {
+      updateForm({ answerChoice: nextChoice });
+    },
+    [updateForm]
+  );
 
-    const nextState = {
-      type,
-      answerChoice: nextChoice,
-      answerText,
-      solutionText,
-    };
-    onNextEnabledChange?.(computeEnabled(nextState));
-  };
+  const handleAnswerTextChange = useCallback(
+    (nextAnswerText: string) => {
+      updateForm({ answerText: nextAnswerText });
+    },
+    [updateForm]
+  );
 
-  const handleAnswerTextChange = (nextAnswerText: string) => {
-    setAnswerText(nextAnswerText);
-
-    const nextState = {
-      type,
-      answerChoice,
-      answerText: nextAnswerText,
-      solutionText,
-    };
-    onNextEnabledChange?.(computeEnabled(nextState));
-  };
-
-  const handleSolutionChange = (nextSolution: string) => {
-    setSolutionText(nextSolution);
-
-    const nextState = {
-      type,
-      answerChoice,
-      answerText,
-      solutionText: nextSolution,
-    };
-    onNextEnabledChange?.(computeEnabled(nextState));
-  };
+  const handleSolutionChange = useCallback(
+    (nextSolution: string) => {
+      updateForm({ solutionText: nextSolution });
+    },
+    [updateForm]
+  );
 
   return (
     <div className={s.step4Container}>
@@ -102,22 +96,22 @@ const Step4 = ({ onNextEnabledChange }: StepProps) => {
             <span className={s.explanationTitle}>정답</span>
 
             <Toggle<ToggleValue>
-              value={type}
+              value={form.type}
               onValueChange={handleTypeChange}
               options={TOGGLE_OPTIONS}
             />
           </div>
 
-          {type === "objective" ? (
+          {form.type === "objective" ? (
             <NumberChoice
-              value={answerChoice}
+              value={form.answerChoice}
               onValueChange={handleChoiceChange}
             />
           ) : (
             <TextField
               fullWidth
               placeholder="정답을 입력해주세요."
-              value={answerText}
+              value={form.answerText}
               onChange={(e) => handleAnswerTextChange(e.target.value)}
             />
           )}
@@ -128,7 +122,7 @@ const Step4 = ({ onNextEnabledChange }: StepProps) => {
           <TextAreaField
             fullWidth
             placeholder="풀이를 입력해주세요."
-            value={solutionText}
+            value={form.solutionText}
             onChange={(e) => handleSolutionChange(e.target.value)}
           />
         </div>

@@ -1,31 +1,53 @@
-import type { HTMLAttributes } from "react";
+"use client";
+
+import type { KeyboardEventHandler } from "react";
 import Image, { type StaticImageData } from "next/image";
+import { useRouter } from "next/navigation";
 
 import Chip from "@/shared/components/chip/chip";
-import SampleImg from "@/shared/assets/images/wrong-sample.png";
 import * as s from "@/app/wrong/components/wrong-card.css";
 
 type WrongCardProps = {
-  title?: string;
-  date?: string;
-  imageSrc?: StaticImageData | string;
-  imageAlt?: string;
-  chips?: {
+  title: string;
+  date: string;
+  imageSrc: StaticImageData | string;
+  imageAlt: string;
+  chips: {
     primary: string;
     secondary: string[];
   };
-} & Pick<HTMLAttributes<HTMLDivElement>, "onClick">;
+  href: string;
+};
 
 const WrongCard = ({
-  title = "공통수학1 문제",
-  date = "2026.01.06",
-  imageSrc = SampleImg,
-  imageAlt = "오답 문제 이미지",
-  chips = { primary: "공통수학1", secondary: ["다항식", "절댓값"] },
-  onClick,
+  title,
+  date,
+  imageSrc,
+  imageAlt,
+  chips,
+  href,
 }: WrongCardProps) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(href);
+  };
+
+  const handleKeyDown: KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      router.push(href);
+    }
+  };
+
   return (
-    <div className={s.card({ clickable: Boolean(onClick) })} onClick={onClick}>
+    <div
+      className={s.card}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      role="link"
+      tabIndex={0}
+    >
       <Image
         src={imageSrc}
         alt={imageAlt}

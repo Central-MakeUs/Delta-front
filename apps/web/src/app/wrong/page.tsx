@@ -1,5 +1,7 @@
 import * as s from "@/app/wrong/wrong.css";
 import Filter from "@/shared/components/filter/filter";
+import WrongCard from "@/app/wrong/components/wrong-card";
+import SampleImg from "@/shared/assets/images/wrong-sample.png";
 
 const WrongPage = () => {
   return (
@@ -18,7 +20,10 @@ const WrongPage = () => {
           <Filter icon="chevron" label="최근 등록순" background="transparent" />
         </div>
       </div>
-      <div className={s.cardSection}>{/**카드들 추가예정..!! */}</div>
+      <div className={s.cardSection}>
+        <WrongCard />
+        <WrongCard />
+      </div>
     </div>
   );
 };

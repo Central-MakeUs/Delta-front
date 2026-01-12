@@ -1,7 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
-import * as styles from "./bottom-sheet-sort.css";
-import Icon from "../../icon/icon";
+import * as styles from "@/shared/components/bottom-sheet/bottom-sheet-sort/bottom-sheet-sort.css";
+import Icon from "@/shared/components/icon/icon";
+import { slideDown } from "@/shared/components/bottom-sheet/styles/animations.css";
 
 export type SortOption = {
   id: string;
@@ -18,8 +21,6 @@ export interface BottomSheetSortProps {
   overlayClassName?: string;
 }
 
-const ANIMATION_DURATION = 300;
-
 export const BottomSheetSort = ({
   isOpen,
   onClose,
@@ -30,109 +31,67 @@ export const BottomSheetSort = ({
   overlayClassName,
 }: BottomSheetSortProps) => {
   const [isClosing, setIsClosing] = useState(false);
-  const prevIsOpenRef = useRef(isOpen);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const shouldRender = isOpen || isClosing;
-
-  useEffect(() => {
-    const prevIsOpen = prevIsOpenRef.current;
-
-    if (isOpen !== prevIsOpen) {
-      prevIsOpenRef.current = isOpen;
-
-      if (isOpen) {
-        setIsClosing((prev) => {
-          if (prev) {
-            if (timeoutRef.current) {
-              clearTimeout(timeoutRef.current);
-              timeoutRef.current = null;
-            }
-          }
-          return false;
-        });
-      } else {
-        setIsClosing((prev) => (prev ? prev : true));
-      }
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    }
-
-    if (isClosing) {
-      timeoutRef.current = setTimeout(() => {
-        setIsClosing(false);
-        document.body.style.overflow = "unset";
-      }, ANIMATION_DURATION);
-
-      return () => {
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-          timeoutRef.current = null;
-        }
-      };
-    }
-
-    return () => {
-      if (!isOpen && !isClosing) {
-        document.body.style.overflow = "unset";
-      }
-    };
-  }, [isOpen, isClosing]);
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen && !isClosing) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      window.addEventListener("keydown", handleEscape);
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleEscape);
-    };
-  }, [isOpen, isClosing, onClose]);
-
-  if (!shouldRender) return null;
-
-  const handleClose = () => {
+  const requestClose = () => {
     if (isClosing) return;
-    onClose();
+    setIsClosing(true);
   };
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget && !isClosing) {
-      handleClose();
-    }
+    if (e.target !== e.currentTarget) return;
+    requestClose();
   };
 
   const handleOptionClick = (optionId: string) => {
     if (isClosing) return;
     onSelect?.(optionId);
-    handleClose();
+    requestClose();
   };
+
+  const handleSheetAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
+    if (!isClosing) return;
+    if (e.target !== e.currentTarget) return;
+
+    if (e.animationName !== slideDown) return;
+
+    setIsClosing(false);
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") requestClose();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, isClosing]);
+
+  if (!isOpen) return null;
 
   return (
     <div
-      className={clsx(
-        styles.overlay,
-        isClosing && styles.overlayClosing,
-        overlayClassName
-      )}
+      className={clsx(styles.overlay, overlayClassName)}
+      data-state={isClosing ? "closing" : "open"}
       onClick={handleOverlayClick}
+      role="dialog"
+      aria-modal="true"
+      aria-label="정렬"
     >
       <div
-        className={clsx(
-          styles.bottomSheet,
-          isClosing && styles.bottomSheetClosing,
-          className
-        )}
+        className={clsx(styles.bottomSheet, className)}
+        data-state={isClosing ? "closing" : "open"}
+        onAnimationEnd={handleSheetAnimationEnd}
       >
         <div className={styles.frameContainer}>
           <div className={styles.headerFrame}>
@@ -141,7 +100,7 @@ export const BottomSheetSort = ({
               <button
                 type="button"
                 className={styles.closeButton}
-                onClick={handleClose}
+                onClick={requestClose}
                 disabled={isClosing}
                 aria-label="닫기"
               >
@@ -157,14 +116,12 @@ export const BottomSheetSort = ({
           >
             {options.map((option) => {
               const isSelected = option.id === selectedOptionId;
+
               return (
                 <button
                   type="button"
                   key={option.id}
-                  className={clsx(
-                    styles.listItem,
-                    isSelected && styles.listItemSelected
-                  )}
+                  className={styles.listItem}
                   onClick={() => handleOptionClick(option.id)}
                   role="option"
                   aria-selected={isSelected}
@@ -178,10 +135,13 @@ export const BottomSheetSort = ({
                   >
                     {option.label}
                   </span>
+
                   {isSelected && (
-                    <div className={styles.checkIcon}>
-                      <Icon name="check-mark" size={2.4} />
-                    </div>
+                    <Icon
+                      name="check-mark"
+                      size={2.4}
+                      className={styles.checkIcon}
+                    />
                   )}
                 </button>
               );

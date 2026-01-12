@@ -1,4 +1,3 @@
-import React from "react";
 import Chip from "@/shared/components/chip/chip";
 import type { FilterOption, DropdownSection } from "../types";
 import { FilterDropdownSection } from "./dropdown-section";

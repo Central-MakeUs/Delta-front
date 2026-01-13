@@ -4,10 +4,7 @@ import React, { useEffect, useRef } from "react";
 import clsx from "clsx";
 import Divider from "@/shared/components/divider/divider";
 import * as styles from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter.css";
-import type {
-  BottomSheetFilterProps,
-  BottomSheetFilterInitialSection,
-} from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
+import type { BottomSheetFilterProps } from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
 import { FilterHeader } from "@/shared/components/bottom-sheet/bottom-sheet-filter/components/filter-header";
 import { FilterSection } from "@/shared/components/bottom-sheet/bottom-sheet-filter/components/filter-section";
 import { FilterFooter } from "@/shared/components/bottom-sheet/bottom-sheet-filter/components/filter-footer";
@@ -85,10 +82,8 @@ export const BottomSheetFilter = ({
     if (!isOpen) return;
 
     clearSyncTimer();
-
     syncTimerRef.current = setTimeout(() => {
       syncFromLatest();
-
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           syncSpacerForSection(initialSection);

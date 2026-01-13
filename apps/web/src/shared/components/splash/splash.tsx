@@ -1,17 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Lottie, { type LottieRefCurrentProps } from "lottie-react";
-import splashLottie from "@/shared/assets/semo-splash.json";
+import splashLottie from "@/shared/assets/lottie/semo-splash.json";
 import * as s from "@/shared/components/splash/splash.css";
 
 const Splash = () => {
   const [visible, setVisible] = useState(true);
   const lottieRef = useRef<LottieRefCurrentProps | null>(null);
-
-  useEffect(() => {
-    lottieRef.current?.setSpeed(1.6);
-  }, []);
 
   if (!visible) return null;
 
@@ -26,6 +22,7 @@ const Splash = () => {
         autoplay
         loop={false}
         animationData={splashLottie}
+        onDOMLoaded={() => lottieRef.current?.setSpeed(1.5)}
         className={s.image}
       />
     </div>

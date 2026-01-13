@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
 import * as styles from "@/shared/components/bottom-sheet/bottom-sheet-sort/bottom-sheet-sort.css";
 import Icon from "@/shared/components/icon/icon";
@@ -32,57 +32,70 @@ export const BottomSheetSort = ({
 }: BottomSheetSortProps) => {
   const [isClosing, setIsClosing] = useState(false);
 
-  const requestClose = () => {
-    if (isClosing) return;
-    setIsClosing(true);
-  };
+  const requestClose = useCallback(() => {
+    setIsClosing((prev) => (prev ? prev : true));
+  }, []);
 
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target !== e.currentTarget) return;
-    requestClose();
-  };
+  const handleOverlayClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.target !== e.currentTarget) return;
+      requestClose();
+    },
+    [requestClose]
+  );
 
-  const handleOptionClick = (optionId: string) => {
-    if (isClosing) return;
-    onSelect?.(optionId);
-    requestClose();
-  };
+  const handleOptionClick = useCallback(
+    (optionId: string) => {
+      if (isClosing) return;
+      onSelect?.(optionId);
+      requestClose();
+    },
+    [isClosing, onSelect, requestClose]
+  );
 
-  const handleSheetAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
-    if (!isClosing) return;
-    if (e.target !== e.currentTarget) return;
+  const handleSheetAnimationEnd = useCallback(
+    (e: React.AnimationEvent<HTMLDivElement>) => {
+      if (!isClosing) return;
+      if (e.target !== e.currentTarget) return;
+      if (e.animationName !== slideDown) return;
 
-    if (e.animationName !== slideDown) return;
-
-    setIsClosing(false);
-    onClose();
-  };
+      setIsClosing(false);
+      onClose();
+    },
+    [isClosing, onClose]
+  );
 
   useEffect(() => {
-    if (!isOpen) return;
+    const shouldLock = isOpen || isClosing;
+    if (!shouldLock) return;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isOpen]);
+  }, [isOpen, isClosing]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    const shouldBind = isOpen || isClosing;
+    if (!shouldBind) return;
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") requestClose();
+      if (e.key !== "Escape") return;
+      requestClose();
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isOpen, isClosing]);
+  }, [isOpen, isClosing, requestClose]);
 
-  if (!isOpen) return null;
+  const shouldRender = isOpen || isClosing;
+  if (!shouldRender) return null;
+
+  const motionState = isClosing ? "closing" : "open";
 
   return (
     <div
       className={clsx(styles.overlay, overlayClassName)}
-      data-state={isClosing ? "closing" : "open"}
+      data-state={motionState}
       onClick={handleOverlayClick}
       role="dialog"
       aria-modal="true"
@@ -90,7 +103,7 @@ export const BottomSheetSort = ({
     >
       <div
         className={clsx(styles.bottomSheet, className)}
-        data-state={isClosing ? "closing" : "open"}
+        data-state={motionState}
         onAnimationEnd={handleSheetAnimationEnd}
       >
         <div className={styles.frameContainer}>

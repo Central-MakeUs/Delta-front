@@ -139,6 +139,7 @@ export const answerButtonOverlay = style({
   top: 0,
   background: "rgba(214, 214, 214, 0.1)",
   backdropFilter: "blur(0.6rem)",
+  WebkitBackdropFilter: "blur(0.6rem)",
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
@@ -162,15 +163,25 @@ export const answerChipWrapper = style([
   bgColor["grayscale-0"],
   {
     display: "flex",
-    flexDirection: "row",
     alignItems: "center",
     padding: "1.2rem",
     gap: "0.8rem",
     flex: "none",
-    order: 1,
-    flexGrow: 0,
+    justifyContent: "space-between",
   },
 ]);
+
+export const answerChipButton = style({
+  display: "flex",
+  alignItems: "center",
+  zIndex: 2,
+});
+
+export const answerChipContent = style({
+  display: "flex",
+  alignItems: "center",
+  gap: "0.8rem",
+});
 
 export const answerNumber = style([
   typo.body3.medium,
@@ -248,5 +259,14 @@ export const bottomButton = style([
     borderRadius: "1.2rem",
     border: "none",
     cursor: "pointer",
+    transition: "background-color 0.3s ease",
+    selectors: {
+      "&:disabled": {
+        backgroundColor: vars.color.grayscale[300],
+        color: vars.color.grayscale[500],
+        cursor: "not-allowed",
+        opacity: 0.6,
+      },
+    },
   },
 ]);

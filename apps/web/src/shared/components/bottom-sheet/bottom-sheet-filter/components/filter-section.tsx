@@ -11,7 +11,6 @@ interface FilterSectionProps {
   filters: FilterOption[];
   selectedIds: string[];
   onToggle: (id: string) => void;
-
   dropdownSection?: DropdownSection;
   localDropdownIds?: Record<string, string[]>;
   onDropdownOptionToggle?: (chapterId: string, optionId: string) => void;
@@ -36,7 +35,6 @@ export const FilterSection = ({
   return (
     <div className={styles.sectionFrame}>
       <h3 className={styles.sectionTitle}>{title}</h3>
-
       <div className={styles.chipContainer}>
         {filters.map((filter) => {
           const isSelected = selectedIds.includes(filter.id);

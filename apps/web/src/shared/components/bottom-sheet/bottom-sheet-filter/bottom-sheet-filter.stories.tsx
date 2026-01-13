@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { lightTheme } from "@/shared/styles/theme.css";
 import { Button } from "@/shared/components/button/button/button";
 import BottomSheetFilter from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter";
+import type { BottomSheetFilterInitialSection } from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
 
 const Stage = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -69,6 +70,7 @@ const meta: Meta<typeof BottomSheetFilter> = {
           "",
           "### Props",
           "- `selectedDropdownIds?: Record<string, string[]>` - 단원별 하위 옵션 선택값",
+          "- `initialSection?: 'chapter' | 'type'` - 바텀시트 열릴 때 최상단에 위치할 섹션",
         ].join("\n"),
       },
     },
@@ -85,6 +87,10 @@ const meta: Meta<typeof BottomSheetFilter> = {
     onClose: { action: "closed" },
     onReset: { action: "reset" },
     onApply: { action: "applied" },
+    initialSection: {
+      control: { type: "inline-radio" },
+      options: ["chapter", "type"] satisfies BottomSheetFilterInitialSection[],
+    },
   },
 };
 
@@ -102,6 +108,8 @@ const DefaultStoryComponent = () => {
   };
 
   const [isOpen, setIsOpen] = useState(false);
+  const [initialSection, setInitialSection] =
+    useState<BottomSheetFilterInitialSection>("chapter");
   const [selectedChapters, setSelectedChapters] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedDropdown, setSelectedDropdown] = useState<
@@ -110,25 +118,34 @@ const DefaultStoryComponent = () => {
 
   return (
     <>
-      <div style={{ padding: "2.4rem" }}>
+      <div style={{ padding: "2.4rem", display: "flex", gap: "1rem" }}>
         <Button
-          label="필터 바텀 시트 열기"
+          label="단원별로 열기"
           onClick={() => {
             if (isOpen) return;
+            setInitialSection("chapter");
             setIsOpen(true);
           }}
         />
+        <Button
+          label="유형별로 열기"
+          onClick={() => {
+            if (isOpen) return;
+            setInitialSection("type");
+            setIsOpen(true);
+          }}
+        />
+      </div>
 
-        <div style={{ marginTop: "1rem", lineHeight: 1.6 }}>
-          <p>선택된 단원: {selectedChapters.join(", ") || "없음"}</p>
-          <p>선택된 유형: {selectedTypes.join(", ") || "없음"}</p>
-          <p>
-            선택된 하위 옵션:{" "}
-            {Object.entries(selectedDropdown)
-              .map(([chapter, options]) => `${chapter}: ${options.join(", ")}`)
-              .join(" | ") || "없음"}
-          </p>
-        </div>
+      <div style={{ padding: "0 2.4rem 2.4rem", lineHeight: 1.6 }}>
+        <p>선택된 단원: {selectedChapters.join(", ") || "없음"}</p>
+        <p>선택된 유형: {selectedTypes.join(", ") || "없음"}</p>
+        <p>
+          선택된 하위 옵션:{" "}
+          {Object.entries(selectedDropdown)
+            .map(([chapter, options]) => `${chapter}: ${options.join(", ")}`)
+            .join(" | ") || "없음"}
+        </p>
       </div>
 
       <BottomSheetFilter
@@ -140,6 +157,7 @@ const DefaultStoryComponent = () => {
         selectedChapterIds={selectedChapters}
         selectedTypeIds={selectedTypes}
         selectedDropdownIds={selectedDropdown}
+        initialSection={initialSection}
         onReset={() => {
           setSelectedChapters([]);
           setSelectedTypes([]);
@@ -169,15 +187,25 @@ const OpenByDefaultStoryComponent = () => {
   };
 
   const [isOpen, setIsOpen] = useState(true);
+  const [initialSection, setInitialSection] =
+    useState<BottomSheetFilterInitialSection>("type");
 
   return (
     <>
-      <div style={{ padding: "2.4rem" }}>
-        <span style={{ display: "inline-block", width: "1rem" }} />
+      <div style={{ padding: "2.4rem", display: "flex", gap: "1rem" }}>
         <Button
-          label="다시 열기"
+          label="단원별로 다시 열기"
           onClick={() => {
             if (isOpen) return;
+            setInitialSection("chapter");
+            setIsOpen(true);
+          }}
+        />
+        <Button
+          label="유형별로 다시 열기"
+          onClick={() => {
+            if (isOpen) return;
+            setInitialSection("type");
             setIsOpen(true);
           }}
         />
@@ -201,6 +229,7 @@ const OpenByDefaultStoryComponent = () => {
         selectedChapterIds={["1"]}
         selectedTypeIds={["type1"]}
         selectedDropdownIds={{ "1": ["poly1"] }}
+        initialSection={initialSection}
       />
     </>
   );

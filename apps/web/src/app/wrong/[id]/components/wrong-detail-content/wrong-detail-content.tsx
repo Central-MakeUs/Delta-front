@@ -2,16 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import * as styles from "../wrong-detail.css";
+import * as styles from "./wrong-detail-content.css";
 import {
   HeaderSection,
   QuestionSection,
   AnswerSection,
   SolutionSection,
-} from "./sections";
-import { BottomButton } from "./actions";
+} from "../sections";
+import { BottomButton } from "../actions";
 import CompleteModal from "@/shared/components/modal/complete-modal/complete-modal";
-import { DUMMY_DATA } from "./mocks/wrong-dummy";
+import { DUMMY_DATA } from "../mocks/wrong-dummy";
 
 const WrongDetailContent = () => {
   const [solution, setSolution] = useState("");

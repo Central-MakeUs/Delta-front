@@ -1,5 +1,5 @@
 import Icon from "@/shared/components/icon/icon";
-import * as styles from "../../wrong-detail.css";
+import * as styles from "./bottom-button.css";
 
 interface BottomButtonProps {
   onClick?: () => void;

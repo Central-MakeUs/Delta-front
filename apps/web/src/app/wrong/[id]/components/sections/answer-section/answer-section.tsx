@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Chip from "@/shared/components/chip/chip";
-import * as styles from "../../wrong-detail.css";
+import * as styles from "./answer-section.css";
 
 interface AnswerSectionProps {
   answer: string;

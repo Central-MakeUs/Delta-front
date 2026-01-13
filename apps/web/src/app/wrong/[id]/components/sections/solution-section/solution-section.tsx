@@ -1,6 +1,6 @@
 import Chip from "@/shared/components/chip/chip";
 import TextField from "@/shared/components/text-field/text-field";
-import * as styles from "../../wrong-detail.css";
+import * as styles from "./solution-section.css";
 
 interface SolutionSectionProps {
   value: string;

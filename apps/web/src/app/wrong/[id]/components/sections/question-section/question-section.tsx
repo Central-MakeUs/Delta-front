@@ -1,5 +1,5 @@
 import { vars } from "@/shared/styles/theme.css";
-import * as styles from "../../wrong-detail.css";
+import * as styles from "./question-section.css";
 
 const QuestionSection = () => {
   return (

@@ -1,5 +1,5 @@
 import Chip from "@/shared/components/chip/chip";
-import * as styles from "../../wrong-detail.css";
+import * as styles from "./header-section.css";
 
 interface HeaderSectionProps {
   title: string;

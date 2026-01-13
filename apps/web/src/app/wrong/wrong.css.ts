@@ -19,6 +19,12 @@ export const filterRow = style([
   {
     display: "flex",
     gap: "0.8rem",
+    overflowX: "auto",
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
+    selectors: {
+      "&::-webkit-scrollbar": { display: "none" },
+    },
   },
 ]);
 

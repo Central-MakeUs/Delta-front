@@ -7,7 +7,7 @@ export type CheckboxOption = FilterOption;
 
 export type DropdownSection = {
   id: string;
-  options: FilterOption[];
+  options: ReadonlyArray<FilterOption>;
   defaultOpen?: boolean;
 };
 

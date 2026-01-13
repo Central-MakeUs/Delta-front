@@ -33,7 +33,7 @@ export const bottomSheet = style([
   {
     position: "relative",
     width: "100%",
-    maxHeight: "54rem",
+    maxHeight: "56rem",
     display: "flex",
     flexDirection: "column",
     paddingBottom: "2rem",

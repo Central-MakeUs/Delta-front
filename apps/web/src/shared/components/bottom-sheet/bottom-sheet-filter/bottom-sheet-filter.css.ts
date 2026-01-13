@@ -22,7 +22,6 @@ export const overlay = style([
       },
       '&[data-state="closing"]': {
         animation: `${fadeOut} 0.3s ease-in both`,
-        pointerEvents: "none",
       },
     },
   },
@@ -32,7 +31,7 @@ export const bottomSheet = style([
   bgColor["grayscale-0"],
   {
     width: "100%",
-    maxHeight: "min(56rem, 100dvh)",
+    height: "56rem",
     overflow: "hidden",
     display: "flex",
     flexDirection: "column",
@@ -129,13 +128,7 @@ export const dropdownHeader = style({
   cursor: "pointer",
 });
 
-export const triangleIcon = style({
-  transform: "rotate(90deg)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: vars.color.grayscale[700],
-});
+export const triangleIcon = style([color["grayscale-700"]]);
 
 export const dropdownTitle = style([typo.body3.medium, color["grayscale-700"]]);
 

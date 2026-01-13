@@ -3,19 +3,19 @@ import Checkbox from "@/shared/components/checkbox/checkbox";
 import type { DropdownSection } from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
 import * as styles from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter.css";
 
-interface FilterDropdownSectionProps {
+interface FilterSelectSectionProps {
   chapterLabel: string;
   dropdownSection: DropdownSection;
   selectedIds: string[];
   onToggle: (id: string) => void;
 }
 
-export const FilterDropdownSection = ({
+export const FilterSelectSection = ({
   chapterLabel,
   dropdownSection,
   selectedIds,
   onToggle,
-}: FilterDropdownSectionProps) => {
+}: FilterSelectSectionProps) => {
   return (
     <div className={styles.dropdownSection}>
       <div className={styles.dropdownHeader}>

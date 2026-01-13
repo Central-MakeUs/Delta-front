@@ -3,7 +3,7 @@ import type {
   FilterOption,
   DropdownSection,
 } from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
-import { FilterDropdownSection } from "@/shared/components/bottom-sheet/bottom-sheet-filter/components/dropdown-section";
+import { FilterSelectSection } from "@/shared/components/bottom-sheet/bottom-sheet-filter/components/dropdown-section";
 import * as styles from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter.css";
 
 interface FilterSectionProps {
@@ -56,7 +56,7 @@ export const FilterSection = ({
         const chapterSelectedIds = localDropdownIds?.[chapterId] ?? [];
 
         return (
-          <FilterDropdownSection
+          <FilterSelectSection
             key={chapterId}
             chapterLabel={chapter.label}
             dropdownSection={dropdownSection!}

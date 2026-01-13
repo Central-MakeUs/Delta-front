@@ -1,4 +1,5 @@
 import { createTheme, createThemeContract } from "@vanilla-extract/css";
+import { wrongCardGradient } from "./color.css";
 
 export const vars = createThemeContract({
   color: {
@@ -40,7 +41,7 @@ export const vars = createThemeContract({
     warning: { 100: null, 500: null, 600: null },
     error: { 100: null, 500: null, 700: null },
     login: { kakao: null, bgGradient: null },
-    etc: { crown: null, myGradient: null },
+    etc: { crown: null, myGradient: null, wrongCardGradient: null },
   },
   space: { 0: null, 2: null, 3: null, 4: null, 6: null },
   radius: {
@@ -185,6 +186,8 @@ export const lightTheme = createTheme(vars, {
       crown: "#FFC852",
       myGradient:
         "linear-gradient(143deg, #fdd8d2ff 0%, #FFB4A9 91%, #FFB4A9 100%)",
+      wrongCardGradient:
+        "linear-gradient(180deg, rgba(255, 255, 255, 0) 22%, 70%, rgba(17, 17, 17, 0.60) 100%)",
     },
   },
 

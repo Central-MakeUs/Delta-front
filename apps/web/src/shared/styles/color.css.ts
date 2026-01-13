@@ -94,3 +94,7 @@ export const myGradient = {
 export const bgGradient = {
   "login-bg": vars.color.login.bgGradient,
 } as const;
+
+export const wrongCardGradient = {
+  "wrong-card-gradient": vars.color.etc.wrongCardGradient,
+} as const;

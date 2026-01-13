@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { BottomSheetFilterProps } from "../types";
+import type { BottomSheetFilterProps } from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
 
 const ANIMATION_DURATION = 300;
 

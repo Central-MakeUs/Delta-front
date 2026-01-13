@@ -1,6 +1,5 @@
-import React from "react";
 import Icon from "@/shared/components/icon/icon";
-import * as styles from "../bottom-sheet-filter.css";
+import * as styles from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter.css";
 
 interface FilterHeaderProps {
   onClose: () => void;
@@ -25,4 +24,3 @@ export const FilterHeader = ({ onClose, isClosing }: FilterHeaderProps) => {
     </div>
   );
 };
-

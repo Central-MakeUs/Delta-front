@@ -1,204 +1,240 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { lightTheme } from "@/shared/styles/theme.css";
 import { Button } from "@/shared/components/button/button/button";
-import BottomSheetFilter from "./bottom-sheet-filter";
+import BottomSheetFilter from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter";
+import type { BottomSheetFilterInitialSection } from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
+
+const Stage = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div
+      className={lightTheme}
+      style={{
+        minHeight: "100vh",
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        background: "transparent",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "43rem",
+          minHeight: "100vh",
+          position: "relative",
+          overflow: "hidden",
+          background: "transparent",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+};
+
+const CHAPTER_FILTERS = [
+  { id: "1", label: "1단원" },
+  { id: "2", label: "2단원" },
+  { id: "3", label: "3단원" },
+  { id: "4", label: "4단원" },
+  { id: "5", label: "5단원" },
+  { id: "6", label: "6단원" },
+  { id: "7", label: "7단원" },
+];
+
+const TYPE_FILTERS = [
+  { id: "type1", label: "유형1" },
+  { id: "type2", label: "유형2" },
+  { id: "type3", label: "유형3" },
+  { id: "type4", label: "유형4" },
+  { id: "type5", label: "유형5" },
+  { id: "type6", label: "유형6" },
+];
 
 const meta: Meta<typeof BottomSheetFilter> = {
   title: "Shared/BottomSheet/BottomSheetFilter",
   component: BottomSheetFilter,
   tags: ["autodocs"],
   parameters: {
-    layout: "centered",
+    layout: "fullscreen",
     docs: {
       description: {
         component: [
           "필터 옵션을 선택할 수 있는 BottomSheet 컴포넌트입니다.",
           "화면 하단에서 올라오는 모달 형태의 컴포넌트입니다.",
-          "단원별, 유형별 필터와 드롭다운 섹션을 지원합니다.",
-          "초기화 및 적용 버튼을 통해 필터를 관리할 수 있습니다.",
-          "ESC 키 또는 오버레이 클릭으로 닫을 수 있습니다.",
-          "Vanilla Extract를 사용하여 스타일링되었습니다.",
+          "단원별, 유형별 필터와 '단원 하위 옵션 섹션(토글 아님)'을 지원합니다.",
+          "",
+          "### 하위 옵션 섹션 동작",
+          "- `dropdownSection.id`에 해당하는 단원 칩이 선택되면, 하위 체크박스 섹션이 **항상 펼쳐진 상태로 표시**됩니다.",
           "",
           "### Props",
-          "- `isOpen: boolean` (필수)",
-          "- `onClose: () => void` (필수)",
-          "- `chapterFilters: FilterOption[]` (필수) - 단원별 필터 옵션",
-          "- `typeFilters: FilterOption[]` (필수) - 유형별 필터 옵션",
-          "- `dropdownSection?: DropdownSection` - 드롭다운 섹션",
-          "- `selectedChapterIds?: string[]` - 선택된 단원 ID 배열",
-          "- `selectedTypeIds?: string[]` - 선택된 유형 ID 배열",
-          "- `selectedDropdownIds?: string[]` - 선택된 드롭다운 ID 배열",
-          "- `onReset?: () => void` - 초기화 버튼 클릭 시 호출",
-          "- `onApply?: (filters) => void` - 적용 버튼 클릭 시 호출",
+          "- `selectedDropdownIds?: Record<string, string[]>` - 단원별 하위 옵션 선택값",
+          "- `initialSection?: 'chapter' | 'type'` - 바텀시트 열릴 때 최상단에 위치할 섹션",
         ].join("\n"),
       },
     },
   },
-  args: {
-    isOpen: true,
-    chapterFilters: [
-      { id: "1", label: "1단원" },
-      { id: "2", label: "2단원" },
-      { id: "3", label: "3단원" },
-      { id: "4", label: "4단원" },
-      { id: "5", label: "5단원" },
-      { id: "6", label: "6단원" },
-      { id: "7", label: "7단원" },
-    ],
-    typeFilters: [
-      { id: "type1", label: "유형1" },
-      { id: "type2", label: "유형2" },
-      { id: "type3", label: "유형3" },
-      { id: "type4", label: "유형4" },
-      { id: "type5", label: "유형5" },
-      { id: "type6", label: "유형6" },
-    ],
-    selectedChapterIds: ["1"],
-  },
+  decorators: [
+    (Story) => (
+      <Stage>
+        <Story />
+      </Stage>
+    ),
+  ],
   argTypes: {
     isOpen: { control: "boolean" },
     onClose: { action: "closed" },
     onReset: { action: "reset" },
     onApply: { action: "applied" },
+    initialSection: {
+      control: { type: "inline-radio" },
+      options: ["chapter", "type"] satisfies BottomSheetFilterInitialSection[],
+    },
   },
-  decorators: [
-    (Story) => (
-      <div
-        className={lightTheme}
-        style={{ width: "100%", height: "100vh", position: "relative" }}
-      >
-        <Story />
-      </div>
-    ),
-  ],
 };
 
 export default meta;
 type Story = StoryObj<typeof BottomSheetFilter>;
 
-/** 기본 필터 바텀 시트 */
-export const Default: Story = {
-  render: () => {
-    const DefaultComponent = () => {
-      const [isOpen, setIsOpen] = useState(false);
-      const [selectedChapters, setSelectedChapters] = useState<string[]>([]);
-      const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-      const [selectedDropdown, setSelectedDropdown] = useState<
-        Record<string, string[]>
-      >({});
+const DefaultStoryComponent = () => {
+  const dropdownSection = {
+    id: "1",
+    options: [
+      { id: "poly1", label: "다항식" },
+      { id: "eq1", label: "방정식과 부등식" },
+      { id: "func1", label: "함수" },
+    ],
+  };
 
-      const chapterFilters = [
-        { id: "1", label: "1단원" },
-        { id: "2", label: "2단원" },
-        { id: "3", label: "3단원" },
-        { id: "4", label: "4단원" },
-        { id: "5", label: "5단원" },
-        { id: "6", label: "6단원" },
-        { id: "7", label: "7단원" },
-      ];
+  const [isOpen, setIsOpen] = useState(false);
+  const [initialSection, setInitialSection] =
+    useState<BottomSheetFilterInitialSection>("chapter");
+  const [selectedChapters, setSelectedChapters] = useState<string[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedDropdown, setSelectedDropdown] = useState<
+    Record<string, string[]>
+  >({});
 
-      const typeFilters = [
-        { id: "type1", label: "유형1" },
-        { id: "type2", label: "유형2" },
-        { id: "type3", label: "유형3" },
-        { id: "type4", label: "유형4" },
-        { id: "type5", label: "유형5" },
-        { id: "type6", label: "유형6" },
-      ];
+  return (
+    <>
+      <div style={{ padding: "2.4rem", display: "flex", gap: "1rem" }}>
+        <Button
+          label="단원별로 열기"
+          onClick={() => {
+            if (isOpen) return;
+            setInitialSection("chapter");
+            setIsOpen(true);
+          }}
+        />
+        <Button
+          label="유형별로 열기"
+          onClick={() => {
+            if (isOpen) return;
+            setInitialSection("type");
+            setIsOpen(true);
+          }}
+        />
+      </div>
 
-      const dropdownSection = {
-        id: "math1",
-        options: [
-          { id: "poly1", label: "다항식" },
-          { id: "eq1", label: "방정식과 부등식" },
-          { id: "poly2", label: "다항식" },
-        ],
-        defaultOpen: true,
-      };
+      <div style={{ padding: "0 2.4rem 2.4rem", lineHeight: 1.6 }}>
+        <p>선택된 단원: {selectedChapters.join(", ") || "없음"}</p>
+        <p>선택된 유형: {selectedTypes.join(", ") || "없음"}</p>
+        <p>
+          선택된 하위 옵션:{" "}
+          {Object.entries(selectedDropdown)
+            .map(([chapter, options]) => `${chapter}: ${options.join(", ")}`)
+            .join(" | ") || "없음"}
+        </p>
+      </div>
 
-      return (
-        <>
-          <div style={{ padding: "2.4rem" }}>
-            <Button
-              label="필터 바텀 시트 열기"
-              onClick={() => setIsOpen(true)}
-            />
-            <div style={{ marginTop: "1rem" }}>
-              <p>선택된 단원: {selectedChapters.join(", ")}</p>
-              <p>선택된 유형: {selectedTypes.join(", ") || "없음"}</p>
-              <p>
-                선택된 드롭다운:{" "}
-                {Object.entries(selectedDropdown)
-                  .map(
-                    ([chapter, options]) => `${chapter}: ${options.join(", ")}`
-                  )
-                  .join(" | ") || "없음"}
-              </p>
-            </div>
-          </div>
-          <BottomSheetFilter
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-            chapterFilters={chapterFilters}
-            typeFilters={typeFilters}
-            dropdownSection={dropdownSection}
-            selectedChapterIds={selectedChapters}
-            selectedTypeIds={selectedTypes}
-            selectedDropdownIds={selectedDropdown}
-            onReset={() => {
-              setSelectedChapters([]);
-              setSelectedTypes([]);
-              setSelectedDropdown({});
-            }}
-            onApply={(filters) => {
-              setSelectedChapters(filters.chapters);
-              setSelectedTypes(filters.types);
-              setSelectedDropdown(filters.dropdown);
-            }}
-          />
-        </>
-      );
-    };
-    return <DefaultComponent />;
-  },
+      <BottomSheetFilter
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        chapterFilters={CHAPTER_FILTERS}
+        typeFilters={TYPE_FILTERS}
+        dropdownSection={dropdownSection}
+        selectedChapterIds={selectedChapters}
+        selectedTypeIds={selectedTypes}
+        selectedDropdownIds={selectedDropdown}
+        initialSection={initialSection}
+        onReset={() => {
+          setSelectedChapters([]);
+          setSelectedTypes([]);
+          setSelectedDropdown({});
+        }}
+        onApply={(filters) => {
+          setSelectedChapters(filters.chapters);
+          setSelectedTypes(filters.types);
+          setSelectedDropdown(filters.dropdown);
+        }}
+      />
+    </>
+  );
 };
 
-/** 드롭다운 없는 필터 */
-export const WithoutDropdown: Story = {
-  render: () => {
-    const WithoutDropdownComponent = () => {
-      const [isOpen, setIsOpen] = useState(false);
+export const Default: Story = {
+  render: () => <DefaultStoryComponent />,
+};
 
-      const chapterFilters = [
-        { id: "1", label: "1단원" },
-        { id: "2", label: "2단원" },
-        { id: "3", label: "3단원" },
-      ];
+const OpenByDefaultStoryComponent = () => {
+  const dropdownSection = {
+    id: "1",
+    options: [
+      { id: "poly1", label: "다항식" },
+      { id: "eq1", label: "방정식과 부등식" },
+    ],
+  };
 
-      const typeFilters = [
-        { id: "type1", label: "유형1" },
-        { id: "type2", label: "유형2" },
-        { id: "type3", label: "유형3" },
-      ];
+  const [isOpen, setIsOpen] = useState(true);
+  const [initialSection, setInitialSection] =
+    useState<BottomSheetFilterInitialSection>("type");
 
-      return (
-        <>
-          <div style={{ padding: "2.4rem" }}>
-            <Button
-              label="필터 바텀 시트 열기 (드롭다운 없음)"
-              onClick={() => setIsOpen(true)}
-            />
-          </div>
-          <BottomSheetFilter
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-            chapterFilters={chapterFilters}
-            typeFilters={typeFilters}
-          />
-        </>
-      );
-    };
-    return <WithoutDropdownComponent />;
-  },
+  return (
+    <>
+      <div style={{ padding: "2.4rem", display: "flex", gap: "1rem" }}>
+        <Button
+          label="단원별로 다시 열기"
+          onClick={() => {
+            if (isOpen) return;
+            setInitialSection("chapter");
+            setIsOpen(true);
+          }}
+        />
+        <Button
+          label="유형별로 다시 열기"
+          onClick={() => {
+            if (isOpen) return;
+            setInitialSection("type");
+            setIsOpen(true);
+          }}
+        />
+      </div>
+
+      <BottomSheetFilter
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        chapterFilters={[
+          { id: "1", label: "1단원" },
+          { id: "2", label: "2단원" },
+          { id: "3", label: "3단원" },
+          { id: "4", label: "4단원" },
+        ]}
+        typeFilters={[
+          { id: "type1", label: "유형1" },
+          { id: "type2", label: "유형2" },
+          { id: "type3", label: "유형3" },
+        ]}
+        dropdownSection={dropdownSection}
+        selectedChapterIds={["1"]}
+        selectedTypeIds={["type1"]}
+        selectedDropdownIds={{ "1": ["poly1"] }}
+        initialSection={initialSection}
+      />
+    </>
+  );
+};
+
+export const OpenByDefault: Story = {
+  render: () => <OpenByDefaultStoryComponent />,
 };

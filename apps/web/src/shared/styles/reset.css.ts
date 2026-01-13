@@ -95,3 +95,12 @@ globalStyle("label, label *", {
   WebkitTapHighlightColor: "transparent",
   userSelect: "none",
 });
+
+globalStyle("*", {
+  msOverflowStyle: "none" /* IE and Edge */,
+  scrollbarWidth: "none" /* Firefox */,
+});
+
+globalStyle("*::-webkit-scrollbar", {
+  display: "none" /* Chrome, Safari, Opera */,
+});

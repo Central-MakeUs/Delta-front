@@ -79,6 +79,7 @@ export const closeButton = style([
 
 export const contentFrame = style({
   flex: "1 1 auto",
+  position: "relative",
   minHeight: 0,
   width: "100%",
   display: "flex",
@@ -159,4 +160,8 @@ export const resetButtonOverride = style({
 export const applyButtonOverride = style({
   flex: "1 1 0%",
   flexGrow: 1,
+});
+
+export const dividerStyle = style({
+  marginBottom: "2rem",
 });

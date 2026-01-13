@@ -11,6 +11,8 @@ export type DropdownSection = {
   defaultOpen?: boolean;
 };
 
+export type BottomSheetFilterInitialSection = "chapter" | "type";
+
 export interface BottomSheetFilterProps {
   isOpen: boolean;
   onClose: () => void;
@@ -28,4 +30,5 @@ export interface BottomSheetFilterProps {
   }) => void;
   className?: string;
   overlayClassName?: string;
+  initialSection?: BottomSheetFilterInitialSection;
 }

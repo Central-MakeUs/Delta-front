@@ -1,40 +1,33 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import clsx from "clsx";
 import Divider from "@/shared/components/divider/divider";
 import * as styles from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter.css";
-import type { BottomSheetFilterProps } from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
+import type {
+  BottomSheetFilterProps,
+  BottomSheetFilterInitialSection,
+} from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
 import { FilterHeader } from "@/shared/components/bottom-sheet/bottom-sheet-filter/components/filter-header";
 import { FilterSection } from "@/shared/components/bottom-sheet/bottom-sheet-filter/components/filter-section";
 import { FilterFooter } from "@/shared/components/bottom-sheet/bottom-sheet-filter/components/filter-footer";
+import { useBottomSheetFilterMotion } from "@/shared/components/bottom-sheet/bottom-sheet-filter/hooks/use-bottom-sheet-filter-motion";
+import { useInitialSectionScroll } from "@/shared/components/bottom-sheet/bottom-sheet-filter/hooks/use-initial-section-scroll";
+import { useSyncedFilterState } from "@/shared/components/bottom-sheet/bottom-sheet-filter/hooks/use-synced-filter-state";
 
 export type {
   DropdownSection,
   BottomSheetFilterProps,
+  BottomSheetFilterInitialSection,
 } from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
 
 const CLOSE_ANIMATION_MS = 350;
-
-const normalizeDropdownIds = (
-  input: BottomSheetFilterProps["selectedDropdownIds"]
-) => {
-  const out: Record<string, string[]> = {};
-  if (!input) return out;
-
-  Object.entries(input).forEach(([k, v]) => {
-    if (Array.isArray(v)) out[k] = [...v];
-    else if (typeof v === "string") out[k] = [v];
-  });
-
-  return out;
-};
 
 export const BottomSheetFilter = ({
   isOpen,
   onClose,
   chapterFilters = [],
-  typeFilters,
+  typeFilters = [],
   dropdownSection,
   selectedChapterIds = [],
   selectedTypeIds = [],
@@ -43,121 +36,82 @@ export const BottomSheetFilter = ({
   onApply,
   className,
   overlayClassName,
+  initialSection = "chapter",
 }: BottomSheetFilterProps) => {
-  const [isClosing, setIsClosing] = useState(false);
-
-  const [localChapterIds, setLocalChapterIds] =
-    useState<string[]>(selectedChapterIds);
-  const [localTypeIds, setLocalTypeIds] = useState<string[]>(selectedTypeIds);
-  const [localDropdownIds, setLocalDropdownIds] = useState<
-    Record<string, string[]>
-  >(() => normalizeDropdownIds(selectedDropdownIds));
-
-  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const latestSelectedChapterIdsRef = useRef(selectedChapterIds);
-  const latestSelectedTypeIdsRef = useRef(selectedTypeIds);
-  const latestSelectedDropdownIdsRef = useRef(selectedDropdownIds);
-
-  useEffect(() => {
-    latestSelectedChapterIdsRef.current = selectedChapterIds;
-    latestSelectedTypeIdsRef.current = selectedTypeIds;
-    latestSelectedDropdownIdsRef.current = selectedDropdownIds;
-  }, [selectedChapterIds, selectedTypeIds, selectedDropdownIds]);
-
-  const clearCloseTimer = () => {
-    if (closeTimerRef.current) {
-      clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = null;
-    }
-  };
-
   const clearSyncTimer = () => {
-    if (syncTimerRef.current) {
-      clearTimeout(syncTimerRef.current);
-      syncTimerRef.current = null;
-    }
+    if (!syncTimerRef.current) return;
+    clearTimeout(syncTimerRef.current);
+    syncTimerRef.current = null;
   };
 
-  const finalizeClose = () => {
-    clearCloseTimer();
-    setIsClosing(false);
-    onClose();
-  };
+  const {
+    isClosing,
+    requestClose,
+    motionState,
+    handleOverlayClick,
+    handleSheetAnimationEnd,
+  } = useBottomSheetFilterMotion({
+    isOpen,
+    onClose,
+    closeAnimationMs: CLOSE_ANIMATION_MS,
+  });
 
-  const requestClose = () => {
-    if (isClosing) return;
+  const {
+    localChapterIds,
+    setLocalChapterIds,
+    localTypeIds,
+    setLocalTypeIds,
+    localDropdownIds,
+    setLocalDropdownIds,
+    syncFromLatest,
+  } = useSyncedFilterState({
+    selectedChapterIds,
+    selectedTypeIds,
+    selectedDropdownIds,
+  });
 
-    setIsClosing(true);
-
-    clearCloseTimer();
-    closeTimerRef.current = setTimeout(() => {
-      finalizeClose();
-    }, CLOSE_ANIMATION_MS + 50);
-  };
-
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target !== e.currentTarget) return;
-    if (isClosing) return;
-    requestClose();
-  };
-
-  const handleSheetAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
-    if (!isClosing) return;
-    if (e.target !== e.currentTarget) return;
-    finalizeClose();
-  };
+  const {
+    contentFrameRef,
+    chapterAnchorRef,
+    typeAnchorRef,
+    bottomSpacerHeightRem,
+    syncSpacerForSection,
+    scrollToInitialSection,
+  } = useInitialSectionScroll();
 
   useEffect(() => {
     if (!isOpen) return;
 
-    clearCloseTimer();
     clearSyncTimer();
 
     syncTimerRef.current = setTimeout(() => {
-      setIsClosing(false);
+      syncFromLatest();
 
-      setLocalChapterIds(latestSelectedChapterIdsRef.current);
-      setLocalTypeIds(latestSelectedTypeIdsRef.current);
-      setLocalDropdownIds(
-        normalizeDropdownIds(latestSelectedDropdownIdsRef.current)
-      );
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          syncSpacerForSection(initialSection);
+          requestAnimationFrame(() => {
+            scrollToInitialSection(initialSection);
+          });
+        });
+      });
     }, 0);
 
     return () => {
       clearSyncTimer();
     };
-  }, [isOpen]);
-
-  useEffect(() => {
-    const shouldLock = isOpen || isClosing;
-    if (!shouldLock) return;
-
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen, isClosing]);
-
-  useEffect(() => {
-    const shouldBind = isOpen || isClosing;
-    if (!shouldBind) return;
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
-      if (isClosing) return;
-      requestClose();
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isOpen, isClosing]);
+  }, [
+    isOpen,
+    initialSection,
+    syncFromLatest,
+    syncSpacerForSection,
+    scrollToInitialSection,
+  ]);
 
   const shouldRender = isOpen || isClosing;
   if (!shouldRender) return null;
-
-  const motionState = isClosing ? "closing" : "open";
 
   const handleChapterToggle = (id: string) => {
     setLocalChapterIds((prev) =>
@@ -214,24 +168,36 @@ export const BottomSheetFilter = ({
         <div className={styles.frameContainer}>
           <FilterHeader onClose={requestClose} isClosing={isClosing} />
 
-          <div className={styles.contentFrame}>
-            <FilterSection
-              title="단원별"
-              filters={chapterFilters}
-              selectedIds={localChapterIds}
-              onToggle={handleChapterToggle}
-              dropdownSection={dropdownSection}
-              localDropdownIds={localDropdownIds}
-              onDropdownOptionToggle={handleDropdownToggle}
-            />
+          <div className={styles.contentFrame} ref={contentFrameRef}>
+            <div ref={chapterAnchorRef}>
+              <FilterSection
+                title="단원별"
+                filters={chapterFilters}
+                selectedIds={localChapterIds}
+                onToggle={handleChapterToggle}
+                dropdownSection={dropdownSection}
+                localDropdownIds={localDropdownIds}
+                onDropdownOptionToggle={handleDropdownToggle}
+              />
+            </div>
 
-            <Divider />
+            <div ref={typeAnchorRef}>
+              <Divider className={styles.dividerStyle} />
+              <FilterSection
+                title="유형별"
+                filters={typeFilters}
+                selectedIds={localTypeIds}
+                onToggle={handleTypeToggle}
+              />
+            </div>
 
-            <FilterSection
-              title="유형별"
-              filters={typeFilters}
-              selectedIds={localTypeIds}
-              onToggle={handleTypeToggle}
+            <div
+              aria-hidden
+              style={{
+                height: `${bottomSpacerHeightRem}rem`,
+                flexShrink: 0,
+                width: "100%",
+              }}
             />
           </div>
 

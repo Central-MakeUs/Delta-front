@@ -12,6 +12,7 @@ import BottomSheetSort, {
 } from "@/shared/components/bottom-sheet/bottom-sheet-sort/bottom-sheet-sort";
 
 import BottomSheetFilter, {
+  type BottomSheetFilterInitialSection,
   type BottomSheetFilterProps,
   type DropdownSection,
 } from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter";
@@ -164,7 +165,8 @@ const getTypeSummaryLabel = (selectedTypeIds: string[]) => {
 const WrongPage = () => {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
+  const [filterInitialSection, setFilterInitialSection] =
+    useState<BottomSheetFilterInitialSection>("chapter");
   const [selectedSortId, setSelectedSortId] = useState(
     SORT_OPTIONS[0]?.id ?? "recent"
   );
@@ -208,17 +210,26 @@ const WrongPage = () => {
           <Filter
             label="필터"
             icon="filter"
-            onClick={() => setIsFilterOpen(true)}
+            onClick={() => {
+              setFilterInitialSection("chapter");
+              setIsFilterOpen(true);
+            }}
           />
           <Filter
             label={chapterFilterLabel}
             icon="chevron"
-            onClick={() => setIsFilterOpen(true)}
+            onClick={() => {
+              setFilterInitialSection("chapter");
+              setIsFilterOpen(true);
+            }}
           />
           <Filter
             label={typeFilterLabel}
             icon="chevron"
-            onClick={() => setIsFilterOpen(true)}
+            onClick={() => {
+              setFilterInitialSection("type");
+              setIsFilterOpen(true);
+            }}
           />
         </div>
 
@@ -273,6 +284,7 @@ const WrongPage = () => {
           selectedDropdownIds={selectedDropdownIds}
           onReset={handleResetFilter}
           onApply={handleApplyFilter}
+          initialSection={filterInitialSection} // ✅ 핵심
         />
       )}
     </div>

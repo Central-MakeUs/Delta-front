@@ -2,11 +2,11 @@
 
 import { useMemo, useState } from "react";
 import type { BottomSheetFilterInitialSection } from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter";
-import { SORT_OPTIONS } from "@/app/wrong/constants/wrong-filters";
+import { SORT_OPTIONS } from "@/app/wrong/(list)/constants/wrong-filters";
 import {
   getChapterSummaryLabel,
   getTypeSummaryLabel,
-} from "@/app/wrong/utils/wrong-filter-labels";
+} from "@/app/wrong/(list)/utils/wrong-filter-labels";
 
 export type FilterApplyPayload = {
   chapters: string[];

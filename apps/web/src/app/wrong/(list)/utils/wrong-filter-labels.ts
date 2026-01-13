@@ -2,7 +2,7 @@ import {
   CHAPTER_FILTERS,
   TYPE_FILTERS,
   allChapterDropdownOptions,
-} from "@/app/wrong/constants/wrong-filters";
+} from "@/app/wrong/(list)/constants/wrong-filters";
 
 const buildLabelMap = (items: { id: string; label: string }[]) =>
   items.reduce<Record<string, string>>((acc, cur) => {

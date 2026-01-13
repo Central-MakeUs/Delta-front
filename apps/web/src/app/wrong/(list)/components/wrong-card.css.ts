@@ -1,7 +1,6 @@
 import { style } from "@vanilla-extract/css";
-
 import { vars } from "@/shared/styles/theme.css";
-import { color } from "@/shared/styles/color.css";
+import { color, wrongCardGradient } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
 
 export const card = style({
@@ -33,8 +32,7 @@ export const aboutSection = style({
       position: "absolute",
       inset: 0,
       zIndex: -1,
-      background:
-        "linear-gradient(180deg, rgba(255, 255, 255, 0) 22%, 70%, rgba(17, 17, 17, 0.60) 100%)",
+      background: wrongCardGradient["wrong-card-gradient"],
       pointerEvents: "none",
     },
   },

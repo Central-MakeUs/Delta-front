@@ -1,5 +1,5 @@
 import SampleImg from "@/shared/assets/images/wrong-sample.png";
-import type { WrongCardProps } from "@/app/wrong/components/wrong-card";
+import type { WrongCardProps } from "@/app/wrong/(list)/components/wrong-card";
 
 export type WrongCardData = {
   id: string;

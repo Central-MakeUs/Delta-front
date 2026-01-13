@@ -1,20 +1,20 @@
 "use client";
 
-import * as s from "@/app/wrong/wrong.css";
+import * as s from "@/app/wrong/(list)/wrong.css";
 import Filter from "@/shared/components/filter/filter";
-import WrongCard from "@/app/wrong/components/wrong-card";
-import { WRONG_CARDS } from "@/app/wrong/data/wrong-cards";
+import WrongCard from "@/app/wrong/(list)/components/wrong-card";
 import BottomSheetSort from "@/shared/components/bottom-sheet/bottom-sheet-sort/bottom-sheet-sort";
 import BottomSheetFilter from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter";
-import { useVisibleWrongCards } from "@/app/wrong/hooks/use-visible-wrong-cards";
+import { useVisibleWrongCards } from "@/app/wrong/(list)/hooks/use-visible-wrong-cards";
+import { useWrongFilters } from "@/app/wrong/(list)/hooks/use-wrong-filters";
+import { WRONG_CARDS } from "@/app/wrong/(list)/data/wrong-cards";
 
 import {
   CHAPTER_FILTERS,
   DROPDOWN_SECTION,
   SORT_OPTIONS,
   TYPE_FILTERS,
-} from "@/app/wrong/constants/wrong-filters";
-import { useWrongFilters } from "@/app/wrong/hooks/use-wrong-filters";
+} from "@/app/wrong/(list)/constants/wrong-filters";
 
 const WrongPage = () => {
   const {

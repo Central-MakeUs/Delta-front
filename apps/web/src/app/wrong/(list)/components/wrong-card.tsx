@@ -4,7 +4,7 @@ import type { KeyboardEventHandler } from "react";
 import Image, { type StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
 import Chip from "@/shared/components/chip/chip";
-import * as s from "@/app/wrong/components/wrong-card.css";
+import * as s from "@/app/wrong/(list)/components/wrong-card.css";
 
 export type WrongCardProps = {
   title: string;

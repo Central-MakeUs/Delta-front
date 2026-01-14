@@ -45,6 +45,7 @@ export const answerButtonContent = style({
 
 export const answerChipWrapper = style([
   bgColor["grayscale-0"],
+  vars.radius.r12,
   {
     display: "flex",
     alignItems: "center",
@@ -86,3 +87,20 @@ export const answerButtonText = style([
     flexGrow: 0,
   },
 ]);
+
+export const answerToggleButton = style({
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+  top: 0,
+  left: 0,
+  background: "transparent",
+  border: "none",
+  cursor: "pointer",
+  zIndex: 2,
+});
+
+export const answerToggleButtonDisabled = style({
+  cursor: "default",
+  zIndex: 0,
+});

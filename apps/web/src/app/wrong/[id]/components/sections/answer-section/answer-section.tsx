@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Image from "next/image";
 import Chip from "@/shared/components/chip/chip";
 import * as styles from "./answer-section.css";
+import Icon from "@/shared/components/icon/icon";
 
 interface AnswerSectionProps {
   answer: string;
@@ -38,24 +38,14 @@ const AnswerSection = ({ answer, onAnswerRevealed }: AnswerSectionProps) => {
             }}
             aria-label="정답 숨기기"
           >
-            <Image
-              src="/wrong-detail/unlock.svg"
-              alt="정답 숨기기"
-              width={20}
-              height={20}
-            />
+            <Icon name="unlock" size={2.4} />
           </button>
         )}
       </div>
       {!showAnswer && (
         <div className={styles.answerButtonOverlay}>
           <div className={styles.answerButtonContent}>
-            <Image
-              src="/wrong-detail/lock.svg"
-              alt="정답 확인"
-              width={24}
-              height={24}
-            />
+            <Icon name="lock" size={2.4} />
             <span className={styles.answerButtonText}>
               눌러서 정답을 확인해보세요.
             </span>
@@ -65,17 +55,11 @@ const AnswerSection = ({ answer, onAnswerRevealed }: AnswerSectionProps) => {
       <button
         type="button"
         onClick={handleShowAnswer}
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          top: 0,
-          left: 0,
-          background: "transparent",
-          border: "none",
-          cursor: showAnswer ? "default" : "pointer",
-          zIndex: showAnswer ? 0 : 2,
-        }}
+        className={
+          showAnswer
+            ? `${styles.answerToggleButton} ${styles.answerToggleButtonDisabled}`
+            : styles.answerToggleButton
+        }
         disabled={showAnswer}
         aria-label="정답 확인"
       />

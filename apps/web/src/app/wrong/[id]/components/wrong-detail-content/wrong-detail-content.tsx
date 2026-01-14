@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import * as styles from "./wrong-detail-content.css";
 import {
   HeaderSection,
@@ -20,7 +20,6 @@ const WrongDetailContent = () => {
 
   const [solution, setSolution] = useState("");
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
-  const router = useRouter();
 
   if (!data) {
     return <div>데이터를 찾을 수 없습니다.</div>;

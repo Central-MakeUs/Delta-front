@@ -13,6 +13,7 @@ export const ROUTES = {
   HOME: "/",
   AUTH: {
     LOGIN: "/login",
+    KAKAO_CALLBACK: "/oauth/kakao/callback",
   },
   WRONG: {
     ROOT: `/${WRONG_PREFIX}`,

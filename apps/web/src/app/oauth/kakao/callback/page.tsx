@@ -1,16 +1,19 @@
 import KakaoCallbackClient from "./kakao-callback-client";
 
+type SearchParams = {
+  code?: string;
+  state?: string;
+  error?: string;
+  error_description?: string;
+};
+
 type PageProps = {
-  searchParams?: {
-    code?: string;
-    state?: string;
-    error?: string;
-    error_description?: string;
-  };
+  searchParams?: Promise<SearchParams>;
 };
 
 const KakaoCallbackPage = async ({ searchParams }: PageProps) => {
-  const params = await searchParams;
+  const params = searchParams ? await searchParams : undefined;
+
   return (
     <KakaoCallbackClient
       code={params?.code ?? null}

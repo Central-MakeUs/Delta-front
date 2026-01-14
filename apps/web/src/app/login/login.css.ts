@@ -78,27 +78,27 @@ export const vector14 = style([
 
 export const pencil = style([
   deco,
-  { right: "-5.0rem", top: "8.4rem", width: "27.0rem", height: "27.0rem" },
+  { left: "17rem", top: "5.5rem", width: "27.0rem", height: "27.0rem" },
 ]);
 
 export const multiply = style([
   deco,
   {
-    left: "4.5rem",
+    left: "4rem",
     top: "20.1rem",
     width: "6.4rem",
     height: "6.4rem",
-    transform: "rotate(11deg)",
+    transform: "rotate(2deg)",
   },
 ]);
 
 export const minus = style([
   deco,
   {
-    left: "24.3rem",
-    top: "43.8rem",
-    width: "13rem",
-    height: "4.5rem",
+    right: "1.8rem",
+    top: "42rem",
+    width: "13.5rem",
+    height: "4.7rem",
     transform: "rotate(4deg)",
   },
 ]);
@@ -107,7 +107,7 @@ export const plus = style([
   deco,
   {
     left: "1.5rem",
-    top: "50.0rem",
+    top: "49.5rem",
     width: "7.8rem",
     height: "7.8rem",
     transform: "rotate(-8deg)",
@@ -117,8 +117,8 @@ export const plus = style([
 export const divide = style([
   deco,
   {
-    left: "20.3rem",
-    top: "55.0rem",
+    right: "3.5rem",
+    top: "54rem",
     width: "14.9rem",
     height: "13.2rem",
     transform: "rotate(-2deg)",

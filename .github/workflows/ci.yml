@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   web:
-    name: web - lint / typecheck / build
+    name: web - lint / typecheck / test / build
     runs-on: ubuntu-latest
 
     steps:
@@ -36,6 +36,9 @@ jobs:
 
       - name: Typecheck (web)
         run: pnpm --filter web typecheck
+
+      - name: Test (web)
+        run: pnpm --filter web test
 
       - name: Build (web)
         run: pnpm --filter web build

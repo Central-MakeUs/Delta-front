@@ -1,6 +1,8 @@
 import "@/shared/styles/index.css";
 import "@/shared/styles/global.css";
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import { Suspense } from "react";
 
 import { SPRITE } from "@/shared/constants/sprite";
 import { lightTheme } from "@/shared/styles/theme.css";
@@ -27,13 +29,15 @@ const SvgSpriteInjector = () => {
   );
 };
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => {
+const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="ko" className={lightTheme}>
       <body>
         <SvgSpriteInjector />
         <div className={rootStyle}>
-          <ClientShell>{children}</ClientShell>
+          <Suspense fallback={null}>
+            <ClientShell>{children}</ClientShell>
+          </Suspense>
         </div>
       </body>
     </html>

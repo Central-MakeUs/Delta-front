@@ -9,13 +9,14 @@ type PageProps = {
   };
 };
 
-const KakaoCallbackPage = ({ searchParams }: PageProps) => {
+const KakaoCallbackPage = async ({ searchParams }: PageProps) => {
+  const params = await searchParams;
   return (
     <KakaoCallbackClient
-      code={searchParams?.code ?? null}
-      state={searchParams?.state ?? null}
-      kakaoError={searchParams?.error ?? null}
-      kakaoErrorDesc={searchParams?.error_description ?? null}
+      code={params?.code ?? null}
+      state={params?.state ?? null}
+      kakaoError={params?.error ?? null}
+      kakaoErrorDesc={params?.error_description ?? null}
     />
   );
 };

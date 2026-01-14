@@ -11,5 +11,9 @@ export const useLogoutMutation = () => {
       tokenStorage.clear();
       qc.clear();
     },
+    onError: () => {
+      tokenStorage.clear();
+      qc.clear();
+    },
   });
 };

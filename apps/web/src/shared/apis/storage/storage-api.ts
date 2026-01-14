@@ -26,7 +26,6 @@ export const storageApi = {
       form,
       {
         params: { directory: params.directory },
-        headers: { "Content-Type": "multipart/form-data" },
       }
     );
 
@@ -34,9 +33,14 @@ export const storageApi = {
   },
 
   deleteImage: async (params: { key: string }) => {
-    await instance.delete("/api/v1/storage/images", {
-      params: { key: params.key },
-    });
+    const res = await instance.delete<ApiResponse<null>>(
+      "/api/v1/storage/images",
+      {
+        params: { key: params.key },
+      }
+    );
+
+    return unwrapApiResponse(res.data);
   },
 
   presignGet: async (params: { key: string; ttlSeconds?: number }) => {

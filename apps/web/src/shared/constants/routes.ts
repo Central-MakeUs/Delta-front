@@ -34,6 +34,7 @@ export const ROUTES = {
 export type RouteValue =
   | typeof ROUTES.HOME
   | typeof ROUTES.AUTH.LOGIN
+  | typeof ROUTES.AUTH.KAKAO_CALLBACK
   | typeof ROUTES.WRONG.ROOT
   | typeof ROUTES.WRONG.CREATE
   | typeof ROUTES.WRONG.CREATE_DONE

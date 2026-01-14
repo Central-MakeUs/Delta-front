@@ -20,6 +20,7 @@ export const isApiResponseError = (v: unknown): v is ApiResponseError => {
     typeof o.status === "number" &&
     typeof o.code === "string" &&
     "data" in o &&
+    o.data === null &&
     typeof o.message === "string"
   );
 };

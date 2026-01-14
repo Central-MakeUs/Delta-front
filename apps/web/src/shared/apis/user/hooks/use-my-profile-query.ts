@@ -6,6 +6,5 @@ export const useMyProfileQuery = () => {
   return useQuery({
     queryKey: userKeys.me(),
     queryFn: userApi.getMyProfile,
-    staleTime: 60_000,
   });
 };

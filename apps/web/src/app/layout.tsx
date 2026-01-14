@@ -1,14 +1,12 @@
 import "@/shared/styles/index.css";
 import "@/shared/styles/global.css";
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import { Suspense } from "react";
 import { SPRITE } from "@/shared/constants/sprite";
 import { lightTheme } from "@/shared/styles/theme.css";
 import { rootStyle } from "@/shared/styles/global.css";
-import type { Metadata } from "next";
-import QueryProvider from "@/shared/utils/query-provider";
-import BottomNav from "@/shared/components/bottom-nav/bottom-nav";
-import AppBarGate from "@/shared/components/app-bar/app-bar-gate";
-import FabButton from "@/shared/components/button/fab-button/fab-button";
-import Splash from "@/shared/components/splash/splash";
+import ClientShell from "@/app/client-shell";
 
 export const metadata: Metadata = {
   title: "세모",
@@ -33,20 +31,15 @@ const SvgSpriteInjector = () => {
   );
 };
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => {
+const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="ko" className={lightTheme}>
       <body>
         <SvgSpriteInjector />
-
         <div className={rootStyle}>
-          <QueryProvider>
-            <Splash />
-            <AppBarGate />
-            {children}
-            <BottomNav />
-            <FabButton />
-          </QueryProvider>
+          <Suspense fallback={null}>
+            <ClientShell>{children}</ClientShell>
+          </Suspense>
         </div>
       </body>
     </html>

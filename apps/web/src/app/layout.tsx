@@ -1,13 +1,11 @@
 import "@/shared/styles/index.css";
 import "@/shared/styles/global.css";
+import type { Metadata } from "next";
+
 import { SPRITE } from "@/shared/constants/sprite";
 import { lightTheme } from "@/shared/styles/theme.css";
 import { rootStyle } from "@/shared/styles/global.css";
-import type { Metadata } from "next";
-import QueryProvider from "@/shared/utils/query-provider";
-import BottomNav from "@/shared/components/bottom-nav/bottom-nav";
-import AppBarGate from "@/shared/components/app-bar/app-bar-gate";
-import FabButton from "@/shared/components/button/fab-button/fab-button";
+import ClientShell from "@/app/client-shell";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -34,15 +32,8 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
     <html lang="ko" className={lightTheme}>
       <body>
         <SvgSpriteInjector />
-
         <div className={rootStyle}>
-          <QueryProvider>
-            <AppBarGate />
-            {children}
-            <BottomNav />
-
-            <FabButton />
-          </QueryProvider>
+          <ClientShell>{children}</ClientShell>
         </div>
       </body>
     </html>

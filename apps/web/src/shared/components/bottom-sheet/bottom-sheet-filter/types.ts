@@ -7,9 +7,11 @@ export type CheckboxOption = FilterOption;
 
 export type DropdownSection = {
   id: string;
-  options: FilterOption[];
+  options: ReadonlyArray<FilterOption>;
   defaultOpen?: boolean;
 };
+
+export type BottomSheetFilterInitialSection = "chapter" | "type";
 
 export interface BottomSheetFilterProps {
   isOpen: boolean;
@@ -28,4 +30,5 @@ export interface BottomSheetFilterProps {
   }) => void;
   className?: string;
   overlayClassName?: string;
+  initialSection?: BottomSheetFilterInitialSection;
 }

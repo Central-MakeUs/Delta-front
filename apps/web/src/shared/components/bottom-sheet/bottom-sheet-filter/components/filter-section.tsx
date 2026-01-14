@@ -1,8 +1,10 @@
-import React from "react";
 import Chip from "@/shared/components/chip/chip";
-import type { FilterOption, DropdownSection } from "../types";
-import { FilterDropdownSection } from "./dropdown-section";
-import * as styles from "../bottom-sheet-filter.css";
+import type {
+  FilterOption,
+  DropdownSection,
+} from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
+import { FilterSelectSection } from "@/shared/components/bottom-sheet/bottom-sheet-filter/components/dropdown-section";
+import * as styles from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter.css";
 
 interface FilterSectionProps {
   title: string;
@@ -10,8 +12,6 @@ interface FilterSectionProps {
   selectedIds: string[];
   onToggle: (id: string) => void;
   dropdownSection?: DropdownSection;
-  openDropdowns?: Record<string, boolean>;
-  onDropdownToggle?: (chapterId: string) => void;
   localDropdownIds?: Record<string, string[]>;
   onDropdownOptionToggle?: (chapterId: string, optionId: string) => void;
 }
@@ -22,11 +22,16 @@ export const FilterSection = ({
   selectedIds,
   onToggle,
   dropdownSection,
-  openDropdowns,
-  onDropdownToggle,
   localDropdownIds,
   onDropdownOptionToggle,
 }: FilterSectionProps) => {
+  const canShowDropdown =
+    !!dropdownSection && !!localDropdownIds && !!onDropdownOptionToggle;
+
+  const selectedChapters = canShowDropdown
+    ? filters.filter((f) => selectedIds.includes(f.id))
+    : [];
+
   return (
     <div className={styles.sectionFrame}>
       <h3 className={styles.sectionTitle}>{title}</h3>
@@ -45,32 +50,23 @@ export const FilterSection = ({
           );
         })}
       </div>
-      {dropdownSection &&
-        openDropdowns &&
-        onDropdownToggle &&
-        localDropdownIds &&
-        onDropdownOptionToggle &&
-        filters
-          .filter((filter) => selectedIds.includes(filter.id))
-          .map((chapterFilter) => {
-            const chapterId = chapterFilter.id;
-            const isDropdownOpen = openDropdowns[chapterId] ?? false;
-            const chapterSelectedIds = localDropdownIds?.[chapterId] || [];
 
-            return (
-              <FilterDropdownSection
-                key={chapterId}
-                chapterLabel={chapterFilter.label}
-                dropdownSection={dropdownSection}
-                isOpen={isDropdownOpen}
-                selectedIds={chapterSelectedIds}
-                onToggle={(optionId) =>
-                  onDropdownOptionToggle?.(chapterId, optionId)
-                }
-                onHeaderClick={() => onDropdownToggle?.(chapterId)}
-              />
-            );
-          })}
+      {selectedChapters.map((chapter) => {
+        const chapterId = chapter.id;
+        const chapterSelectedIds = localDropdownIds?.[chapterId] ?? [];
+
+        return (
+          <FilterSelectSection
+            key={chapterId}
+            chapterLabel={chapter.label}
+            dropdownSection={dropdownSection!}
+            selectedIds={chapterSelectedIds}
+            onToggle={(optionId) =>
+              onDropdownOptionToggle!(chapterId, optionId)
+            }
+          />
+        );
+      })}
     </div>
   );
 };

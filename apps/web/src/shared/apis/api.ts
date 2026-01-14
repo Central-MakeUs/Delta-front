@@ -68,7 +68,7 @@ const runReissueOnce = async () => {
 
     const config: RetryConfig = {
       headers: { [REFRESH_TOKEN_HEADER]: refreshToken },
-      _skipAuthRefresh: true, // reissue 자체는 refresh 로직 제외
+      _skipAuthRefresh: true,
     };
 
     await instance.post("/api/v1/auth/reissue", null, config);

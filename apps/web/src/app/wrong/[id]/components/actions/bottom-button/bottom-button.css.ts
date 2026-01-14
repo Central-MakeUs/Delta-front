@@ -6,6 +6,7 @@ import { bgColor, color } from "@/shared/styles/color.css";
 export const bottomButtonContainer = style({
   position: "fixed",
   width: "100%",
+  maxWidth: "37.5rem",
   height: "10.1rem",
   left: "50%",
   transform: "translateX(-50%)",

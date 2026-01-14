@@ -21,7 +21,6 @@ export const contentWrapper = style({
   gap: "1rem",
   width: "100%",
   flex: "1 1 0%",
-  paddingBottom: "10.1rem", // 하단 버튼 공간 확보
 });
 
 export const mainContent = style({
@@ -36,6 +35,7 @@ export const mainContent = style({
 
 export const inputSection = style([
   bgColor["grayscale-50"],
+  vars.radius.r16,
   {
     display: "flex",
     flexDirection: "column",
@@ -43,7 +43,6 @@ export const inputSection = style([
     padding: "1.2rem",
     gap: "1rem",
     width: "100%",
-    borderRadius: "1.6rem",
     flex: "none",
     order: 1,
     alignSelf: "stretch",

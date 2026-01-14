@@ -1,22 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import * as styles from "./wrong-detail-content.css";
 import {
   HeaderSection,
   QuestionSection,
   AnswerSection,
   SolutionSection,
-} from "../sections";
-import { BottomButton } from "../actions";
+} from "@/app/wrong/[id]/components/sections";
+import { BottomButton } from "@/app/wrong/[id]/components/actions";
 import CompleteModal from "@/shared/components/modal/complete-modal/complete-modal";
-import { DUMMY_DATA } from "../mocks/wrong-dummy";
+import { getWrongDetailDataById } from "../mocks/wrong-dummy";
 
 const WrongDetailContent = () => {
+  const params = useParams();
+  const id = params.id as string;
+  const data = getWrongDetailDataById(id);
+
   const [solution, setSolution] = useState("");
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const router = useRouter();
+
+  if (!data) {
+    return <div>데이터를 찾을 수 없습니다.</div>;
+  }
 
   const handleConfirm = () => {
     setIsCompleteModalOpen(true);
@@ -26,32 +34,31 @@ const WrongDetailContent = () => {
     setIsCompleteModalOpen(false);
   };
 
-  const handleComplete = () => {
-    router.push("/");
-  };
+  // const handleComplete = () => {
+  // };
 
   return (
     <div className={styles.page}>
       <div className={styles.contentWrapper}>
         <div className={styles.mainContent}>
-          <HeaderSection
-            title={DUMMY_DATA.title}
-            subjectChip={DUMMY_DATA.subjectChip}
-            chips={DUMMY_DATA.chips}
-          />
+          <HeaderSection {...data} />
 
-          <QuestionSection />
+          <QuestionSection {...data} />
 
           <div className={styles.inputSection}>
             <div className={styles.inputContent}>
-              <AnswerSection answer={DUMMY_DATA.answer} />
+              <AnswerSection {...data} />
               <SolutionSection value={solution} onChange={setSolution} />
             </div>
           </div>
         </div>
       </div>
 
-      <BottomButton onClick={handleConfirm} disabled={!solution.trim()} />
+      <BottomButton
+        {...data}
+        onClick={handleConfirm}
+        disabled={!solution.trim() || data.isCompleted}
+      />
 
       <CompleteModal
         title="오답을 완료할까요?"
@@ -60,7 +67,7 @@ const WrongDetailContent = () => {
         confirmLabel="완료"
         isOpen={isCompleteModalOpen}
         onClose={handleCloseModal}
-        onConfirm={handleComplete}
+        // onConfirm={handleComplete}
       />
     </div>
   );

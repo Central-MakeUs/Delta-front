@@ -1,13 +1,8 @@
 import Chip from "@/shared/components/chip/chip";
 import * as styles from "./header-section.css";
+import { WrongDetailData } from "../../mocks/wrong-dummy";
 
-interface HeaderSectionProps {
-  title: string;
-  subjectChip: string;
-  chips: Array<{ label: string }>;
-}
-
-const HeaderSection = ({ title, subjectChip, chips }: HeaderSectionProps) => {
+const HeaderSection = ({ title, subjectChip, chips }: WrongDetailData) => {
   return (
     <div className={styles.headerSection}>
       <Chip

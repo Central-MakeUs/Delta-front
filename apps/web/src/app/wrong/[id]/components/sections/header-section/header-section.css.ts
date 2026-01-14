@@ -5,21 +5,13 @@ import { color } from "@/shared/styles/color.css";
 export const headerSection = style({
   display: "flex",
   flexDirection: "column",
-  alignItems: "flex-start",
-  padding: 0,
   gap: "0.8rem",
-  width: "100%",
-  flex: "none",
 });
 
 export const headerTop = style({
   display: "flex",
-  flexDirection: "row",
   alignItems: "center",
-  padding: 0,
   gap: "1.2rem",
-  width: "100%",
-  flex: "none",
 });
 
 export const title = style([

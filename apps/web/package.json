@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
+    "test": "vitest run --passWithNoTests",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit",
     "lint:fix": "eslint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -23,6 +25,7 @@
     "@vanilla-extract/sprinkles": "^1.6.5",
     "axios": "^1.13.2",
     "clsx": "^2.1.1",
+    "lottie-react": "^2.4.1",
     "next": "16.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3"

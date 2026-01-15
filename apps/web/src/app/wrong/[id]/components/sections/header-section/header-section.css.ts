@@ -14,15 +14,7 @@ export const headerTop = style({
   gap: "1.2rem",
 });
 
-export const title = style([
-  typo.body1.bold,
-  color["grayscale-900"],
-  {
-    display: "flex",
-    order: 0,
-    flexGrow: 0,
-  },
-]);
+export const title = style([typo.body1.bold, color["grayscale-900"]]);
 
 export const headerChips = style({
   display: "flex",

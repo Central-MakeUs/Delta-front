@@ -30,7 +30,6 @@ export const mainContent = style({
   padding: 0,
   gap: "2rem",
   width: "100%",
-  flex: "none",
 });
 
 export const inputSection = style([
@@ -42,10 +41,6 @@ export const inputSection = style([
     padding: "1.2rem",
     gap: "1rem",
     width: "100%",
-    flex: "none",
-    order: 1,
-    alignSelf: "stretch",
-    flexGrow: 0,
   },
 ]);
 
@@ -56,5 +51,4 @@ export const inputContent = style({
   padding: 0,
   gap: "1.2rem",
   width: "100%",
-  flex: "none",
 });

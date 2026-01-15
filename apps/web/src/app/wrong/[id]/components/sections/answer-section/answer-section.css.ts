@@ -8,9 +8,6 @@ export const answerButtonWrapper = style({
   width: "100%",
   height: "5rem",
   borderRadius: vars.radius.r12,
-  flex: "none",
-  order: 0,
-  flexGrow: 0,
   overflow: "hidden",
 });
 
@@ -49,7 +46,6 @@ export const answerChipWrapper = style([
     alignItems: "center",
     padding: "1.2rem",
     gap: "0.8rem",
-    flex: "none",
     justifyContent: "space-between",
   },
 ]);
@@ -66,15 +62,7 @@ export const answerChipContent = style({
   gap: "0.8rem",
 });
 
-export const answerNumber = style([
-  typo.body3.medium,
-  color["grayscale-700"],
-  {
-    flex: "none",
-    order: 1,
-    flexGrow: 0,
-  },
-]);
+export const answerNumber = style([typo.body3.medium, color["grayscale-700"]]);
 
 export const answerButtonText = style([
   typo.body3.semibold,

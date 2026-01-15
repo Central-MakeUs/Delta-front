@@ -8,6 +8,5 @@ export const solutionInputWrapper = style({
   width: "100%",
   height: "27rem",
   flex: 1,
-  flexGrow: 1,
   minHeight: 0,
 });

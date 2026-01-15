@@ -1,7 +1,5 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
-import { typo } from "@/shared/styles/typography.css";
-import { bgColor, color } from "@/shared/styles/color.css";
 
 export const bottomButtonContainer = style({
   position: "fixed",
@@ -23,8 +21,4 @@ export const bottomButtonWrapper = style({
   gap: "1.2rem",
   width: "100%",
   height: "8rem",
-  flex: "none",
-  order: 0,
-  alignSelf: "stretch",
-  flexGrow: 0,
 });

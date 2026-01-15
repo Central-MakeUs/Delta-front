@@ -1,6 +1,9 @@
-/* 오답 수정 페이지 */
+"use client";
+
+import { WrongEditForm } from "./components/wrong-edit-form/wrong-edit-form";
+
 const WrongEditPage = () => {
-  return <div>오답 수정</div>;
+  return <WrongEditForm />;
 };
 
 export default WrongEditPage;

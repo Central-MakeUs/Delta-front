@@ -1,5 +1,8 @@
+"use client";
+
 import clsx from "clsx";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import { useLayoutEffect, useRef } from "react";
 import * as s from "@/shared/components/bar-graph/bar-graph-01/bar-graph-01.css";
 
 type BarGraph01Props = {
@@ -10,10 +13,24 @@ type BarGraph01Props = {
   label?: string;
   minPercent?: number;
   maxPercent?: number;
+  animate?: boolean;
+  animateFromZeroOnMount?: boolean;
+  replayKey?: string | number;
 };
 
-const clamp = (value: number, min: number, max: number) => {
-  return Math.min(Math.max(value, min), max);
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max);
+
+const prefersReducedMotion = () => {
+  if (typeof window === "undefined") return false;
+  return (
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false
+  );
+};
+
+const toCssVarName = (v: string) => {
+  if (v.startsWith("var(") && v.endsWith(")")) return v.slice(4, -1).trim();
+  return v;
 };
 
 export const BarGraph01 = ({
@@ -24,18 +41,91 @@ export const BarGraph01 = ({
   label,
   minPercent = 10,
   maxPercent = 85,
+  animate = true,
+  animateFromZeroOnMount = true,
+  replayKey,
 }: BarGraph01Props) => {
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const mountedRef = useRef(false);
+  const prevReplayKeyRef = useRef<string | number | undefined>(undefined);
+  const raf1Ref = useRef<number | null>(null);
+  const raf2Ref = useRef<number | null>(null);
+
   const rawPercent = clamp(percent, 0, 100);
 
   const min = clamp(minPercent, 0, 100);
   const max = clamp(maxPercent, 0, 100);
   const lo = Math.min(min, max);
   const hi = Math.max(min, max);
-  const visualPercent = lo + (rawPercent / 100) * (hi - lo);
-  const showTip = visualPercent > 0;
+
+  const targetVisualPercent =
+    rawPercent === 0 ? 0 : lo + (rawPercent / 100) * (hi - lo);
+
+  const hasProgress = rawPercent > 0;
+
+  useLayoutEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+
+    const fillVarName = toCssVarName(s.fillPercentVar);
+
+    if (raf1Ref.current) window.cancelAnimationFrame(raf1Ref.current);
+    if (raf2Ref.current) window.cancelAnimationFrame(raf2Ref.current);
+    raf1Ref.current = null;
+    raf2Ref.current = null;
+
+    if (!hasProgress) {
+      el.style.setProperty(fillVarName, "0%");
+      mountedRef.current = true;
+      prevReplayKeyRef.current = replayKey;
+      return;
+    }
+
+    const reduced = prefersReducedMotion();
+    if (!animate || reduced) {
+      el.style.setProperty(fillVarName, `${targetVisualPercent}%`);
+      mountedRef.current = true;
+      prevReplayKeyRef.current = replayKey;
+      return;
+    }
+
+    const replayKeyChanged =
+      replayKey !== undefined && replayKey !== prevReplayKeyRef.current;
+
+    const shouldKick =
+      replayKeyChanged || (!mountedRef.current && animateFromZeroOnMount);
+
+    mountedRef.current = true;
+    prevReplayKeyRef.current = replayKey;
+
+    if (!shouldKick) {
+      el.style.setProperty(fillVarName, `${targetVisualPercent}%`);
+      return;
+    }
+
+    el.style.setProperty(fillVarName, "0%");
+
+    raf1Ref.current = window.requestAnimationFrame(() => {
+      raf2Ref.current = window.requestAnimationFrame(() => {
+        el.style.setProperty(fillVarName, `${targetVisualPercent}%`);
+      });
+    });
+
+    return () => {
+      if (raf1Ref.current) window.cancelAnimationFrame(raf1Ref.current);
+      if (raf2Ref.current) window.cancelAnimationFrame(raf2Ref.current);
+    };
+  }, [
+    animate,
+    animateFromZeroOnMount,
+    hasProgress,
+    replayKey,
+    targetVisualPercent,
+  ]);
 
   return (
     <div
+      ref={rootRef}
       className={clsx(s.root, className)}
       role="progressbar"
       aria-label={ariaLabel}
@@ -43,13 +133,12 @@ export const BarGraph01 = ({
       aria-valuemax={100}
       aria-valuenow={rawPercent}
       style={assignInlineVars({
-        [s.fillPercentVar]: `${visualPercent}%`,
         [s.tipOverlapVar]: `${tipOverlapRem}rem`,
       })}
     >
       <div className={s.track} aria-hidden />
-      {visualPercent > 0 && <div className={s.fill} aria-hidden />}
-      {showTip && <div className={s.tip} aria-hidden />}
+      {hasProgress && <div className={s.fill} aria-hidden />}
+      {hasProgress && <div className={s.tip} aria-hidden />}
       {label && <span className={s.label}>{label}</span>}
     </div>
   );

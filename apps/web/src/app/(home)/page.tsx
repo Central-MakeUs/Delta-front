@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import type { TabItem } from "@/shared/components/tab-bar/tab-bar/tab-bar";
 import TabBar from "@/shared/components/tab-bar/tab-bar/tab-bar";
 import CardGraph01 from "@/shared/components/card-graph/card-graph-01/card-graph-01";
@@ -13,17 +14,22 @@ import CardGraph02, {
 type TabValue = "최다 오답 단원" | "최다 오답 유형";
 
 const Home = () => {
+  const pathname = usePathname();
+
   const tabs: readonly TabItem<TabValue>[] = [
     { value: "최다 오답 단원", label: "최다 오답 단원" },
     { value: "최다 오답 유형", label: "최다 오답 유형" },
   ];
+
   const [value, setValue] = useState<TabValue>("최다 오답 단원");
+
   const items: readonly CardGraph02Item[] = [
     { value: 10, title: "단원명", valueLabel: "10개", tone: "active" },
     { value: 8, title: "단원명", valueLabel: "8개" },
     { value: 7, title: "단원명", valueLabel: "7개" },
     { value: 5, title: "단원명", valueLabel: "5개" },
   ];
+
   return (
     <div className={s.page}>
       <div className={s.incorrect}>
@@ -37,6 +43,7 @@ const Home = () => {
           graphPercent={80}
           graphLabel="16/24"
           onActionClick={() => console.log("go practice")}
+          replayKey={pathname}
         />
       </div>
       <div className={s.graph}>

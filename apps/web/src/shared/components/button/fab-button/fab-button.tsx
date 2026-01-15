@@ -26,7 +26,14 @@ const FabButton = ({
   const pathname = usePathname();
   const router = useRouter();
 
-  if (pathname !== ROUTES.HOME && pathname !== ROUTES.WRONG.ROOT) return null;
+  const SHOW_ON_PATHS = [
+    ROUTES.HOME,
+    ROUTES.WRONG.ROOT,
+    ROUTES.GRAPH.ROOT,
+  ] as const;
+
+  if (!SHOW_ON_PATHS.includes(pathname as (typeof SHOW_ON_PATHS)[number]))
+    return null;
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     onClick?.(e);

@@ -3,18 +3,16 @@ import { typo } from "@/shared/styles/typography.css";
 import { bgColor, color } from "@/shared/styles/color.css";
 import { vars } from "@/shared/styles/theme.css";
 
-export const answerButtonWrapper = style([
-  vars.radius.r12,
-  {
-    position: "relative",
-    width: "100%",
-    height: "5rem",
-    flex: "none",
-    order: 0,
-    flexGrow: 0,
-    overflow: "hidden",
-  },
-]);
+export const answerButtonWrapper = style({
+  position: "relative",
+  width: "100%",
+  height: "5rem",
+  borderRadius: vars.radius.r12,
+  flex: "none",
+  order: 0,
+  flexGrow: 0,
+  overflow: "hidden",
+});
 
 export const answerButtonOverlay = style({
   position: "absolute",

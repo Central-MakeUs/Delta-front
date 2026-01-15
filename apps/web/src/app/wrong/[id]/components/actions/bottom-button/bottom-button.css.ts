@@ -5,18 +5,14 @@ import { bgColor, color } from "@/shared/styles/color.css";
 
 export const bottomButtonContainer = style({
   position: "fixed",
+  maxWidth: "43rem",
   width: "100%",
-  maxWidth: "37.5rem",
-  height: "10.1rem",
-  left: "50%",
-  transform: "translateX(-50%)",
   bottom: 0,
   display: "flex",
   flexDirection: "column",
-  alignItems: "flex-start",
-  padding: 0,
+  margin: "0 auto",
   background: vars.color.grayscale[0],
-  zIndex: 100,
+  zIndex: 10,
 });
 
 export const bottomButtonWrapper = style({
@@ -32,30 +28,3 @@ export const bottomButtonWrapper = style({
   alignSelf: "stretch",
   flexGrow: 0,
 });
-
-export const bottomButton = style([
-  bgColor["main-500"],
-  color["grayscale-0"],
-  typo.body2.semibold,
-  {
-    width: "100%",
-    height: "4.8rem",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "0.8rem",
-    flex: "none",
-    borderRadius: "1.2rem",
-    border: "none",
-    cursor: "pointer",
-    transition: "background-color 0.3s ease",
-    selectors: {
-      "&:disabled": {
-        backgroundColor: vars.color.grayscale[300],
-        color: vars.color.grayscale[500],
-        cursor: "not-allowed",
-        opacity: 0.6,
-      },
-    },
-  },
-]);

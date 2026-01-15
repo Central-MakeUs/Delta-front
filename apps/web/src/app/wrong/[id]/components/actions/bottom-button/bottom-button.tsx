@@ -1,10 +1,9 @@
 import * as styles from "./bottom-button.css";
 import { Button } from "@/shared/components/button/button/button";
-import { WrongDetailData } from "../../mocks/wrong-dummy";
 
-interface BottomButtonProps extends WrongDetailData {
+interface BottomButtonProps {
   onClick: () => void;
-  disabled: boolean;
+  disabled?: boolean;
   isCompleted: boolean;
 }
 
@@ -17,27 +16,22 @@ const BottomButton = ({
     <div className={styles.bottomButtonContainer}>
       {isCompleted ? (
         <div className={styles.bottomButtonWrapper}>
-          <div className={styles.bottomButtonWrapper}>
-            <Button
-              fullWidth
-              className={styles.bottomButton}
-              onClick={onClick}
-              disabled={disabled}
-              tone="default"
-              label="이미 완료한 오답이예요"
-              size="48"
-              icon="check-mark"
-              iconSize={2.4}
-            />
-          </div>
+          <Button
+            fullWidth
+            onClick={onClick}
+            disabled={disabled}
+            tone="default"
+            label="이미 완료한 오답이에요"
+            size="48"
+            icon="check-mark"
+            iconSize={2.4}
+          />
         </div>
       ) : (
         <div className={styles.bottomButtonWrapper}>
           <Button
             fullWidth
-            className={styles.bottomButton}
             onClick={onClick}
-            disabled={disabled}
             tone="complete"
             label="오답 완료"
             size="48"

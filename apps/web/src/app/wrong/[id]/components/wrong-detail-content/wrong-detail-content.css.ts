@@ -35,7 +35,6 @@ export const mainContent = style({
 
 export const inputSection = style([
   bgColor["grayscale-50"],
-  vars.radius.r16,
   {
     display: "flex",
     flexDirection: "column",

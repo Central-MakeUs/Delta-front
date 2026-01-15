@@ -1,6 +1,7 @@
 import { createVar, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 import { bgColor } from "@/shared/styles/color.css";
+import { vars } from "@/shared/styles/theme.css";
 import {
   LABEL_WIDTH_REM,
   GAP_REM,
@@ -44,7 +45,7 @@ export const bar = recipe({
       },
       width: `min(100%, ${barWidthVar})`,
       padding: "0.4rem 0.8rem",
-      borderRadius: "12px",
+      borderRadius: vars.radius.r12,
       display: "flex",
       justifyContent: "flex-end",
       alignItems: "center",
@@ -73,7 +74,7 @@ export const chip = style([
   bgColor["grayscale-0"],
   {
     padding: "0.4rem 0.8rem",
-    borderRadius: "24px",
+    borderRadius: vars.radius.r24,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",

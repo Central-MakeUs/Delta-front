@@ -26,6 +26,8 @@ export const color = {
   "grayscale-800": style({ color: vars.color.grayscale[800] }),
   "grayscale-900": style({ color: vars.color.grayscale[900] }),
   "grayscale-1000": style({ color: vars.color.grayscale[1000] }),
+  // Overlay Color
+  "overDim-40": style({ backgroundColor: vars.color.overDim[40] }),
   // Success Color
   "success-100": style({ color: vars.color.success[100] }),
   "success-500": style({ color: vars.color.success[500] }),

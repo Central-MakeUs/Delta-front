@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ActionCard } from "@/shared/components/action-card/action-card";
 
 const meta = {
-  title: "shared/action-card",
+  title: "shared/ActionCard",
   component: ActionCard,
   tags: ["autodocs"],
   parameters: {

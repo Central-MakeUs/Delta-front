@@ -19,7 +19,7 @@ Top 4 오답 데이터를 막대 그래프 + 랭킹 리스트 형태로 보여�
 - 막대 그래프의 \`maxValue\`는 **1등(첫 번째 항목)의 value**를 기준으로 사용합니다.
   - 1등 value가 0 이하인 경우, 0으로 나누는 문제를 피하기 위해 **maxValue=1**로 fallback 됩니다.
 - \`tone\`이 지정되지 않으면 **1등은 active, 나머지는 inactive**로 자동 적용됩니다.
-- 1등(첫 번째 막대)에는 \`showCrown\`이 활성화됩니다(BarGraph02에 전달).
+- 1등(첫 번째 막대)에는 \`showTarget\`이 활성화됩니다(BarGraph02에 전달).
         `.trim(),
       },
     },

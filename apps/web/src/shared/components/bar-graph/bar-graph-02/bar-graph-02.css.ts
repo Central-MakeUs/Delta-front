@@ -25,8 +25,8 @@ export const bar = recipe({
   },
   variants: {
     tone: {
-      active: { backgroundColor: vars.color.grayscale[900] },
-      inactive: { backgroundColor: vars.color.grayscale[100] },
+      active: { backgroundColor: bgColor["grayscale-900"] },
+      inactive: { backgroundColor: color["grayscale-100"] },
     },
   },
   defaultVariants: {

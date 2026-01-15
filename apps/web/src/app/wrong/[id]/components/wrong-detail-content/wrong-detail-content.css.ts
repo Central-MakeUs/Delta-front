@@ -6,7 +6,7 @@ export const page = style({
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
-  padding: 0,
+  paddingBottom: "6rem",
   position: "relative",
   width: "100%",
   minHeight: "100vh",
@@ -35,6 +35,7 @@ export const mainContent = style({
 export const inputSection = style([
   bgColor["grayscale-50"],
   {
+    borderRadius: vars.radius.r16,
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
@@ -48,7 +49,6 @@ export const inputContent = style({
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
-  padding: 0,
   gap: "1.2rem",
   width: "100%",
 });

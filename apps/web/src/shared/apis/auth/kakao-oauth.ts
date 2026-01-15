@@ -1,7 +1,7 @@
 import { ROUTES } from "@/shared/constants/routes";
 
 const STATE_KEY = "kakao:oauth-state";
-
+const SPLASH_SUPPRESS_ONCE_KEY = "splash:suppress-once";
 const getOrigin = () => {
   if (typeof window === "undefined") return "";
   return window.location.origin;
@@ -81,6 +81,7 @@ export const kakaoOAuth = {
   buildAuthorizeUrl: () => {
     const clientId = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID ?? "";
     const scopes = process.env.NEXT_PUBLIC_KAKAO_SCOPES ?? "";
+    safeSessionSet(SPLASH_SUPPRESS_ONCE_KEY, "1");
     if (!clientId) {
       devWarn("[kakaoOAuth] NEXT_PUBLIC_KAKAO_CLIENT_ID is not set");
     }

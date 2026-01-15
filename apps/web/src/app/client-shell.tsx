@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useState } from "react";
 import QueryProvider from "@/shared/utils/query-provider";
 import AppBarGate from "@/shared/components/app-bar/app-bar-gate";
 import BottomNav from "@/shared/components/bottom-nav/bottom-nav";
@@ -12,11 +13,13 @@ type ClientShellProps = {
 };
 
 const ClientShell = ({ children }: ClientShellProps) => {
+  const [contentKey, setContentKey] = useState(0);
+
   return (
     <QueryProvider>
-      <Splash />
+      <Splash onDone={() => setContentKey((k) => k + 1)} />
       <AppBarGate />
-      {children}
+      <div key={contentKey}>{children}</div>
       <BottomNav />
       <FabButton />
     </QueryProvider>

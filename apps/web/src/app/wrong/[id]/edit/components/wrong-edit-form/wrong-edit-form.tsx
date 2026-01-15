@@ -1,32 +1,25 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useParams } from "next/navigation";
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { ProblemSection } from "../problem-section/problem-section";
-import {
-  AnswerSection,
-  type QuestionType,
-} from "../answer-section/answer-section";
+import { AnswerSection, QuestionType } from "../answer-section/answer-section";
 import { SolutionSection } from "../solution-section/solution-section";
-import * as styles from "./wrong-edit-form.css";
-import { getWrongDetailDataById } from "../../../components/mocks/wrong-dummy";
 import { Button } from "@/shared/components/button/button/button";
 import CompleteModal from "@/shared/components/modal/complete-modal/complete-modal";
-import { useRouter } from "next/navigation";
+import { getWrongDetailDataById } from "../../../components/mocks/wrong-dummy";
+import * as styles from "./wrong-edit-form.css";
+// import { useWrongEditForm } from "../../hook/use-wrong-edit-form";
 
 export const WrongEditForm = () => {
   const router = useRouter();
-  const params = useParams();
-  const id = params.id as string;
+  const { id } = useParams() as { id: string };
   const data = getWrongDetailDataById(id);
 
-  // 데이터에서 초기값 가져오기
-  const initialQuestionType = useMemo(
-    () => data?.questionType || "objective",
-    [data]
-  );
-  const initialAnswerChoice = useMemo(() => data?.answerChoice || null, [data]);
-  const initialAnswerText = useMemo(() => data?.answerText || "", [data]);
+  // 지울 예정
+  const initialQuestionType = data?.questionType || "objective";
+  const initialAnswerChoice = data?.answerChoice || null;
+  const initialAnswerText = data?.answerText || "";
 
   const [questionType, setQuestionType] =
     useState<QuestionType>(initialQuestionType);
@@ -36,6 +29,9 @@ export const WrongEditForm = () => {
   const [answerText, setAnswerText] = useState<string>(initialAnswerText);
   const [solution, setSolution] = useState("");
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+
+  // const { formData, updateField, handleQuestionTypeChange, handleSubmit } =
+  //   useWrongEditForm(data);
 
   if (!data) {
     return <div>데이터를 찾을 수 없습니다.</div>;
@@ -62,7 +58,9 @@ export const WrongEditForm = () => {
   const handleCloseModal = () => {
     setIsCompleteModalOpen(false);
   };
-  const handleComplete = () => {
+
+  const handleComplete = async () => {
+    // await handleSubmit();
     setIsCompleteModalOpen(false);
     router.push(`/wrong/${id}`);
   };
@@ -71,6 +69,24 @@ export const WrongEditForm = () => {
     <div className={styles.pageContainer}>
       <div className={styles.contentWrapper}>
         <ProblemSection {...data} />
+        {/* <AnswerSection
+          {...data}
+          questionType={formData.questionType}
+          answerChoice={formData.selectedNumber}
+          answerText={formData.answerText}
+          onQuestionTypeChange={handleQuestionTypeChange}
+          onNumberSelect={(val) =>
+            updateField(
+              "selectedNumber",
+              val === formData.selectedNumber ? null : val
+            )
+          }
+          onAnswerChange={(val) => updateField("answerText", val)}
+        />
+        <SolutionSection
+          solution={formData.solution}
+          onSolutionChange={(val) => updateField("solution", val)}
+        /> */}
         <AnswerSection
           {...data}
           questionType={questionType}
@@ -83,6 +99,7 @@ export const WrongEditForm = () => {
         ``
         <SolutionSection solution={solution} onSolutionChange={setSolution} />
       </div>
+
       <div className={styles.bottomButtonContainer}>
         <div className={styles.bottomButtonWrapper}>
           <Button
@@ -94,6 +111,7 @@ export const WrongEditForm = () => {
           />
         </div>
       </div>
+
       <CompleteModal
         title="수정을 완료할까요?"
         description="입력한 풀이는 저장되며, 수정이 완료 처리돼요."

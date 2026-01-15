@@ -32,6 +32,7 @@ export const ICONS = [
   "reset",
   "search",
   "star",
+  "target",
   "triangle",
   "user",
   "wrong-check"

@@ -8,7 +8,7 @@ export const tipOverlapVar = createVar();
 
 const BAR_HEIGHT = "2.0rem";
 const BAR_INSET_Y = "0.6rem";
-const TRANSITION_MS = "850ms";
+const TRANSITION_MS = "900ms";
 const EASING = "cubic-bezier(0.2, 0.8, 0.2, 1)";
 const TIP_MASK_SVG = encodeURIComponent(`
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 160" preserveAspectRatio="none">

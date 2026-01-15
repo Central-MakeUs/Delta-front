@@ -40,11 +40,7 @@ const BarGraph02 = ({
       style={assignInlineVars({ [s.barHeightVar]: `${heightRem}rem` })}
     >
       <div className={s.topStack}>
-        {showCrown ? (
-          <div className={s.crown} aria-hidden>
-            <Icon name="crown" />
-          </div>
-        ) : null}
+        {showCrown ? <Icon name="target" size={1.6} /> : null}
         <div className={s.chip}>
           <span className={s.chipText}>{valueLabel}</span>
         </div>

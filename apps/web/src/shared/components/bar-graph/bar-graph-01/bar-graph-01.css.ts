@@ -5,10 +5,10 @@ import { typo } from "@/shared/styles/typography.css";
 
 export const fillPercentVar = createVar();
 export const tipOverlapVar = createVar();
+export const motionMsVar = createVar();
 
 const BAR_HEIGHT = "2.0rem";
 const BAR_INSET_Y = "0.6rem";
-const TRANSITION_MS = "900ms";
 const EASING = "cubic-bezier(0.2, 0.8, 0.2, 1)";
 const TIP_MASK_SVG = encodeURIComponent(`
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 160" preserveAspectRatio="none">
@@ -29,6 +29,7 @@ export const root = style({
   vars: {
     [fillPercentVar]: "0%",
     [tipOverlapVar]: "1.2rem",
+    [motionMsVar]: "900ms",
   },
   width: "100%",
   height: "3.2rem",
@@ -59,7 +60,7 @@ export const fill = style([
     borderRadius: vars.radius.full,
     zIndex: 1,
     transitionProperty: "width",
-    transitionDuration: TRANSITION_MS,
+    transitionDuration: motionMsVar,
     transitionTimingFunction: EASING,
     willChange: "width",
 
@@ -77,7 +78,7 @@ export const tip = style([
     position: "absolute",
     top: 0,
     bottom: 0,
-    width: "2rem",
+    width: "2.0rem",
     left: `clamp(0%, calc(${fillPercentVar} - ${tipOverlapVar}), calc(100% - 2.0rem))`,
     zIndex: 1,
     WebkitMaskImage: `url("data:image/svg+xml,${TIP_MASK_SVG}")`,
@@ -89,7 +90,7 @@ export const tip = style([
     maskSize: "100% 100%",
     maskPosition: "center",
     transitionProperty: "left",
-    transitionDuration: TRANSITION_MS,
+    transitionDuration: motionMsVar,
     transitionTimingFunction: EASING,
     willChange: "left",
 

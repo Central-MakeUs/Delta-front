@@ -33,6 +33,13 @@ const toCssVarName = (v: string) => {
   return v;
 };
 
+const computeMotionMs = (percent: number) => {
+  const minMs = 450;
+  const maxMs = 1400;
+  const ms = minMs + percent * 10;
+  return clamp(ms, minMs, maxMs);
+};
+
 export const BarGraph01 = ({
   percent,
   className,
@@ -63,6 +70,9 @@ export const BarGraph01 = ({
 
   const hasProgress = rawPercent > 0;
 
+  const reduced = prefersReducedMotion();
+  const motionMs = reduced ? 0 : computeMotionMs(rawPercent);
+
   useLayoutEffect(() => {
     const el = rootRef.current;
     if (!el) return;
@@ -81,7 +91,6 @@ export const BarGraph01 = ({
       return;
     }
 
-    const reduced = prefersReducedMotion();
     if (!animate || reduced) {
       el.style.setProperty(fillVarName, `${targetVisualPercent}%`);
       mountedRef.current = true;
@@ -119,6 +128,7 @@ export const BarGraph01 = ({
     animate,
     animateFromZeroOnMount,
     hasProgress,
+    reduced,
     replayKey,
     targetVisualPercent,
   ]);
@@ -134,6 +144,7 @@ export const BarGraph01 = ({
       aria-valuenow={rawPercent}
       style={assignInlineVars({
         [s.tipOverlapVar]: `${tipOverlapRem}rem`,
+        [s.motionMsVar]: `${motionMs}ms`,
       })}
     >
       <div className={s.track} aria-hidden />

@@ -1,0 +1,7 @@
+export const ERROR_CODES = {
+  AUTH: {
+    AUTHENTICATION_FAILED: "AUTH_001",
+    ACCESS_DENIED: "AUTH_002",
+    TOKEN_REQUIRED: "AUTH_010",
+  },
+} as const;

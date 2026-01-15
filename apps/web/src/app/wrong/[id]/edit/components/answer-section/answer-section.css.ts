@@ -1,5 +1,4 @@
 import { style } from "@vanilla-extract/css";
-import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 import { bgColor, color } from "@/shared/styles/color.css";
 
@@ -46,8 +45,6 @@ export const toggleWrapper = style([
   {
     display: "flex",
     flexDirection: "column",
-    alignItems: "flex-start",
-    padding: "0.2rem",
     gap: "1rem",
     width: "11.2rem",
     borderRadius: "1.7rem",
@@ -57,4 +54,3 @@ export const toggleWrapper = style([
 export const numberChoice = style({
   width: "100%",
 });
-

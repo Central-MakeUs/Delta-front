@@ -40,12 +40,12 @@ export const answerButtonContent = style({
 
 export const answerChipWrapper = style([
   bgColor["grayscale-0"],
-  vars.radius.r12,
   {
     display: "flex",
     alignItems: "center",
     padding: "1.2rem",
     gap: "0.8rem",
+    borderRadius: vars.radius.r12,
     justifyContent: "space-between",
   },
 ]);

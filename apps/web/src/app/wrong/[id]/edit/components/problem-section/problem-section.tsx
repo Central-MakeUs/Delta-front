@@ -1,55 +1,43 @@
 import Image from "next/image";
 import Chip from "@/shared/components/chip/chip";
 import * as styles from "./problem-section.css";
-
-export interface ProblemSectionProps {
-  count: number;
-  title: string;
-  wrongCount: number;
-  correctCount: number;
-  imageUrl: string;
-}
+import { WrongDetailData } from "../../../components/mocks/wrong-dummy";
 
 export const ProblemSection = ({
-  count,
+  id,
   title,
-  wrongCount,
-  correctCount,
-  imageUrl,
-}: ProblemSectionProps) => {
+  subjectChip,
+  imagePath,
+  chips,
+}: WrongDetailData) => {
   return (
     <section className={styles.section}>
       <div className={styles.header}>
         <Chip
-          label={`${count}개`}
+          key={id}
+          label={subjectChip}
           size="md"
           shape="pill"
           tone="solid"
-          disabled
           className={styles.chip}
         />
         <div className={styles.titleRow}>
           <h1 className={styles.title}>{title}</h1>
           <div className={styles.metaChips}>
-            <Chip
-              label={`${wrongCount}개`}
-              size="md"
-              shape="square"
-              tone="surface"
-              disabled
-            />
-            <Chip
-              label={`${correctCount}개`}
-              size="md"
-              shape="square"
-              tone="surface"
-              disabled
-            />
+            {chips.map((chip) => (
+              <Chip
+                key={chip.label}
+                label={chip.label}
+                size="md"
+                shape="square"
+                tone="surface"
+              />
+            ))}
           </div>
         </div>
       </div>
       <Image
-        src={imageUrl}
+        src={imagePath}
         alt="문제 이미지"
         width={358}
         height={238}

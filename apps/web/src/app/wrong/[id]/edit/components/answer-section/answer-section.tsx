@@ -1,6 +1,8 @@
 import { Toggle } from "@/shared/components/toggle/toggle";
 import { NumberChoice } from "@/shared/components/number-choice/number-choice";
 import * as styles from "./answer-section.css";
+import { TextField } from "@/shared/components/text-field/text-field";
+import { WrongDetailData } from "../../../components/mocks/wrong-dummy";
 
 export type QuestionType = "objective" | "subjective";
 
@@ -9,18 +11,19 @@ const TOGGLE_OPTIONS = [
   { value: "subjective" as QuestionType, label: "주관식" },
 ] as const;
 
-export interface AnswerSectionProps {
-  questionType: QuestionType;
-  selectedNumber: number | null;
-  onQuestionTypeChange: (type: QuestionType) => void;
+export interface AnswerSectionProps extends WrongDetailData {
+  onQuestionTypeChange: (value: QuestionType) => void;
   onNumberSelect: (value: number) => void;
+  onAnswerChange: (value: string) => void;
 }
 
 export const AnswerSection = ({
   questionType,
-  selectedNumber,
+  answerChoice,
+  answerText,
   onQuestionTypeChange,
   onNumberSelect,
+  onAnswerChange,
 }: AnswerSectionProps) => {
   return (
     <section className={styles.section}>
@@ -36,16 +39,22 @@ export const AnswerSection = ({
             />
           </div>
         </div>
-        {questionType === "objective" && (
+        {questionType === "objective" ? (
           <NumberChoice
             count={5}
-            value={selectedNumber}
+            value={answerChoice}
             onValueChange={onNumberSelect}
             className={styles.numberChoice}
+          />
+        ) : (
+          <TextField
+            fullWidth
+            value={answerText || ""}
+            onChange={(e) => onAnswerChange(e.target.value)}
+            // className={styles.answerTextField}
           />
         )}
       </div>
     </section>
   );
 };
-

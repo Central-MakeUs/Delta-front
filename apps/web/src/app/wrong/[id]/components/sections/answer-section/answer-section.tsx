@@ -2,13 +2,18 @@ import { useState } from "react";
 import Chip from "@/shared/components/chip/chip";
 import * as styles from "./answer-section.css";
 import Icon from "@/shared/components/icon/icon";
+import { WrongDetailData } from "../../mocks/wrong-dummy";
 
-interface AnswerSectionProps {
-  answer: string;
+interface AnswerSectionProps extends WrongDetailData {
   onAnswerRevealed?: () => void;
 }
 
-const AnswerSection = ({ answer, onAnswerRevealed }: AnswerSectionProps) => {
+const AnswerSection = ({
+  answerChoice,
+  answerText,
+  questionType,
+  onAnswerRevealed,
+}: AnswerSectionProps) => {
   const [showAnswer, setShowAnswer] = useState(false);
 
   const handleShowAnswer = () => {
@@ -26,7 +31,11 @@ const AnswerSection = ({ answer, onAnswerRevealed }: AnswerSectionProps) => {
       <div className={styles.answerChipWrapper}>
         <div className={styles.answerChipContent}>
           <Chip size="md" shape="pill" label="정답" />
-          <span className={styles.answerNumber}>{answer}</span>
+          {questionType === "objective" ? (
+            <span className={styles.answerNumber}>{answerChoice}</span>
+          ) : (
+            <span className={styles.answerNumber}>{answerText}</span>
+          )}
         </div>
         {showAnswer && (
           <button

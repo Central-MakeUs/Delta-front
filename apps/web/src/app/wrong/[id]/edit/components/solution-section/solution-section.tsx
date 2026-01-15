@@ -15,6 +15,7 @@ export const SolutionSection = ({
       <h2 className={styles.title}>풀이</h2>
       <div className={styles.textField}>
         <TextField
+          heightSize="lg"
           placeholder="풀이를 입력하세요"
           value={solution}
           onChange={(e) => onSolutionChange(e.target.value)}
@@ -24,4 +25,3 @@ export const SolutionSection = ({
     </section>
   );
 };
-

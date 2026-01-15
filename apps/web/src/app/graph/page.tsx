@@ -59,13 +59,13 @@ const GraphPage = () => {
               <div key={g.id} className={s.graphRow}>
                 <div className={s.graphRowInner}>
                   <BarGraphHorizontal
+                    key={`${tab}-${g.id}`}
                     label={g.label}
                     rows={g.rows}
                     minValue={domainMin}
                     maxValue={domainMax}
                     minBarWidthRem={7}
                     maxBarWidthRem={26}
-                    replayKey={replayKey}
                     animate
                   />
                 </div>

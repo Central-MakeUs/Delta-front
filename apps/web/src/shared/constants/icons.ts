@@ -19,6 +19,7 @@ export const ICONS = [
   "home-active",
   "home-default",
   "kakao",
+  "lock",
   "log-out",
   "logo-default",
   "message-square",
@@ -34,6 +35,7 @@ export const ICONS = [
   "star",
   "target",
   "triangle",
+  "unlock",
   "user",
   "wrong-check"
 ] as const;

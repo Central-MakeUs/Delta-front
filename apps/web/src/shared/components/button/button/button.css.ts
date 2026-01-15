@@ -89,6 +89,10 @@ export const button = recipe({
         backgroundColor: vars.color.login.kakao,
         color: vars.color.grayscale[900],
       },
+      complete: {
+        backgroundColor: vars.color.main[500],
+        color: vars.color.grayscale[0],
+      },
     },
 
     fullWidth: {

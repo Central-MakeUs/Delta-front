@@ -1,14 +1,18 @@
-
+import { style } from "@vanilla-extract/css";
+import { recipe } from "@vanilla-extract/recipes";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
-import { recipe } from "@vanilla-extract/recipes";
 import { bgColor, color } from "@/shared/styles/color.css";
 
 export const container = recipe({
   base: {
     display: "flex",
+    flexDirection: "column",
     alignItems: "flex-start",
     position: "relative",
+    flex: 1,
+    flexGrow: 1,
+    minHeight: 0,
   },
   variants: {
     fullWidth: {
@@ -25,25 +29,27 @@ export const container = recipe({
   },
 });
 
-export const inputWrapper = recipe({
+export const textareaWrapper = recipe({
   base: [
     bgColor["grayscale-0"],
     {
-    display: "flex",
-    alignItems: "flex-start",
-    alignSelf: "stretch",
-    border: `0.1rem solid ${vars.color.grayscale[100]}`,
-    borderRadius: vars.radius.md,
-    flex: 1,
-    flexGrow: 1,
-    justifyContent: "space-between",
-    padding: "1.6rem",
-    position: "relative",
-    selectors: {
-      "&:focus-within": {
-        borderColor: vars.color.grayscale[400],
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "flex-start",
+      alignSelf: "stretch",
+      border: `1px solid ${vars.color.grayscale[100]}`,
+      borderRadius: vars.radius.md,
+      flex: 1,
+      flexGrow: 1,
+      minHeight: 0,
+      padding: "1.2rem",
+      gap: "0.8rem",
+      position: "relative",
+      selectors: {
+        "&:focus-within": {
+          borderColor: vars.color.grayscale[400],
+        },
       },
-    },
     },
   ],
   variants: {
@@ -62,19 +68,31 @@ export const inputWrapper = recipe({
   },
 });
 
-export const input = recipe({
+export const prefix = style({
+  display: "flex",
+  alignItems: "center",
+  flex: "none",
+  order: 0,
+  flexGrow: 0,
+});
+
+export const textarea = recipe({
   base: [
-    typo.body2.regular,
     color["grayscale-700"],
     {
       outline: "none",
       flex: 1,
+      flexGrow: 1,
       width: "100%",
-      padding: 0,
-      margin: 0,
+      minHeight: "17.6rem",
+      border: "none",
+      background: "transparent",
+      resize: "none",
+      fontFamily: "inherit",
+      lineHeight: "150%",
       selectors: {
         "&::placeholder": {
-          color: vars.color.grayscale[400],
+          color: vars.color.grayscale[700],
         },
         "&:disabled": {
           cursor: "not-allowed",
@@ -83,4 +101,23 @@ export const input = recipe({
       },
     },
   ],
+  variants: {
+    hasPrefix: {
+      true: {
+        order: 1,
+        alignSelf: "stretch",
+        flexGrow: 1,
+      },
+      false: {},
+    },
+    fontSize: {
+      body1: typo.body1.medium,
+      body2: typo.body2.medium,
+      body3: typo.body3.medium,
+    },
+  },
+  defaultVariants: {
+    hasPrefix: false,
+    fontSize: "body3",
+  },
 });

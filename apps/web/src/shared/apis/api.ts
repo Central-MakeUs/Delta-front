@@ -48,9 +48,6 @@ const syncTokensFromResponseHeaders = (headers: Record<string, unknown>) => {
   }
 };
 
-const isReissueEndpoint = (url?: string) =>
-  !!url?.includes(API_PATHS.AUTH.REISSUE);
-
 const handleAuthDead = () => {
   tokenStorage.clear();
   emitAuthLogout();
@@ -109,7 +106,9 @@ instance.interceptors.response.use(
   async (err: AxiosError) => {
     const config = (err.config ?? {}) as RetryConfig;
 
-    if (config._skipAuthRefresh || isReissueEndpoint(config.url)) throw err;
+    if (config._skipAuthRefresh || config.url === API_PATHS.AUTH.REISSUE) {
+      throw err;
+    }
 
     const payload = err.response?.data;
     const headers = (err.response?.headers ?? {}) as Record<string, unknown>;

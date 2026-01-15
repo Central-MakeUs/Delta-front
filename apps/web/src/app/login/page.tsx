@@ -4,17 +4,20 @@ import { useRouter } from "next/navigation";
 import Icon from "@/shared/components/icon/icon";
 import { Button } from "@/shared/components/button/button/button";
 import LoginDecorations from "./login-decorations";
+import { ROUTES } from "@/shared/constants/routes";
+import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import * as s from "./login.css";
 
 const LoginPage = () => {
   const router = useRouter();
 
   const onKakaoStart = () => {
-    router.push("/");
+    const url = kakaoOAuth.buildAuthorizeUrl();
+    window.location.assign(url);
   };
 
   const onAppleStart = () => {
-    router.push("/");
+    router.push(ROUTES.HOME);
   };
 
   return (

@@ -1,6 +1,7 @@
-/* 오답 상세 페이지 */
+import WrongDetailContent from "./components/wrong-detail-content/wrong-detail-content";
+
 const WrongDetailPage = () => {
-  return <div>오답 상세</div>;
+  return <WrongDetailContent />;
 };
 
 export default WrongDetailPage;

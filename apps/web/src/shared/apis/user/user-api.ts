@@ -1,6 +1,7 @@
 import { instance } from "@/shared/apis/api";
 import type { ApiResponse } from "@/shared/apis/api-types";
 import { unwrapApiResponse } from "@/shared/apis/api-types";
+import { API_PATHS } from "@/shared/apis/constants/api-paths";
 
 export type UserMeData = {
   id: number;
@@ -22,12 +23,13 @@ const normalizeMe = (raw: RawUserMeData): UserMeData => {
 
 export const userApi = {
   getMyProfile: async () => {
-    const res =
-      await instance.get<ApiResponse<RawUserMeData>>("/api/v1/users/me");
+    const res = await instance.get<ApiResponse<RawUserMeData>>(
+      API_PATHS.USERS.ME
+    );
     return normalizeMe(unwrapApiResponse(res.data));
   },
 
   withdrawMyAccount: async () => {
-    await instance.post("/api/v1/users/withdrawal");
+    await instance.post(API_PATHS.USERS.WITHDRAWAL);
   },
 };

@@ -2,6 +2,7 @@ import { instance, REFRESH_TOKEN_HEADER } from "@/shared/apis/api";
 import type { ApiResponse } from "@/shared/apis/api-types";
 import { unwrapApiResponse } from "@/shared/apis/api-types";
 import { tokenStorage } from "@/shared/apis/token-storage";
+import { API_PATHS } from "@/shared/apis/constants/api-paths";
 
 export type SocialLoginData = {
   email?: string | null;
@@ -12,7 +13,7 @@ export type SocialLoginData = {
 export const authApi = {
   kakaoLogin: async (params: { code: string }) => {
     const res = await instance.post<ApiResponse<SocialLoginData>>(
-      "/api/v1/auth/kakao",
+      API_PATHS.AUTH.KAKAO_LOGIN,
       { code: params.code }
     );
 
@@ -23,14 +24,12 @@ export const authApi = {
     const { refreshToken } = tokenStorage.getTokens();
     if (!refreshToken) return;
 
-    await instance.post("/api/v1/auth/reissue", null, {
-      headers: {
-        [REFRESH_TOKEN_HEADER]: refreshToken,
-      },
+    await instance.post(API_PATHS.AUTH.REISSUE, null, {
+      headers: { [REFRESH_TOKEN_HEADER]: refreshToken },
     });
   },
 
   logout: async () => {
-    await instance.post("/api/v1/auth/logout");
+    await instance.post(API_PATHS.AUTH.LOGOUT);
   },
 };

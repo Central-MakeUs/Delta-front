@@ -4,13 +4,15 @@ import { ApiError } from "@/shared/apis/api-error";
 import { isApiResponseError } from "@/shared/apis/api-types";
 import { ERROR_CODES } from "@/shared/apis/error-codes";
 import { emitAuthLogout } from "@/shared/apis/auth/auth-events";
+import { API_PATHS } from "@/shared/apis/constants/api-paths";
+import { API_HEADERS } from "@/shared/apis/constants/api-headers";
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const instance = axios.create({ baseURL });
-export const REFRESH_TOKEN_HEADER = "refresh-token";
-const ACCESS_HEADER = "authorization";
-const TRACE_HEADER = "x-trace-id";
+export const REFRESH_TOKEN_HEADER = API_HEADERS.REFRESH_TOKEN;
+const ACCESS_HEADER = API_HEADERS.AUTHORIZATION;
+const TRACE_HEADER = API_HEADERS.TRACE_ID;
 
 type RetryConfig = AxiosRequestConfig & {
   _retry?: boolean;
@@ -47,7 +49,7 @@ const syncTokensFromResponseHeaders = (headers: Record<string, unknown>) => {
 };
 
 const isReissueEndpoint = (url?: string) =>
-  !!url?.includes("/api/v1/auth/reissue");
+  !!url?.includes(API_PATHS.AUTH.REISSUE);
 
 const handleAuthDead = () => {
   tokenStorage.clear();
@@ -71,7 +73,7 @@ const runReissueOnce = async () => {
       _skipAuthRefresh: true,
     };
 
-    await instance.post("/api/v1/auth/reissue", null, config);
+    await instance.post(API_PATHS.AUTH.REISSUE, null, config);
   })()
     .catch((e) => {
       handleAuthDead();

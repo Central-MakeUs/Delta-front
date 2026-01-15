@@ -25,20 +25,55 @@ const buildRedirectUriFromOrigin = () => {
   return `${getOrigin()}${ROUTES.AUTH.KAKAO_CALLBACK}`;
 };
 
+const devWarn = (message: string, e?: unknown) => {
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(message, e);
+  }
+};
+
+const safeSessionGet = (key: string) => {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.sessionStorage.getItem(key);
+  } catch (e) {
+    devWarn("[kakaoOAuth] sessionStorage.getItem failed", e);
+    return null;
+  }
+};
+
+const safeSessionSet = (key: string, value: string) => {
+  if (typeof window === "undefined") return false;
+  try {
+    window.sessionStorage.setItem(key, value);
+    return true;
+  } catch (e) {
+    devWarn("[kakaoOAuth] sessionStorage.setItem failed", e);
+    return false;
+  }
+};
+
+const safeSessionRemove = (key: string) => {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.removeItem(key);
+  } catch (e) {
+    devWarn("[kakaoOAuth] sessionStorage.removeItem failed", e);
+  }
+};
+
 export const kakaoOAuth = {
   buildRedirectUri: () => buildRedirectUriFromOrigin(),
 
   saveState: (state: string) => {
-    if (typeof window === "undefined") return;
-    window.sessionStorage.setItem(STATE_KEY, state);
+    safeSessionSet(STATE_KEY, state);
   },
 
   consumeState: (incomingState: string | null) => {
     if (typeof window === "undefined") return false;
     if (!incomingState) return false;
 
-    const saved = window.sessionStorage.getItem(STATE_KEY);
-    window.sessionStorage.removeItem(STATE_KEY);
+    const saved = safeSessionGet(STATE_KEY);
+    safeSessionRemove(STATE_KEY);
 
     return !!saved && saved === incomingState;
   },

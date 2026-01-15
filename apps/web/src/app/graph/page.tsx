@@ -1,7 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import * as s from "@/app/graph/graph.css";
 import LineTabBar from "@/shared/components/tab-bar/line-tab-bar/line-tab-bar";
 import BarGraphHorizontal from "@/shared/components/bar-graph/bar-graph-horizontal/bar-graph-horizontal";
@@ -21,9 +20,12 @@ const TITLE_BY_TAB: Record<GraphTab, string> = {
 const GraphPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const urlTab = searchParams.get("tab");
   const tab: GraphTab = isGraphTab(urlTab) ? urlTab : GRAPH_TABS.UNIT;
+
+  const replayKey = `${pathname}:${tab}`;
 
   const all = MOCK_LIST.flatMap((g) => g.rows.map((r) => r.value));
   const domainMin = all.length > 0 ? Math.min(...all) : 0;
@@ -38,9 +40,7 @@ const GraphPage = () => {
             { value: GRAPH_TABS.WRONG, label: "유형별" },
           ]}
           value={tab}
-          onValueChange={(next) => {
-            router.replace(ROUTES.GRAPH.tab(next));
-          }}
+          onValueChange={(next) => router.replace(ROUTES.GRAPH.tab(next))}
           ariaLabel="학습 탭"
         />
       </div>
@@ -65,6 +65,8 @@ const GraphPage = () => {
                     maxValue={domainMax}
                     minBarWidthRem={7}
                     maxBarWidthRem={26}
+                    replayKey={replayKey}
+                    animate
                   />
                 </div>
               </div>

@@ -81,10 +81,18 @@ export const kakaoOAuth = {
   buildAuthorizeUrl: () => {
     const clientId = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID ?? "";
     const scopes = process.env.NEXT_PUBLIC_KAKAO_SCOPES ?? "";
+    if (!clientId) {
+      devWarn("[kakaoOAuth] NEXT_PUBLIC_KAKAO_CLIENT_ID is not set");
+    }
     const redirectUri = buildRedirectUriFromOrigin();
     const state = createState();
 
-    kakaoOAuth.saveState(state);
+    const saved = safeSessionSet(STATE_KEY, state);
+    if (!saved) {
+      devWarn(
+        "[kakaoOAuth] Failed to save state, CSRF protection may not work"
+      );
+    }
 
     const params = new URLSearchParams({
       client_id: clientId,

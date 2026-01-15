@@ -9,12 +9,12 @@ import MyPageCard from "@/app/my/components/my-page-card/my-page-card";
 import MenuItem from "@/app/my/components/menu-item/menu-item";
 import Modal from "@/shared/components/modal/modal/modal";
 import Icon from "@/shared/components/icon/icon";
+import { useLogoutMutation } from "@/shared/apis/auth/hooks/use-logout-mutation";
 
 type MyPageViewProps = {
   userName: string;
   linkedEmail: string;
   profileImageUrl?: string | null;
-
   onBack?: () => void;
   onLogout?: () => void;
   onWithdraw?: () => void;
@@ -27,12 +27,11 @@ const MyPageView = ({
   onLogout,
   onWithdraw,
 }: MyPageViewProps) => {
+  const logoutMutation = useLogoutMutation();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
-
   const openLogoutModal = () => setIsLogoutModalOpen(true);
   const closeLogoutModal = () => setIsLogoutModalOpen(false);
-
   const openWithdrawModal = () => setIsWithdrawModalOpen(true);
   const closeWithdrawModal = () => setIsWithdrawModalOpen(false);
 
@@ -41,8 +40,13 @@ const MyPageView = ({
   };
 
   const handleLogoutConfirm = () => {
-    if (onLogout) onLogout();
-    closeLogoutModal();
+    if (logoutMutation.isPending) return;
+    logoutMutation.mutate(undefined, {
+      onSettled: () => {
+        closeLogoutModal();
+        onLogout?.();
+      },
+    });
   };
 
   const handleWithdrawClick = () => {

@@ -39,6 +39,7 @@ const MyPage = () => {
       userName={data.nickname ?? ""}
       linkedEmail={data.email ?? ""}
       profileImageUrl={null}
+      onLogout={() => router.replace(ROUTES.AUTH.LOGIN)}
     />
   );
 };

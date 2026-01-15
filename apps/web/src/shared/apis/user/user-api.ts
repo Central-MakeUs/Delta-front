@@ -18,6 +18,9 @@ type RawUserMeData = {
 
 const normalizeMe = (raw: RawUserMeData): UserMeData => {
   const id = raw.id ?? raw.userId ?? 0;
+  if (id === 0) {
+    console.warn("[userApi] User ID is missing from response");
+  }
   return { id, email: raw.email ?? null, nickname: raw.nickname ?? null };
 };
 

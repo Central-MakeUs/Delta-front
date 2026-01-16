@@ -55,7 +55,6 @@ export const vars = createThemeContract({
     modal: null,
     bottomSheetOverlay: null,
     bottomSheet: null,
-    toast: null,
     splash: null,
   },
   radius: {
@@ -215,7 +214,6 @@ export const lightTheme = createTheme(vars, {
     modal: "11",
     bottomSheetOverlay: "8",
     bottomSheet: "9",
-    toast: "12",
     splash: "20",
   },
   radius: {

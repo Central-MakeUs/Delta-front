@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { TabItem } from "@/shared/components/tab-bar/tab-bar/tab-bar";
 import TabBar from "@/shared/components/tab-bar/tab-bar/tab-bar";
 import CardGraph01 from "@/shared/components/card-graph/card-graph-01/card-graph-01";
 import ViewAllButton from "@/app/(home)/components/view-all-button/view-all-button";
 import * as s from "@/app/(home)/home.css";
+import { GRAPH_TABS, ROUTES } from "@/shared/constants/routes";
 import CardGraph02, {
   type CardGraph02Item,
 } from "@/shared/components/card-graph/card-graph-02/card-graph-02";
@@ -14,6 +15,7 @@ import CardGraph02, {
 type TabValue = "최다 오답 단원" | "최다 오답 유형";
 
 const Home = () => {
+  const router = useRouter();
   const pathname = usePathname();
 
   const tabs: readonly TabItem<TabValue>[] = [
@@ -29,6 +31,11 @@ const Home = () => {
     { value: 7, title: "단원명", valueLabel: "7개" },
     { value: 5, title: "단원명", valueLabel: "5개" },
   ];
+
+  const goGraph = () => {
+    const tab = value === "최다 오답 단원" ? GRAPH_TABS.UNIT : GRAPH_TABS.WRONG;
+    router.push(ROUTES.GRAPH.tab(tab));
+  };
 
   return (
     <div className={s.page}>
@@ -46,12 +53,13 @@ const Home = () => {
           replayKey={pathname}
         />
       </div>
+
       <div className={s.graph}>
         <TabBar
           tabs={tabs}
           value={value}
           onValueChange={setValue}
-          rightSlot={<ViewAllButton onClick={() => console.log("view all")} />}
+          rightSlot={<ViewAllButton onClick={goGraph} />}
         />
         <CardGraph02 items={items} />
       </div>

@@ -59,7 +59,7 @@ const meta = {
         "막대 톤. 미지정 시 `active`. (active: 진한 배경 / inactive: 연한 배경)",
       table: { type: { summary: '"active" | "inactive"' } },
     },
-    showCrown: {
+    showTarget: {
       control: "boolean",
       description: "상단에 왕관 아이콘 표시 여부.",
       table: { type: { summary: "boolean" } },
@@ -114,7 +114,7 @@ export const WithCrown: Story = {
     maxValue: 10,
     valueLabel: "10개",
     tone: "active",
-    showCrown: true,
+    showTarget: true,
   },
   render: (args) => <BarGraph02 {...args} />,
 };

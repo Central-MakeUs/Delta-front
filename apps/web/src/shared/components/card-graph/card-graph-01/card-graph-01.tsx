@@ -1,18 +1,20 @@
 "use client";
 
 import clsx from "clsx";
+import { usePathname } from "next/navigation";
 import Icon from "@/shared/components/icon/icon";
 import BarGraph01 from "@/shared/components/bar-graph/bar-graph-01/bar-graph-01";
 import * as s from "@/shared/components/card-graph/card-graph-01/card-graph-01.css";
 
 type CardGraph01Props = {
-  monthLabel: string; // 1월
-  registeredCount: number; // 등록한 문제 수
-  graphPercent: number; // 0~100 (BarGraph01에 그대로 전달)
-  graphLabel: string; // "16/24"
+  monthLabel: string;
+  registeredCount: number;
+  graphPercent: number;
+  graphLabel: string;
   onActionClick?: () => void;
   className?: string;
   ariaLabel?: string;
+  replayKey?: string | number;
 };
 
 const clamp = (value: number, min: number, max: number) =>
@@ -26,9 +28,12 @@ export const CardGraph01 = ({
   onActionClick,
   className,
   ariaLabel = "card graph 01",
+  replayKey,
 }: CardGraph01Props) => {
+  const pathname = usePathname();
   const safePercent = clamp(graphPercent, 0, 100);
   const percentLabel = `${Math.round(safePercent)}%`;
+  const resolvedReplayKey = replayKey ?? pathname;
 
   return (
     <section className={clsx(s.root, className)} aria-label={ariaLabel}>
@@ -52,7 +57,11 @@ export const CardGraph01 = ({
             </button>
           </div>
 
-          <BarGraph01 percent={safePercent} label={graphLabel} />
+          <BarGraph01
+            percent={safePercent}
+            label={graphLabel}
+            replayKey={resolvedReplayKey}
+          />
         </div>
       </div>
     </section>

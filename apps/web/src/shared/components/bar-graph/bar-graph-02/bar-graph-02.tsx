@@ -9,7 +9,7 @@ export type BarGraph02Props = {
   valueLabel: string;
   tone?: "active" | "inactive";
   className?: string;
-  showCrown?: boolean;
+  showTarget?: boolean;
   maxHeightRem?: number;
   minHeightRem?: number;
 };
@@ -23,7 +23,7 @@ const BarGraph02 = ({
   valueLabel,
   tone = "active",
   className,
-  showCrown = false,
+  showTarget = false,
   maxHeightRem = 11.1,
   minHeightRem = 4,
 }: BarGraph02Props) => {
@@ -40,11 +40,7 @@ const BarGraph02 = ({
       style={assignInlineVars({ [s.barHeightVar]: `${heightRem}rem` })}
     >
       <div className={s.topStack}>
-        {showCrown ? (
-          <div className={s.crown} aria-hidden>
-            <Icon name="crown" />
-          </div>
-        ) : null}
+        {showTarget ? <Icon name="target" size={1.6} /> : null}
         <div className={s.chip}>
           <span className={s.chipText}>{valueLabel}</span>
         </div>

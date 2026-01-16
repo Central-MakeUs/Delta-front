@@ -51,7 +51,7 @@ export const CardGraph02 = ({
 
           const tone = item.tone ?? inferredTone;
 
-          const showCrown = !allZero && item.value === maxInList;
+          const showTarget = !allZero && item.value === maxInList;
 
           return (
             <div key={rank} className={s.barCol}>
@@ -61,7 +61,7 @@ export const CardGraph02 = ({
                   maxValue={maxValue}
                   valueLabel={item.valueLabel ?? `${item.value}개`}
                   tone={tone}
-                  showCrown={showCrown}
+                  showTarget={showTarget}
                 />
               </div>
 

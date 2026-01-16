@@ -18,8 +18,6 @@ export const bar = recipe({
     height: barHeightVar,
     borderTopLeftRadius: vars.radius.r16,
     borderTopRightRadius: vars.radius.r16,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
     width: "100%",
     minWidth: 0,
     boxSizing: "border-box",
@@ -45,15 +43,6 @@ export const topStack = style({
   gap: "0.4rem",
 });
 
-export const crown = style({
-  width: "1.6rem",
-  height: "1.6rem",
-  flexShrink: 0,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-});
-
 export const chip = style([
   bgColor["grayscale-0"],
   {
@@ -67,12 +56,4 @@ export const chip = style([
   },
 ]);
 
-export const chipText = style([
-  typo.caption.semibold,
-  color["grayscale-900"],
-  {
-    fontWeight: 600,
-    lineHeight: "1.8rem",
-    whiteSpace: "nowrap",
-  },
-]);
+export const chipText = style([typo.caption.semibold, color["grayscale-900"]]);

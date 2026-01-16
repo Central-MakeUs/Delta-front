@@ -137,7 +137,7 @@ export const image = style({
   height: "auto",
   display: "block",
   borderRadius: vars.radius.r12,
-  border: `0.1rem solid ${vars.color.grayscale[50]}`,
+  border: `0.1rem solid ${vars.color.grayscale[100]}`,
 });
 
 export const explanationTitle = style([

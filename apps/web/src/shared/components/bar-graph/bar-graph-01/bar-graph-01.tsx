@@ -1,6 +1,16 @@
+"use client";
+
 import clsx from "clsx";
 import { assignInlineVars } from "@vanilla-extract/dynamic";
+import { useRef } from "react";
 import * as s from "@/shared/components/bar-graph/bar-graph-01/bar-graph-01.css";
+import {
+  clamp,
+  computeMotionMs,
+  computeVisualPercent,
+  prefersReducedMotion,
+} from "@/shared/components/bar-graph/bar-graph-01/utils/bar-graph-01";
+import { useBarGraphMotion } from "@/shared/components/bar-graph/bar-graph-01/hooks/use-bar-graph-motion";
 
 type BarGraph01Props = {
   percent: number;
@@ -10,10 +20,9 @@ type BarGraph01Props = {
   label?: string;
   minPercent?: number;
   maxPercent?: number;
-};
-
-const clamp = (value: number, min: number, max: number) => {
-  return Math.min(Math.max(value, min), max);
+  animate?: boolean;
+  animateFromZeroOnMount?: boolean;
+  replayKey?: string | number;
 };
 
 export const BarGraph01 = ({
@@ -24,18 +33,37 @@ export const BarGraph01 = ({
   label,
   minPercent = 10,
   maxPercent = 85,
+  animate = true,
+  animateFromZeroOnMount = true,
+  replayKey,
 }: BarGraph01Props) => {
-  const rawPercent = clamp(percent, 0, 100);
+  const rootRef = useRef<HTMLDivElement | null>(null);
 
-  const min = clamp(minPercent, 0, 100);
-  const max = clamp(maxPercent, 0, 100);
-  const lo = Math.min(min, max);
-  const hi = Math.max(min, max);
-  const visualPercent = lo + (rawPercent / 100) * (hi - lo);
-  const showTip = visualPercent > 0;
+  const rawPercent = clamp(percent, 0, 100);
+  const targetVisualPercent = computeVisualPercent({
+    rawPercent,
+    minPercent,
+    maxPercent,
+  });
+
+  const hasProgress = rawPercent > 0;
+
+  const reduced = prefersReducedMotion();
+  const motionMs = reduced ? 0 : computeMotionMs(rawPercent);
+
+  useBarGraphMotion({
+    rootRef,
+    fillPercentVar: s.fillPercentVar,
+    hasProgress,
+    animate,
+    animateFromZeroOnMount,
+    replayKey,
+    targetVisualPercent,
+  });
 
   return (
     <div
+      ref={rootRef}
       className={clsx(s.root, className)}
       role="progressbar"
       aria-label={ariaLabel}
@@ -43,13 +71,13 @@ export const BarGraph01 = ({
       aria-valuemax={100}
       aria-valuenow={rawPercent}
       style={assignInlineVars({
-        [s.fillPercentVar]: `${visualPercent}%`,
         [s.tipOverlapVar]: `${tipOverlapRem}rem`,
+        [s.motionMsVar]: `${motionMs}ms`,
       })}
     >
       <div className={s.track} aria-hidden />
-      {visualPercent > 0 && <div className={s.fill} aria-hidden />}
-      {showTip && <div className={s.tip} aria-hidden />}
+      {hasProgress && <div className={s.fill} aria-hidden />}
+      {hasProgress && <div className={s.tip} aria-hidden />}
       {label && <span className={s.label}>{label}</span>}
     </div>
   );

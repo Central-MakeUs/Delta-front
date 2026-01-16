@@ -1,5 +1,6 @@
 import { createVar, style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
+import { bgColor } from "@/shared/styles/color.css";
 import { vars } from "@/shared/styles/theme.css";
 import {
   LABEL_WIDTH_REM,
@@ -7,6 +8,8 @@ import {
 } from "@/shared/components/bar-graph/bar-graph-horizontal/constants/bar-style";
 
 export const barWidthVar = createVar();
+const TRANSITION_MS = "900ms";
+const EASING = "cubic-bezier(0.2, 0.8, 0.2, 1)";
 
 export const root = style({
   width: "100%",
@@ -35,29 +38,45 @@ export const barsColumn = style({
 });
 
 export const bar = recipe({
-  base: {
-    width: `min(100%, ${barWidthVar})`,
-    padding: "0.4rem 0.8rem",
-    borderRadius: "12px",
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    gap: "1rem",
-  },
+  base: [
+    {
+      vars: {
+        [barWidthVar]: "0rem",
+      },
+      width: `min(100%, ${barWidthVar})`,
+      padding: "0.4rem 0.8rem",
+      borderRadius: vars.radius.r12,
+      display: "flex",
+      justifyContent: "flex-end",
+      alignItems: "center",
+      gap: "1rem",
+      transitionProperty: "width",
+      transitionDuration: TRANSITION_MS,
+      transitionTimingFunction: EASING,
+      willChange: "width",
+      "@media": {
+        "(prefers-reduced-motion: reduce)": {
+          transitionDuration: "0ms",
+        },
+      },
+    },
+  ],
   variants: {
     tone: {
-      active: { backgroundColor: vars.color.main[400] },
-      inactive: { backgroundColor: vars.color.grayscale[200] },
+      active: bgColor["main-400"],
+      inactive: bgColor["grayscale-200"],
     },
   },
   defaultVariants: { tone: "inactive" },
 });
 
-export const chip = style({
-  padding: "0.4rem 0.8rem",
-  backgroundColor: vars.color.bg,
-  borderRadius: "24px",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-});
+export const chip = style([
+  bgColor["grayscale-0"],
+  {
+    padding: "0.4rem 0.8rem",
+    borderRadius: vars.radius.r24,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+]);

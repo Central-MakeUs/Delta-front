@@ -35,14 +35,11 @@ export const textareaWrapper = recipe({
     {
       display: "flex",
       flexDirection: "column",
-      alignItems: "flex-start",
       alignSelf: "stretch",
       border: `1px solid ${vars.color.grayscale[100]}`,
       borderRadius: vars.radius.md,
       flex: 1,
-      flexGrow: 1,
-      minHeight: 0,
-      padding: "1.2rem",
+      padding: "1.6rem",
       gap: "0.8rem",
       position: "relative",
       selectors: {
@@ -62,9 +59,18 @@ export const textareaWrapper = recipe({
       },
       false: {},
     },
+    size: {
+      lg: {
+        minHeight: "17.6rem",
+      },
+      md: {
+        maxHeight: "5.6rem",
+      },
+    },
   },
   defaultVariants: {
     disabled: false,
+    size: "md",
   },
 });
 
@@ -79,17 +85,16 @@ export const prefix = style({
 export const textarea = recipe({
   base: [
     color["grayscale-700"],
+    typo.body2.regular,
     {
       outline: "none",
       flex: 1,
       flexGrow: 1,
       width: "100%",
-      minHeight: "17.6rem",
       border: "none",
       background: "transparent",
       resize: "none",
       fontFamily: "inherit",
-      lineHeight: "150%",
       selectors: {
         "&::placeholder": {
           color: vars.color.grayscale[700],

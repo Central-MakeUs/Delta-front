@@ -18,5 +18,5 @@ export const title = style([typo.body1.bold, color["grayscale-900"]]);
 
 export const headerChips = style({
   display: "flex",
-  gap: "1.2rem",
+  gap: "0.8rem",
 });

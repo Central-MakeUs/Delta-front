@@ -9,7 +9,6 @@ export const page = style({
   paddingBottom: "6rem",
   position: "relative",
   width: "100%",
-  minHeight: "100vh",
   backgroundColor: vars.color.grayscale[0],
 });
 
@@ -41,6 +40,7 @@ export const inputSection = style([
     alignItems: "flex-start",
     padding: "1.2rem",
     gap: "1rem",
+    borderRadius: vars.radius.r12,
     width: "100%",
   },
 ]);

@@ -10,7 +10,9 @@ export interface WrongDetailData {
   title: string;
   subjectChip: string;
   imagePath: StaticImageData | string;
-  answer: string;
+  questionType: "objective" | "subjective";
+  answerChoice: number | null;
+  answerText: string | null;
   chips: ChipData[];
   isCompleted: boolean;
 }
@@ -21,7 +23,9 @@ export const DUMMY_DATA_LIST: WrongDetailData[] = [
     title: "공통수학1 문제",
     subjectChip: "공통수학1",
     imagePath: SampleImg,
-    answer: "5번",
+    questionType: "subjective",
+    answerChoice: null,
+    answerText: "x^2 + 2x - 3 = 0",
     chips: [
       {
         label: "다항식",
@@ -37,7 +41,9 @@ export const DUMMY_DATA_LIST: WrongDetailData[] = [
     title: "미적분 문제",
     subjectChip: "미적분",
     imagePath: SampleImg,
-    answer: "3번",
+    questionType: "objective",
+    answerChoice: 3,
+    answerText: null,
     chips: [
       {
         label: "극한",
@@ -56,7 +62,9 @@ export const DUMMY_DATA_LIST: WrongDetailData[] = [
     title: "확률과 통계 문제",
     subjectChip: "확률과 통계",
     imagePath: SampleImg,
-    answer: "2번",
+    questionType: "subjective",
+    answerChoice: null,
+    answerText: "2x^2 + 4x - 6 = 0",
     chips: [
       {
         label: "조합",
@@ -72,7 +80,9 @@ export const DUMMY_DATA_LIST: WrongDetailData[] = [
     title: "기하 문제",
     subjectChip: "기하",
     imagePath: SampleImg,
-    answer: "4번",
+    questionType: "objective",
+    answerChoice: 4,
+    answerText: null,
     chips: [
       {
         label: "평면기하",
@@ -91,7 +101,9 @@ export const DUMMY_DATA_LIST: WrongDetailData[] = [
     title: "이차방정식 문제",
     subjectChip: "공통수학1",
     imagePath: SampleImg,
-    answer: "1번",
+    questionType: "subjective",
+    answerChoice: null,
+    answerText: "x^2 + 2x - 3 = 0",
     chips: [
       {
         label: "이차방정식",
@@ -103,13 +115,11 @@ export const DUMMY_DATA_LIST: WrongDetailData[] = [
     isCompleted: true,
   },
 ];
-
-// id로 데이터를 찾는 헬퍼 함수
+// 이후 지울 예정
 export const getWrongDetailDataById = (
   id: string
 ): WrongDetailData | undefined => {
   return DUMMY_DATA_LIST.find((data) => data.id === id);
 };
 
-// 기존 호환성을 위한 기본 데이터 (id가 "1"인 데이터)
 export const DUMMY_DATA: WrongDetailData = DUMMY_DATA_LIST[0];

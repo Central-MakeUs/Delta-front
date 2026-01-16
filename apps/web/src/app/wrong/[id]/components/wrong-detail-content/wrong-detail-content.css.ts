@@ -40,7 +40,6 @@ export const inputSection = style([
     alignItems: "flex-start",
     padding: "1.2rem",
     gap: "1rem",
-    borderRadius: vars.radius.r12,
     width: "100%",
   },
 ]);

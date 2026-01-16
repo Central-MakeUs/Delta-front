@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import { bgColor } from "@/shared/styles/color.css";
 import * as s from "@/app/my/components/my-page-view/my-page-view.css";
@@ -10,6 +11,8 @@ import MenuItem from "@/app/my/components/menu-item/menu-item";
 import Modal from "@/shared/components/modal/modal/modal";
 import Icon from "@/shared/components/icon/icon";
 import { useLogoutMutation } from "@/shared/apis/auth/hooks/use-logout-mutation";
+import { useWithdrawalMutation } from "@/shared/apis/user/hooks/use-withdrawal-mutation";
+import { ROUTES } from "@/shared/constants/routes";
 import BottomSheetWithdraw from "@/shared/components/bottom-sheet/bottom-sheet-withdraw/bottom-sheet-withdraw";
 
 type MyPageViewProps = {
@@ -28,7 +31,9 @@ const MyPageView = ({
   onLogout,
   onWithdraw,
 }: MyPageViewProps) => {
+  const router = useRouter();
   const logoutMutation = useLogoutMutation();
+  const withdrawalMutation = useWithdrawalMutation();
 
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
@@ -47,7 +52,6 @@ const MyPageView = ({
 
   const handleLogoutConfirm = () => {
     if (logoutMutation.isPending) return;
-
     logoutMutation.mutate(undefined, {
       onSettled: () => {
         closeLogoutModal();
@@ -66,7 +70,17 @@ const MyPageView = ({
   };
 
   const handleWithdrawSheetConfirm = () => {
-    onWithdraw?.();
+    if (withdrawalMutation.isPending) return;
+
+    withdrawalMutation.mutate(undefined, {
+      onSuccess: () => {
+        if (onWithdraw) onWithdraw();
+        else router.replace(ROUTES.AUTH.LOGIN);
+      },
+      onError: () => {
+        window.alert("회원 탈퇴에 실패했어요. 잠시 후 다시 시도해 주세요.");
+      },
+    });
   };
 
   return (
@@ -136,6 +150,7 @@ const MyPageView = ({
         confirmLabel="네, 탈퇴할래요"
         cancelLabel="더 써볼래요"
         onConfirm={handleWithdrawSheetConfirm}
+        disabled={withdrawalMutation.isPending}
       />
     </>
   );

@@ -19,7 +19,7 @@ export const image = style({
 
 export const aboutSection = style({
   position: "relative",
-  zIndex: 2,
+  zIndex: vars.zIndex.contentOverlayElevated,
   height: "100%",
   padding: "1.6rem",
   display: "flex",
@@ -31,7 +31,7 @@ export const aboutSection = style({
       content: '""',
       position: "absolute",
       inset: 0,
-      zIndex: -1,
+      zIndex: vars.zIndex.background,
       background: wrongCardGradient["wrong-card-gradient"],
       pointerEvents: "none",
     },

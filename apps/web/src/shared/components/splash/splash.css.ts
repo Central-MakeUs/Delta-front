@@ -1,5 +1,6 @@
 import { keyframes, style } from "@vanilla-extract/css";
 import { bgColor } from "@/shared/styles/color.css";
+import { vars } from "@/shared/styles/theme.css";
 
 const splashOut = keyframes({
   "0%": { opacity: 1 },
@@ -12,7 +13,7 @@ export const overlay = style([
   {
     position: "fixed",
     inset: 0,
-    zIndex: 20,
+    zIndex: vars.zIndex.splash,
     width: "100%",
     maxWidth: "43rem",
     margin: "0 auto",

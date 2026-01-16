@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css";
 import { bgGradient, color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
+import { vars } from "@/shared/styles/theme.css";
 
 export const page = style({
   minHeight: "100dvh",
@@ -18,7 +19,7 @@ export const page = style({
       bottom: 0,
       height: "34.3rem",
       background: bgGradient["login-bg"],
-      zIndex: 0,
+      zIndex: vars.zIndex.base,
       pointerEvents: "none",
     },
   },
@@ -26,7 +27,7 @@ export const page = style({
 
 export const content = style({
   position: "relative",
-  zIndex: 2,
+  zIndex: vars.zIndex.contentOverlayElevated,
   display: "flex",
   flexDirection: "column",
   flex: 1,
@@ -62,7 +63,7 @@ export const actions = style({
 export const decorations = style({
   position: "absolute",
   inset: 0,
-  zIndex: 1,
+  zIndex: vars.zIndex.contentOverlay,
   pointerEvents: "none",
   userSelect: "none",
 });

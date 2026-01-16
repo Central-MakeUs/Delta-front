@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { myGradient } from "@/shared/styles/color.css";
+import { vars } from "@/shared/styles/theme.css";
 
 const APP_BAR_HEIGHT = "5.4rem";
 
@@ -11,7 +12,7 @@ export const hero = style({
   paddingTop: `calc(${APP_BAR_HEIGHT} + env(safe-area-inset-top))`,
   paddingBottom: "2.0rem",
   display: "flex",
-  zIndex: 0,
+  zIndex: vars.zIndex.base,
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
@@ -20,7 +21,7 @@ export const hero = style({
 
 export const profileBlock = style({
   position: "relative",
-  zIndex: 2,
+  zIndex: vars.zIndex.contentOverlayElevated,
   display: "flex",
   flexDirection: "column",
   alignItems: "center",

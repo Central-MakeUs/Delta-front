@@ -2,6 +2,7 @@ import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 import { typo } from "@/shared/styles/typography.css";
 import { bgColor, color } from "@/shared/styles/color.css";
+import { vars } from "@/shared/styles/theme.css";
 import {
   APP_BAR_HEIGHT,
   APP_BAR_PADDING_X,
@@ -17,7 +18,7 @@ export const fixedOnMy = style({
       transform: "translateX(-50%)",
       width: "100%",
       maxWidth: "43rem",
-      zIndex: 10,
+      zIndex: vars.zIndex.header,
       backgroundColor: "transparent",
       boxSizing: "border-box",
     },
@@ -37,7 +38,7 @@ export const root = recipe({
       boxSizing: "border-box",
       position: "sticky",
       top: 0,
-      zIndex: 10,
+      zIndex: vars.zIndex.header,
     },
   ],
   variants: {

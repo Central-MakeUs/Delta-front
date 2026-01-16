@@ -10,7 +10,7 @@ export const bottomButtonContainer = style({
   flexDirection: "column",
   margin: "0 auto",
   background: vars.color.grayscale[0],
-  zIndex: 10,
+  zIndex: vars.zIndex.bottomNav,
 });
 
 export const bottomButtonWrapper = style({

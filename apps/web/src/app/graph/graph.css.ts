@@ -18,7 +18,7 @@ export const page = style({
 export const stickyTop = style({
   position: "sticky",
   top: 0,
-  zIndex: 10,
+  zIndex: vars.zIndex.header,
   backgroundColor: vars.color.bg,
 });
 
@@ -82,7 +82,7 @@ export const graphRow = style({
       left: `${LABEL_WIDTH_REM + GAP_REM}rem`,
       right: 0,
       height: "0.1rem",
-      zIndex: 0,
+      zIndex: vars.zIndex.base,
       backgroundImage: `repeating-linear-gradient(
         to right,
         ${vars.color.grayscale[50]} 0,
@@ -96,5 +96,5 @@ export const graphRow = style({
 
 export const graphRowInner = style({
   position: "relative",
-  zIndex: 1,
+  zIndex: vars.zIndex.contentOverlay,
 });

@@ -14,7 +14,7 @@ export const overlay = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  zIndex: 1000,
+  zIndex: vars.zIndex.modalOverlay,
 });
 
 export const modal = recipe({
@@ -29,7 +29,7 @@ export const modal = recipe({
       width: "32.4rem",
       borderRadius: vars.radius.r16,
       boxShadow: vars.shadow.e300,
-      zIndex: 1001,
+      zIndex: vars.zIndex.modal,
     },
   ],
   variants: {
@@ -124,4 +124,3 @@ export const buttonWrapper = style({
   flex: 1,
   minWidth: 0,
 });
-

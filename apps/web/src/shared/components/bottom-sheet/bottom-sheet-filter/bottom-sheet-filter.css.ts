@@ -9,7 +9,7 @@ export const overlay = style([
   {
     position: "fixed",
     inset: 0,
-    zIndex: 15,
+    zIndex: vars.zIndex.bottomSheetOverlay,
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "center",
@@ -36,7 +36,7 @@ export const bottomSheet = style([
     display: "flex",
     flexDirection: "column",
     borderRadius: `${vars.radius.r24} ${vars.radius.r24} 0 0`,
-    zIndex: 16,
+    zIndex: vars.zIndex.bottomSheet,
     selectors: {
       '&[data-state="open"]': {
         animation: `${slideUp} 0.35s ease-out both`,

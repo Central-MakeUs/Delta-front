@@ -62,7 +62,7 @@ export const ghostButton = style([
   color["main-200"],
   {
     position: "relative",
-    zIndex: 1,
+    zIndex: vars.zIndex.contentOverlay,
     border: 0,
     background: "transparent",
     cursor: "pointer",
@@ -88,7 +88,7 @@ export const pillButton = style([
   color["grayscale-0"],
   {
     position: "relative",
-    zIndex: 1,
+    zIndex: vars.zIndex.contentOverlay,
     border: 0,
     cursor: "pointer",
     width: "6rem",

@@ -51,13 +51,7 @@ export const ActionCard = ({
             [s.circleSizeVar]: `${circleSizeRem}rem`,
           })}
         >
-          <Icon
-            name={iconName}
-            style={{
-              height: `${iconHeightRem}rem`,
-              width: "auto",
-            }}
-          />
+          <Icon name={iconName} size={iconHeightRem} />
         </div>
 
         <span

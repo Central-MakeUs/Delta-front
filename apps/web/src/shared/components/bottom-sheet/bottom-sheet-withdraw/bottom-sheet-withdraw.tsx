@@ -24,7 +24,7 @@ export const BottomSheetWithdraw = ({
   onClose,
   title,
   description,
-  confirmLabel = "확인",
+  confirmLabel = "네, 탈퇴할래요",
   cancelLabel = "더 써볼래요",
   onConfirm,
   onCancel,
@@ -84,14 +84,12 @@ export const BottomSheetWithdraw = ({
           clearTimeout(timeoutRef.current);
           timeoutRef.current = null;
         }
-        // 언마운트/중단 시에도 복구 보장
         document.body.style.overflow = prevBodyOverflowRef.current ?? "";
         prevBodyOverflowRef.current = null;
       };
     }
 
     return () => {
-      // 언마운트 포함: 항상 복구
       if (!isOpen) {
         document.body.style.overflow = prevBodyOverflowRef.current ?? "";
         prevBodyOverflowRef.current = null;
@@ -115,19 +113,15 @@ export const BottomSheetWithdraw = ({
     };
   }, [isOpen, isClosing, onClose]);
 
-  // 포커스 관리
   useEffect(() => {
     if (isOpen && !isClosing) {
-      // 오픈 시 이전 포커스 저장
       previousActiveElementRef.current =
         (document.activeElement as HTMLElement) || null;
 
-      // 바텀시트에 포커스 이동
       requestAnimationFrame(() => {
         bottomSheetRef.current?.focus();
       });
     } else if (!isOpen && !isClosing && previousActiveElementRef.current) {
-      // 클로즈 시 이전 포커스 복귀
       requestAnimationFrame(() => {
         previousActiveElementRef.current?.focus();
         previousActiveElementRef.current = null;
@@ -206,11 +200,10 @@ export const BottomSheetWithdraw = ({
             <Button
               label={confirmLabel}
               size="48"
-              tone="dark"
+              tone="complete"
               fullWidth
               onClick={handleConfirm}
               disabled={disabled || isClosing}
-              className={styles.confirmButtonOverride}
             />
             <button
               type="button"

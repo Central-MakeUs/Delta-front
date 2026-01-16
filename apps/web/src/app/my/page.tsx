@@ -40,6 +40,7 @@ const MyPage = () => {
       linkedEmail={data.email ?? ""}
       profileImageUrl={null}
       onLogout={() => router.replace(ROUTES.AUTH.LOGIN)}
+      onWithdraw={() => router.replace(ROUTES.AUTH.LOGIN)} // TODO: 실제 탈퇴 API 연결
     />
   );
 };

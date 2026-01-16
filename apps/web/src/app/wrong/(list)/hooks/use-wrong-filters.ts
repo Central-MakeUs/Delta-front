@@ -18,7 +18,6 @@ export type FilterApplyPayload = {
 const SORT_QUERY_KEY = "sort";
 const DEFAULT_SORT_ID = SORT_OPTIONS[0]?.id ?? "recent";
 
-// ✅ 타입가드: string | null -> string 으로 좁혀주기
 const isValidSortId = (id: string | null): id is string => {
   if (typeof id !== "string") return false;
   return SORT_OPTIONS.some((o) => o.id === id);
@@ -35,13 +34,11 @@ export const useWrongFilters = () => {
   const [filterInitialSection, setFilterInitialSection] =
     useState<BottomSheetFilterInitialSection>("chapter");
 
-  // ✅ URL(sort)에서 파생: 항상 string
   const selectedSortId = useMemo<string>(() => {
     const q = searchParams.get(SORT_QUERY_KEY);
     return isValidSortId(q) ? q : DEFAULT_SORT_ID;
   }, [searchParams]);
 
-  // ✅ 정렬 변경: URL만 업데이트 (state set 없음)
   const setSelectedSortId = (optionId: string) => {
     const nextParams = new URLSearchParams(searchParams.toString());
 
@@ -102,8 +99,8 @@ export const useWrongFilters = () => {
     openFilter,
     closeFilter,
     filterInitialSection,
-    selectedSortId, // ✅ string
-    setSelectedSortId, // ✅ URL 동기화
+    selectedSortId,
+    setSelectedSortId,
     selectedSortLabel,
     selectedChapterIds,
     selectedTypeIds,

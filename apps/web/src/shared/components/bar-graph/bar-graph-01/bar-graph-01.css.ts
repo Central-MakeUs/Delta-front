@@ -45,7 +45,7 @@ export const track = style([
     top: BAR_INSET_Y,
     height: BAR_HEIGHT,
     borderRadius: vars.radius.full,
-    zIndex: 0,
+    zIndex: vars.zIndex.base,
   },
 ]);
 
@@ -58,7 +58,7 @@ export const fill = style([
     height: BAR_HEIGHT,
     width: fillPercentVar,
     borderRadius: vars.radius.full,
-    zIndex: 1,
+    zIndex: vars.zIndex.contentOverlay,
     transitionProperty: "width",
     transitionDuration: motionMsVar,
     transitionTimingFunction: EASING,
@@ -80,7 +80,7 @@ export const tip = style([
     bottom: 0,
     width: "2.0rem",
     left: `clamp(0%, calc(${fillPercentVar} - ${tipOverlapVar}), calc(100% - 2.0rem))`,
-    zIndex: 1,
+    zIndex: vars.zIndex.contentOverlay,
     WebkitMaskImage: `url("data:image/svg+xml,${TIP_MASK_SVG}")`,
     WebkitMaskRepeat: "no-repeat",
     WebkitMaskSize: "100% 100%",
@@ -110,7 +110,7 @@ export const label = style([
     right: "0.8rem",
     top: "1.6rem",
     transform: "translateY(-50%)",
-    zIndex: 2,
+    zIndex: vars.zIndex.contentOverlayElevated,
     whiteSpace: "nowrap",
   },
 ]);

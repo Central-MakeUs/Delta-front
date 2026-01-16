@@ -12,7 +12,7 @@ export const content = style({
   flex: 1,
   marginTop: "-2.0rem",
   position: "relative",
-  zIndex: 2,
+  zIndex: vars.zIndex.contentOverlayElevated,
   padding: "2.0rem 1.6rem",
   borderTopLeftRadius: vars.radius.r20,
   borderTopRightRadius: vars.radius.r20,

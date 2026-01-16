@@ -29,23 +29,24 @@ export const answerButtonOverlay = style({
 
 export const answerButtonContent = style({
   display: "flex",
-  flexDirection: "row",
   alignItems: "center",
-  padding: 0,
+  justifyContent: "center",
+  width: "100%",
   gap: "0.8rem",
-  flex: "none",
-  order: 0,
-  flexGrow: 0,
+});
+
+export const lockIcon = style({
+  flexShrink: 0,
 });
 
 export const answerChipWrapper = style([
   bgColor["grayscale-0"],
-  vars.radius.r12,
   {
     display: "flex",
     alignItems: "center",
     padding: "1.2rem",
     gap: "0.8rem",
+    borderRadius: vars.radius.r12,
     justifyContent: "space-between",
   },
 ]);

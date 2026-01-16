@@ -32,21 +32,21 @@ const Step1 = ({ onNext, onSelectImage, disabled = false }: Step1Props) => {
   return (
     <div className={s.cardSection}>
       <input
+        className={s.inputDisplay}
         ref={cameraInputRef}
         type="file"
         accept="image/*"
         capture="environment"
         onChange={handleCameraChange}
-        style={{ display: "none" }}
         disabled={disabled}
       />
 
       <input
+        className={s.inputDisplay}
         ref={albumInputRef}
         type="file"
         accept="image/*"
         onChange={handleAlbumChange}
-        style={{ display: "none" }}
         disabled={disabled}
       />
 

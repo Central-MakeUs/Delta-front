@@ -16,8 +16,8 @@ type ActionCardProps = {
   iconName: IconName;
   /** 동그라미 크기 */
   circleSizeRem?: number;
-  /** 아이콘 높이 (가로는 auto로) */
-  iconHeightRem?: number;
+  /** 아이콘 높이 */
+  iconSize?: number;
   className?: string;
   ariaLabel?: string;
 } & Pick<
@@ -29,7 +29,7 @@ export const ActionCard = ({
   title,
   iconName,
   circleSizeRem = 6.4,
-  iconHeightRem = 3.2,
+  iconSize = 3.2,
   disabled = false,
   onClick,
   type = "button",
@@ -51,7 +51,7 @@ export const ActionCard = ({
             [s.circleSizeVar]: `${circleSizeRem}rem`,
           })}
         >
-          <Icon name={iconName} size={iconHeightRem} />
+          <Icon name={iconName} size={iconSize} />
         </div>
 
         <span

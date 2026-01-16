@@ -1,4 +1,6 @@
-import React, { useEffect, useId, useRef, useState } from "react";
+"use client";
+
+import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import { Button } from "@/shared/components/button/button/button";
 import * as styles from "./bottom-sheet-withdraw.css";
@@ -18,6 +20,13 @@ export interface BottomSheetWithdrawProps {
 }
 
 const ANIMATION_DURATION = 300;
+
+const createStableId = () => {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  return `id_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
+};
 
 export const BottomSheetWithdraw = ({
   isOpen,
@@ -41,6 +50,14 @@ export const BottomSheetWithdraw = ({
 
   const shouldRender = isOpen || isClosing;
   const titleId = useId();
+
+  const descriptionLines = useMemo(() => {
+    if (!description) return [];
+    return description.split("<br/>").map((text) => ({
+      id: createStableId(),
+      text,
+    }));
+  }, [description]);
 
   useEffect(() => {
     const prevIsOpen = prevIsOpenRef.current;
@@ -180,17 +197,16 @@ export const BottomSheetWithdraw = ({
             <h2 id={titleId} className={styles.title}>
               {title}
             </h2>
+
             {description && (
               <div className={styles.descriptionWrapper}>
                 <p className={styles.description}>
-                  {description
-                    .split("<br/>")
-                    .map((line: string, index: number, array: string[]) => (
-                      <React.Fragment key={`${index}-${line}`}>
-                        {line}
-                        {index < array.length - 1 && <br />}
-                      </React.Fragment>
-                    ))}
+                  {descriptionLines.map((line, idx) => (
+                    <React.Fragment key={line.id}>
+                      {line.text}
+                      {idx < descriptionLines.length - 1 && <br />}
+                    </React.Fragment>
+                  ))}
                 </p>
               </div>
             )}

@@ -19,7 +19,6 @@ export const ProblemSection = ({
           size="md"
           shape="pill"
           tone="solid"
-          className={styles.chip}
         />
         <div className={styles.titleRow}>
           <h1 className={styles.title}>{title}</h1>

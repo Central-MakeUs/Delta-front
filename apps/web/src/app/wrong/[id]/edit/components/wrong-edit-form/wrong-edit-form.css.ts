@@ -5,11 +5,7 @@ export const pageContainer = style({
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
-  padding: 0,
-  gap: 0,
-  width: "100%",
-  maxWidth: "43rem",
-  margin: "0 auto",
+  paddingBottom: "8rem",
   minHeight: "100vh",
 });
 
@@ -38,9 +34,6 @@ export const bottomButtonContainer = style({
 export const bottomButtonWrapper = style({
   display: "flex",
   flexDirection: "column",
-  alignItems: "flex-start",
   padding: "1.6rem",
-  gap: "1.2rem",
   width: "100%",
-  height: "8rem",
 });

@@ -54,7 +54,7 @@ const AnswerSection = ({
       {!showAnswer && (
         <div className={styles.answerButtonOverlay}>
           <div className={styles.answerButtonContent}>
-            <Icon name="lock" size={2.4} />
+            <Icon name="lock" size={2.4} className={styles.lockIcon} />
             <span className={styles.answerButtonText}>
               눌러서 정답을 확인해보세요.
             </span>

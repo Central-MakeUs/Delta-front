@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css";
 import { typo } from "@/shared/styles/typography.css";
 import { color, bgColor } from "@/shared/styles/color.css";
+import { vars } from "@/shared/styles/theme.css";
 
 export const section = style({
   display: "flex",
@@ -20,15 +21,6 @@ export const header = style({
   gap: "0.8rem",
   width: "100%",
 });
-
-export const chip = style([
-  bgColor["main-500"],
-  {
-    width: "fit-content",
-    borderRadius: "1.7rem",
-    padding: "0.4rem 1.2rem",
-  },
-]);
 
 export const titleRow = style({
   display: "flex",
@@ -57,12 +49,14 @@ export const metaChips = style({
   width: "fit-content",
 });
 
-export const image = style({
-  boxSizing: "border-box",
-  width: "100%",
-  height: "23.8rem",
-  background: "#FFFFFF",
-  border: "0.1rem solid #E0E0E0",
-  borderRadius: "1.2rem",
-  objectFit: "cover",
-});
+export const image = style([
+  bgColor["grayscale-0"],
+  {
+    boxSizing: "border-box",
+    width: "100%",
+    height: "23.8rem",
+    border: `0.1rem solid ${vars.color.grayscale[100]}`,
+    borderRadius: vars.radius.r12,
+    objectFit: "cover",
+  },
+]);

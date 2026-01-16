@@ -96,7 +96,6 @@ export const WrongEditForm = () => {
           onNumberSelect={handleNumberSelect}
           onAnswerChange={handleAnswerChange}
         />
-        ``
         <SolutionSection solution={solution} onSolutionChange={setSolution} />
       </div>
 

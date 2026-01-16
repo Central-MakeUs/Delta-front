@@ -105,7 +105,7 @@ export const useAppBar = (): UseAppBarResult => {
         variant: "basicAction",
         title: "오답 상세 보기",
         actionLabel: "수정하기",
-        onBack: () => router.back(),
+        onBack: () => router.push(ROUTES.WRONG.ROOT),
         onActionClick: () => router.push(ROUTES.WRONG.EDIT(wrongMatch.id)),
       },
     };

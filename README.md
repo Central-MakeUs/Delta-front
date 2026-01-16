@@ -55,22 +55,18 @@
 
 ## 🌿 Branch
 
-<details>
-  <summary>🧭 Branch Strategy (GitHub Flow + develop)</summary>
-  <br/>
+### 🧭 Branch Strategy (GitHub Flow + develop)
 
 우리 브랜치 전략은 **GitHub Flow 기반 + develop 통합 브랜치** 방식입니다.
 
 - **develop**: 개발용(통합 브랜치) — 모든 작업 브랜치는 develop로 PR 후 머지
 - **main**: 배포용(릴리즈 브랜치) — 배포 시점에만 develop → main 머지
 
-</details>
+<br/>
 
-<details>
-  <summary>🌱 Branch Naming Convention</summary>
-  <br/>
+### 🌱 Branch Naming Convention
 
-이슈 기반으로 브랜치를 생성하며, 브랜치명은 아래 규칙을 따릅니다.
+> 이슈 기반으로 브랜치를 생성하며, 브랜치명은 아래 규칙을 따릅니다.
 
 | 브랜치                     | 용도           | 규칙 / 예시                     |
 | -------------------------- | -------------- | ------------------------------- |
@@ -83,29 +79,23 @@
 | `test/#<issue>/<name>`     | 테스트         | `test/#18/bar-graph-utils`      |
 | `chore/#<issue>/<name>`    | 설정/잡무      | `chore/#7/commitlint`           |
 
-</details>
-
 ---
 
 ## 🧾 Pull Request
 
-<details>
-  <summary>🧷 PR Title Convention</summary>
-  <br/>
+### 🧷 PR Title Convention
 
-### PR 제목 규칙
+#### PR 제목 규칙
 
-PR 제목은 아래 형식으로 작성합니다.
+> PR 제목은 아래 형식으로 작성합니다.
 
 - **`Type: 작업 내용`**
 - `Type`은 **앞 글자 대문자**로 통일합니다.
   예) `Feat: 홈 그래프 모션 추가`, `Fix: 스플래시 재노출 문제 해결`
 
-</details>
+<br/>
 
-<details>
-  <summary>🧩 PR Template Convention</summary>
-  <br/>
+### 🧩 PR Template Convention
 
 PR은 아래 템플릿을 기반으로 **가능한 자세하게** 작성합니다.
 
@@ -128,44 +118,29 @@ Closes #
 - 리뷰어에게 부탁하고 싶은 점/확인이 필요한 부분/도움이 필요한 부분은
   **“원하는 리뷰 방식”에 주저하지 말고 작성**합니다.
 
-</details>
-
-<details>
-  <summary>🏷️ Label Policy</summary>
-  <br/>
+### 🏷️ Label Policy
 
 - 리뷰/머지 전에 **라벨을 꼭 달아 주세요.**
 - 작업 담당자와 작업 성격을 추후 필터링할 수 있어요.
 
-</details>
-
-<details>
-  <summary>✅ Merge Rule</summary>
-  <br/>
+### ✅ Merge Rule
 
 **최소 1명 승인(Approve)** 후 merge 가능합니다.
 가능한 한 PR 단위를 작게 유지해 리뷰 부담을 낮춥니다.
-
-</details>
+merge된 브랜치는 바로 삭제하여 불필요한 브랜치가 누적되는 것을 방지합니다.
 
 ---
 
 ## 🧾 Commit
 
-<details>
-  <summary>🧾 Commit Message Format</summary>
-  <br/>
+### 🧾 Commit Message Format
 
 아래 포맷을 사용합니다.
 
 - **`type: 작업 내용`**
 - 예: `fix: ~~ 버그 수정`, `feat: ~~ 기능 구현`
 
-</details>
-
-<details>
-  <summary>🏷️ Commit Types</summary>
-  <br/>
+### 🏷️ Commit Types
 
 | Type          | 설명                               | 예시                                                       |
 | ------------- | ---------------------------------- | ---------------------------------------------------------- |
@@ -178,8 +153,6 @@ Closes #
 | 🏗️ `build`    | 빌드/번들/배포 관련 변경           | `build: next 빌드 설정 수정`                               |
 | 🧩 `refactor` | 리팩토링(동작 변화 없이 구조 개선) | `refactor: bar graph 모션 로직 훅으로 분리`                |
 
-</details>
-
 ---
 
 ## 🧱 Coding Convention
@@ -187,11 +160,7 @@ Closes #
 > 우리 팀의 코드 품질과 유지보수성을 높이기 위해 기본 코딩 컨벤션을 정리합니다.
 > 모든 신규/수정 코드는 본 규칙을 기본으로 따르며, 예외가 필요한 경우 PR에서 근거를 함께 남깁니다.
 
-</details>
-
-<details>
-  <summary>🧭 기본 원칙</summary>
-  <br/>
+### 🧭 기본 원칙
 
 TypeScript 기반으로 작성하고, 스타일은 Vanilla Extract(`.css.ts`)만 사용합니다.
 절대 경로 import를 사용하며, index를 key로 쓰지 않습니다. `var` 키워드는 금지합니다.
@@ -199,7 +168,7 @@ TypeScript 기반으로 작성하고, 스타일은 Vanilla Extract(`.css.ts`)만
 또한 공통(shared) 코드는 특정 페이지/도메인에 강하게 의존하지 않도록 설계하여 결합도를 낮게 유지합니다.
 전역 상태 접근이나 사이드 이펙트는 최소화하고, 필요 시 props/인터페이스로 주입해 교체 가능성을 확보합니다.
 
-</details>
+<br/>
 
 <details>
   <summary>🏷️ 네이밍 컨벤션</summary>
@@ -303,9 +272,7 @@ API 코드는 TanStack Query 통합을 전제로 작성하며, QueryKey Factory 
 
 ## 🤖 CI / CD
 
-<details>
-  <summary>🧪 CI (GitHub Actions)</summary>
-  <br/>
+### 🧪 CI (GitHub Actions)
 
 PR이 `develop`, `main`에 올라오면 아래 체크가 자동 수행됩니다.
 
@@ -314,13 +281,9 @@ PR이 `develop`, `main`에 올라오면 아래 체크가 자동 수행됩니다.
 - `test`
 - `build`
 
-</details>
+<br />
 
-<details>
-  <summary>🚀 CD (Vercel)</summary>
-  <br/>
+### 🚀 CD (Vercel)
 
 배포는 **Vercel**로 운영합니다.
 (배포 플로우는 팀 정책에 맞게 `develop`/`main` 기준으로 관리합니다.)
-
-</details>

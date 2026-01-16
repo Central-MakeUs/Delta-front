@@ -48,6 +48,7 @@ export const checkList = style({
   alignItems: "center",
   gap: "1.6rem",
   padding: "0 1.6rem",
+  flexWrap: "wrap",
   display: "flex",
 });
 

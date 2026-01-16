@@ -1,4 +1,6 @@
-import React, { useEffect, useId, useRef, useState } from "react";
+"use client";
+
+import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import { Button } from "@/shared/components/button/button/button";
 import * as styles from "./bottom-sheet-withdraw.css";
@@ -19,12 +21,19 @@ export interface BottomSheetWithdrawProps {
 
 const ANIMATION_DURATION = 300;
 
+const createStableId = () => {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  return `id_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
+};
+
 export const BottomSheetWithdraw = ({
   isOpen,
   onClose,
   title,
   description,
-  confirmLabel = "확인",
+  confirmLabel = "네, 탈퇴할래요",
   cancelLabel = "더 써볼래요",
   onConfirm,
   onCancel,
@@ -41,6 +50,14 @@ export const BottomSheetWithdraw = ({
 
   const shouldRender = isOpen || isClosing;
   const titleId = useId();
+
+  const descriptionLines = useMemo(() => {
+    if (!description) return [];
+    return description.split("<br/>").map((text) => ({
+      id: createStableId(),
+      text,
+    }));
+  }, [description]);
 
   useEffect(() => {
     const prevIsOpen = prevIsOpenRef.current;
@@ -84,14 +101,12 @@ export const BottomSheetWithdraw = ({
           clearTimeout(timeoutRef.current);
           timeoutRef.current = null;
         }
-        // 언마운트/중단 시에도 복구 보장
         document.body.style.overflow = prevBodyOverflowRef.current ?? "";
         prevBodyOverflowRef.current = null;
       };
     }
 
     return () => {
-      // 언마운트 포함: 항상 복구
       if (!isOpen) {
         document.body.style.overflow = prevBodyOverflowRef.current ?? "";
         prevBodyOverflowRef.current = null;
@@ -115,19 +130,15 @@ export const BottomSheetWithdraw = ({
     };
   }, [isOpen, isClosing, onClose]);
 
-  // 포커스 관리
   useEffect(() => {
     if (isOpen && !isClosing) {
-      // 오픈 시 이전 포커스 저장
       previousActiveElementRef.current =
         (document.activeElement as HTMLElement) || null;
 
-      // 바텀시트에 포커스 이동
       requestAnimationFrame(() => {
         bottomSheetRef.current?.focus();
       });
     } else if (!isOpen && !isClosing && previousActiveElementRef.current) {
-      // 클로즈 시 이전 포커스 복귀
       requestAnimationFrame(() => {
         previousActiveElementRef.current?.focus();
         previousActiveElementRef.current = null;
@@ -186,17 +197,16 @@ export const BottomSheetWithdraw = ({
             <h2 id={titleId} className={styles.title}>
               {title}
             </h2>
+
             {description && (
               <div className={styles.descriptionWrapper}>
                 <p className={styles.description}>
-                  {description
-                    .split("<br/>")
-                    .map((line: string, index: number, array: string[]) => (
-                      <React.Fragment key={`${index}-${line}`}>
-                        {line}
-                        {index < array.length - 1 && <br />}
-                      </React.Fragment>
-                    ))}
+                  {descriptionLines.map((line, idx) => (
+                    <React.Fragment key={line.id}>
+                      {line.text}
+                      {idx < descriptionLines.length - 1 && <br />}
+                    </React.Fragment>
+                  ))}
                 </p>
               </div>
             )}
@@ -206,11 +216,10 @@ export const BottomSheetWithdraw = ({
             <Button
               label={confirmLabel}
               size="48"
-              tone="dark"
+              tone="complete"
               fullWidth
               onClick={handleConfirm}
               disabled={disabled || isClosing}
-              className={styles.confirmButtonOverride}
             />
             <button
               type="button"

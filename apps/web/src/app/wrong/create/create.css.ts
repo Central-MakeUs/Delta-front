@@ -15,6 +15,10 @@ export const cardSection = style({
   gap: "1.6rem",
 });
 
+export const inputDisplay = style({
+  display: "none",
+});
+
 export const stepShell = style({
   display: "flex",
   flexDirection: "column",

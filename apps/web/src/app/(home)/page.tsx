@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { TabItem } from "@/shared/components/tab-bar/tab-bar/tab-bar";
 import TabBar from "@/shared/components/tab-bar/tab-bar/tab-bar";
 import CardGraph01 from "@/shared/components/card-graph/card-graph-01/card-graph-01";
@@ -10,12 +10,13 @@ import * as s from "@/app/(home)/home.css";
 import CardGraph02, {
   type CardGraph02Item,
 } from "@/shared/components/card-graph/card-graph-02/card-graph-02";
+import { ROUTES } from "@/shared/constants/routes";
 
 type TabValue = "최다 오답 단원" | "최다 오답 유형";
 
 const Home = () => {
   const pathname = usePathname();
-
+  const router = useRouter();
   const tabs: readonly TabItem<TabValue>[] = [
     { value: "최다 오답 단원", label: "최다 오답 단원" },
     { value: "최다 오답 유형", label: "최다 오답 유형" },
@@ -30,6 +31,10 @@ const Home = () => {
     { value: 5, title: "단원명", valueLabel: "5개" },
   ];
 
+  const handleActionClick = () => {
+    router.push(`${ROUTES.WRONG.ROOT}?sort=wrong-incomplete`);
+  };
+
   return (
     <div className={s.page}>
       <div className={s.incorrect}>
@@ -42,7 +47,7 @@ const Home = () => {
           registeredCount={24}
           graphPercent={80}
           graphLabel="16/24"
-          onActionClick={() => console.log("go practice")}
+          onActionClick={handleActionClick}
           replayKey={pathname}
         />
       </div>

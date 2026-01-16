@@ -8,7 +8,7 @@ import {
 } from "@/shared/components/bar-graph/bar-graph-horizontal/constants/bar-style";
 
 export const barWidthVar = createVar();
-const TRANSITION_MS = "900ms";
+const TRANSITION_MS = "1100ms";
 const EASING = "cubic-bezier(0.2, 0.8, 0.2, 1)";
 
 export const root = style({

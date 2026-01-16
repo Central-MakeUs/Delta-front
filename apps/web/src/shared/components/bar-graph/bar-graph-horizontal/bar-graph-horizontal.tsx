@@ -7,7 +7,7 @@ import * as s from "./bar-graph-horizontal.css";
 import { typo } from "@/shared/styles/typography.css";
 import { color } from "@/shared/styles/color.css";
 
-type BarRow = {
+export type BarRow = {
   id: string;
   value: number;
   valueLabel?: string;
@@ -24,7 +24,6 @@ type BarGraphHorizontalProps = {
   className?: string;
   ariaLabel?: string;
   formatValueLabel?: (value: number) => string;
-
   animate?: boolean;
   replayKey?: string | number;
 };

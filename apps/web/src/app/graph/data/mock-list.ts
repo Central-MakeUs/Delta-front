@@ -34,7 +34,7 @@ export const MOCK_LIST: readonly GraphItem[] = [
   },
   {
     id: "u4",
-    label: "도형",
+    label: "확률과 통계",
     rows: [
       { id: "u4-active", value: 5, tone: "active" },
       { id: "u4-inactive", value: 11, tone: "inactive" },
@@ -42,7 +42,7 @@ export const MOCK_LIST: readonly GraphItem[] = [
   },
   {
     id: "u5",
-    label: "도형",
+    label: "미적분I",
     rows: [
       { id: "u5-active", value: 3, tone: "active" },
       { id: "u5-inactive", value: 1, tone: "inactive" },

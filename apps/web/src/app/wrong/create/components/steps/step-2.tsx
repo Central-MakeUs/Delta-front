@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import type { ChangeEvent } from "react";
 import Chip from "@/shared/components/chip/chip";
@@ -5,27 +7,30 @@ import Divider from "@/shared/components/divider/divider";
 import Icon from "@/shared/components/icon/icon";
 import Checkbox from "@/shared/components/checkbox/checkbox";
 import * as s from "@/app/wrong/create/components/steps/step.css";
-import { StepProps } from "@/app/wrong/create/page";
+import type { StepProps } from "@/app/wrong/create/page";
 import {
   MATH_SUBJECT_LABELS,
-  CHECK_ITEMS,
+  MATH_SUBJECT_TYPE_LABELS,
+  type MathSubjectLabel,
+  type MathSubjectTypeLabel,
 } from "@/app/wrong/create/constants/option-labels";
 
-type Label = (typeof MATH_SUBJECT_LABELS)[number];
-type CheckItem = (typeof CHECK_ITEMS)[number];
-
 const Step2 = ({ onNextEnabledChange }: StepProps) => {
-  const [selected, setSelected] = useState<Label | null>(null);
-  const [selectedItem, setSelectedItem] = useState<CheckItem | null>(null);
+  const [selected, setSelected] = useState<MathSubjectLabel | null>(null);
+  const [selectedItem, setSelectedItem] = useState<MathSubjectTypeLabel | null>(
+    null
+  );
 
   const isOpen = selected !== null;
 
+  const items = selected ? MATH_SUBJECT_TYPE_LABELS[selected] : [];
+
   const computeEnabled = (
-    nextLabel: Label | null,
-    nextItem: CheckItem | null
+    nextLabel: MathSubjectLabel | null,
+    nextItem: MathSubjectTypeLabel | null
   ) => Boolean(nextLabel && nextItem);
 
-  const onToggle = (label: Label) => {
+  const onToggle = (label: MathSubjectLabel) => {
     const nextLabel = selected === label ? null : label;
     setSelected(nextLabel);
     setSelectedItem(null);
@@ -33,7 +38,7 @@ const Step2 = ({ onNextEnabledChange }: StepProps) => {
   };
 
   const onSelectItem =
-    (item: CheckItem) => (e: ChangeEvent<HTMLInputElement>) => {
+    (item: MathSubjectTypeLabel) => (e: ChangeEvent<HTMLInputElement>) => {
       const nextItem = e.target.checked ? item : null;
       setSelectedItem(nextItem);
       onNextEnabledChange?.(computeEnabled(selected, nextItem));
@@ -66,7 +71,7 @@ const Step2 = ({ onNextEnabledChange }: StepProps) => {
           </div>
 
           <div className={s.checkList}>
-            {CHECK_ITEMS.map((item) => (
+            {items.map((item) => (
               <Checkbox
                 key={item}
                 label={item}

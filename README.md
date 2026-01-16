@@ -295,6 +295,6 @@ PR이 `develop`, `main`에 올라오면 아래 체크가 자동 수행됩니다.
 **Delta-front Wiki**  
 _세모 · 나만의 수학 오답노트_
 
-[Home](./Home) · [CI/CD](./CI-CD) · [Coding Convention](./Coding-Convention) · [Troubleshooting](./Troubleshooting)
+[Home](https://github.com/Central-MakeUs/Delta-front/wiki) · [CI/CD](https://github.com/Central-MakeUs/Delta-front/wiki/CI-CD) · [Convention](https://github.com/Central-MakeUs/Delta-front/wiki/PR-%26-Branch-Strategy) · [Troubleshooting](https://github.com/Central-MakeUs/Delta-front/wiki/Troubleshooting)
 
 </div>

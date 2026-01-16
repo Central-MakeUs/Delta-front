@@ -1,5 +1,4 @@
 import { createTheme, createThemeContract } from "@vanilla-extract/css";
-import { wrongCardGradient } from "./color.css";
 
 export const vars = createThemeContract({
   color: {
@@ -44,10 +43,22 @@ export const vars = createThemeContract({
     etc: { crown: null, myGradient: null, wrongCardGradient: null },
   },
   space: { 0: null, 2: null, 3: null, 4: null, 6: null },
+  zIndex: {
+    background: null,
+    base: null,
+    contentOverlay: null,
+    contentOverlayElevated: null,
+    header: null,
+    bottomNav: null,
+    fab: null,
+    modalOverlay: null,
+    modal: null,
+    bottomSheetOverlay: null,
+    bottomSheet: null,
+    toast: null,
+    splash: null,
+  },
   radius: {
-    sm: null,
-    md: null,
-    lg: null,
     r4: null,
     r6: null,
     r8: null,
@@ -192,11 +203,22 @@ export const lightTheme = createTheme(vars, {
   },
 
   space: { 0: "0", 2: "0.8rem", 3: "1.2rem", 4: "1.6rem", 6: "2.4rem" },
-
+  zIndex: {
+    background: "-1",
+    base: "0",
+    contentOverlay: "1",
+    contentOverlayElevated: "2",
+    header: "5",
+    bottomNav: "6",
+    fab: "7",
+    modalOverlay: "10",
+    modal: "11",
+    bottomSheetOverlay: "8",
+    bottomSheet: "9",
+    toast: "12",
+    splash: "20",
+  },
   radius: {
-    sm: "8px",
-    md: "12px",
-    lg: "16px",
     r4: "4px",
     r6: "6px",
     r8: "8px",

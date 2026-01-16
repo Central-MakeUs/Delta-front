@@ -1,4 +1,4 @@
-# 세모 <img src="https://github.com/user-attachments/assets/5b44b7ae-e23b-4e6f-a965-d8d8f896aa87" width="112" align="left" />
+# 세모 <img src="https://github.com/user-attachments/assets/5b44b7ae-e23b-4e6f-a965-d8d8f896aa87" width="115" align="left" /><img width="165" alt="image" src="https://github.com/user-attachments/assets/f365177a-6cbe-49eb-8f9f-7c9d52b946dd" align="right" />
 
 나만의 수학 오답노트
 

@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect } from "react";
 import TextField from "@/shared/components/text-field/text-field";
 import TextAreaField from "@/shared/components/text-area-field/text-area-field";
 import { Toggle } from "@/shared/components/toggle/toggle";
@@ -13,7 +16,10 @@ import {
 } from "@/app/wrong/create/hooks/use-step4-form";
 
 const Step4 = ({ onNextEnabledChange }: StepProps) => {
-  const { form, handlers } = useStep4Form(onNextEnabledChange);
+  useEffect(() => {
+    onNextEnabledChange?.(true);
+  }, [onNextEnabledChange]);
+  const { form, handlers } = useStep4Form();
 
   return (
     <div className={s.step4Container}>

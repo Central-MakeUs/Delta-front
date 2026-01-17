@@ -24,10 +24,13 @@ export type MathSubjectTypeLabel =
   (typeof MATH_SUBJECT_TYPE_LABELS)[MathSubjectLabel][number];
 
 export const WRONG_TYPE_LABELS = [
-  "문장제",
-  "시각 자료",
+  "문장형",
+  "그래프",
+  "도형",
   "복합 개념",
-  "특수 기호",
+  "절댓값",
+  "조건별 상황 나누기",
+  "ㄱ, ㄴ, ㄷ",
 ] as const;
 
 export const TOGGLE_OPTIONS = [

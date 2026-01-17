@@ -6,14 +6,10 @@ import type { ReactNode } from "react";
 import Icon from "@/shared/components/icon/icon";
 import ProgressBar from "@/shared/components/progress-bar/progress-bar";
 import * as s from "@/shared/components/app-bar/app-bar.css";
-import {
-  APP_BAR_DEFAULT_ARIA_LABEL,
-  APP_BAR_SKIP_LABEL,
-} from "@/shared/components/app-bar/constants/app-bar";
+import { APP_BAR_DEFAULT_ARIA_LABEL } from "@/shared/components/app-bar/constants/app-bar";
 import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
 import HeaderShell from "@/shared/components/app-bar/components/header-shell";
 import LeftGroup from "@/shared/components/app-bar/components/left-group";
-import TextAction from "@/shared/components/app-bar/components/text-action";
 import BackButton from "@/shared/components/app-bar/components/back-button";
 
 const AppBar = (props: AppBarProps) => {
@@ -50,18 +46,11 @@ const AppBar = (props: AppBarProps) => {
 
     case "basicAction": {
       const onBack = props.onBack ?? backFallback;
-      const actionAriaLabel = props.actionAriaLabel ?? props.actionLabel;
 
       return renderShell(
         "basicAction",
         <>
           <LeftGroup title={props.title} onBack={onBack} />
-          <TextAction
-            label={props.actionLabel}
-            tone="action"
-            onClick={props.onActionClick}
-            ariaLabel={actionAriaLabel}
-          />
         </>
       );
     }
@@ -93,8 +82,6 @@ const AppBar = (props: AppBarProps) => {
 
     case "progress": {
       const onBack = props.onBack ?? backFallback;
-      const skipLabel = props.skipLabel ?? APP_BAR_SKIP_LABEL;
-      const showSkip = props.showSkip ?? true;
 
       return renderShell(
         "progress",
@@ -112,16 +99,7 @@ const AppBar = (props: AppBarProps) => {
             />
           </div>
 
-          <div className={s.rightSlot}>
-            {showSkip && typeof props.onSkip === "function" ? (
-              <TextAction
-                label={skipLabel}
-                tone="skip"
-                onClick={props.onSkip}
-                ariaLabel={skipLabel}
-              />
-            ) : null}
-          </div>
+          <div className={s.rightSlot}></div>
         </>
       );
     }

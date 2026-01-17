@@ -38,8 +38,6 @@ export type ProgressProps = CommonProps & {
   total: number;
   currentStep: number; // 1-base
   onBack?: () => void;
-  /** step=1에서는 false로 내려서 "건너뛰기" 숨김 */
-  showSkip?: boolean;
   onSkip?: () => void;
   skipLabel?: string;
 

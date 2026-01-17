@@ -84,7 +84,6 @@ export const Progress: Story = {
     onBack: () => undefined,
     onSkip: () => undefined,
     onStepChange: () => undefined,
-    showSkip: true,
     skipLabel: "건너뛰기",
   },
 };

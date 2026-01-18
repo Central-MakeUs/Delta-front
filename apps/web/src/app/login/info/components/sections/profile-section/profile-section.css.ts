@@ -16,15 +16,13 @@ export const profileImage = style({
   backgroundColor: vars.color.grayscale[50],
   borderRadius: "50%",
   position: "relative",
-  overflow: "hidden",
+  overflow: "visible",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
 });
 
 export const profileImagePlaceholder = style({
-  width: "100%",
-  height: "100%",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -33,19 +31,15 @@ export const profileImagePlaceholder = style({
 });
 
 export const cameraButton = style({
-  boxSizing: "border-box",
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center",
-  alignItems: "center",
-  padding: "10px",
-  gap: "10px",
-  width: "32px",
-  height: "32px",
+  width: "3.2rem",
+  height: "3.2rem",
+  padding: "0.4rem",
   backgroundColor: vars.color.grayscale[100],
   border: `1px solid ${vars.color.grayscale[0]}`,
   borderRadius: "100px",
   cursor: "pointer",
-  marginTop: "-3rem",
+  position: "absolute",
+  bottom: -5,
+  right: -5,
   zIndex: 10,
 });

@@ -1,5 +1,4 @@
 import Icon from "@/shared/components/icon/icon";
-import { Button } from "@/shared/components/button/button/button";
 import * as styles from "./profile-section.css";
 
 const ProfileSection = () => {
@@ -7,10 +6,10 @@ const ProfileSection = () => {
     <div className={styles.profileSection}>
       <div className={styles.profileImage}>
         <div className={styles.profileImagePlaceholder}>
-          <Icon name="default-profile" size={9.4} />
+          <Icon name="default-profile1" size={9.4} />
         </div>
+        <Icon name="camera" size={2} className={styles.cameraButton} />
       </div>
-      <Button label="" icon="graphic-camera" iconSize={1.6} className={styles.cameraButton} />
     </div>
   );
 };

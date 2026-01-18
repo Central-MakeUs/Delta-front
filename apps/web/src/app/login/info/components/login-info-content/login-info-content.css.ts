@@ -22,5 +22,6 @@ export const title = style([
   {
     display: "flex",
     color: vars.color.grayscale[900],
+    marginTop: "7.4rem",
   },
 ]);

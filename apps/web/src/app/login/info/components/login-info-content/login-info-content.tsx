@@ -10,7 +10,7 @@ import {
   FormSection,
   AgreementSection,
   BottomButtonSection,
-} from "../sections";
+} from "@/app/login/info/components/sections";
 
 const termsContent = [
   "여기에 이용약관 내용이 들어갑니다.",
@@ -25,7 +25,6 @@ export const LoginInfoContent = () => {
   const [isTermsSheetOpen, setIsTermsSheetOpen] = useState(false);
 
   const handleComplete = () => {
-    // TODO: API 호출하여 정보 저장
     router.push(ROUTES.HOME);
   };
 

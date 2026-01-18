@@ -7,6 +7,7 @@ export const formSection = style({
   flexDirection: "column",
   alignItems: "flex-start",
   gap: "24px",
+  width: "100%",
 });
 
 export const fieldGroup = style({
@@ -39,6 +40,7 @@ export const textFieldContainer = style({
 export const dateFieldContainer = style({
   width: "100%",
   flex: 1,
+  cursor: "pointer",
 });
 
 const containerClass = String(textFieldContainer).split(" ")[0] || "";

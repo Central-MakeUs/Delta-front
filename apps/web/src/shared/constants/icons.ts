@@ -2,6 +2,7 @@ export const ICONS = [
   "01",
   "alarm",
   "apple",
+  "arrow",
   "arrow-right",
   "camera",
   "check-circle",

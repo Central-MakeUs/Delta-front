@@ -1,58 +1,54 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
-import { bgColor, color } from "@/shared/styles/color.css";
+import { color } from "@/shared/styles/color.css";
 import { slideUp, slideDown, fadeIn, fadeOut } from "../styles/animations.css";
 
-export const overlay = style([
-  bgColor["overDim-40"],
-  {
-    position: "fixed",
-    inset: 0,
-    zIndex: 15,
-    display: "flex",
-    alignItems: "flex-end",
-    justifyContent: "center",
-    maxWidth: "43rem",
-    width: "100%",
-    margin: "0 auto",
-    selectors: {
-      '&[data-state="open"]': {
-        animation: `${fadeIn} 0.3s ease-out both`,
-      },
-      '&[data-state="closing"]': {
-        animation: `${fadeOut} 0.3s ease-in both`,
-      },
+export const overlay = style({
+  position: "fixed",
+  inset: 0,
+  zIndex: 15,
+  display: "flex",
+  alignItems: "flex-end",
+  justifyContent: "center",
+  maxWidth: "43rem",
+  width: "100%",
+  margin: "0 auto",
+  backgroundColor: vars.color.overDim[40],
+  selectors: {
+    '&[data-state="open"]': {
+      animation: `${fadeIn} 0.3s ease-out both`,
+    },
+    '&[data-state="closing"]': {
+      animation: `${fadeOut} 0.3s ease-in both`,
     },
   },
-]);
+});
 
-export const bottomSheet = style([
-  bgColor["grayscale-0"],
-  {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: "20px 16px",
-    gap: "10px",
-    position: "absolute",
-    width: "390px",
-    height: "fit-content",
-    left: "calc(50% - 390px/2)",
-    bottom: 0,
-    background: "#FFFFFF",
-    borderRadius: "24px 24px 0px 0px",
-    outline: "none",
-    selectors: {
-      '&[data-state="open"]': {
-        animation: `${slideUp} 0.3s ease-out both`,
-      },
-      '&[data-state="closing"]': {
-        animation: `${slideDown} 0.3s ease-in both`,
-      },
+export const bottomSheet = style({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  padding: "2rem 1.6rem",
+  gap: "1rem",
+  position: "absolute",
+  maxWidth: "43rem",
+  width: "100%",
+  height: "fit-content",
+  left: "calc(50% - 43rem/2)",
+  bottom: 0,
+  backgroundColor: vars.color.grayscale[0],
+  borderRadius: "2.4rem 2.4rem 0 0",
+  outline: "none",
+  selectors: {
+    '&[data-state="open"]': {
+      animation: `${slideUp} 0.3s ease-out both`,
+    },
+    '&[data-state="closing"]': {
+      animation: `${slideDown} 0.3s ease-in both`,
     },
   },
-]);
+});
 
 export const contentContainer = style({
   display: "flex",
@@ -60,7 +56,7 @@ export const contentContainer = style({
   alignItems: "center",
   width: "100%",
   height: "100%",
-  gap: "10px",
+  gap: "1rem",
 });
 
 export const termsContent = style({
@@ -70,26 +66,26 @@ export const termsContent = style({
   width: "100%",
   flex: 1,
   overflowY: "auto",
-  padding: "0 4px",
+  padding: "0 0.4rem",
 });
 
 export const title = style([
   typo.body1.bold,
   color["grayscale-900"],
   {
-    marginBottom: "16px",
+    marginBottom: "1.6rem",
   },
 ]);
 
 export const termsText = style([
   typo.body3.medium,
   color["grayscale-700"],
-  bgColor["grayscale-50"],
   {
     width: "100%",
     height: "100%",
     padding: "1.2rem",
     borderRadius: "1.2rem",
+    backgroundColor: vars.color.grayscale[50],
   },
 ]);
 
@@ -100,7 +96,7 @@ export const buttonContainer = style({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "space-between",
-  gap: "10px",
+  gap: "1rem",
 });
 
 

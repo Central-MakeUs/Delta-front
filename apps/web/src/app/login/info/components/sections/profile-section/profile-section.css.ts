@@ -43,3 +43,19 @@ export const cameraButton = style({
   right: -5,
   zIndex: 10,
 });
+
+export const modalContent = style({
+  width: "100%",
+  maxWidth: "34rem",
+  padding: "2rem 2rem 1.6rem",
+  display: "flex",
+  flexDirection: "column",
+  gap: "1.2rem",
+});
+
+export const cardSection = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: "1.2rem",
+  width: "100%",
+});

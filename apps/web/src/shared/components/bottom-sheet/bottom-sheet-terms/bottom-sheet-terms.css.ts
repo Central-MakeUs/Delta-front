@@ -30,18 +30,19 @@ export const overlay = style([
 export const bottomSheet = style([
   bgColor["grayscale-0"],
   {
-    position: "relative",
-    width: "100%",
-    maxHeight: "54rem",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center",
-    padding: "2rem 1.6rem",
-    gap: "1rem",
-    borderRadius: "2.4rem 2.4rem 0 0",
-    zIndex: 16,
-    overflow: "auto",
+    padding: "20px 16px",
+    gap: "10px",
+    position: "absolute",
+    width: "390px",
+    height: "fit-content",
+    left: "calc(50% - 390px/2)",
+    bottom: 0,
+    background: "#FFFFFF",
+    borderRadius: "24px 24px 0px 0px",
+    outline: "none",
     selectors: {
       '&[data-state="open"]': {
         animation: `${slideUp} 0.3s ease-out both`,
@@ -56,83 +57,52 @@ export const bottomSheet = style([
 export const contentContainer = style({
   display: "flex",
   flexDirection: "column",
-  justifyContent: "center",
   alignItems: "center",
-  gap: "3.2rem",
   width: "100%",
+  height: "100%",
+  gap: "10px",
 });
 
-export const textContainer = style({
+export const termsContent = style({
   display: "flex",
   flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-  gap: "1.2rem",
+  alignItems: "flex-start",
   width: "100%",
+  flex: 1,
+  overflowY: "auto",
+  padding: "0 4px",
 });
 
 export const title = style([
   typo.body1.bold,
   color["grayscale-900"],
   {
-    width: "100%",
-    textAlign: "center",
+    marginBottom: "16px",
   },
 ]);
 
-export const descriptionWrapper = style([
-  bgColor["grayscale-50"],
-  {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "1.2rem",
-    gap: "1rem",
-    width: "100%",
-    borderRadius: vars.radius.r12,
-  },
-]);
-
-export const description = style([
+export const termsText = style([
   typo.body3.medium,
   color["grayscale-700"],
+  bgColor["grayscale-50"],
   {
     width: "100%",
-    textAlign: "start",
+    height: "100%",
+    padding: "1.2rem",
+    borderRadius: "1.2rem",
   },
 ]);
 
 export const buttonContainer = style({
+  width: "100%",
+  flexShrink: 0,
   display: "flex",
   flexDirection: "column",
-  justifyContent: "flex-end",
   alignItems: "center",
-  gap: "1.2rem",
-  width: "100%",
+  justifyContent: "space-between",
+  gap: "10px",
 });
 
-export const confirmButtonOverride = style([
-  bgColor["main-500"],
-  color["grayscale-0"],
-  {
-    width: "100%",
-    height: "4.8rem",
-
-    selectors: {
-      "&:hover:not(:disabled)": {
-        backgroundColor: vars.color.main[600],
-      },
-      "&:active:not(:disabled)": {
-        backgroundColor: vars.color.main[700],
-      },
-      "&:disabled": {
-        backgroundColor: vars.color.grayscale[100],
-        color: vars.color.grayscale[500],
-      },
-    },
-  },
-]);
 
 export const cancelText = style([
   typo.body3.medium,

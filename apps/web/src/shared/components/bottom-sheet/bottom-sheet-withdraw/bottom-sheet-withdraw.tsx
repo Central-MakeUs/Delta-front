@@ -17,8 +17,6 @@ export interface BottomSheetWithdrawProps {
   disabled?: boolean;
 }
 
-const ANIMATION_DURATION = 300;
-
 export const BottomSheetWithdraw = ({
   isOpen,
   onClose,
@@ -33,9 +31,6 @@ export const BottomSheetWithdraw = ({
   disabled = false,
 }: BottomSheetWithdrawProps) => {
   const [isClosing, setIsClosing] = useState(false);
-  const prevIsOpenRef = useRef(isOpen);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const prevBodyOverflowRef = useRef<string | null>(null);
   const bottomSheetRef = useRef<HTMLDivElement>(null);
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
 
@@ -43,77 +38,28 @@ export const BottomSheetWithdraw = ({
   const titleId = useId();
 
   useEffect(() => {
-    const prevIsOpen = prevIsOpenRef.current;
+    const shouldLock = isOpen || isClosing;
+    if (!shouldLock) return;
 
-    if (isOpen !== prevIsOpen) {
-      prevIsOpenRef.current = isOpen;
-
-      if (isOpen) {
-        setIsClosing((prev) => {
-          if (prev) {
-            if (timeoutRef.current) {
-              clearTimeout(timeoutRef.current);
-              timeoutRef.current = null;
-            }
-          }
-          return false;
-        });
-      } else {
-        setIsClosing((prev) => (prev ? prev : true));
-      }
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (isOpen) {
-      if (prevBodyOverflowRef.current === null) {
-        prevBodyOverflowRef.current = document.body.style.overflow;
-      }
-      document.body.style.overflow = "hidden";
-    }
-
-    if (isClosing) {
-      timeoutRef.current = setTimeout(() => {
-        setIsClosing(false);
-        document.body.style.overflow = prevBodyOverflowRef.current ?? "";
-        prevBodyOverflowRef.current = null;
-      }, ANIMATION_DURATION);
-
-      return () => {
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-          timeoutRef.current = null;
-        }
-        // 언마운트/중단 시에도 복구 보장
-        document.body.style.overflow = prevBodyOverflowRef.current ?? "";
-        prevBodyOverflowRef.current = null;
-      };
-    }
-
+    document.body.style.overflow = "hidden";
     return () => {
-      // 언마운트 포함: 항상 복구
-      if (!isOpen) {
-        document.body.style.overflow = prevBodyOverflowRef.current ?? "";
-        prevBodyOverflowRef.current = null;
-      }
+      document.body.style.overflow = "unset";
     };
   }, [isOpen, isClosing]);
 
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen && !isClosing) {
-        onClose();
-      }
+    const shouldBind = isOpen || isClosing;
+    if (!shouldBind) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      if (isClosing) return;
+      setIsClosing(true);
     };
 
-    if (isOpen) {
-      window.addEventListener("keydown", handleEscape);
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleEscape);
-    };
-  }, [isOpen, isClosing, onClose]);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, isClosing]);
 
   // 포커스 관리
   useEffect(() => {
@@ -135,38 +81,39 @@ export const BottomSheetWithdraw = ({
     }
   }, [isOpen, isClosing]);
 
-  if (!shouldRender) return null;
-
-  const handleClose = () => {
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget) return;
     if (isClosing) return;
-    onClose();
+    setIsClosing(true);
   };
 
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget && !isClosing) {
-      handleClose();
-    }
+  const handleSheetAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget) return;
+    if (!isClosing) return;
+    setIsClosing(false);
+    onClose();
   };
 
   const handleConfirm = () => {
     if (disabled || isClosing) return;
     onConfirm?.();
-    handleClose();
+    setIsClosing(true);
   };
 
   const handleCancel = () => {
     if (isClosing) return;
     onCancel?.();
-    handleClose();
+    setIsClosing(true);
   };
+
+  if (!shouldRender) return null;
+
+  const motionState = isClosing ? "closing" : "open";
 
   return (
     <div
-      className={clsx(
-        styles.overlay,
-        isClosing && styles.overlayClosing,
-        overlayClassName
-      )}
+      className={clsx(styles.overlay, overlayClassName)}
+      data-state={motionState}
       onClick={handleOverlayClick}
     >
       <div
@@ -175,11 +122,9 @@ export const BottomSheetWithdraw = ({
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className={clsx(
-          styles.bottomSheet,
-          isClosing && styles.bottomSheetClosing,
-          className
-        )}
+        className={clsx(styles.bottomSheet, className)}
+        data-state={motionState}
+        onAnimationEnd={handleSheetAnimationEnd}
       >
         <div className={styles.contentContainer}>
           <div className={styles.textContainer}>

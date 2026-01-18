@@ -62,7 +62,7 @@ const KakaoCallbackClient = ({
 
     const consumed = window.sessionStorage.getItem(CONSUMED_CODE_KEY);
     if (consumed === resolvedCode) {
-      router.replace(ROUTES.HOME);
+      router.replace(ROUTES.AUTH.LOGIN_INFO);
       return;
     }
     window.sessionStorage.setItem(CONSUMED_CODE_KEY, resolvedCode);
@@ -77,7 +77,7 @@ const KakaoCallbackClient = ({
     void (async () => {
       try {
         await login.mutateAsync({ code: resolvedCode });
-        router.replace(ROUTES.HOME);
+        router.replace(ROUTES.AUTH.LOGIN_INFO);
       } catch (e) {
         window.sessionStorage.removeItem(CONSUMED_CODE_KEY);
         redirectLogin("login mutate failed", e);

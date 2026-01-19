@@ -12,7 +12,7 @@ export const overlay = style([
     maxWidth: "43rem",
     width: "100%",
     margin: "0 auto",
-    zIndex: 15,
+    zIndex: vars.zIndex.bottomSheetOverlay,
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "center",
@@ -38,7 +38,7 @@ export const bottomSheet = style([
     flexDirection: "column",
     paddingBottom: "2rem",
     borderRadius: `${vars.radius.r24} ${vars.radius.r24} 0 0`,
-    zIndex: 16,
+    zIndex: vars.zIndex.bottomSheet,
     overflow: "auto",
     selectors: {
       '&[data-state="open"]': {

@@ -1,6 +1,6 @@
 import LoginInfoContent from "./components/login-info-content/login-info-content";
 
-export const LoginInfoPage = () => {
+const LoginInfoPage = () => {
   return <LoginInfoContent />;
 };
 

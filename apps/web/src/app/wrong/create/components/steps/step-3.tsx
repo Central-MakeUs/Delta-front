@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/shared/components/button/button/button";
 import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";
 import * as s from "@/app/wrong/create/components/steps/step.css";
@@ -20,14 +21,39 @@ type Step3Props = StepProps & {
   scanId?: number | string | null;
 };
 
+const readTypeId = (sp: URLSearchParams) => sp.get("typeId") ?? null;
+
+const setParams = (
+  base: URLSearchParams,
+  patch: Record<string, string | null>
+) => {
+  const next = new URLSearchParams(base.toString());
+  Object.entries(patch).forEach(([k, v]) => {
+    if (v === null) next.delete(k);
+    else next.set(k, v);
+  });
+  return next;
+};
+
 const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const sp = useSearchParams();
+
+  const spString = sp.toString();
+  const params = useMemo(() => new URLSearchParams(spString), [spString]);
+
+  const urlTypeId = useMemo(() => readTypeId(params), [params]);
+
   const [items, setItems] = useState<TypeItem[]>(() =>
     TYPE_FILTERS.map((v) => ({ id: v.id, label: v.label }))
   );
   const [selectedTypeId, setSelectedTypeId] = useState<string | null>(null);
   const [hasUserTouched, setHasUserTouched] = useState(false);
+
   const [isAdding, setIsAdding] = useState(false);
   const [draft, setDraft] = useState("");
+
   const { data: summary } = useProblemScanSummaryQuery(scanId);
 
   const recommended = useMemo(() => {
@@ -40,13 +66,57 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
     return mergeExtraItem(items, recommended?.extraItem);
   }, [hasUserTouched, items, recommended]);
 
-  const viewSelectedTypeId = hasUserTouched
-    ? selectedTypeId
-    : (recommended?.selectedId ?? selectedTypeId);
+  const viewSelectedTypeId = urlTypeId
+    ? urlTypeId
+    : hasUserTouched
+      ? selectedTypeId
+      : (recommended?.selectedId ?? selectedTypeId);
 
   useEffect(() => {
     onNextEnabledChange?.(Boolean(viewSelectedTypeId));
   }, [onNextEnabledChange, viewSelectedTypeId]);
+
+  const didHydrateRef = useRef(false);
+
+  useEffect(() => {
+    if (didHydrateRef.current) return;
+
+    if (urlTypeId) {
+      didHydrateRef.current = true;
+      return;
+    }
+
+    if (hasUserTouched) {
+      didHydrateRef.current = true;
+      return;
+    }
+
+    const nextId = recommended?.selectedId ?? null;
+    if (!nextId) return;
+
+    const next = setParams(params, { typeId: nextId });
+    const nextQuery = next.toString();
+    if (nextQuery !== spString) {
+      router.replace(`${pathname}?${nextQuery}`, { scroll: false });
+    }
+
+    didHydrateRef.current = true;
+  }, [
+    hasUserTouched,
+    urlTypeId,
+    recommended?.selectedId,
+    params,
+    spString,
+    pathname,
+    router,
+  ]);
+
+  const pushTypeId = (nextTypeId: string | null) => {
+    const next = setParams(params, { typeId: nextTypeId });
+    const nextQuery = next.toString();
+    if (nextQuery === spString) return;
+    router.replace(`${pathname}?${nextQuery}`, { scroll: false });
+  };
 
   const openAdd = () => {
     setIsAdding(true);
@@ -74,6 +144,7 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
     ensureItemInState(item);
     setSelectedTypeId(item.id);
     onNextEnabledChange?.(true);
+    pushTypeId(item.id);
   };
 
   const commitAdd = () => {
@@ -95,6 +166,7 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
     ensureItemInState(nextItem);
     setSelectedTypeId(nextItem.id);
     onNextEnabledChange?.(true);
+    pushTypeId(nextItem.id);
 
     closeAdd();
   };

@@ -6,20 +6,26 @@ import TextField from "@/shared/components/text-field/text-field";
 import TextAreaField from "@/shared/components/text-area-field/text-area-field";
 import { Toggle } from "@/shared/components/toggle/toggle";
 import { NumberChoice } from "@/shared/components/number-choice/number-choice";
-import { StepProps } from "@/app/wrong/create/page";
+import type { StepProps } from "@/app/wrong/create/page";
 import { TOGGLE_OPTIONS } from "@/app/wrong/create/constants/option-labels";
 import SampleImg from "@/shared/assets/images/wrong-sample.png";
 import * as s from "@/app/wrong/create/components/steps/step.css";
-import {
-  useStep4Form,
-  type ToggleValue,
+
+import type {
+  ToggleValue,
+  Step4FormState,
+  Step4Handlers,
 } from "@/app/wrong/create/hooks/use-step4-form";
 
-const Step4 = ({ onNextEnabledChange }: StepProps) => {
+type Step4Props = StepProps & {
+  form: Step4FormState;
+  handlers: Step4Handlers;
+};
+
+const Step4 = ({ onNextEnabledChange, form, handlers }: Step4Props) => {
   useEffect(() => {
     onNextEnabledChange?.(true);
   }, [onNextEnabledChange]);
-  const { form, handlers } = useStep4Form();
 
   return (
     <div className={s.step4Container}>

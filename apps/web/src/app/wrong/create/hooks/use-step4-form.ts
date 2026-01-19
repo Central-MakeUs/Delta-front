@@ -11,6 +11,13 @@ export type Step4FormState = {
   solutionText: string;
 };
 
+export type Step4Handlers = {
+  handleTypeChange: (nextType: ToggleValue) => void;
+  handleChoiceChange: (nextChoice: number) => void;
+  handleAnswerTextChange: (nextAnswerText: string) => void;
+  handleSolutionChange: (nextSolution: string) => void;
+};
+
 const INITIAL_FORM: Step4FormState = {
   type: "objective",
   answerChoice: null,
@@ -75,14 +82,24 @@ export const useStep4Form = (
     [updateForm]
   );
 
-  return {
-    form,
-    isNextEnabled,
-    handlers: {
+  const handlers: Step4Handlers = useMemo(
+    () => ({
       handleTypeChange,
       handleChoiceChange,
       handleAnswerTextChange,
       handleSolutionChange,
-    },
+    }),
+    [
+      handleTypeChange,
+      handleChoiceChange,
+      handleAnswerTextChange,
+      handleSolutionChange,
+    ]
+  );
+
+  return {
+    form,
+    isNextEnabled,
+    handlers,
   };
 };

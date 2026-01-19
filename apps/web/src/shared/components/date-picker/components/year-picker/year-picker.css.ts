@@ -110,7 +110,6 @@ export const yearOption = style([
     cursor: "pointer",
     borderRadius: "0.8rem",
     color: vars.color.grayscale[700],
-    transition: "all 0.2s ease",
     textAlign: "center",
 
     selectors: {

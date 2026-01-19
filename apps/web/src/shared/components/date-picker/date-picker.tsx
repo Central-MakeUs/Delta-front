@@ -6,6 +6,7 @@ import * as styles from "./date-picker.css";
 import { CalendarView } from "./components/calendar-view/calendar-view";
 import { YearMonthPicker } from "./components/year-month-picker/year-month-picker";
 import { YearPicker } from "./components/year-picker/year-picker";
+import { useViewStackHeight } from "./hooks/use-view-stack-height";
 import {
   getDaysInMonth,
   isSelectedDate,
@@ -61,6 +62,7 @@ export const DatePicker = ({
   const monthYearButtonRef = useRef<HTMLButtonElement | null>(null);
   const yearMonthPickerRef = useRef<HTMLDivElement | null>(null);
   const yearPickerRef = useRef<HTMLDivElement | null>(null);
+  const viewStackRef = useRef<HTMLDivElement | null>(null);
 
   const [tempSelectedDate, setTempSelectedDate] = useState<Date | null>(() => {
     return isOpen ? selectedDate : null;
@@ -128,6 +130,24 @@ export const DatePicker = ({
     };
   }, [isYearMonthPickerOpen]);
 
+  const targetView = getTargetView(
+    transition,
+    isYearPickerOpen,
+    isYearMonthPickerOpen
+  );
+
+  useViewStackHeight({
+    isOpen,
+    viewStackRef,
+    viewRefs: {
+      yearMonth: yearMonthPickerRef,
+      year: yearPickerRef,
+    },
+    transition,
+    activeView: targetView,
+    deps: [currentMonth, draftYearMonth],
+  });
+
   if (!isOpen) return null;
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -151,7 +171,7 @@ export const DatePicker = ({
   const handleMonthYearClick = () => {
     if (transition) return;
     if (isYearMonthPickerOpen) {
-      setTransition({ from: "yearMonth", to: "calendar", dir: "left" });
+      setTransition({ from: "yearMonth", to: "calendar" });
       window.setTimeout(() => {
         setIsYearMonthPickerOpen(false);
         setTransition(null);
@@ -164,13 +184,14 @@ export const DatePicker = ({
       month: currentMonth.getMonth(),
     });
     setIsYearMonthPickerOpen(true);
-    setTransition({ from: "calendar", to: "yearMonth", dir: "right" });
+    setTransition({ from: "calendar", to: "yearMonth" });
+
     window.setTimeout(() => setTransition(null), TRANSITION_MS);
   };
 
   const handleYearMonthCancel = () => {
     if (transition) return;
-    setTransition({ from: "yearMonth", to: "calendar", dir: "left" });
+    setTransition({ from: "yearMonth", to: "calendar" });
     window.setTimeout(() => {
       setIsYearMonthPickerOpen(false);
       setTransition(null);
@@ -204,7 +225,7 @@ export const DatePicker = ({
     const endYear = currentYear + 6;
     setYearRange({ start: startYear, end: endYear });
     setIsYearPickerOpen(true);
-    setTransition({ from: "yearMonth", to: "year", dir: "right" });
+    setTransition({ from: "yearMonth", to: "year" });
     window.setTimeout(() => {
       setIsYearMonthPickerOpen(false);
       setTransition(null);
@@ -214,7 +235,7 @@ export const DatePicker = ({
   const handleYearPickerCancel = () => {
     if (transition) return;
     setIsYearMonthPickerOpen(true);
-    setTransition({ from: "year", to: "yearMonth", dir: "left" });
+    setTransition({ from: "year", to: "yearMonth" });
     window.setTimeout(() => {
       setIsYearPickerOpen(false);
       setTransition(null);
@@ -226,13 +247,9 @@ export const DatePicker = ({
       ...prev,
       year: draftYear,
     }));
-    if (transition) return;
+    setIsYearPickerOpen(false);
     setIsYearMonthPickerOpen(true);
-    setTransition({ from: "year", to: "yearMonth", dir: "left" });
-    window.setTimeout(() => {
-      setIsYearPickerOpen(false);
-      setTransition(null);
-    }, TRANSITION_MS);
+    setTransition(null);
   };
 
   const handleDraftYearSelect = (selectedYear: number) => {
@@ -266,12 +283,6 @@ export const DatePicker = ({
       onClose();
     }
   };
-
-  const targetView = getTargetView(
-    transition,
-    isYearPickerOpen,
-    isYearMonthPickerOpen
-  );
   const viewStackSizeClass =
     targetView === "calendar"
       ? styles.viewStackCalendar
@@ -290,11 +301,14 @@ export const DatePicker = ({
         className={clsx(styles.datePicker, className)}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className={clsx(styles.viewStack, viewStackSizeClass)}>
-          {/* Calendar panel */}
-          {(!isYearMonthPickerOpen ||
-            transition?.to === "calendar" ||
-            transition?.from === "calendar") && (
+        <div
+          ref={viewStackRef}
+          className={clsx(styles.viewStack, viewStackSizeClass)}
+        >
+          {!isYearPickerOpen &&
+            (!isYearMonthPickerOpen ||
+              transition?.to === "calendar" ||
+              transition?.from === "calendar") && (
             <CalendarView
               currentMonth={currentMonth}
               tempSelectedDate={tempSelectedDate}
@@ -317,7 +331,6 @@ export const DatePicker = ({
             />
           )}
 
-          {/* Year picker panel */}
           {(isYearPickerOpen ||
             transition?.to === "year" ||
             transition?.from === "year") && (
@@ -338,10 +351,10 @@ export const DatePicker = ({
             />
           )}
 
-          {/* Year/Month picker panel */}
-          {(isYearMonthPickerOpen ||
-            transition?.to === "yearMonth" ||
-            transition?.from === "yearMonth") && (
+          {!isYearPickerOpen &&
+            (isYearMonthPickerOpen ||
+              transition?.to === "yearMonth" ||
+              transition?.from === "yearMonth") && (
             <YearMonthPicker
               draftYearMonth={draftYearMonth}
               yearMonthPickerRef={yearMonthPickerRef}

@@ -6,13 +6,11 @@ export const getDaysInMonth = (date: Date) => {
   const daysInMonth = lastDay.getDate();
   const startingDayOfWeek = firstDay.getDay();
 
-  // 저번달 정보 계산
   const prevMonthLastDay = new Date(year, month, 0);
   const prevMonthDays = prevMonthLastDay.getDate();
 
   const days: Array<{ day: number; isCurrentMonth: boolean } | null> = [];
 
-  // 저번달 날짜 추가
   for (let i = startingDayOfWeek - 1; i >= 0; i--) {
     days.push({
       day: prevMonthDays - i,
@@ -20,7 +18,6 @@ export const getDaysInMonth = (date: Date) => {
     });
   }
 
-  // 이번달 날짜 추가
   for (let i = 1; i <= daysInMonth; i++) {
     days.push({
       day: i,
@@ -39,7 +36,6 @@ export const isSelectedDate = (
 ) => {
   if (!day || !tempSelectedDate) return false;
   if (!isCurrentMonth) {
-    // 저번달 날짜인 경우
     const prevMonth =
       currentMonth.getMonth() === 0 ? 11 : currentMonth.getMonth() - 1;
     const prevYear =
@@ -67,7 +63,6 @@ export const isToday = (
   if (!day) return false;
   const today = new Date();
   if (!isCurrentMonth) {
-    // 저번달 날짜인 경우
     const prevMonth =
       currentMonth.getMonth() === 0 ? 11 : currentMonth.getMonth() - 1;
     const prevYear =
@@ -89,9 +84,8 @@ export const isToday = (
 
 export const getYearList = (yearRange: { start: number; end: number }) => {
   const years: number[] = [];
-  // 12개 연도 생성 (start부터 정확히 12개)
   const start = yearRange.start;
-  const adjustedEnd = start + 11; // start부터 11개 더하면 총 12개
+  const adjustedEnd = start + 11;
 
   for (let i = start; i <= adjustedEnd; i++) {
     years.push(i);

@@ -4,6 +4,7 @@ import React from "react";
 import clsx from "clsx";
 import * as styles from "./year-month-picker.css";
 import * as sharedStyles from "../../date-picker.css";
+import * as shellStyles from "../picker-shell/picker-shell.css";
 import Icon from "../../../icon/icon";
 import { Button } from "../../../button/button/button";
 import { YEAR_MONTHS } from "../../constants";
@@ -34,7 +35,7 @@ export const YearMonthPicker: React.FC<YearMonthPickerProps> = ({
       ref={yearMonthPickerRef}
       className={clsx(
         sharedStyles.viewPanel,
-        sharedStyles.yearMonthPicker,
+        shellStyles.pickerShell,
         animationClass
       )}
     >

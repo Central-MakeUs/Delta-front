@@ -50,54 +50,51 @@ export const datePicker = style({
 export const viewStack = style({
   position: "relative",
   width: "34rem",
-  height: "43.8rem",
+  minHeight: "34rem",
   overflow: "hidden",
-  transition: "height 0.6s cubic-bezier(0.22, 0.61, 0.36, 1)",
+  transition: "height 0.6s cubic-bezier(0.2, 0.6, 0.36, 1), min-height 0.6s cubic-bezier(0.22, 0.61, 0.36, 1)",
 });
 
 export const viewStackCalendar = style({
-  height: "43.8rem",
+  minHeight: "39.8rem",
 });
 
 export const viewStackPicker = style({
-  height: "36rem",
+  minHeight: "34rem",
 });
 
 export const viewPanel = style({
   position: "absolute",
-  inset: 0,
+  top: 0,
+  left: 0,
+  right: 0,
   width: "100%",
+  height: "auto",
+  zIndex: 0,
 });
 
-export const enterFromRight = style({
-  animation: `${slideInFromRight} 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both`,
-});
-
-export const enterFromLeft = style({
-  animation: `${slideInFromLeft} 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both`,
-});
 
 export const exitToLeft = style({
   animation: `${slideOutToLeft} 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both`,
   pointerEvents: "none",
+  zIndex: 0,
 });
 
 export const exitToRight = style({
   animation: `${slideOutToRight} 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both`,
   pointerEvents: "none",
+  zIndex: 0,
+});
+
+export const enterFromLeft = style({
+  animation: `${slideInFromLeft} 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both`,
+  zIndex: 1,
+});
+
+export const enterFromRight = style({
+  animation: `${slideInFromRight} 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both`,
+  zIndex: 1,
 });
 
 
-export const yearMonthPicker = style({
-  position: "relative",
-  width: "34rem",
-  height: "36rem",
-  backgroundColor: vars.color.grayscale[0],
-  borderRadius: "1.2rem",
-  boxShadow: "0px 0px 14px rgba(88, 88, 88, 0.12)",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "flex-start",
-  padding: 0,
-  overflow: "hidden",
-});
+ 

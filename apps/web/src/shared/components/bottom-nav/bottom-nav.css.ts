@@ -10,7 +10,7 @@ export const root = style([
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 10,
+    zIndex: vars.zIndex.bottomNav,
     maxWidth: "43rem",
     margin: "0 auto",
     width: "100%",

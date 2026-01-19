@@ -37,7 +37,7 @@ export const textareaWrapper = recipe({
       flexDirection: "column",
       alignSelf: "stretch",
       border: `1px solid ${vars.color.grayscale[100]}`,
-      borderRadius: vars.radius.md,
+      borderRadius: vars.radius.r12,
       flex: 1,
       padding: "1.6rem",
       gap: "0.8rem",

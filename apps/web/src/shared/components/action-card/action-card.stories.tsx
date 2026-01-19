@@ -25,7 +25,7 @@ const meta = {
     title: "사진 촬영",
     iconName: "graphic-camera",
     circleSizeRem: 6.4,
-    iconHeightRem: 3.2,
+    iconSize: 3.2,
     disabled: false,
     type: "button",
   },

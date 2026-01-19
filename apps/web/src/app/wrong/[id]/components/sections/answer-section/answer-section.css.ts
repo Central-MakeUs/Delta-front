@@ -24,7 +24,7 @@ export const answerButtonOverlay = style({
   alignItems: "center",
   padding: "1.3rem 7.3rem",
   gap: "1rem",
-  zIndex: 1,
+  zIndex: vars.zIndex.contentOverlay,
 });
 
 export const answerButtonContent = style({
@@ -54,7 +54,7 @@ export const answerChipWrapper = style([
 export const answerChipButton = style({
   display: "flex",
   alignItems: "center",
-  zIndex: 2,
+  zIndex: vars.zIndex.contentOverlayHigh,
 });
 
 export const answerChipContent = style({
@@ -84,10 +84,10 @@ export const answerToggleButton = style({
   background: "transparent",
   border: "none",
   cursor: "pointer",
-  zIndex: 2,
+  zIndex: vars.zIndex.contentOverlayHigh,
 });
 
 export const answerToggleButtonDisabled = style({
   cursor: "default",
-  zIndex: 0,
+  zIndex: vars.zIndex.base,
 });

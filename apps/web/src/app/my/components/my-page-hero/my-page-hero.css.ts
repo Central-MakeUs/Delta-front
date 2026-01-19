@@ -21,7 +21,7 @@ export const hero = style({
 
 export const profileBlock = style({
   position: "relative",
-  zIndex: vars.zIndex.contentOverlayElevated,
+  zIndex: vars.zIndex.contentOverlayHigh,
   display: "flex",
   flexDirection: "column",
   alignItems: "center",

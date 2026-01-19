@@ -52,7 +52,7 @@ export const crown = style([
     transform: "translateX(-50%)",
     width: "1.6rem",
     height: "1.6rem",
-    zIndex: vars.zIndex.contentOverlayElevated,
+    zIndex: vars.zIndex.contentOverlayHigh,
     pointerEvents: "none",
   },
 ]);

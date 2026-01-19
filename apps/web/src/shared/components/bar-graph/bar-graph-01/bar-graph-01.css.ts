@@ -110,7 +110,7 @@ export const label = style([
     right: "0.8rem",
     top: "1.6rem",
     transform: "translateY(-50%)",
-    zIndex: vars.zIndex.contentOverlayElevated,
+    zIndex: vars.zIndex.contentOverlayHigh,
     whiteSpace: "nowrap",
   },
 ]);

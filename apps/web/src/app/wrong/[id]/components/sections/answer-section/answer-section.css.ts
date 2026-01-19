@@ -54,7 +54,7 @@ export const answerChipWrapper = style([
 export const answerChipButton = style({
   display: "flex",
   alignItems: "center",
-  zIndex: vars.zIndex.contentOverlayElevated,
+  zIndex: vars.zIndex.contentOverlayHigh,
 });
 
 export const answerChipContent = style({
@@ -84,7 +84,7 @@ export const answerToggleButton = style({
   background: "transparent",
   border: "none",
   cursor: "pointer",
-  zIndex: vars.zIndex.contentOverlayElevated,
+  zIndex: vars.zIndex.contentOverlayHigh,
 });
 
 export const answerToggleButtonDisabled = style({

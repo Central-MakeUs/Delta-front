@@ -27,7 +27,7 @@ export const page = style({
 
 export const content = style({
   position: "relative",
-  zIndex: vars.zIndex.contentOverlayElevated,
+  zIndex: vars.zIndex.contentOverlayHigh,
   display: "flex",
   flexDirection: "column",
   flex: 1,

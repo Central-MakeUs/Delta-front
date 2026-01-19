@@ -19,7 +19,7 @@ export const image = style({
 
 export const aboutSection = style({
   position: "relative",
-  zIndex: vars.zIndex.contentOverlayElevated,
+  zIndex: vars.zIndex.contentOverlayHigh,
   height: "100%",
   padding: "1.6rem",
   display: "flex",

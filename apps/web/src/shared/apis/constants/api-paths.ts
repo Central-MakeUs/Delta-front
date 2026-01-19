@@ -14,4 +14,10 @@ export const API_PATHS = {
     IMAGES: `${API_V1}/storage/images`,
     PRESIGNED_GET: `${API_V1}/storage/images/presigned-get`,
   },
+  PROBLEM_SCANS: {
+    ROOT: "/api/v1/problem-scans",
+    DETAIL: (scanId: number | string) => `/api/v1/problem-scans/${scanId}`,
+    SUMMARY: (scanId: number | string) =>
+      `/api/v1/problem-scans/${scanId}/summary`,
+  },
 } as const;

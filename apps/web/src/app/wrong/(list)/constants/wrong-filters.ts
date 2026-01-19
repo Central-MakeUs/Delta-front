@@ -31,10 +31,9 @@ export const CHAPTER_FILTERS: ChapterFilterItem[] = [
 ];
 
 export const TYPE_FILTERS: TypeFilterItem[] = [
-  { id: "graph", label: "그래프" },
+  { id: "T_GRAPH_FIGURE", label: "그래프/도형" },
   { id: "common-math-2", label: "공통수학2" },
   { id: "algebra", label: "대수" },
-  { id: "geometry", label: "도형" },
   { id: "absolute-value", label: "절댓값" },
   { id: "equation", label: "방정식" },
 ];

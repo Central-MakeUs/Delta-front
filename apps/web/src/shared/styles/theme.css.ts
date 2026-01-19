@@ -1,5 +1,4 @@
 import { createTheme, createThemeContract } from "@vanilla-extract/css";
-import { wrongCardGradient } from "./color.css";
 
 export const vars = createThemeContract({
   color: {

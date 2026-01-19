@@ -117,7 +117,7 @@ export const label = recipe({
     size: {
       "32": typo.caption.semibold,
       "40": typo.body3.semibold,
-      "48": typo.button1,
+      "48": typo.body2.semibold,
       "56": typo.body2.medium,
       "60": typo.body1.bold,
     },

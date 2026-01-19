@@ -59,3 +59,14 @@ export const cardSection = style({
   gap: "1.2rem",
   width: "100%",
 });
+
+export const inputDisplay = style({
+  display: "none",
+});
+
+export const profileImagePreview = style({
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  borderRadius: "50%",
+});

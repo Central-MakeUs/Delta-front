@@ -145,7 +145,7 @@ export const DatePicker = ({
     },
     transition,
     activeView: targetView,
-    deps: [currentMonth, draftYearMonth],
+    depsKey: `${currentMonth.getTime()}-${draftYearMonth.year}-${draftYearMonth.month}`,
   });
 
   if (!isOpen) return null;

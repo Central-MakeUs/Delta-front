@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useCallback, type RefObject } from "react";
 import type { Transition, View } from "../utils/transition-utils";
 
 type ViewRefs = Partial<Record<View, RefObject<HTMLElement | null>>>;
@@ -17,32 +17,32 @@ const getViewHeight = (
   return refs[view]?.current?.scrollHeight ?? 0;
 };
 
-export function useViewStackHeight(params: {
+export const useViewStackHeight = (params: {
   isOpen: boolean;
   viewStackRef: RefObject<HTMLElement | null>;
   viewRefs: ViewRefs;
   transition: Transition | null;
   activeView: View;
-  deps?: unknown[];
-}) {
-  const { isOpen, viewStackRef, viewRefs, transition, activeView, deps = [] } =
+  depsKey?: unknown;
+}) => {
+  const { isOpen, viewStackRef, viewRefs, transition, activeView, depsKey } =
     params;
 
-  const applyHeight = () => {
+  const applyHeight = useCallback(() => {
     const stack = viewStackRef.current;
     if (!stack) return;
 
     const targetView = transition ? transition.to : activeView;
     const h = getViewHeight(viewStackRef, targetView, viewRefs);
     if (h > 0) stack.style.height = `${h}px`;
-  };
+  }, [viewStackRef, viewRefs, transition, activeView]);
 
   useLayoutEffect(() => {
     if (!isOpen) return;
     requestAnimationFrame(() => {
       requestAnimationFrame(() => applyHeight());
     });
-  }, [isOpen, transition, activeView]);
+  }, [isOpen, applyHeight]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -58,6 +58,6 @@ export function useViewStackHeight(params: {
     });
 
     return () => ro.disconnect();
-  }, [isOpen, transition, activeView, viewStackRef, ...deps]);
-}
+  }, [isOpen, viewStackRef, viewRefs, applyHeight, depsKey]);
+};
 

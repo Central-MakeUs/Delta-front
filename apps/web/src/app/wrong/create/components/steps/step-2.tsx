@@ -9,59 +9,17 @@ import Checkbox from "@/shared/components/checkbox/checkbox";
 import * as s from "@/app/wrong/create/components/steps/step.css";
 import type { StepProps } from "@/app/wrong/create/page";
 import { useProblemScanSummaryQuery } from "@/shared/apis/problem-scan/hooks/use-problem-scan-summary-query";
-
+import { CHAPTER_FILTERS } from "@/app/wrong/(list)/constants/wrong-filters";
 import {
-  CHAPTER_FILTERS,
-  CHAPTER_DROPDOWN_OPTIONS,
-} from "@/app/wrong/(list)/constants/wrong-filters";
+  type ChapterKey,
+  type UnitOption,
+  computeRecommendation,
+  findChapterLabelById,
+  getUnitOptions,
+} from "@/app/wrong/create/utils/chapter-recommend";
 
 type Step2Props = StepProps & {
   scanId?: number | string | null;
-};
-
-type ChapterKey = keyof typeof CHAPTER_DROPDOWN_OPTIONS;
-type UnitOption = { id: string; label: string };
-
-const normalize = (v?: string | null) => (v ?? "").trim();
-
-const matchByLabel = <T extends { label: string }>(
-  items: readonly T[],
-  name?: string | null
-) => {
-  const n = normalize(name);
-  if (!n) return null;
-
-  return (
-    items.find((v) => v.label === n) ??
-    items.find((v) => n.includes(v.label) || v.label.includes(n)) ??
-    null
-  );
-};
-
-const CHAPTER_KEYS = Object.keys(CHAPTER_DROPDOWN_OPTIONS) as ChapterKey[];
-
-const getUnitOptions = (chapterId: ChapterKey) =>
-  CHAPTER_DROPDOWN_OPTIONS[chapterId] as readonly UnitOption[];
-
-const findChapterLabelById = (id: ChapterKey | null) => {
-  if (!id) return "";
-  return CHAPTER_FILTERS.find((v) => v.id === id)?.label ?? "";
-};
-
-const findUnitOptionInChapter = (chapterId: ChapterKey, name?: string | null) =>
-  matchByLabel<UnitOption>(getUnitOptions(chapterId), name);
-
-const findUnitOptionGlobal = (name?: string | null) => {
-  const n = normalize(name);
-  if (!n) return null as null | { chapterId: ChapterKey; option: UnitOption };
-
-  for (const chapterId of CHAPTER_KEYS) {
-    const options = getUnitOptions(chapterId);
-    const hit = matchByLabel<UnitOption>(options, n);
-    if (hit) return { chapterId, option: hit };
-  }
-
-  return null;
 };
 
 const Step2 = ({ onNextEnabledChange, scanId = null }: Step2Props) => {
@@ -79,40 +37,10 @@ const Step2 = ({ onNextEnabledChange, scanId = null }: Step2Props) => {
         unitId: null as string | null,
       };
 
-    const aiSubjectName = summary.classification.subject?.name ?? null;
-    const aiUnitName = summary.classification.unit?.name ?? null;
-
-    const matchedChapter = matchByLabel(
-      CHAPTER_FILTERS as readonly { id: string; label: string }[],
-      aiSubjectName
-    );
-
-    const chapterIdFromSubject = (matchedChapter?.id ??
-      null) as ChapterKey | null;
-
-    let nextChapterId: ChapterKey | null = chapterIdFromSubject;
-    let nextUnitId: string | null = null;
-
-    if (nextChapterId) {
-      const unitHit = findUnitOptionInChapter(nextChapterId, aiUnitName);
-      if (unitHit) {
-        nextUnitId = unitHit.id;
-      } else {
-        const globalHit = findUnitOptionGlobal(aiUnitName);
-        if (globalHit) {
-          nextChapterId = globalHit.chapterId;
-          nextUnitId = globalHit.option.id;
-        }
-      }
-    } else {
-      const globalHit = findUnitOptionGlobal(aiUnitName);
-      if (globalHit) {
-        nextChapterId = globalHit.chapterId;
-        nextUnitId = globalHit.option.id;
-      }
-    }
-
-    return { chapterId: nextChapterId, unitId: nextUnitId };
+    return computeRecommendation({
+      aiSubjectName: summary.classification.subject?.name ?? null,
+      aiUnitName: summary.classification.unit?.name ?? null,
+    });
   }, [summary]);
 
   const [hasUserTouched, setHasUserTouched] = useState(false);

@@ -17,7 +17,7 @@ export const iconWrap = style({
   display: "flex",
   position: "absolute",
   alignItems: "flex-end",
-  zIndex: 1,
+  zIndex: vars.zIndex.contentOverlay,
   top: "2.8rem",
   left: LEFT_GAP,
   gap: "2rem",

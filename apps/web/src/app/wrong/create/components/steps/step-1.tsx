@@ -2,7 +2,10 @@
 
 import { useCallback, useRef, useState } from "react";
 import ActionCard from "@/shared/components/action-card/action-card";
-import { useImageSourcePicker } from "@/app/wrong/create/hooks/use-image-source-picker";
+import {
+  useImageSourcePicker,
+  type ImagePickSource,
+} from "@/app/wrong/create/hooks/use-image-source-picker";
 import * as s from "@/app/wrong/create/create.css";
 import { useCreateProblemScanMutation } from "@/shared/apis/problem-scan/hooks/use-create-problem-scan-mutation";
 import type { ProblemScanCreateResponse } from "@/shared/apis/problem-scan/problem-scan-types";
@@ -17,9 +20,11 @@ const ALLOWED_MIME_TYPES = new Set([
   "image/heic",
   "image/heif",
 ]);
+const ALLOWED_EXT = new Set(["jpg", "jpeg", "png", "webp", "heic", "heif"]);
 
 type Step1Props = {
   onNext: (res: ProblemScanCreateResponse) => void;
+  onSelectImage?: (file: File, source: ImagePickSource) => void;
   disabled?: boolean;
 };
 
@@ -29,6 +34,10 @@ const formatBytes = (bytes: number) => {
 };
 
 const validateImageFile = (file: File) => {
+  if (file.size <= 0) {
+    return "파일을 읽을 수 없어요. 다른 이미지를 선택해 주세요.";
+  }
+
   if (file.size > MAX_IMAGE_BYTES) {
     return `이미지 용량이 너무 커요. ${formatBytes(
       MAX_IMAGE_BYTES
@@ -36,25 +45,19 @@ const validateImageFile = (file: File) => {
   }
 
   const mime = (file.type ?? "").toLowerCase();
-
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
-  const allowedExt = new Set(["jpg", "jpeg", "png", "webp", "heic", "heif"]);
 
-  const mimeOk = mime ? ALLOWED_MIME_TYPES.has(mime) : true;
-  const extOk = allowedExt.has(ext);
+  const mimeOk = mime ? ALLOWED_MIME_TYPES.has(mime) : true; // 일부 환경 fallback
+  const extOk = ALLOWED_EXT.has(ext);
 
   if ((mime && !mimeOk) || (!mime && !extOk)) {
     return "지원하지 않는 이미지 형식이에요. JPG/PNG/WebP/HEIC만 업로드할 수 있어요.";
   }
 
-  noted: if (file.size <= 0) {
-    return "파일을 읽을 수 없어요. 다른 이미지를 선택해 주세요.";
-  }
-
   return null;
 };
 
-const Step1 = ({ onNext, disabled = false }: Step1Props) => {
+const Step1 = ({ onNext, onSelectImage, disabled = false }: Step1Props) => {
   const createScanMutation = useCreateProblemScanMutation();
 
   const [holdLoading, setHoldLoading] = useState(false);
@@ -64,7 +67,7 @@ const Step1 = ({ onNext, disabled = false }: Step1Props) => {
   const isBusy = disabled || createScanMutation.isPending || holdLoading;
 
   const handlePicked = useCallback(
-    (file: File) => {
+    (file: File, source: ImagePickSource) => {
       if (isBusy) return;
 
       const error = validateImageFile(file);
@@ -86,6 +89,7 @@ const Step1 = ({ onNext, disabled = false }: Step1Props) => {
 
             window.setTimeout(() => {
               setHoldLoading(false);
+              onSelectImage?.(file, source);
               onNext(res);
             }, remain);
           },
@@ -96,7 +100,7 @@ const Step1 = ({ onNext, disabled = false }: Step1Props) => {
         }
       );
     },
-    [createScanMutation, isBusy, onNext]
+    [createScanMutation, isBusy, onNext, onSelectImage]
   );
 
   const {

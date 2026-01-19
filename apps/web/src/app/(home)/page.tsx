@@ -7,17 +7,16 @@ import TabBar from "@/shared/components/tab-bar/tab-bar/tab-bar";
 import CardGraph01 from "@/shared/components/card-graph/card-graph-01/card-graph-01";
 import ViewAllButton from "@/app/(home)/components/view-all-button/view-all-button";
 import * as s from "@/app/(home)/home.css";
-import { GRAPH_TABS, ROUTES } from "@/shared/constants/routes";
 import CardGraph02, {
   type CardGraph02Item,
 } from "@/shared/components/card-graph/card-graph-02/card-graph-02";
+import { ROUTES } from "@/shared/constants/routes";
 
 type TabValue = "최다 오답 단원" | "최다 오답 유형";
 
 const Home = () => {
-  const router = useRouter();
   const pathname = usePathname();
-
+  const router = useRouter();
   const tabs: readonly TabItem<TabValue>[] = [
     { value: "최다 오답 단원", label: "최다 오답 단원" },
     { value: "최다 오답 유형", label: "최다 오답 유형" },
@@ -32,9 +31,8 @@ const Home = () => {
     { value: 5, title: "단원명", valueLabel: "5개" },
   ];
 
-  const goGraph = () => {
-    const tab = value === "최다 오답 단원" ? GRAPH_TABS.UNIT : GRAPH_TABS.WRONG;
-    router.push(ROUTES.GRAPH.tab(tab));
+  const handleActionClick = () => {
+    router.push(`${ROUTES.WRONG.ROOT}?sort=wrong-incomplete`);
   };
 
   return (
@@ -49,17 +47,16 @@ const Home = () => {
           registeredCount={24}
           graphPercent={80}
           graphLabel="16/24"
-          onActionClick={() => console.log("go practice")}
+          onActionClick={handleActionClick}
           replayKey={pathname}
         />
       </div>
-
       <div className={s.graph}>
         <TabBar
           tabs={tabs}
           value={value}
           onValueChange={setValue}
-          rightSlot={<ViewAllButton onClick={goGraph} />}
+          rightSlot={<ViewAllButton onClick={() => console.log("view all")} />}
         />
         <CardGraph02 items={items} />
       </div>

@@ -1,5 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { bgColor } from "@/shared/styles/color.css";
+import { vars } from "@/shared/styles/theme.css";
 
 export const page = style({
   display: "flex",
@@ -13,6 +14,10 @@ export const cardSection = style({
   flexDirection: "column",
   padding: "0 1.6rem",
   gap: "1.6rem",
+});
+
+export const inputDisplay = style({
+  display: "none",
 });
 
 export const stepShell = style({
@@ -40,7 +45,7 @@ export const nextSection = style([
     width: "100%",
     margin: "0 auto",
     bottom: 0,
-    zIndex: 10,
+    zIndex: vars.zIndex.bottomNav,
     padding: "1.6rem",
   },
 ]);

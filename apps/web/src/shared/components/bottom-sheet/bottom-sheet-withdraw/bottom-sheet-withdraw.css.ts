@@ -12,7 +12,7 @@ export const overlay = style([
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 1000,
+    zIndex: vars.zIndex.bottomSheetOverlay,
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "center",
@@ -37,7 +37,7 @@ export const bottomSheet = style([
     padding: "2rem 1.6rem",
     gap: "1rem",
     borderRadius: "2.4rem 2.4rem 0 0",
-    zIndex: 1001,
+    zIndex: vars.zIndex.bottomSheet,
     overflow: "auto",
     animation: `${slideUp} 0.3s ease-out`,
   },
@@ -70,7 +70,7 @@ export const title = style([
   color["grayscale-900"],
   {
     width: "100%",
-    textAlign: "center",
+    textAlign: "left",
   },
 ]);
 
@@ -105,28 +105,6 @@ export const buttonContainer = style({
   gap: "1.2rem",
   width: "100%",
 });
-
-export const confirmButtonOverride = style([
-  bgColor["main-500"],
-  color["grayscale-0"],
-  {
-    width: "100%",
-    height: "4.8rem",
-
-    selectors: {
-      "&:hover:not(:disabled)": {
-        backgroundColor: vars.color.main[600],
-      },
-      "&:active:not(:disabled)": {
-        backgroundColor: vars.color.main[700],
-      },
-      "&:disabled": {
-        backgroundColor: vars.color.grayscale[100],
-        color: vars.color.grayscale[500],
-      },
-    },
-  },
-]);
 
 export const cancelText = style([
   typo.body3.medium,

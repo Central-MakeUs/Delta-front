@@ -40,6 +40,7 @@ const MyPage = () => {
       linkedEmail={data.email ?? ""}
       profileImageUrl={null}
       onLogout={() => router.replace(ROUTES.AUTH.LOGIN)}
+      onWithdraw={() => router.replace(ROUTES.AUTH.LOGIN)}
     />
   );
 };

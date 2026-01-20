@@ -51,48 +51,39 @@ const FormSection = ({
       <div className={styles.formSection}>
         <div className={styles.fieldGroup}>
           <label className={styles.fieldLabel}>이름</label>
-          <div className={styles.inputWrapper}>
-            <div className={styles.textFieldContainer}>
-              <TextField
-                placeholder="이름을 입력해주세요"
-                value={name}
-                onChange={(e) => onNameChange(e.target.value)}
-                fullWidth
-                size="body2"
-                rows={1}
-              />
-            </div>
-          </div>
+          <TextField
+            variant="plain"
+            placeholder="이름을 입력해주세요"
+            value={name}
+            onChange={(e) => onNameChange(e.target.value)}
+            fullWidth
+            size="body2"
+            rows={1}
+          />
         </div>
 
         <div className={styles.fieldGroup}>
           <label className={styles.fieldLabel}>생년월일</label>
-          <div className={styles.inputWrapper}>
-            <div
-              className={styles.dateFieldContainer}
-              onClick={handleDateFieldClick}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  handleDateFieldClick();
-                }
-              }}
-            >
-              <TextField
-                placeholder="YYYY/MM/DD"
-                value={birthDate}
-                prefix={<Icon name="edit" size={2.4} />}
-                onChange={(e) => onBirthDateChange(e.target.value)}
+          <TextField
+            variant="plain"
+            direction="row"
+            prefixPosition="right"
+            prefix={
+              <Icon
+                name="calendar"
                 onClick={handleDateFieldClick}
-                readOnly
-                fullWidth
-                size="body2"
-                rows={1}
+                aria-label="생년월일 선택"
+                size={2.4}
               />
-            </div>
-          </div>
+            }
+            placeholder="YYYY/MM/DD"
+            value={birthDate}
+            readOnly
+            onClick={handleDateFieldClick}
+            fullWidth
+            size="body2"
+            rows={1}
+          />
         </div>
       </div>
 

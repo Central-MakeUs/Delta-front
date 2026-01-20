@@ -39,17 +39,15 @@ export const DatePicker = ({
   overlayClassName,
 }: DatePickerProps) => {
   const [transition, setTransition] = useState<Transition | null>(null);
-  const [currentMonth, setCurrentMonth] = useState(
-    selectedDate || new Date()
-  );
+  const [currentMonth, setCurrentMonth] = useState(selectedDate || new Date());
   const [isYearMonthPickerOpen, setIsYearMonthPickerOpen] = useState(false);
   const [isYearPickerOpen, setIsYearPickerOpen] = useState(false);
   const [draftYearMonth, setDraftYearMonth] = useState(() => ({
     year: (selectedDate || new Date()).getFullYear(),
     month: (selectedDate || new Date()).getMonth(),
   }));
-  const [draftYear, setDraftYear] = useState(
-    () => (selectedDate || new Date()).getFullYear()
+  const [draftYear, setDraftYear] = useState(() =>
+    (selectedDate || new Date()).getFullYear()
   );
   const [yearRange, setYearRange] = useState(() => {
     const currentYear = (selectedDate || new Date()).getFullYear();
@@ -256,7 +254,11 @@ export const DatePicker = ({
     setDraftYear(selectedYear);
   };
 
-  const handleDateClick = (day: number, isCurrentMonth: boolean) => {
+  const handleDateClick = (
+    day: number,
+    isCurrentMonth: boolean,
+    isPrevMonth: boolean
+  ) => {
     let selected: Date;
     if (isCurrentMonth) {
       selected = new Date(
@@ -264,7 +266,7 @@ export const DatePicker = ({
         currentMonth.getMonth(),
         day
       );
-    } else {
+    } else if (isPrevMonth) {
       const prevMonth =
         currentMonth.getMonth() === 0 ? 11 : currentMonth.getMonth() - 1;
       const prevYear =
@@ -272,6 +274,15 @@ export const DatePicker = ({
           ? currentMonth.getFullYear() - 1
           : currentMonth.getFullYear();
       selected = new Date(prevYear, prevMonth, day);
+      setCurrentMonth(selected);
+    } else {
+      const nextMonth =
+        currentMonth.getMonth() === 11 ? 0 : currentMonth.getMonth() + 1;
+      const nextYear =
+        currentMonth.getMonth() === 11
+          ? currentMonth.getFullYear() + 1
+          : currentMonth.getFullYear();
+      selected = new Date(nextYear, nextMonth, day);
       setCurrentMonth(selected);
     }
     setTempSelectedDate(selected);
@@ -309,27 +320,32 @@ export const DatePicker = ({
             (!isYearMonthPickerOpen ||
               transition?.to === "calendar" ||
               transition?.from === "calendar") && (
-            <CalendarView
-              currentMonth={currentMonth}
-              tempSelectedDate={tempSelectedDate}
-              monthYearButtonRef={monthYearButtonRef}
-              isYearMonthPickerOpen={isYearMonthPickerOpen}
-              onPrevMonth={handlePrevMonth}
-              onNextMonth={handleNextMonth}
-              onMonthYearClick={handleMonthYearClick}
-              onDateClick={handleDateClick}
-              onComplete={handleComplete}
-              onClose={onClose}
-              getDaysInMonth={getDaysInMonth}
-              isSelectedDate={(day, isCurrentMonth) =>
-                isSelectedDate(day, isCurrentMonth, tempSelectedDate, currentMonth)
-              }
-              isToday={(day, isCurrentMonth) =>
-                isToday(day, isCurrentMonth, currentMonth)
-              }
-              animationClass={getPanelAnimClass("calendar", transition)}
-            />
-          )}
+              <CalendarView
+                currentMonth={currentMonth}
+                tempSelectedDate={tempSelectedDate}
+                monthYearButtonRef={monthYearButtonRef}
+                isYearMonthPickerOpen={isYearMonthPickerOpen}
+                onPrevMonth={handlePrevMonth}
+                onNextMonth={handleNextMonth}
+                onMonthYearClick={handleMonthYearClick}
+                onDateClick={handleDateClick}
+                onComplete={handleComplete}
+                onClose={onClose}
+                getDaysInMonth={getDaysInMonth}
+                isSelectedDate={(day, isCurrentMonth) =>
+                  isSelectedDate(
+                    day,
+                    isCurrentMonth,
+                    tempSelectedDate,
+                    currentMonth
+                  )
+                }
+                isToday={(day, isCurrentMonth) =>
+                  isToday(day, isCurrentMonth, currentMonth)
+                }
+                animationClass={getPanelAnimClass("calendar", transition)}
+              />
+            )}
 
           {(isYearPickerOpen ||
             transition?.to === "year" ||
@@ -355,17 +371,17 @@ export const DatePicker = ({
             (isYearMonthPickerOpen ||
               transition?.to === "yearMonth" ||
               transition?.from === "yearMonth") && (
-            <YearMonthPicker
-              draftYearMonth={draftYearMonth}
-              yearMonthPickerRef={yearMonthPickerRef}
-              onDraftYearChange={handleDraftYearChange}
-              onYearDisplayClick={handleYearDisplayClick}
-              onDraftMonthSelect={handleDraftMonthSelect}
-              onCancel={handleYearMonthCancel}
-              onComplete={handleYearMonthComplete}
-              animationClass={getPanelAnimClass("yearMonth", transition)}
-            />
-          )}
+              <YearMonthPicker
+                draftYearMonth={draftYearMonth}
+                yearMonthPickerRef={yearMonthPickerRef}
+                onDraftYearChange={handleDraftYearChange}
+                onYearDisplayClick={handleYearDisplayClick}
+                onDraftMonthSelect={handleDraftMonthSelect}
+                onCancel={handleYearMonthCancel}
+                onComplete={handleYearMonthComplete}
+                animationClass={getPanelAnimClass("yearMonth", transition)}
+              />
+            )}
         </div>
       </div>
     </div>

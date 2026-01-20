@@ -1,5 +1,7 @@
 import { createVar, style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
+import { typo } from "@/shared/styles/typography.css";
+import { recipe } from "@vanilla-extract/recipes";
 
 export const circleSizeVar = createVar();
 
@@ -40,6 +42,23 @@ export const iconCircle = style({
   justifyContent: "center",
   alignItems: "center",
   flexShrink: 0,
+});
+
+export const titleTypo = recipe({
+  base: [typo.body2.semibold],
+  variants: {
+    size: {
+      "32": typo.caption.semibold,
+      "36": typo.body3.medium,
+      "40": typo.body3.semibold,
+      "48": typo.body2.semibold,
+      "56": typo.body2.medium,
+      "60": typo.body1.bold,
+    },
+  },
+  defaultVariants: {
+    size: "48",
+  },
 });
 
 export const title = style({

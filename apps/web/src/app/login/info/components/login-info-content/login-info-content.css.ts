@@ -14,8 +14,7 @@ export const contentWrapper = style({
   width: "100%",
   display: "flex",
   flexDirection: "column",
-  alignItems: "flex-start",
-  padding: "1.6rem",
+  padding: "7.4rem 1.6rem 1.6rem",
 });
 
 export const title = style([
@@ -23,6 +22,5 @@ export const title = style([
   {
     display: "flex",
     color: vars.color.grayscale[900],
-    marginTop: "7.4rem",
   },
 ]);

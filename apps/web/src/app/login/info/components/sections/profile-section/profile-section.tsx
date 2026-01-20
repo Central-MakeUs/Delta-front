@@ -119,36 +119,36 @@ const ProfileSection = () => {
             onChange={handleAlbumChange}
           />
 
-          <div
-            className={modalStyles.overlay}
-            onClick={handleOverlayClick}
-          >
-            <div className={clsx(modalStyles.modal({ size: "md" }), styles.modalContent)}>
-              <div className={modalStyles.header}>
-                <div className={modalStyles.titleRow}>
-                  <h2 className={modalStyles.title}>프로필 사진 선택</h2>
+          <div className={modalStyles.overlay} onClick={handleOverlayClick}>
+            <div className={clsx(modalStyles.modal({ size: "md" }))}>
+              <div className={styles.cardContainer}>
+                <h2 className={modalStyles.title}>프로필 사진 선택</h2>
+                <div className={styles.cardSection}>
+                  <ActionCard
+                    title="사진 촬영"
+                    iconName="graphic-camera"
+                    circleSizeRem={4.8}
+                    iconSize={2.4}
+                    size="36"
+                    onClick={openCamera}
+                  />
+                  <ActionCard
+                    title="앨범에서 선택"
+                    iconName="graphic-gallery"
+                    circleSizeRem={4.8}
+                    iconSize={2.4}
+                    size="36"
+                    onClick={openAlbum}
+                  />
                 </div>
-              </div>
-
-              <div className={styles.cardSection}>
-                <ActionCard
-                  title="사진 촬영"
-                  iconName="graphic-camera"
-                  onClick={openCamera}
-                />
-                <ActionCard
-                  title="앨범에서 선택"
-                  iconName="graphic-gallery"
-                  onClick={openAlbum}
+                <Button
+                  fullWidth
+                  onClick={handleClose}
+                  tone="surface"
+                  label="닫기"
+                  size="48"
                 />
               </div>
-              <Button
-                fullWidth
-                onClick={handleClose}
-                tone="surface"
-                label="닫기"
-                size="48"
-              />
             </div>
           </div>
         </>

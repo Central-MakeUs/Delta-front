@@ -1,6 +1,16 @@
 import { style, keyframes } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 
+const zoomIn = keyframes({
+  from: { opacity: 0, transform: "scale(0.8) translate(-50%, -50%)" },
+  to: { opacity: 1, transform: "scale(1) translate(-50%, -50%)" },
+});
+
+const zoomOut = keyframes({
+  from: { opacity: 1, transform: "scale(1) translate(-50%, -50%)" },
+  to: { opacity: 0, transform: "scale(0.8) translate(-50%, -50%)" },
+});
+
 const slideInFromRight = keyframes({
   from: { opacity: 0, transform: "translateX(28px)" },
   to: { opacity: 1, transform: "translateX(0)" },
@@ -24,7 +34,7 @@ const slideOutToRight = keyframes({
 export const overlay = style({
   position: "fixed",
   inset: 0,
-  zIndex: 1000,
+  zIndex: vars.zIndex.modalOverlay,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -45,6 +55,12 @@ export const datePicker = style({
   boxShadow: "0px 0px 14px rgba(88, 88, 88, 0.12)",
   borderRadius: "1.2rem",
   outline: "none",
+  animation: `${zoomIn} 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)`,
+  selectors: {
+    "&.closing": {
+      animation: `${zoomOut} 0.2s ease-in forwards`,
+    },
+  },
 });
 
 export const viewStack = style({
@@ -52,7 +68,8 @@ export const viewStack = style({
   width: "34rem",
   minHeight: "34rem",
   overflow: "hidden",
-  transition: "height 0.6s cubic-bezier(0.2, 0.6, 0.36, 1), min-height 0.6s cubic-bezier(0.22, 0.61, 0.36, 1)",
+  transition:
+    "height 0.6s cubic-bezier(0.2, 0.6, 0.36, 1), min-height 0.6s cubic-bezier(0.22, 0.61, 0.36, 1)",
 });
 
 export const viewStackCalendar = style({
@@ -72,7 +89,6 @@ export const viewPanel = style({
   height: "auto",
   zIndex: 0,
 });
-
 
 export const exitToLeft = style({
   animation: `${slideOutToLeft} 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both`,
@@ -95,6 +111,3 @@ export const enterFromRight = style({
   animation: `${slideInFromRight} 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both`,
   zIndex: 1,
 });
-
-
- 

@@ -46,7 +46,7 @@ export const YearMonthPicker: React.FC<YearMonthPickerProps> = ({
           onClick={() => onDraftYearChange(-1)}
           aria-label="이전 년도"
         >
-          <Icon name="arrow" size={3.6} />
+          <Icon name="chevron" size={2.4} rotate={180} />
         </button>
         <button
           type="button"
@@ -61,7 +61,7 @@ export const YearMonthPicker: React.FC<YearMonthPickerProps> = ({
           onClick={() => onDraftYearChange(1)}
           aria-label="다음 년도"
         >
-          <Icon name="arrow" size={3.6} rotate={180} />
+          <Icon name="chevron" size={2.4} />
         </button>
       </div>
       <div className={styles.content}>

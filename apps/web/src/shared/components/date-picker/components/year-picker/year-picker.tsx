@@ -48,7 +48,7 @@ export const YearPicker: React.FC<YearPickerProps> = ({
             onClick={() => onYearRangeChange(-12)}
             aria-label="이전 12년"
           >
-            <Icon name="arrow" size={3.6} />
+            <Icon name="chevron" size={2.4} rotate={180} />
           </button>
           <div className={styles.yearDisplay}>
             {yearRange.start}-{yearRange.end}
@@ -59,7 +59,7 @@ export const YearPicker: React.FC<YearPickerProps> = ({
             onClick={() => onYearRangeChange(12)}
             aria-label="다음 12년"
           >
-            <Icon name="arrow" size={3.6} rotate={180} />
+            <Icon name="chevron" size={2.4} />
           </button>
         </div>
       </div>

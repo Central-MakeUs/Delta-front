@@ -16,12 +16,31 @@ interface CalendarViewProps {
   onPrevMonth: () => void;
   onNextMonth: () => void;
   onMonthYearClick: () => void;
-  onDateClick: (day: number, isCurrentMonth: boolean) => void;
+  onDateClick: (
+    day: number,
+    isCurrentMonth: boolean,
+    isPrevMonth: boolean
+  ) => void;
   onComplete: () => void;
   onClose: () => void;
-  getDaysInMonth: (date: Date) => Array<{ day: number; isCurrentMonth: boolean } | null>;
-  isSelectedDate: (day: number | null, isCurrentMonth: boolean) => boolean;
-  isToday: (day: number | null, isCurrentMonth: boolean) => boolean;
+  getDaysInMonth: (date: Date) => Array<{
+    day: number;
+    isCurrentMonth: boolean;
+    isPrevMonth: boolean;
+  } | null>;
+  isSelectedDate: (
+    day: number | null,
+    isCurrentMonth: boolean,
+    tempSelectedDate: Date | null,
+    currentMonth: Date,
+    isPrevMonth: boolean
+  ) => boolean;
+  isToday: (
+    day: number | null,
+    isCurrentMonth: boolean,
+    currentMonth: Date,
+    isPrevMonth: boolean
+  ) => boolean;
   animationClass?: string;
 }
 
@@ -55,7 +74,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             onClick={onPrevMonth}
             aria-label="이전 달"
           >
-            <Icon name="arrow" size={3.6} />
+            <Icon name="chevron" rotate={180} size={2.4} />
           </button>
 
           <div className={styles.monthYearContainer}>
@@ -76,7 +95,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             onClick={onNextMonth}
             aria-label="다음 달"
           >
-            <Icon name="arrow" size={3.6} rotate={180} />
+            <Icon name="chevron" size={2.4} />
           </button>
         </div>
       </div>
@@ -94,19 +113,31 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
             if (dayInfo === null) {
               return <div key={index} className={styles.empty} />;
             }
-            const { day, isCurrentMonth } = dayInfo;
+            const { day, isCurrentMonth, isPrevMonth } = dayInfo;
             return (
               <button
                 key={`${day}-${index}-${isCurrentMonth}`}
                 type="button"
                 className={clsx(styles.day, {
-                  [styles.selected]: isSelectedDate(day, isCurrentMonth),
+                  [styles.selected]: isSelectedDate(
+                    day,
+                    isCurrentMonth,
+                    tempSelectedDate,
+                    currentMonth,
+                    isPrevMonth
+                  ),
                   [styles.today]:
-                    isToday(day, isCurrentMonth) &&
-                    !isSelectedDate(day, isCurrentMonth),
+                    isToday(day, isCurrentMonth, currentMonth, isPrevMonth) &&
+                    !isSelectedDate(
+                      day,
+                      isCurrentMonth,
+                      tempSelectedDate,
+                      currentMonth,
+                      isPrevMonth
+                    ),
                   [styles.prevMonth]: !isCurrentMonth,
                 })}
-                onClick={() => onDateClick(day, isCurrentMonth)}
+                onClick={() => onDateClick(day, isCurrentMonth, isPrevMonth)}
               >
                 {day}
               </button>

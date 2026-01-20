@@ -86,8 +86,6 @@ export const BottomSheetTerms = ({
 
   const motionState = isClosing ? "closing" : "open";
 
-  
-
   return (
     <div
       className={clsx(styles.overlay, overlayClassName)}
@@ -115,7 +113,7 @@ export const BottomSheetTerms = ({
           <div className={styles.buttonContainer}>
             <Button
               label="전체 동의하기"
-              size="40"
+              size="48"
               tone="dark"
               fullWidth
               onClick={handleAgree}

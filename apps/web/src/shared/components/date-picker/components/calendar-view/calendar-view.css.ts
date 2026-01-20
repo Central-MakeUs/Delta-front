@@ -56,7 +56,7 @@ export const monthYear = style([
     border: "none",
     cursor: "pointer",
     padding: "0.4rem 0.8rem",
-    borderRadius: "0.4rem",
+    borderRadius: vars.radius.r4,
     color: vars.color.grayscale[800],
     transition: "background-color 0.2s ease",
 
@@ -114,7 +114,7 @@ export const day = style([
     background: "none",
     border: "none",
     cursor: "pointer",
-    borderRadius: "0.4rem",
+    borderRadius: vars.radius.r4,
     color: vars.color.grayscale[900],
     transition: "all 0.2s ease",
 
@@ -134,15 +134,13 @@ export const selected = style([
   {
     color: `${vars.color.grayscale[0]} !important`,
     backgroundColor: `${vars.color.main[500]} !important`,
-    borderRadius: "10rem",
-    fontWeight: "600",
+    borderRadius: vars.radius.full,
   },
 ]);
 
 export const today = style({
   border: `2px solid ${vars.color.main[500]}`,
-  borderRadius: "10rem",
-  fontWeight: "600",
+  borderRadius: vars.radius.full,
 });
 
 export const empty = style({

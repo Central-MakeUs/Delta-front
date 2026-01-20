@@ -7,7 +7,7 @@ import { slideUp, slideDown, fadeIn, fadeOut } from "../styles/animations.css";
 export const overlay = style({
   position: "fixed",
   inset: 0,
-  zIndex: 15,
+  zIndex: vars.zIndex.bottomSheetOverlay,
   display: "flex",
   alignItems: "flex-end",
   justifyContent: "center",
@@ -31,11 +31,9 @@ export const bottomSheet = style({
   alignItems: "center",
   padding: "2rem 1.6rem",
   gap: "1rem",
-  position: "absolute",
+  position: "fixed",
   maxWidth: "43rem",
   width: "100%",
-  height: "fit-content",
-  left: "calc(50% - 43rem/2)",
   bottom: 0,
   backgroundColor: vars.color.grayscale[0],
   borderRadius: "2.4rem 2.4rem 0 0",
@@ -56,15 +54,13 @@ export const contentContainer = style({
   alignItems: "center",
   width: "100%",
   height: "100%",
-  gap: "1rem",
+  gap: "2rem",
 });
 
 export const termsContent = style({
   display: "flex",
   flexDirection: "column",
-  alignItems: "flex-start",
   width: "100%",
-  flex: 1,
   overflowY: "auto",
   padding: "0 0.4rem",
 });
@@ -73,7 +69,7 @@ export const title = style([
   typo.body1.bold,
   color["grayscale-900"],
   {
-    marginBottom: "1.6rem",
+    padding: "0 0 1.6rem",
   },
 ]);
 
@@ -95,10 +91,8 @@ export const buttonContainer = style({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  justifyContent: "space-between",
   gap: "1rem",
 });
-
 
 export const cancelText = style([
   typo.body3.medium,

@@ -6,19 +6,20 @@ interface BottomButtonSectionProps {
   disabled?: boolean;
 }
 
-const BottomButtonSection = ({ onComplete, disabled }: BottomButtonSectionProps) => {
+const BottomButtonSection = ({
+  onComplete,
+  disabled,
+}: BottomButtonSectionProps) => {
   return (
     <div className={styles.bottomButtonContainer}>
-      <div className={styles.bottomButtonWrapper}>
-        <Button
-          fullWidth
-          onClick={onComplete}
-          tone="dark"
-          label="다음"
-          size="48"
-          disabled={disabled}
-        />
-      </div>
+      <Button
+        fullWidth
+        onClick={onComplete}
+        tone="dark"
+        label="다음"
+        size="48"
+        disabled={disabled}
+      />
     </div>
   );
 };

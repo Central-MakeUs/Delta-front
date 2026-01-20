@@ -23,6 +23,7 @@ const AgreementSection = ({
   return (
     <div className={styles.checkboxSection}>
       <Checkbox
+        className={styles.checkboxWrapper}
         size="medium"
         checked={isAgreed}
         onChange={handleChange}

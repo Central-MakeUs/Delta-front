@@ -80,7 +80,7 @@ const KakaoCallbackClient = ({
         const response = await login.mutateAsync({ code: resolvedCode });
         const { isNewUser } = response;
         if (isNewUser) {
-          router.replace(ROUTES.AUTH.LOGIN_INFO);
+          router.replace(ROUTES.AUTH.SIGNUP_INFO);
         } else {
           router.replace(ROUTES.HOME);
         }

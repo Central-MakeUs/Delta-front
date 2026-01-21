@@ -180,30 +180,11 @@ const WrongCreatePage = () => {
 
     if (currentStep === 4) {
       if (createMutation.isPending) return;
-
-      if (!scanId) {
-        window.alert("scanId가 없어요. 다시 시도해 주세요.");
-        return;
-      }
+      if (!scanId) return;
 
       const finalUnitId = normalize(unitId);
       const finalTypeId = normalize(typeId);
-
-      if (!finalUnitId) {
-        window.alert("단원을 선택해 주세요.");
-        return;
-      }
-
-      if (!finalTypeId) {
-        window.alert("유형을 선택해 주세요.");
-        return;
-      }
-
       const solutionText = normalize(form.solutionText);
-      if (!solutionText) {
-        window.alert("풀이를 입력해 주세요.");
-        return;
-      }
 
       let answerFormat: AnswerFormat;
       let answerChoiceNo: number | null = null;

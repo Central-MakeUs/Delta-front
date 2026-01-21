@@ -5,11 +5,11 @@ export const WRONG_CREATE_STEP_COPY = {
   },
   2: {
     title: "단원 분류",
-    subTitle: "과목과 단원을 선택해주세요.",
+    subTitle: "단원 · 유형은 미리 선택돼 있어요. 수정도 가능해요.",
   },
   3: {
     title: "유형 분류",
-    subTitle: "문제 유형을 선택해주세요.",
+    subTitle: "단원 · 유형은 미리 선택돼 있어요. 수정도 가능해요.",
   },
   4: {
     title: "문제 정답 & 풀이",

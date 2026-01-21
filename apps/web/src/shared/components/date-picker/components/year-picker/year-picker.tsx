@@ -66,26 +66,28 @@ export const YearPicker: React.FC<YearPickerProps> = ({
       <div className={styles.content}>
         <div className={styles.yearSection}>
           <div className={styles.yearGrid}>
-            {[0, 1, 2, 3].map((rowIndex) => {
+            {(() => {
               const yearList = getYearList();
-              const rowYears = yearList.slice(rowIndex * 3, rowIndex * 3 + 3);
-              return (
-                <div key={rowIndex} className={styles.yearRow}>
-                  {rowYears.map((year) => (
-                    <button
-                      key={year}
-                      type="button"
-                      className={clsx(styles.yearOption, {
-                        [styles.selectedYear]: year === draftYear,
-                      })}
-                      onClick={() => onDraftYearSelect(year)}
-                    >
-                      {year}
-                    </button>
-                  ))}
-                </div>
-              );
-            })}
+              return [0, 1, 2, 3].map((rowIndex) => {
+                const rowYears = yearList.slice(rowIndex * 3, rowIndex * 3 + 3);
+                return (
+                  <div key={rowIndex} className={styles.yearRow}>
+                    {rowYears.map((year) => (
+                      <button
+                        key={year}
+                        type="button"
+                        className={clsx(styles.yearOption, {
+                          [styles.selectedYear]: year === draftYear,
+                        })}
+                        onClick={() => onDraftYearSelect(year)}
+                      >
+                        {year}
+                      </button>
+                    ))}
+                  </div>
+                );
+              });
+            })()}
           </div>
         </div>
       </div>

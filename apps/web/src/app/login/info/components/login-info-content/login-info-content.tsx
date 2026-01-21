@@ -73,7 +73,9 @@ const LoginInfoContent = () => {
 
       <BottomButtonSection
         onComplete={handleComplete}
-        disabled={!formData.name || !formData.birthDate || !isAgreed}
+        disabled={
+          !formData.name.trim() || !formData.birthDate.trim() || !isAgreed
+        }
       />
 
       <BottomSheetTerms

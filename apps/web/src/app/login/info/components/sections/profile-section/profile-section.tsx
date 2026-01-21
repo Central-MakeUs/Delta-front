@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import clsx from "clsx";
 import Icon from "@/shared/components/icon/icon";
 import ActionCard from "@/shared/components/action-card/action-card";
@@ -20,7 +20,11 @@ const ProfileSection = ({
   onProfileImageChange,
 }: ProfileSectionProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const modalRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!isModalOpen) return;
+    modalRef.current?.focus();
+  }, [isModalOpen]);
   const profileImageUrl = useMemo(() => {
     if (!profileImage) return null;
     return URL.createObjectURL(profileImage);
@@ -139,9 +143,21 @@ const ProfileSection = ({
           />
 
           <div className={modalStyles.overlay} onClick={handleOverlayClick}>
-            <div className={clsx(modalStyles.modal({ size: "md" }))}>
+            <div
+              ref={modalRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="profile-image-dialog-title"
+              tabIndex={-1}
+              className={clsx(modalStyles.modal({ size: "md" }))}
+            >
               <div className={styles.cardContainer}>
-                <h2 className={modalStyles.title}>프로필 사진 선택</h2>
+                <h2
+                  id="profile-image-dialog-title"
+                  className={modalStyles.title}
+                >
+                  프로필 사진 선택
+                </h2>
                 <div className={styles.cardSection}>
                   <ActionCard
                     title="사진 촬영"

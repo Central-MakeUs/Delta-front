@@ -9,6 +9,8 @@ export const bottomButtonContainer = style([
     maxWidth: "43rem",
     bottom: 0,
     padding: "1.6rem",
+    width: "100%",
+    display: "flex",
     zIndex: vars.zIndex.bottomNav,
   },
 ]);

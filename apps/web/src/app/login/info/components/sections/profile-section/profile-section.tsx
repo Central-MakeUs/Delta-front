@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
 import Icon from "@/shared/components/icon/icon";
 import ActionCard from "@/shared/components/action-card/action-card";
@@ -10,9 +10,21 @@ import { Button } from "@/shared/components/button/button/button";
 import { useImageSourcePicker } from "@/app/wrong/create/hooks/use-image-source-picker";
 import Image from "next/image";
 
-const ProfileSection = () => {
+interface ProfileSectionProps {
+  profileImage: File | null;
+  onProfileImageChange: (file: File | null) => void;
+}
+
+const ProfileSection = ({
+  profileImage,
+  onProfileImageChange,
+}: ProfileSectionProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+
+  const profileImageUrl = useMemo(() => {
+    if (!profileImage) return null;
+    return URL.createObjectURL(profileImage);
+  }, [profileImage]);
 
   const {
     cameraInputRef,
@@ -23,11 +35,18 @@ const ProfileSection = () => {
     handleAlbumChange,
   } = useImageSourcePicker({
     onSelect: (file) => {
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImageUrl(imageUrl);
+      onProfileImageChange(file);
       setIsModalOpen(false);
     },
   });
+
+  useEffect(() => {
+    return () => {
+      if (profileImageUrl) {
+        URL.revokeObjectURL(profileImageUrl);
+      }
+    };
+  }, [profileImageUrl]);
 
   const handleCameraClick = () => {
     setIsModalOpen(true);

@@ -111,7 +111,7 @@ export const yearOption = style([
     borderRadius: "0.8rem",
     color: vars.color.grayscale[700],
     textAlign: "center",
-
+    transition: "all 0.2s ease",
     selectors: {
       "&:hover": {
         backgroundColor: vars.color.grayscale[100],

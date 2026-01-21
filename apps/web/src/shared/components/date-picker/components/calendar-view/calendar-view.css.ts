@@ -24,6 +24,8 @@ export const navButton = style([
     cursor: "pointer",
     color: vars.color.grayscale[700],
     display: "flex",
+    backgroundColor: "transparent",
+    border: "none",
     borderRadius: "0.4rem",
     transition: "background-color 0.2s ease",
 
@@ -33,6 +35,12 @@ export const navButton = style([
       },
       "&:active": {
         backgroundColor: vars.color.grayscale[200],
+      },
+      "&:focus:not(:active)": {
+        backgroundColor: "transparent",
+      },
+      "&:focus-visible:not(:active)": {
+        backgroundColor: "transparent",
       },
     },
   },

@@ -31,7 +31,7 @@ export const bottomSheet = style({
   alignItems: "center",
   padding: "2rem 1.6rem",
   gap: "1rem",
-  position: "fixed",
+  position: "absolute",
   maxWidth: "43rem",
   width: "100%",
   bottom: 0,
@@ -61,6 +61,8 @@ export const termsContent = style({
   display: "flex",
   flexDirection: "column",
   width: "100%",
+  height: "100%",
+  maxHeight: "42.1rem",
   overflowY: "auto",
   padding: "0 0.4rem",
 });
@@ -82,6 +84,7 @@ export const termsText = style([
     padding: "1.2rem",
     borderRadius: "1.2rem",
     backgroundColor: vars.color.grayscale[50],
+    overflowY: "auto",
   },
 ]);
 

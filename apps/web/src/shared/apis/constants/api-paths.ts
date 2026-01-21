@@ -23,4 +23,8 @@ export const API_PATHS = {
   PROBLEM_CREATE: {
     ROOT: `${API_V1}/problems`,
   },
+  PROBLEM_STATS: {
+    UNITS: `${API_V1}/problems/stats/units`,
+    TYPES: `${API_V1}/problems/stats/types`,
+  },
 } as const;

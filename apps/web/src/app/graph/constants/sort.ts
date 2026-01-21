@@ -3,7 +3,7 @@ import type { SortOption } from "@/shared/components/bottom-sheet/bottom-sheet-s
 export const GRAPH_SORT_OPTIONS = [
   { id: "most-wrong", label: "최다 오답순" },
   { id: "least-wrong", label: "최소 오답순" },
-  { id: "unit", label: "단원순" },
+  { id: "default", label: "단원순" },
 ] as const satisfies readonly SortOption[];
 
 export type GraphSortId = (typeof GRAPH_SORT_OPTIONS)[number]["id"];

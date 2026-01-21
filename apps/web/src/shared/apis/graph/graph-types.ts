@@ -41,7 +41,6 @@ export type GraphRow = {
   id: string;
   label: string;
   tone?: GraphRowTone;
-  valueLabel?: string;
   value: number;
 };
 

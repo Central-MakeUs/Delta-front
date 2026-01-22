@@ -65,6 +65,7 @@ const KakaoCallbackClient = ({
       router.replace(ROUTES.HOME);
       return;
     }
+
     window.sessionStorage.setItem(CONSUMED_CODE_KEY, resolvedCode);
 
     const ok = kakaoOAuth.consumeState(resolvedState);
@@ -76,8 +77,13 @@ const KakaoCallbackClient = ({
 
     void (async () => {
       try {
-        await login.mutateAsync({ code: resolvedCode });
-        router.replace(ROUTES.HOME);
+        const response = await login.mutateAsync({ code: resolvedCode });
+        const { isNewUser } = response;
+        if (isNewUser) {
+          router.replace(ROUTES.AUTH.SIGNUP_INFO);
+        } else {
+          router.replace(ROUTES.HOME);
+        }
       } catch (e) {
         window.sessionStorage.removeItem(CONSUMED_CODE_KEY);
         redirectLogin("login mutate failed", e);

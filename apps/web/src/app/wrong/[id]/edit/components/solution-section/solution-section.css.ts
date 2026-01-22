@@ -23,4 +23,3 @@ export const title = style([
 export const textField = style({
   width: "100%",
 });
-

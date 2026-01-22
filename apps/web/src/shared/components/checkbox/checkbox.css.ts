@@ -88,6 +88,7 @@ export const labelText = recipe({
   variants: {
     size: {
       md: typo.body2.regular,
+      medium: typo.body2.medium,
     },
   },
 

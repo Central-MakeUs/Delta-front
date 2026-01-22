@@ -9,14 +9,18 @@ export interface CheckboxProps extends Omit<
 > {
   icon?: IconProps["name"];
   label?: string;
+  size?: "md" | "medium";
+  className?: string;
 }
 
 export const Checkbox = ({
   icon = "check-mark",
+  size = "md",
   label,
   disabled,
   checked,
   onChange,
+  className,
   ...rest
 }: CheckboxProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -27,7 +31,7 @@ export const Checkbox = ({
   };
 
   return (
-    <label className={clsx(styles.container())}>
+    <label className={clsx(styles.container(), className)}>
       <input
         ref={inputRef}
         type="checkbox"
@@ -40,7 +44,7 @@ export const Checkbox = ({
       <span className={clsx(styles.checkbox())}>
         <Icon name={icon} size={1.6} className={styles.icon()} />
       </span>
-      {label && <span className={styles.labelText()}>{label}</span>}
+      {label && <span className={styles.labelText({ size })}>{label}</span>}
     </label>
   );
 };

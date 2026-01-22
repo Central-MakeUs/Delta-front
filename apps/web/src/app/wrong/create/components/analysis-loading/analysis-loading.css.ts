@@ -63,15 +63,17 @@ export const spinnerBox = style({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+  borderRadius: vars.radius.full,
+  overflow: "hidden",
 });
 
 export const ring = style({
   position: "absolute",
   inset: 0,
   borderRadius: vars.radius.full,
+  overflow: "hidden",
   background: `conic-gradient(from -90deg, ${vars.color.main[500]} 0deg 52deg, ${vars.color.main[50]} 52deg 360deg)`,
   animation: `${spin} 1.2s linear infinite`,
-
   WebkitMask: `radial-gradient(
     farthest-side,
     transparent calc(100% - 0.5rem),
@@ -82,6 +84,8 @@ export const ring = style({
     transparent calc(100% - 0.5rem),
     ${vars.color.grayscale[1000]} calc(100% - 0.5rem)
   )`,
+  WebkitMaskRepeat: "no-repeat",
+  maskRepeat: "no-repeat",
 
   selectors: {
     "&::before, &::after": {
@@ -91,7 +95,7 @@ export const ring = style({
       top: "50%",
       width: "0.5rem",
       height: "0.5rem",
-      backgroundColor: bgColor["main-500"],
+      backgroundColor: vars.color.main[500], // ✅ 여기!
       borderRadius: vars.radius.full,
       transformOrigin: "50% 50%",
     },

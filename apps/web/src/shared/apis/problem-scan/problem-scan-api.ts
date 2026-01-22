@@ -35,10 +35,17 @@ type RawProblemScanSummaryResponse = {
   };
 };
 
-const normalizeCreate = (raw: RawProblemScanCreateResponse) => {
+const requireNumber = (v: unknown, field: string) => {
+  if (typeof v === "number" && Number.isFinite(v)) return v;
+  throw new Error(`[problemScanApi] Invalid ${field}: ${String(v)}`);
+};
+
+const normalizeCreate = (
+  raw: RawProblemScanCreateResponse
+): ProblemScanCreateResponse => {
   return {
-    scanId: raw.scanId ?? null,
-    assetId: raw.assetId ?? null,
+    scanId: requireNumber(raw.scanId, "scanId"),
+    assetId: requireNumber(raw.assetId, "assetId"),
     status: raw.status ?? "UPLOADED",
   };
 };

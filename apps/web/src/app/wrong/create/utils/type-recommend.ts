@@ -10,7 +10,7 @@ export const toKebabId = (input: string) =>
     .toLowerCase()
     .replace(/[^a-z0-9가-힣\s-]/g, "")
     .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
+    .replace(/-+/g, "-") || "unknown-type";
 
 export const matchTypeByLabel = (
   items: readonly TypeItem[],

@@ -12,7 +12,10 @@ import {
   getUnitOptions,
 } from "@/app/wrong/create/utils/chapter-recommend";
 import { setParams } from "@/app/wrong/create/utils/url-params";
+import { CHAPTER_DROPDOWN_OPTIONS } from "@/app/wrong/(list)/constants/wrong-filters";
 
+const isValidChapterKey = (value: string): value is ChapterKey =>
+  Object.keys(CHAPTER_DROPDOWN_OPTIONS).includes(value);
 type UseStep2SelectionArgs = {
   scanId: number | string | null;
   onNextEnabledChange?: (enabled: boolean) => void;
@@ -31,7 +34,7 @@ type UseStep2SelectionReturn = {
 const readChapterId = (sp: URLSearchParams) => {
   const raw = sp.get("chapterId");
   if (!raw) return null;
-  return raw as ChapterKey;
+  return isValidChapterKey(raw) ? raw : null;
 };
 
 const readUnitId = (sp: URLSearchParams) => {

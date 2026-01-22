@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ProblemScanCreateResponse } from "@/shared/apis/problem-scan/problem-scan-types";
 import { useProblemScanSummaryQuery } from "@/shared/apis/problem-scan/hooks/use-problem-scan-summary-query";
 
@@ -31,6 +31,20 @@ export const useStep1SummaryTransition = ({
     number | null
   >(null);
   const [isWaitingDelay, setIsWaitingDelay] = useState(false);
+
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearTimer = useCallback(() => {
+    if (!timeoutRef.current) return;
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = null;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      clearTimer();
+    };
+  }, [clearTimer]);
 
   const {
     data: prefetchedSummary,
@@ -65,15 +79,21 @@ export const useStep1SummaryTransition = ({
     router,
   ]);
 
-  const handleUploaded = (res: ProblemScanCreateResponse) => {
-    goStep(1, { scanId: String(res.scanId) });
+  const handleUploaded = useCallback(
+    (res: ProblemScanCreateResponse) => {
+      goStep(1, { scanId: String(res.scanId) });
 
-    setIsWaitingDelay(true);
-    window.setTimeout(() => {
-      setScanIdForSummaryQuery(res.scanId);
-      setIsWaitingDelay(false);
-    }, SUMMARY_FETCH_DELAY_MS);
-  };
+      clearTimer();
+
+      setIsWaitingDelay(true);
+      timeoutRef.current = setTimeout(() => {
+        setScanIdForSummaryQuery(res.scanId);
+        setIsWaitingDelay(false);
+        timeoutRef.current = null;
+      }, SUMMARY_FETCH_DELAY_MS);
+    },
+    [goStep, clearTimer]
+  );
 
   const isStep1Blocked =
     currentStep === 1 && (isWaitingDelay || isSummaryFetching);

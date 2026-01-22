@@ -1,19 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import TitleSection from "@/app/wrong/create/components/title-section/title-section";
-import { parseProgress } from "@/shared/components/app-bar/utils/app-bar-routing";
 import { WRONG_CREATE_STEP_COPY } from "@/app/wrong/create/constants/step-copy";
 import Step1 from "@/app/wrong/create/components/steps/step-1";
 import Step2 from "@/app/wrong/create/components/steps/step-2";
 import Step3 from "@/app/wrong/create/components/steps/step-3";
 import Step4 from "@/app/wrong/create/components/steps/step-4";
+import AnalysisLoading from "@/app/wrong/create/components/analysis-loading/analysis-loading";
 import { Button } from "@/shared/components/button/button/button";
 import { ROUTES } from "@/shared/constants/routes";
 import * as s from "@/app/wrong/create/create.css";
-import type { ProblemScanCreateResponse } from "@/shared/apis/problem-scan/problem-scan-types";
-import { useProblemScanSummaryQuery } from "@/shared/apis/problem-scan/hooks/use-problem-scan-summary-query";
 import { useStep4Form } from "@/app/wrong/create/hooks/use-step4-form";
 import { useCreateWrongAnswerCardMutation } from "@/shared/apis/problem-create/hooks/use-create-wrong-answer-card-mutation";
 import { ApiError } from "@/shared/apis/problem-create/problem-create-api";
@@ -21,85 +18,30 @@ import type {
   AnswerFormat,
   ProblemCreateRequest,
 } from "@/shared/apis/problem-create/problem-create-types";
+import { useWrongCreateRoute } from "@/app/wrong/create/hooks/use-wrong-create-route";
+import { useStep1SummaryTransition } from "@/app/wrong/create/hooks/use-step1-summary-transition";
+import {
+  inferSubjectiveFormat,
+  normalize,
+} from "@/app/wrong/create/utils/answer-format";
 
 export type StepProps = {
   onNextEnabledChange?: (enabled: boolean) => void;
 };
 
-const SUMMARY_FETCH_DELAY_MS = 7000;
-
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(Math.max(value, min), max);
-
-const readScanId = (sp: URLSearchParams) => {
-  const raw = sp.get("scanId");
-  if (!raw) return null;
-  const n = Number(raw);
-  return Number.isFinite(n) ? n : null;
-};
-
-const readStr = (sp: URLSearchParams, key: string) => sp.get(key) ?? null;
-
-const normalize = (v: string | null | undefined) => (v ?? "").trim();
-
-const isPureNumber = (v: string) => {
-  const s = normalize(v);
-  if (!s) return false;
-  return /^[+-]?(?:\d+\.?\d*|\.\d+)$/.test(s);
-};
-
-const looksLikeExpression = (v: string) => {
-  const s = normalize(v);
-  if (!s) return false;
-
-  if (/[=^/\\{}]/.test(s)) return true;
-  if (/(\\frac|\\sqrt|sqrt|frac)/i.test(s)) return true;
-  if (/[+\-*]/.test(s)) return true;
-  if (/[()]/.test(s)) return true;
-
-  return false;
-};
-
-const inferSubjectiveFormat = (answerValue: string): AnswerFormat => {
-  const v = normalize(answerValue);
-  if (!v) return "TEXT";
-  if (isPureNumber(v)) return "NUMBER";
-  if (looksLikeExpression(v)) return "EXPRESSION";
-  return "TEXT";
-};
-
 const WrongCreatePage = () => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const sp = useSearchParams();
-
-  const spString = sp.toString();
-  const params = useMemo(() => new URLSearchParams(spString), [spString]);
-
-  const { total, currentStep } = parseProgress(new URLSearchParams(spString));
-
-  const scanId = useMemo(() => readScanId(params), [params]);
-  const unitId = useMemo(() => readStr(params, "unitId"), [params]);
-  const typeId = useMemo(() => readStr(params, "typeId"), [params]);
+  const {
+    router,
+    pathname,
+    spString,
+    currentStep,
+    scanId,
+    unitId,
+    typeId,
+    goStep,
+  } = useWrongCreateRoute();
 
   const [stepNextEnabled, setStepNextEnabled] = useState(false);
-
-  const goStep = (nextStep: number, extra?: Record<string, string | null>) => {
-    const safe = clamp(nextStep, 1, total);
-    const nextParams = new URLSearchParams(spString);
-    nextParams.set("step", String(safe));
-
-    if (extra) {
-      Object.entries(extra).forEach(([k, v]) => {
-        if (v === null) nextParams.delete(k);
-        else nextParams.set(k, v);
-      });
-    }
-
-    const nextQuery = nextParams.toString();
-    if (nextQuery === spString) return;
-    router.replace(`${pathname}?${nextQuery}`, { scroll: false });
-  };
 
   const copy =
     WRONG_CREATE_STEP_COPY[currentStep as keyof typeof WRONG_CREATE_STEP_COPY];
@@ -110,56 +52,14 @@ const WrongCreatePage = () => {
 
   const createMutation = useCreateWrongAnswerCardMutation();
 
-  const [scanIdForSummaryQuery, setScanIdForSummaryQuery] = useState<
-    number | null
-  >(null);
-  const [isWaitingDelay, setIsWaitingDelay] = useState(false);
-
-  const {
-    data: prefetchedSummary,
-    isFetching: isSummaryFetching,
-    isError: isSummaryError,
-  } = useProblemScanSummaryQuery(
-    currentStep === 1 ? scanIdForSummaryQuery : null
-  );
-
-  useEffect(() => {
-    if (currentStep !== 1) return;
-    if (!scanId) return;
-    if (!scanIdForSummaryQuery) return;
-    if (!prefetchedSummary && !isSummaryError) return;
-
-    const nextParams = new URLSearchParams(spString);
-    nextParams.set("step", "2");
-    nextParams.set("scanId", String(scanId));
-
-    const nextQuery = nextParams.toString();
-    if (nextQuery === spString) return;
-
-    router.replace(`${pathname}?${nextQuery}`, { scroll: false });
-  }, [
+  const { handleUploaded, isStep1Blocked } = useStep1SummaryTransition({
     currentStep,
     scanId,
-    scanIdForSummaryQuery,
-    prefetchedSummary,
-    isSummaryError,
     spString,
     pathname,
     router,
-  ]);
-
-  const handleUploaded = (res: ProblemScanCreateResponse) => {
-    goStep(1, { scanId: String(res.scanId) });
-
-    setIsWaitingDelay(true);
-    window.setTimeout(() => {
-      setScanIdForSummaryQuery(res.scanId);
-      setIsWaitingDelay(false);
-    }, SUMMARY_FETCH_DELAY_MS);
-  };
-
-  const isStep1Blocked =
-    currentStep === 1 && (isWaitingDelay || isSummaryFetching);
+    goStep,
+  });
 
   const canNext = currentStep === 4 ? step4Enabled : stepNextEnabled;
 
@@ -251,7 +151,11 @@ const WrongCreatePage = () => {
       <div className={s.stepShell}>
         <div className={s.stepContent}>
           {currentStep === 1 ? (
-            <Step1 onNext={handleUploaded} disabled={isStep1Blocked} />
+            isStep1Blocked ? (
+              <AnalysisLoading />
+            ) : (
+              <Step1 onNext={handleUploaded} disabled={false} />
+            )
           ) : null}
 
           {currentStep === 2 ? (
@@ -272,6 +176,7 @@ const WrongCreatePage = () => {
 
           {currentStep === 4 ? (
             <Step4
+              scanId={scanId}
               onNextEnabledChange={setStepNextEnabled}
               form={form}
               handlers={handlers}

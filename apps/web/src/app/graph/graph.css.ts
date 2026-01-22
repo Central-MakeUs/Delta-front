@@ -33,7 +33,6 @@ export const title = style([typo.subtitle.bold, color["grayscale-900"]]);
 
 export const titleSection = style({
   display: "flex",
-  flexDirection: "row",
   justifyContent: "space-between",
 });
 

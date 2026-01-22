@@ -1,22 +1,29 @@
 import type { AnswerFormat } from "@/shared/apis/problem-create/problem-create-types";
 
-const normalize = (v: string) => v.trim();
+export const normalize = (v: string | null | undefined) => (v ?? "").trim();
 
-export const inferAnswerFormat = (raw: string): AnswerFormat => {
-  const v = normalize(raw);
+export const isPureNumber = (v: string) => {
+  const s = normalize(v);
+  if (!s) return false;
+  return /^[+-]?(?:\d+\.?\d*|\.\d+)$/.test(s);
+};
+
+export const looksLikeExpression = (v: string) => {
+  const s = normalize(v);
+  if (!s) return false;
+
+  if (/[=^/\\{}]/.test(s)) return true;
+  if (/(\\frac|\\sqrt|sqrt|frac)/i.test(s)) return true;
+  if (/[+\-*]/.test(s)) return true;
+  if (/[()]/.test(s)) return true;
+
+  return false;
+};
+
+export const inferSubjectiveFormat = (answerValue: string): AnswerFormat => {
+  const v = normalize(answerValue);
   if (!v) return "TEXT";
-
-  if (/^[+-]?\d+(\.\d+)?$/.test(v)) return "NUMBER";
-
-  if (
-    /\\[a-zA-Z]+/.test(v) ||
-    /[\^_]/.test(v) ||
-    /^[+-]?\d+\s*\/\s*[+-]?\d+$/.test(v) ||
-    /[+*/]/.test(v) ||
-    /[(){}\[\]]/.test(v)
-  ) {
-    return "EXPRESSION";
-  }
-
+  if (isPureNumber(v)) return "NUMBER";
+  if (looksLikeExpression(v)) return "EXPRESSION";
   return "TEXT";
 };

@@ -12,7 +12,7 @@ import type { ProblemScanCreateResponse } from "@/shared/apis/problem-scan/probl
 import { validateImageFile } from "@/app/wrong/create/utils/image-file-guard";
 import { useMinLoading } from "@/app/wrong/create/utils/use-min-loading";
 
-const MIN_UPLOAD_LOADING_MS = 3000;
+const MIN_UPLOAD_LOADING_MS = 1000;
 
 type Step1Props = {
   onNext: (res: ProblemScanCreateResponse) => void;
@@ -91,13 +91,13 @@ const Step1 = ({ onNext, onSelectImage, disabled = false }: Step1Props) => {
       />
 
       <ActionCard
-        title={isUploading ? "업로드 중..." : "사진 촬영"}
+        title="사진 촬영"
         iconName="graphic-camera"
         onClick={openCamera}
         disabled={isBusy}
       />
       <ActionCard
-        title={isUploading ? "업로드 중..." : "앨범에서 선택"}
+        title="앨범에서 선택"
         iconName="graphic-gallery"
         onClick={openAlbum}
         disabled={isBusy}

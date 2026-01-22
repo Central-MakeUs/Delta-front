@@ -10,6 +10,7 @@ import type { StepProps } from "@/app/wrong/create/page";
 import { TOGGLE_OPTIONS } from "@/app/wrong/create/constants/option-labels";
 import SampleImg from "@/shared/assets/images/wrong-sample.png";
 import * as s from "@/app/wrong/create/components/steps/step.css";
+import { useProblemScanSummaryQuery } from "@/shared/apis/problem-scan/hooks/use-problem-scan-summary-query";
 
 import type {
   ToggleValue,
@@ -18,25 +19,36 @@ import type {
 } from "@/app/wrong/create/hooks/use-step4-form";
 
 type Step4Props = StepProps & {
+  scanId: number | null;
   form: Step4FormState;
   handlers: Step4Handlers;
 };
 
-const Step4 = ({ onNextEnabledChange, form, handlers }: Step4Props) => {
+const Step4 = ({ onNextEnabledChange, scanId, form, handlers }: Step4Props) => {
   useEffect(() => {
     onNextEnabledChange?.(true);
   }, [onNextEnabledChange]);
 
+  const { data: summary } = useProblemScanSummaryQuery(scanId);
+
+  const imageUrl = summary?.originalImage?.viewUrl ?? null;
+
   return (
     <div className={s.step4Container}>
-      <Image
-        src={SampleImg}
-        alt="문제 이미지 샘플"
-        width={SampleImg.width}
-        height={SampleImg.height}
-        className={s.image}
-        priority
-      />
+      {imageUrl ? (
+        // next/image remote allowlist 설정 없으면 img로 렌더하는 게 가장 안전합니다.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={imageUrl} alt="문제 이미지" className={s.image} />
+      ) : (
+        <Image
+          src={SampleImg}
+          alt="문제 이미지 샘플"
+          width={SampleImg.width}
+          height={SampleImg.height}
+          className={s.image}
+          priority
+        />
+      )}
 
       <div className={s.explanationSection}>
         <div className={s.explanationContent}>

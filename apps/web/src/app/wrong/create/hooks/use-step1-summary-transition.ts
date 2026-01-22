@@ -84,7 +84,7 @@ export const useStep1SummaryTransition = ({
       goStep(1, { scanId: String(res.scanId) });
 
       clearTimer();
-
+      setScanIdForSummaryQuery(null);
       setIsWaitingDelay(true);
       timeoutRef.current = setTimeout(() => {
         setScanIdForSummaryQuery(res.scanId);

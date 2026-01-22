@@ -49,13 +49,19 @@ const normalizeCreate = (
     status: raw.status ?? "UPLOADED",
   };
 };
+const ALLOWED_STATUS = ["UPLOADED", "OCR_DONE", "AI_DONE", "FAILED"] as const;
+
+const coerceStatus = (v?: string) =>
+  (ALLOWED_STATUS as readonly string[]).includes(v ?? "")
+    ? (v as (typeof ALLOWED_STATUS)[number])
+    : "UPLOADED";
 
 const normalizeSummary = (
   raw: RawProblemScanSummaryResponse
 ): ProblemScanSummaryResponse => {
   return {
-    scanId: raw.scanId ?? 0,
-    status: (raw.status ?? "UPLOADED") as ProblemScanSummaryResponse["status"],
+    scanId: requireNumber(raw.scanId, "scanId"),
+    status: coerceStatus(raw.status) as ProblemScanSummaryResponse["status"],
     originalImage: {
       assetId: raw.originalImage?.assetId ?? 0,
       viewUrl: raw.originalImage?.viewUrl ?? "",

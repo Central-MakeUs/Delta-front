@@ -57,7 +57,11 @@ export const useStep2Selection = ({
 
   const computeEnabled = useCallback(
     (chapterId: ChapterKey | null, unitId: string | null) =>
-      Boolean(chapterId && unitId),
+      Boolean(
+        chapterId &&
+        unitId &&
+        getUnitOptions(chapterId).some((opt) => opt.id === unitId)
+      ),
     []
   );
 
@@ -103,6 +107,7 @@ export const useStep2Selection = ({
   }, [computeEnabled, onNextEnabledChange, viewChapterId, viewUnitId]);
 
   useEffect(() => {
+    if (hasUserTouched) return;
     if (urlChapterId || urlUnitId) return;
     if (!recommended.chapterId) return;
 
@@ -116,6 +121,7 @@ export const useStep2Selection = ({
 
     router.replace(`${pathname}?${nextQuery}`, { scroll: false });
   }, [
+    hasUserTouched,
     urlChapterId,
     urlUnitId,
     recommended.chapterId,

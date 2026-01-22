@@ -9,12 +9,12 @@ export const GRAPH_SORT_OPTIONS = [
 export type GraphSortId = (typeof GRAPH_SORT_OPTIONS)[number]["id"];
 
 export const UNIT_ORDER = [
-  "공통수학1",
-  "공통수학2",
+  "공통수학 I",
+  "공통수학 II",
   "대수",
-  "미적분I",
+  "미적분 I",
   "확률과 통계",
-  "미적분II",
+  "미적분 II",
   "기하",
 ] as const;
 

@@ -35,12 +35,10 @@ type RawProblemScanSummaryResponse = {
   };
 };
 
-const normalizeCreate = (
-  raw: RawProblemScanCreateResponse
-): ProblemScanCreateResponse => {
+const normalizeCreate = (raw: RawProblemScanCreateResponse) => {
   return {
-    scanId: raw.scanId ?? 0,
-    assetId: raw.assetId ?? 0,
+    scanId: raw.scanId ?? null,
+    assetId: raw.assetId ?? null,
     status: raw.status ?? "UPLOADED",
   };
 };

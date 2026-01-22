@@ -15,10 +15,10 @@ export const API_PATHS = {
     PRESIGNED_GET: `${API_V1}/storage/images/presigned-get`,
   },
   PROBLEM_SCANS: {
-    ROOT: "/api/v1/problem-scans",
+    ROOT: "${API_V1}/problem-scans",
     DETAIL: (scanId: number | string) => `${API_V1}/problem-scans/${scanId}`,
     SUMMARY: (scanId: number | string) =>
-      `/api/v1/problem-scans/${scanId}/summary`,
+      `${API_V1}/problem-scans/${scanId}/summary`,
   },
   PROBLEM_CREATE: {
     ROOT: `${API_V1}/problems`,

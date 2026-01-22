@@ -38,11 +38,12 @@ const Step4 = ({ onNextEnabledChange, scanId, form, handlers }: Step4Props) => {
         <Image
           src={imageUrl}
           alt="문제 이미지"
-          fill
-          sizes="(max-width: 688px) 100vw, 688px"
-          className={s.image}
+          width={500}
+          height={500}
+          sizes="100vw"
           unoptimized
-          priority
+          className={s.image}
+          style={{ width: "100%", height: "auto" }}
         />
       ) : (
         <Image

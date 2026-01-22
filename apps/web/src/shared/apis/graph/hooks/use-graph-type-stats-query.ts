@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { graphQueryKeys } from "@/shared/apis/graph/graph-query-keys";
 import { getGraphTypeStats } from "@/shared/apis/graph/graph-api";
 import type {
-  GraphGroup,
   ProblemStatsRequest,
   ProblemStatsSort,
 } from "@/shared/apis/graph/graph-types";
 import { resolveTypeLabel } from "@/shared/constants/math-curriculum";
+import { mapStatsToGraphGroups } from "@/shared/apis/graph/utils/map-stats-to-graph-groups";
 
 export const useGraphTypeStatsQuery = (args: {
   sort: ProblemStatsSort;
@@ -16,27 +16,12 @@ export const useGraphTypeStatsQuery = (args: {
   return useQuery({
     queryKey: graphQueryKeys.typeStats(args.sort, args.req),
     enabled: args.enabled ?? true,
-    queryFn: async (): Promise<GraphGroup[]> => {
-      const items = await getGraphTypeStats({ sort: args.sort, req: args.req });
-
-      return items.map((it) => ({
-        id: it.type.id,
-        label: resolveTypeLabel(it.type),
-        rows: [
-          {
-            id: "unsolved",
-            label: "오답 전",
-            value: it.unsolvedCount,
-            tone: "inactive" as const,
-          },
-          {
-            id: "solved",
-            label: "오답 완료",
-            value: it.solvedCount,
-            tone: "active" as const,
-          },
-        ],
-      }));
-    },
+    queryFn: () => getGraphTypeStats({ sort: args.sort, req: args.req }),
+    select: (items) =>
+      mapStatsToGraphGroups({
+        items,
+        getId: (it) => it.type.id,
+        getLabel: (it) => resolveTypeLabel(it.type),
+      }),
   });
 };

@@ -99,7 +99,6 @@ const BarGraphHorizontal = ({
 
             return (
               <div
-                // ✅ seed가 바뀌면 리마운트 → keyframes가 “데이터 반영 후” 다시 실행됨
                 key={`${row.id}-${animationSeed}`}
                 className={s.bar({
                   tone: row.tone ?? "inactive",

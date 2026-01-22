@@ -95,7 +95,7 @@ export const ring = style({
       top: "50%",
       width: "0.5rem",
       height: "0.5rem",
-      backgroundColor: vars.color.main[500], // ✅ 여기!
+      backgroundColor: vars.color.main[500],
       borderRadius: vars.radius.full,
       transformOrigin: "50% 50%",
     },

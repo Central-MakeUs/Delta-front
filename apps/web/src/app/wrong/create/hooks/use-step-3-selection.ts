@@ -198,15 +198,12 @@ export const useStep3Selection = ({
   return {
     viewItems,
     viewSelectedTypeId,
-
     isAdding,
     draft,
     setDraft,
-
     openAdd,
     closeAdd,
     commitAdd,
-
     selectType,
   };
 };

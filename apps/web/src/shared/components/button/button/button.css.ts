@@ -3,7 +3,10 @@ import { createVar, style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 
-export const iconSizeVar = createVar();
+export const gapVar = createVar();
+export const paddingXVar = createVar();
+export const paddingYVar = createVar();
+export const radiusVar = createVar();
 
 export const icon = style({
   flexShrink: 0,
@@ -18,20 +21,25 @@ export const button = recipe({
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
-    color: "inherit",
-    backgroundColor: "transparent",
-    borderRadius: vars.radius.r12,
-    gap: "0.8rem",
-    padding: "0.8rem 1.2rem",
+    gap: gapVar,
+    padding: `${paddingYVar} ${paddingXVar}`,
+    borderRadius: radiusVar,
     transition:
       "background-color 180ms cubic-bezier(0.2, 0, 0, 1), color 180ms cubic-bezier(0.2, 0, 0, 1)",
+
+    vars: {
+      [gapVar]: "0.8rem",
+      [paddingXVar]: "1.2rem",
+      [paddingYVar]: "0.8rem",
+      [radiusVar]: vars.radius.r12,
+    },
+
     selectors: {
       "&:disabled": {
         cursor: "not-allowed",
-        backgroundColor: vars.color.grayscale[100],
-        color: vars.color.grayscale[500],
       },
     },
+
     "@media": {
       "(prefers-reduced-motion: reduce)": {
         transition: "none",
@@ -43,55 +51,48 @@ export const button = recipe({
     size: {
       "32": {
         minHeight: "3.2rem",
-        padding: "0.6rem 1.2rem",
-        borderRadius: vars.radius.r8,
+        vars: {
+          [paddingYVar]: "0.6rem",
+          [paddingXVar]: "1.2rem",
+          [radiusVar]: vars.radius.r8,
+          [gapVar]: "0.6rem",
+        },
       },
       "40": {
         minHeight: "4.0rem",
-        padding: "0.8rem 1.2rem",
-        borderRadius: vars.radius.r8,
-        gap: "0.8rem",
+        vars: {
+          [paddingYVar]: "0.8rem",
+          [paddingXVar]: "1.2rem",
+          [radiusVar]: vars.radius.r8,
+          [gapVar]: "0.8rem",
+        },
       },
       "48": {
         minHeight: "4.8rem",
-        padding: "0.8rem 1.2rem",
-        borderRadius: vars.radius.r12,
-        gap: "0.8rem",
+        vars: {
+          [paddingYVar]: "0.8rem",
+          [paddingXVar]: "1.2rem",
+          [radiusVar]: vars.radius.r12,
+          [gapVar]: "0.8rem",
+        },
       },
       "56": {
         minHeight: "6.0rem",
-        padding: "0.8rem 1.2rem",
-        borderRadius: vars.radius.r12,
-        gap: "0.8rem",
+        vars: {
+          [paddingYVar]: "0.8rem",
+          [paddingXVar]: "1.2rem",
+          [radiusVar]: vars.radius.r12,
+          [gapVar]: "0.8rem",
+        },
       },
       "60": {
         minHeight: "6.0rem",
-        padding: "0.8rem 1.2rem",
-        borderRadius: vars.radius.r12,
-        gap: "0.8rem",
-      },
-    },
-
-    tone: {
-      surface: {
-        backgroundColor: vars.color.grayscale[50],
-        color: vars.color.grayscale[700],
-      },
-      default: {
-        backgroundColor: vars.color.grayscale[100],
-        color: vars.color.grayscale[800],
-      },
-      dark: {
-        backgroundColor: vars.color.grayscale[900],
-        color: vars.color.grayscale[0],
-      },
-      kakao: {
-        backgroundColor: vars.color.login.kakao,
-        color: vars.color.grayscale[900],
-      },
-      complete: {
-        backgroundColor: vars.color.main[500],
-        color: vars.color.grayscale[0],
+        vars: {
+          [paddingYVar]: "0.8rem",
+          [paddingXVar]: "1.2rem",
+          [radiusVar]: vars.radius.r12,
+          [gapVar]: "0.8rem",
+        },
       },
     },
 
@@ -103,16 +104,16 @@ export const button = recipe({
 
   defaultVariants: {
     size: "48",
-    tone: "surface",
     fullWidth: false,
   },
 });
 
-export const label = recipe({
-  base: {
-    color: "inherit",
-    whiteSpace: "nowrap",
-  },
+export const labelBase = style({
+  color: "inherit",
+  whiteSpace: "nowrap",
+});
+
+export const labelSizeTypo = recipe({
   variants: {
     size: {
       "32": typo.caption.semibold,

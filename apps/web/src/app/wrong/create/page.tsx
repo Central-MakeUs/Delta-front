@@ -45,7 +45,6 @@ const WrongCreatePage = () => {
 
   const copy =
     WRONG_CREATE_STEP_COPY[currentStep as keyof typeof WRONG_CREATE_STEP_COPY];
-
   const showNext = currentStep === 2 || currentStep === 3 || currentStep === 4;
 
   const { form, handlers, isNextEnabled: step4Enabled } = useStep4Form();
@@ -94,20 +93,11 @@ const WrongCreatePage = () => {
         answerFormat = "CHOICE";
         answerChoiceNo = form.answerChoice;
 
-        if (answerChoiceNo === null) {
-          window.alert("정답 번호를 선택해 주세요.");
-          return;
-        }
-        if (answerChoiceNo < 1) {
-          window.alert("정답 번호가 올바르지 않아요.");
-          return;
-        }
+        if (answerChoiceNo === null) return;
+        if (answerChoiceNo < 1) return;
       } else {
         const v = normalize(form.answerText);
-        if (!v) {
-          window.alert("정답을 입력해 주세요.");
-          return;
-        }
+        if (!v) return;
 
         answerFormat = inferSubjectiveFormat(v);
         answerValue = v;
@@ -128,18 +118,11 @@ const WrongCreatePage = () => {
         router.push(ROUTES.WRONG.CREATE_DONE);
       } catch (e) {
         const err = e as unknown;
-
         if (err instanceof ApiError && err.status === 409) {
-          window.alert(err.message);
           router.push(ROUTES.WRONG.CREATE_DONE);
           return;
         }
-
-        const msg =
-          err instanceof ApiError
-            ? err.message
-            : "저장에 실패했어요. 다시 시도해 주세요.";
-        window.alert(msg);
+        return;
       }
     }
   };

@@ -30,15 +30,20 @@ const Step4 = ({ onNextEnabledChange, scanId, form, handlers }: Step4Props) => {
   }, [onNextEnabledChange]);
 
   const { data: summary } = useProblemScanSummaryQuery(scanId);
-
   const imageUrl = summary?.originalImage?.viewUrl ?? null;
 
   return (
     <div className={s.step4Container}>
       {imageUrl ? (
-        // next/image remote allowlist 설정 없으면 img로 렌더하는 게 가장 안전합니다.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={imageUrl} alt="문제 이미지" className={s.image} />
+        <Image
+          src={imageUrl}
+          alt="문제 이미지"
+          fill
+          sizes="(max-width: 688px) 100vw, 688px"
+          className={s.image}
+          unoptimized
+          priority
+        />
       ) : (
         <Image
           src={SampleImg}

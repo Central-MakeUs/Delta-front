@@ -30,7 +30,7 @@ export const profileImagePlaceholder = style({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  gap: "8px",
+  gap: "0.8rem",
 });
 
 export const cameraButton = style([

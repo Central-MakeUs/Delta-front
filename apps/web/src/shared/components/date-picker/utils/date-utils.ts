@@ -107,6 +107,44 @@ export const isToday = (
   return checkDateMatch(day, isCurrentMonth, currentMonth, new Date());
 };
 
+export const isFutureDate = (
+  day: number,
+  isCurrentMonth: boolean,
+  isPrevMonth: boolean,
+  currentMonth: Date
+) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let checkDate: Date;
+  if (isCurrentMonth) {
+    checkDate = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth(),
+      day
+    );
+  } else if (isPrevMonth) {
+    const prevMonth =
+      currentMonth.getMonth() === 0 ? 11 : currentMonth.getMonth() - 1;
+    const prevYear =
+      currentMonth.getMonth() === 0
+        ? currentMonth.getFullYear() - 1
+        : currentMonth.getFullYear();
+    checkDate = new Date(prevYear, prevMonth, day);
+  } else {
+    const nextMonth =
+      currentMonth.getMonth() === 11 ? 0 : currentMonth.getMonth() + 1;
+    const nextYear =
+      currentMonth.getMonth() === 11
+        ? currentMonth.getFullYear() + 1
+        : currentMonth.getFullYear();
+    checkDate = new Date(nextYear, nextMonth, day);
+  }
+  checkDate.setHours(0, 0, 0, 0);
+
+  return checkDate > today;
+};
+
 export const getYearList = (yearRange: { start: number; end: number }) => {
   const years: number[] = [];
   const start = yearRange.start;

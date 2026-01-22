@@ -44,8 +44,6 @@ export const overlay = style({
 export const datePicker = style({
   display: "flex",
   flexDirection: "column",
-  alignItems: "flex-start",
-  padding: 0,
   position: "fixed",
   width: "34rem",
   left: "50%",
@@ -53,8 +51,7 @@ export const datePicker = style({
   transform: "translate(-50%, -50%)",
   backgroundColor: vars.color.grayscale[0],
   boxShadow: "0px 0px 14px rgba(88, 88, 88, 0.12)",
-  borderRadius: "1.2rem",
-  outline: "none",
+  borderRadius: vars.radius.r12,
   animation: `${zoomIn} 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)`,
   selectors: {
     "&.closing": {
@@ -87,27 +84,20 @@ export const viewPanel = style({
   right: 0,
   width: "100%",
   height: "auto",
-  zIndex: 0,
 });
 
 export const exitToLeft = style({
   animation: `${slideOutToLeft} 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both`,
-  pointerEvents: "none",
-  zIndex: 0,
 });
 
 export const exitToRight = style({
   animation: `${slideOutToRight} 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both`,
-  pointerEvents: "none",
-  zIndex: 0,
 });
 
 export const enterFromLeft = style({
   animation: `${slideInFromLeft} 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both`,
-  zIndex: 1,
 });
 
 export const enterFromRight = style({
   animation: `${slideInFromRight} 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both`,
-  zIndex: 1,
 });

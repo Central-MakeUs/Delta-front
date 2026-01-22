@@ -8,6 +8,7 @@ export const header = style({
   alignItems: "center",
   justifyContent: "center",
   width: "100%",
+  paddingTop: "1.6rem",
 });
 
 export const datePickerContent = style({
@@ -15,7 +16,7 @@ export const datePickerContent = style({
   justifyContent: "center",
   alignItems: "center",
   width: "17.5rem",
-  height: "6.4rem",
+  height: "4.8rem",
 });
 
 export const navButton = style([
@@ -132,6 +133,8 @@ export const day = style([
       },
       "&:disabled": {
         cursor: "default",
+        color: vars.color.grayscale[400],
+        opacity: 0.5,
       },
     },
   },

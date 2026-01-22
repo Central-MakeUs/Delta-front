@@ -113,7 +113,6 @@ export const textarea = recipe({
       body2: typo.body2.medium,
       body3: typo.body3.medium,
     },
-    // 아이콘이 오른쪽에 있을 때 텍스트를 앞으로 보냄
     order: {
       first: { order: 1 },
       second: { order: 2 },

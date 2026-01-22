@@ -7,6 +7,7 @@ import * as sharedStyles from "../../date-picker.css";
 import Icon from "../../../icon/icon";
 import { Button } from "../../../button/button/button";
 import { DAYS, MONTHS } from "../../constants";
+import { isFutureDate } from "../../utils/date-utils";
 
 interface CalendarViewProps {
   currentMonth: Date;
@@ -114,10 +115,17 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               return <div key={index} className={styles.empty} />;
             }
             const { day, isCurrentMonth, isPrevMonth } = dayInfo;
+            const isFuture = isFutureDate(
+              day,
+              isCurrentMonth,
+              isPrevMonth,
+              currentMonth
+            );
             return (
               <button
                 key={`${day}-${index}-${isCurrentMonth}`}
                 type="button"
+                disabled={isFuture}
                 className={clsx(styles.day, {
                   [styles.selected]: isSelectedDate(
                     day,
@@ -137,7 +145,11 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                     ),
                   [styles.prevMonth]: !isCurrentMonth,
                 })}
-                onClick={() => onDateClick(day, isCurrentMonth, isPrevMonth)}
+                onClick={() => {
+                  if (!isFuture) {
+                    onDateClick(day, isCurrentMonth, isPrevMonth);
+                  }
+                }}
               >
                 {day}
               </button>

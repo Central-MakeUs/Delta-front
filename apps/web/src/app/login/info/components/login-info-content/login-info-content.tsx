@@ -34,7 +34,6 @@ const LoginInfoContent = () => {
   const [isTermsSheetOpen, setIsTermsSheetOpen] = useState(false);
 
   const handleComplete = () => {
-    // console.log("Form Data:", formData);
     router.push(ROUTES.HOME);
   };
 

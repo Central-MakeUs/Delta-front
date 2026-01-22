@@ -144,18 +144,22 @@ const WrongCreatePage = () => {
     }
   };
 
+  const handleLoadingBack = () => {
+    if (currentStep > 1) {
+      goStep(currentStep - 1);
+      return;
+    }
+    router.back();
+  };
+
   return (
     <div className={s.page}>
       <TitleSection title={copy.title} subTitle={copy.subTitle} />
 
       <div className={s.stepShell}>
         <div className={s.stepContent}>
-          {currentStep === 1 ? (
-            isStep1Blocked ? (
-              <AnalysisLoading />
-            ) : (
-              <Step1 onNext={handleUploaded} disabled={false} />
-            )
+          {currentStep === 1 && !isStep1Blocked ? (
+            <Step1 onNext={handleUploaded} disabled={false} />
           ) : null}
 
           {currentStep === 2 ? (
@@ -199,6 +203,10 @@ const WrongCreatePage = () => {
           </div>
         ) : null}
       </div>
+
+      {currentStep === 1 && isStep1Blocked ? (
+        <AnalysisLoading onBack={handleLoadingBack} />
+      ) : null}
     </div>
   );
 };

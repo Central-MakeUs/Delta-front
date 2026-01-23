@@ -53,8 +53,6 @@ export const root = recipe({
       basicAction: { justifyContent: "space-between" },
       default: { justifyContent: "space-between" },
       progress: { justifyContent: "space-between" },
-
-      // title-only는 타이틀만 렌더
       title: { justifyContent: "flex-start" },
     },
   },
@@ -109,20 +107,6 @@ export const rightIconButton = style([
     height: "2.4rem",
     flexShrink: 0,
   },
-]);
-
-/** "수정하기" 등 우측 액션 텍스트 */
-export const actionText = style([
-  typo.body3.medium,
-  color["grayscale-400"],
-  { whiteSpace: "nowrap" },
-]);
-
-/** progress "건너뛰기" 텍스트 */
-export const skipText = style([
-  typo.body3.medium,
-  color["grayscale-300"],
-  { whiteSpace: "nowrap" },
 ]);
 
 const sideSlot = style({

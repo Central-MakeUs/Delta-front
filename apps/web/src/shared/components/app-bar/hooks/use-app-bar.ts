@@ -59,6 +59,9 @@ export const useAppBar = (): UseAppBarResult => {
     const params = new URLSearchParams(sp.toString());
     const { total, currentStep } = parseProgress(params);
 
+    const isLoading = params.get("hideAppBar") === "1";
+    if (isLoading) return { isHidden: true };
+
     const replaceStep = (nextStep: number) => {
       const safe = clamp(nextStep, 1, total);
       const nextParams = new URLSearchParams(sp.toString());
@@ -82,8 +85,6 @@ export const useAppBar = (): UseAppBarResult => {
         currentStep,
         onStepChange: replaceStep,
         onBack: handleBack,
-        showSkip: currentStep !== 1,
-        onSkip: () => router.push(ROUTES.WRONG.CREATE_DONE),
       },
     };
   }
@@ -122,7 +123,7 @@ export const useAppBar = (): UseAppBarResult => {
     };
   }
 
-  // 기타 페이지는 일단 AppBar 없음
+  // 기타 페이지
   return { isHidden: true };
 };
 

@@ -12,6 +12,8 @@ export const ICONS = [
   "default-profile",
   "default-profile1",
   "edit",
+  "empty-graph",
+  "empty-problem",
   "file",
   "file-text",
   "filter",

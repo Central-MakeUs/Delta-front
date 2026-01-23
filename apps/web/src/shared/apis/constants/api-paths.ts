@@ -14,4 +14,17 @@ export const API_PATHS = {
     IMAGES: `${API_V1}/storage/images`,
     PRESIGNED_GET: `${API_V1}/storage/images/presigned-get`,
   },
+  PROBLEM_SCANS: {
+    ROOT: `${API_V1}/problem-scans`,
+    DETAIL: (scanId: number | string) => `${API_V1}/problem-scans/${scanId}`,
+    SUMMARY: (scanId: number | string) =>
+      `${API_V1}/problem-scans/${scanId}/summary`,
+  },
+  PROBLEM_CREATE: {
+    ROOT: `${API_V1}/problems`,
+  },
+  PROBLEM_STATS: {
+    UNITS: `${API_V1}/problems/stats/units`,
+    TYPES: `${API_V1}/problems/stats/types`,
+  },
 } as const;

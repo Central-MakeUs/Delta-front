@@ -1,19 +1,62 @@
 "use client";
 
+import { useCallback } from "react";
 import ActionCard from "@/shared/components/action-card/action-card";
 import {
   useImageSourcePicker,
   type ImagePickSource,
 } from "@/app/wrong/create/hooks/use-image-source-picker";
 import * as s from "@/app/wrong/create/create.css";
+import { useCreateProblemScanMutation } from "@/shared/apis/problem-scan/hooks/use-create-problem-scan-mutation";
+import type { ProblemScanCreateResponse } from "@/shared/apis/problem-scan/problem-scan-types";
+import { validateImageFile } from "@/app/wrong/create/utils/image-file-guard";
+import { useMinLoading } from "@/app/wrong/create/utils/use-min-loading";
+
+const MIN_UPLOAD_LOADING_MS = 1000;
 
 type Step1Props = {
-  onNext: () => void;
+  onNext: (res: ProblemScanCreateResponse) => void;
   onSelectImage?: (file: File, source: ImagePickSource) => void;
   disabled?: boolean;
 };
 
 const Step1 = ({ onNext, onSelectImage, disabled = false }: Step1Props) => {
+  const createScanMutation = useCreateProblemScanMutation();
+  const minLoading = useMinLoading(MIN_UPLOAD_LOADING_MS);
+  const isUploading = createScanMutation.isPending || minLoading.isHolding;
+  const isBusy = disabled || isUploading;
+
+  const handlePicked = useCallback(
+    (file: File, source: ImagePickSource) => {
+      if (isBusy) return;
+
+      const error = validateImageFile(file);
+      if (error) {
+        window.alert(error);
+        return;
+      }
+
+      minLoading.start();
+
+      createScanMutation.mutate(
+        { file },
+        {
+          onSuccess: (res) => {
+            minLoading.end(() => {
+              onSelectImage?.(file, source);
+              onNext(res);
+            });
+          },
+          onError: () => {
+            minLoading.cancel();
+            window.alert("문제 스캔 업로드에 실패했어요. 다시 시도해 주세요.");
+          },
+        }
+      );
+    },
+    [createScanMutation, isBusy, minLoading, onNext, onSelectImage]
+  );
+
   const {
     cameraInputRef,
     albumInputRef,
@@ -22,11 +65,8 @@ const Step1 = ({ onNext, onSelectImage, disabled = false }: Step1Props) => {
     handleCameraChange,
     handleAlbumChange,
   } = useImageSourcePicker({
-    disabled,
-    onSelect: (file, source) => {
-      onSelectImage?.(file, source);
-      onNext();
-    },
+    disabled: isBusy,
+    onSelect: handlePicked,
   });
 
   return (
@@ -38,7 +78,7 @@ const Step1 = ({ onNext, onSelectImage, disabled = false }: Step1Props) => {
         accept="image/*"
         capture="environment"
         onChange={handleCameraChange}
-        disabled={disabled}
+        disabled={isBusy}
       />
 
       <input
@@ -47,20 +87,20 @@ const Step1 = ({ onNext, onSelectImage, disabled = false }: Step1Props) => {
         type="file"
         accept="image/*"
         onChange={handleAlbumChange}
-        disabled={disabled}
+        disabled={isBusy}
       />
 
       <ActionCard
         title="사진 촬영"
         iconName="graphic-camera"
         onClick={openCamera}
-        disabled={disabled}
+        disabled={isBusy}
       />
       <ActionCard
         title="앨범에서 선택"
         iconName="graphic-gallery"
         onClick={openAlbum}
-        disabled={disabled}
+        disabled={isBusy}
       />
     </div>
   );

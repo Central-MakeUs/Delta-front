@@ -1,60 +1,45 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/shared/components/button/button/button";
 import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";
 import * as s from "@/app/wrong/create/components/steps/step.css";
-import { StepProps } from "@/app/wrong/create/page";
-import { WRONG_TYPE_LABELS } from "@/app/wrong/create/constants/option-labels";
+import type { StepProps } from "@/app/wrong/create/page";
+import { useStep3Selection } from "@/app/wrong/create/hooks/use-step-3-selection";
 
-export const Step3Type = ({ onNextEnabledChange }: StepProps) => {
-  const [labels, setLabels] = useState<string[]>(() => [...WRONG_TYPE_LABELS]);
-  const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
-  const [isAdding, setIsAdding] = useState(false);
-  const [draft, setDraft] = useState("");
+type Step3Props = StepProps & {
+  scanId?: number | string | null;
+};
 
-  const normalizedLabels = labels.map((v) => v.trim()).filter(Boolean);
-
-  const openAdd = () => {
-    setIsAdding(true);
-    setDraft("");
-  };
-
-  const closeAdd = () => {
-    setIsAdding(false);
-    setDraft("");
-  };
-
-  const selectLabel = (label: string) => {
-    setSelectedLabel(label);
-    onNextEnabledChange?.(true);
-  };
-
-  const commitAdd = () => {
-    const next = draft.trim();
-    if (!next) {
-      closeAdd();
-      return;
-    }
-
-    setLabels((prev) => (prev.includes(next) ? prev : [...prev, next]));
-    selectLabel(next);
-    closeAdd();
-  };
+const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
+  const {
+    viewItems,
+    viewSelectedTypeIds,
+    isAdding,
+    draft,
+    setDraft,
+    openAdd,
+    closeAdd,
+    commitAdd,
+    toggleType,
+  } = useStep3Selection({ scanId, onNextEnabledChange });
 
   return (
     <div className={s.container}>
       <div className={s.buttonGrid}>
-        {normalizedLabels.map((label) => (
-          <Button
-            key={label}
-            size="56"
-            label={label}
-            tone={selectedLabel === label ? "dark" : "surface"}
-            aria-pressed={selectedLabel === label}
-            onClick={() => selectLabel(label)}
-          />
-        ))}
+        {viewItems.map((item) => {
+          const isSelected = viewSelectedTypeIds.includes(item.id);
+
+          return (
+            <Button
+              key={item.id}
+              size="56"
+              label={item.label}
+              tone={isSelected ? "dark" : "surface"}
+              aria-pressed={isSelected}
+              onClick={() => toggleType(item)}
+            />
+          );
+        })}
 
         <DirectAddButton
           mode={isAdding ? "input" : "button"}
@@ -69,4 +54,4 @@ export const Step3Type = ({ onNextEnabledChange }: StepProps) => {
   );
 };
 
-export default Step3Type;
+export default Step3;

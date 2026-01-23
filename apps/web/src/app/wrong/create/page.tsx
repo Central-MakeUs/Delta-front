@@ -1,62 +1,68 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import TitleSection from "@/app/wrong/create/components/title-section/title-section";
-import { parseProgress } from "@/shared/components/app-bar/utils/app-bar-routing";
 import { WRONG_CREATE_STEP_COPY } from "@/app/wrong/create/constants/step-copy";
-
-import Step1 from "@/app/wrong/create/components/steps/step-1";
-import Step2 from "@/app/wrong/create/components/steps/step-2";
-import Step3 from "@/app/wrong/create/components/steps/step-3";
-import Step4 from "@/app/wrong/create/components/steps/step-4";
+import AnalysisLoading from "@/app/wrong/create/components/analysis-loading/analysis-loading";
 import { Button } from "@/shared/components/button/button/button";
-
-import { ROUTES } from "@/shared/constants/routes";
 import * as s from "@/app/wrong/create/create.css";
+import { useStep4Form } from "@/app/wrong/create/hooks/use-step4-form";
+import { useWrongCreateRoute } from "@/app/wrong/create/hooks/use-wrong-create-route";
+import { useStep1SummaryTransition } from "@/app/wrong/create/hooks/use-step1-summary-transition";
+import { useWrongCreateSubmit } from "@/app/wrong/create/hooks/use-wrong-create-submit";
+import WrongCreateSteps from "@/app/wrong/create/components/wrong-create-steps/wrong-create-steps";
 
 export type StepProps = {
   onNextEnabledChange?: (enabled: boolean) => void;
 };
 
-const clamp = (value: number, min: number, max: number) => {
-  return Math.min(Math.max(value, min), max);
-};
-
 const WrongCreatePage = () => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const sp = useSearchParams();
+  const {
+    router,
+    pathname,
+    spString,
+    currentStep,
+    scanId,
+    unitId,
+    typeIds,
+    goStep,
+  } = useWrongCreateRoute();
 
-  const { total, currentStep } = parseProgress(
-    new URLSearchParams(sp.toString())
-  );
-
-  const [isNextEnabled, setIsNextEnabled] = useState(false);
-
-  const goStep = (nextStep: number) => {
-    setIsNextEnabled(false);
-
-    const safe = clamp(nextStep, 1, total);
-    const params = new URLSearchParams(sp.toString());
-    params.set("step", String(safe));
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  };
+  const [stepNextEnabled, setStepNextEnabled] = useState(false);
 
   const copy =
     WRONG_CREATE_STEP_COPY[currentStep as keyof typeof WRONG_CREATE_STEP_COPY];
-
   const showNext = currentStep === 2 || currentStep === 3 || currentStep === 4;
 
-  const handleNext = () => {
-    if (!isNextEnabled) return;
+  const { form, handlers, isNextEnabled: step4Enabled } = useStep4Form();
 
-    if (currentStep === 2) goStep(3);
-    if (currentStep === 3) goStep(4);
-    if (currentStep === 4) {
-      setIsNextEnabled(false);
-      router.push(ROUTES.WRONG.CREATE_DONE);
+  const { handleUploaded, isStep1Blocked } = useStep1SummaryTransition({
+    currentStep,
+    scanId,
+    spString,
+    pathname,
+    router,
+    goStep,
+  });
+
+  const { canNext, handleNext, isSubmitting } = useWrongCreateSubmit({
+    currentStep,
+    scanId,
+    unitId,
+    typeIds,
+    stepNextEnabled,
+    step4Enabled,
+    form,
+    goStep,
+    router,
+  });
+
+  const handleLoadingBack = () => {
+    if (currentStep > 1) {
+      goStep(currentStep - 1);
+      return;
     }
+    router.back();
   };
 
   return (
@@ -65,19 +71,15 @@ const WrongCreatePage = () => {
 
       <div className={s.stepShell}>
         <div className={s.stepContent}>
-          {currentStep === 1 ? <Step1 onNext={() => goStep(2)} /> : null}
-
-          {currentStep === 2 ? (
-            <Step2 onNextEnabledChange={setIsNextEnabled} />
-          ) : null}
-
-          {currentStep === 3 ? (
-            <Step3 onNextEnabledChange={setIsNextEnabled} />
-          ) : null}
-
-          {currentStep === 4 ? (
-            <Step4 onNextEnabledChange={setIsNextEnabled} />
-          ) : null}
+          <WrongCreateSteps
+            currentStep={currentStep}
+            scanId={scanId}
+            isStep1Blocked={isStep1Blocked}
+            onUploaded={handleUploaded}
+            onNextEnabledChange={setStepNextEnabled}
+            form={form}
+            handlers={handlers}
+          />
         </div>
 
         {showNext ? (
@@ -86,15 +88,19 @@ const WrongCreatePage = () => {
               size="60"
               fullWidth
               label="다음"
-              tone={isNextEnabled ? "dark" : "surface"}
-              disabled={!isNextEnabled}
-              tabIndex={isNextEnabled ? 0 : -1}
+              tone={canNext ? "dark" : "surface"}
+              disabled={!canNext || isSubmitting}
+              tabIndex={canNext ? 0 : -1}
               onClick={handleNext}
-              className={!isNextEnabled ? s.nextDisabled : undefined}
+              className={!canNext ? s.nextDisabled : undefined}
             />
           </div>
         ) : null}
       </div>
+
+      {currentStep === 1 && isStep1Blocked ? (
+        <AnalysisLoading onBack={handleLoadingBack} />
+      ) : null}
     </div>
   );
 };

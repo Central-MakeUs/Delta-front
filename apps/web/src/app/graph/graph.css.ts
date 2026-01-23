@@ -33,7 +33,6 @@ export const title = style([typo.subtitle.bold, color["grayscale-900"]]);
 
 export const titleSection = style({
   display: "flex",
-  flexDirection: "row",
   justifyContent: "space-between",
 });
 
@@ -97,4 +96,12 @@ export const graphRow = style({
 export const graphRowInner = style({
   position: "relative",
   zIndex: vars.zIndex.contentOverlay,
+});
+
+export const emptyWrap = style({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: "50vh",
+  height: "100%",
 });

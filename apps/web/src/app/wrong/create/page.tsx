@@ -24,7 +24,7 @@ const WrongCreatePage = () => {
     currentStep,
     scanId,
     unitId,
-    typeId,
+    typeIds,
     goStep,
   } = useWrongCreateRoute();
 
@@ -49,7 +49,7 @@ const WrongCreatePage = () => {
     currentStep,
     scanId,
     unitId,
-    typeId,
+    typeIds,
     stepNextEnabled,
     step4Enabled,
     form,

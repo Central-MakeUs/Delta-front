@@ -21,20 +21,25 @@ type UseStep3SelectionArgs = {
 
 type UseStep3SelectionReturn = {
   viewItems: readonly TypeItem[];
-  viewSelectedTypeId: string | null;
-
+  viewSelectedTypeIds: readonly string[];
   isAdding: boolean;
   draft: string;
   setDraft: (v: string) => void;
-
   openAdd: () => void;
   closeAdd: () => void;
   commitAdd: () => void;
-
-  selectType: (item: TypeItem) => void;
+  toggleType: (item: TypeItem) => void;
 };
 
-const readTypeId = (sp: URLSearchParams) => sp.get("typeId") ?? null;
+const readTypeIds = (sp: URLSearchParams) => {
+  const raw = sp.get("typeIds") ?? null;
+  if (!raw) return [];
+
+  return raw
+    .split(",")
+    .map((v) => v.trim())
+    .filter(Boolean);
+};
 
 export const useStep3Selection = ({
   scanId,
@@ -47,13 +52,13 @@ export const useStep3Selection = ({
   const spString = sp.toString();
   const params = useMemo(() => new URLSearchParams(spString), [spString]);
 
-  const urlTypeId = useMemo(() => readTypeId(params), [params]);
+  const urlTypeIds = useMemo(() => readTypeIds(params), [params]);
 
   const [items, setItems] = useState<TypeItem[]>(() =>
     TYPE_FILTERS.map((v) => ({ id: v.id, label: v.label }))
   );
 
-  const [selectedTypeId, setSelectedTypeId] = useState<string | null>(null);
+  const [selectedTypeIds, setSelectedTypeIds] = useState<string[]>([]);
   const [hasUserTouched, setHasUserTouched] = useState(false);
 
   const [isAdding, setIsAdding] = useState(false);
@@ -62,31 +67,58 @@ export const useStep3Selection = ({
   const { data: summary } = useProblemScanSummaryQuery(scanId);
 
   const recommended = useMemo(() => {
-    const aiTypeName = summary?.classification.type?.name ?? null;
-    return computeTypeRecommendation(items, aiTypeName);
+    const aiTypeNames =
+      summary?.classification.types?.map((t) => t?.name).filter(Boolean) ?? [];
+
+    const selectedIds: string[] = [];
+    const extraItems: TypeItem[] = [];
+
+    aiTypeNames.forEach((name) => {
+      const rec = computeTypeRecommendation(items, name ?? null);
+
+      if (rec?.selectedId && !selectedIds.includes(rec.selectedId)) {
+        selectedIds.push(rec.selectedId);
+      }
+
+      if (rec?.extraItem) {
+        const exists = extraItems.some(
+          (v) =>
+            v.id === rec.extraItem!.id ||
+            normalizeTypeLabel(v.label) ===
+              normalizeTypeLabel(rec.extraItem!.label)
+        );
+        if (!exists) extraItems.push(rec.extraItem);
+      }
+    });
+
+    return { selectedIds, extraItems };
   }, [items, summary]);
 
   const viewItems = useMemo(() => {
     if (hasUserTouched) return items;
-    return mergeExtraItem(items, recommended?.extraItem);
-  }, [hasUserTouched, items, recommended]);
 
-  const viewSelectedTypeId = urlTypeId
-    ? urlTypeId
-    : hasUserTouched
-      ? selectedTypeId
-      : (recommended?.selectedId ?? selectedTypeId);
+    return recommended.extraItems.reduce((acc, extra) => {
+      return mergeExtraItem(acc, extra);
+    }, items);
+  }, [hasUserTouched, items, recommended.extraItems]);
+
+  const viewSelectedTypeIds = useMemo(() => {
+    if (urlTypeIds.length > 0) return urlTypeIds;
+    if (hasUserTouched) return selectedTypeIds;
+    if (recommended.selectedIds.length > 0) return recommended.selectedIds;
+    return selectedTypeIds;
+  }, [hasUserTouched, recommended.selectedIds, selectedTypeIds, urlTypeIds]);
 
   useEffect(() => {
-    onNextEnabledChange?.(Boolean(viewSelectedTypeId));
-  }, [onNextEnabledChange, viewSelectedTypeId]);
+    onNextEnabledChange?.(viewSelectedTypeIds.length > 0);
+  }, [onNextEnabledChange, viewSelectedTypeIds.length]);
 
   const didHydrateRef = useRef(false);
 
   useEffect(() => {
     if (didHydrateRef.current) return;
 
-    if (urlTypeId) {
+    if (urlTypeIds.length > 0) {
       didHydrateRef.current = true;
       return;
     }
@@ -96,10 +128,14 @@ export const useStep3Selection = ({
       return;
     }
 
-    const nextId = recommended?.selectedId ?? null;
-    if (!nextId) return;
+    const nextIds = recommended.selectedIds;
+    if (nextIds.length === 0) return;
 
-    const next = setParams(params, { typeId: nextId });
+    const nextValue = nextIds.join(",");
+
+    const next = setParams(params, {
+      typeIds: nextValue,
+    });
     const nextQuery = next.toString();
 
     if (nextQuery !== spString) {
@@ -109,17 +145,21 @@ export const useStep3Selection = ({
     didHydrateRef.current = true;
   }, [
     hasUserTouched,
-    urlTypeId,
-    recommended?.selectedId,
+    urlTypeIds.length,
+    recommended.selectedIds,
     params,
     spString,
     pathname,
     router,
   ]);
 
-  const pushTypeId = useCallback(
-    (nextTypeId: string | null) => {
-      const next = setParams(params, { typeId: nextTypeId });
+  const pushTypeIds = useCallback(
+    (nextTypeIds: string[]) => {
+      const nextValue = nextTypeIds.length > 0 ? nextTypeIds.join(",") : null;
+
+      const next = setParams(params, {
+        typeIds: nextValue,
+      });
       const nextQuery = next.toString();
       if (nextQuery === spString) return;
 
@@ -150,15 +190,23 @@ export const useStep3Selection = ({
     });
   }, []);
 
-  const selectType = useCallback(
+  const toggleType = useCallback(
     (item: TypeItem) => {
       setHasUserTouched(true);
       ensureItemInState(item);
-      setSelectedTypeId(item.id);
-      onNextEnabledChange?.(true);
-      pushTypeId(item.id);
+
+      setSelectedTypeIds((prev) => {
+        const next = prev.includes(item.id)
+          ? prev.filter((id) => id !== item.id)
+          : [...prev, item.id];
+
+        onNextEnabledChange?.(next.length > 0);
+        pushTypeIds(next);
+
+        return next;
+      });
     },
-    [ensureItemInState, onNextEnabledChange, pushTypeId]
+    [ensureItemInState, onNextEnabledChange, pushTypeIds]
   );
 
   const commitAdd = useCallback(() => {
@@ -181,9 +229,15 @@ export const useStep3Selection = ({
     };
 
     ensureItemInState(nextItem);
-    setSelectedTypeId(nextItem.id);
-    onNextEnabledChange?.(true);
-    pushTypeId(nextItem.id);
+
+    setSelectedTypeIds((prev) => {
+      const next = prev.includes(nextItem.id) ? prev : [...prev, nextItem.id];
+
+      onNextEnabledChange?.(next.length > 0);
+      pushTypeIds(next);
+
+      return next;
+    });
 
     closeAdd();
   }, [
@@ -192,18 +246,18 @@ export const useStep3Selection = ({
     ensureItemInState,
     items,
     onNextEnabledChange,
-    pushTypeId,
+    pushTypeIds,
   ]);
 
   return {
     viewItems,
-    viewSelectedTypeId,
+    viewSelectedTypeIds,
     isAdding,
     draft,
     setDraft,
     openAdd,
     closeAdd,
     commitAdd,
-    selectType,
+    toggleType,
   };
 };

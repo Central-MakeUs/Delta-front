@@ -9,6 +9,11 @@ import {
   readStr,
 } from "@/app/wrong/create/utils/search-params";
 
+const readTypeIds = (params: URLSearchParams) => {
+  const raw = readStr(params, "typeIds");
+  return raw;
+};
+
 export const useWrongCreateRoute = () => {
   const router = useRouter();
   const pathname = usePathname();
@@ -21,7 +26,7 @@ export const useWrongCreateRoute = () => {
 
   const scanId = useMemo(() => readScanId(params), [params]);
   const unitId = useMemo(() => readStr(params, "unitId"), [params]);
-  const typeId = useMemo(() => readStr(params, "typeId"), [params]);
+  const typeIds = useMemo(() => readTypeIds(params), [params]);
 
   const goStep = (nextStep: number, extra?: Record<string, string | null>) => {
     const safe = clamp(nextStep, 1, total);
@@ -49,7 +54,7 @@ export const useWrongCreateRoute = () => {
     currentStep,
     scanId,
     unitId,
-    typeId,
+    typeIds,
     goStep,
   };
 };

@@ -13,29 +13,33 @@ type Step3Props = StepProps & {
 const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
   const {
     viewItems,
-    viewSelectedTypeId,
+    viewSelectedTypeIds,
     isAdding,
     draft,
     setDraft,
     openAdd,
     closeAdd,
     commitAdd,
-    selectType,
+    toggleType,
   } = useStep3Selection({ scanId, onNextEnabledChange });
 
   return (
     <div className={s.container}>
       <div className={s.buttonGrid}>
-        {viewItems.map((item) => (
-          <Button
-            key={item.id}
-            size="56"
-            label={item.label}
-            tone={viewSelectedTypeId === item.id ? "dark" : "surface"}
-            aria-pressed={viewSelectedTypeId === item.id}
-            onClick={() => selectType(item)}
-          />
-        ))}
+        {viewItems.map((item) => {
+          const isSelected = viewSelectedTypeIds.includes(item.id);
+
+          return (
+            <Button
+              key={item.id}
+              size="56"
+              label={item.label}
+              tone={isSelected ? "dark" : "surface"}
+              aria-pressed={isSelected}
+              onClick={() => toggleType(item)}
+            />
+          );
+        })}
 
         <DirectAddButton
           mode={isAdding ? "input" : "button"}

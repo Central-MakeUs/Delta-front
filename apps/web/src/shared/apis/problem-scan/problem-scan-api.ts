@@ -30,7 +30,7 @@ type RawProblemScanSummaryResponse = {
   classification?: {
     subject?: RawCurriculumItem | null;
     unit?: RawCurriculumItem | null;
-    type?: RawCurriculumItem | null;
+    types?: RawCurriculumItem[] | null;
     needsReview?: boolean;
   };
 };
@@ -59,6 +59,8 @@ const coerceStatus = (v?: string) =>
 const normalizeSummary = (
   raw: RawProblemScanSummaryResponse
 ): ProblemScanSummaryResponse => {
+  const rawTypes = raw.classification?.types;
+
   return {
     scanId: requireNumber(raw.scanId, "scanId"),
     status: coerceStatus(raw.status) as ProblemScanSummaryResponse["status"],
@@ -81,12 +83,13 @@ const normalizeSummary = (
             name: raw.classification.unit.name ?? "",
           }
         : null,
-      type: raw.classification?.type
-        ? {
-            id: raw.classification.type.id ?? "",
-            name: raw.classification.type.name ?? "",
-          }
-        : null,
+
+      // ✅ 변경: type -> types
+      types: (rawTypes ?? []).map((t) => ({
+        id: t?.id ?? "",
+        name: t?.name ?? "",
+      })),
+
       needsReview: raw.classification?.needsReview ?? false,
     },
   };

@@ -19,7 +19,7 @@ type Params = {
   currentStep: number;
   scanId: number | null;
   unitId: string | null;
-  typeId: string | null;
+  typeIds: string | null;
   stepNextEnabled: boolean;
   step4Enabled: boolean;
   form: Step4FormState;
@@ -27,11 +27,18 @@ type Params = {
   router: AppRouterInstance;
 };
 
+const parseTypeIds = (raw: string | null) => {
+  return (raw ?? "")
+    .split(",")
+    .map((v) => normalize(v))
+    .filter((v): v is string => Boolean(v));
+};
+
 export const useWrongCreateSubmit = ({
   currentStep,
   scanId,
   unitId,
-  typeId,
+  typeIds,
   stepNextEnabled,
   step4Enabled,
   form,
@@ -61,8 +68,10 @@ export const useWrongCreateSubmit = ({
     if (!scanId) return;
 
     const finalUnitId = normalize(unitId);
-    const finalTypeId = normalize(typeId);
+    const finalTypeIds = parseTypeIds(typeIds);
     const solutionText = normalize(form.solutionText);
+    if (!finalUnitId) return;
+    if (finalTypeIds.length === 0) return;
 
     let answerFormat: AnswerFormat;
     let answerChoiceNo: number | null = null;
@@ -85,7 +94,7 @@ export const useWrongCreateSubmit = ({
     const payload: ProblemCreateRequest = {
       scanId,
       finalUnitId,
-      finalTypeId,
+      finalTypeIds,
       answerFormat,
       answerChoiceNo,
       answerValue,

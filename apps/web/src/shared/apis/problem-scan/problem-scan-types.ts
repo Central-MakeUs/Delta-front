@@ -14,7 +14,7 @@ export type CurriculumItem = {
 export type ProblemScanSummaryClassification = {
   subject?: CurriculumItem | null;
   unit?: CurriculumItem | null;
-  type?: CurriculumItem | null;
+  types?: CurriculumItem[];
   needsReview?: boolean;
 };
 

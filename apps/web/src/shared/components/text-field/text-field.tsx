@@ -9,17 +9,21 @@ export interface TextFieldProps extends Omit<
   React.TextareaHTMLAttributes<HTMLTextAreaElement>,
   "size" | "prefix"
 > {
-  placeholder?: string;
+  variant?: "default" | "plain";
+  prefixPosition?: "left" | "right";
   fullWidth?: boolean;
+  direction?: "row" | "column";
   prefix?: React.ReactNode;
   size?: TextFieldFontSize;
   heightSize?: TextFieldHeightSize;
 }
 
 export const TextField = ({
-  placeholder,
+  variant = "default",
+  prefixPosition = "left",
   fullWidth = false,
   disabled = false,
+  direction = "column",
   prefix,
   size = "body3",
   heightSize = "md",
@@ -28,17 +32,28 @@ export const TextField = ({
   return (
     <div className={clsx(styles.container({ fullWidth }))}>
       <div
-        className={clsx(styles.textareaWrapper({ disabled, size: heightSize }))}
+        className={clsx(
+          styles.textareaWrapper({
+            variant,
+            disabled,
+            size: variant === "plain" ? undefined : heightSize,
+            direction,
+          })
+        )}
       >
-        {prefix && <div className={styles.prefix}>{prefix}</div>}
+        {prefix && (
+          <div className={styles.prefix({ position: prefixPosition })}>
+            {prefix}
+          </div>
+        )}
         <textarea
           className={clsx(
             styles.textarea({
-              hasPrefix: !!prefix,
+              variant,
               fontSize: size,
+              order: prefixPosition === "right" ? "first" : "second",
             })
           )}
-          placeholder={placeholder}
           disabled={disabled}
           {...rest}
         />

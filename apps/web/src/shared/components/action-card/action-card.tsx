@@ -7,7 +7,6 @@ import { assignInlineVars } from "@vanilla-extract/dynamic";
 import Icon from "@/shared/components/icon/icon";
 import type { IconName } from "@/shared/constants/icons";
 import { bgColor, color } from "@/shared/styles/color.css";
-import { typo } from "@/shared/styles/typography.css";
 
 import * as s from "./action-card.css";
 
@@ -16,6 +15,8 @@ type ActionCardProps = {
   iconName: IconName;
   /** 동그라미 크기 */
   circleSizeRem?: number;
+  /** 타이틀 크기 */
+  size?: "32" | "36" | "40" | "48" | "56" | "60";
   /** 아이콘 높이 */
   iconSize?: number;
   className?: string;
@@ -29,6 +30,7 @@ export const ActionCard = ({
   title,
   iconName,
   circleSizeRem = 6.4,
+  size = "48",
   iconSize = 3.2,
   disabled = false,
   onClick,
@@ -55,7 +57,11 @@ export const ActionCard = ({
         </div>
 
         <span
-          className={clsx(s.title, typo.body2.semibold, color["grayscale-900"])}
+          className={clsx(
+            s.title,
+            s.titleTypo({ size }),
+            color["grayscale-900"]
+          )}
         >
           {title}
         </span>

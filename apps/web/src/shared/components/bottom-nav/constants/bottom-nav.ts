@@ -17,6 +17,7 @@ export const isGraphTab = (value: string | null): value is GraphTab => {
 
 export const getIsBottomNavHidden = (pathname: string) => {
   if (pathname === ROUTES.AUTH.LOGIN) return true;
+  if (pathname === ROUTES.AUTH.SIGNUP_INFO) return true;
   if (pathname.startsWith(ROUTES.WRONG.CREATE)) return true;
 
   if (pathname.startsWith(`${ROUTES.WRONG.ROOT}/`)) {

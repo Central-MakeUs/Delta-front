@@ -8,21 +8,24 @@ export const overlay = style([
   bgColor["overDim-40"],
   {
     position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    inset: 0,
     zIndex: vars.zIndex.bottomSheetOverlay,
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "center",
-    animation: `${fadeIn} 0.3s ease-out`,
+    maxWidth: "43rem",
+    width: "100%",
+    margin: "0 auto",
+    selectors: {
+      '&[data-state="open"]': {
+        animation: `${fadeIn} 0.3s ease-out both`,
+      },
+      '&[data-state="closing"]': {
+        animation: `${fadeOut} 0.3s ease-in both`,
+      },
+    },
   },
 ]);
-
-export const overlayClosing = style({
-  animation: `${fadeOut} 0.3s ease-in`,
-});
 
 export const bottomSheet = style([
   bgColor["grayscale-0"],
@@ -39,13 +42,16 @@ export const bottomSheet = style([
     borderRadius: "2.4rem 2.4rem 0 0",
     zIndex: vars.zIndex.bottomSheet,
     overflow: "auto",
-    animation: `${slideUp} 0.3s ease-out`,
+    selectors: {
+      '&[data-state="open"]': {
+        animation: `${slideUp} 0.3s ease-out both`,
+      },
+      '&[data-state="closing"]': {
+        animation: `${slideDown} 0.3s ease-in both`,
+      },
+    },
   },
 ]);
-
-export const bottomSheetClosing = style({
-  animation: `${slideDown} 0.3s ease-in`,
-});
 
 export const contentContainer = style({
   display: "flex",

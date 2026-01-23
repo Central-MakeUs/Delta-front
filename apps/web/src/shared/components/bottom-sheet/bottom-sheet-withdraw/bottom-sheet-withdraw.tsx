@@ -42,11 +42,11 @@ export const BottomSheetWithdraw = ({
   disabled = false,
 }: BottomSheetWithdrawProps) => {
   const [isClosing, setIsClosing] = useState(false);
-  const prevIsOpenRef = useRef(isOpen);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const prevBodyOverflowRef = useRef<string | null>(null);
   const bottomSheetRef = useRef<HTMLDivElement>(null);
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
+  const prevIsOpenRef = useRef<boolean>(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const prevBodyOverflowRef = useRef<string | null>(null);
 
   const shouldRender = isOpen || isClosing;
   const titleId = useId();
@@ -105,30 +105,21 @@ export const BottomSheetWithdraw = ({
         prevBodyOverflowRef.current = null;
       };
     }
-
-    return () => {
-      if (!isOpen) {
-        document.body.style.overflow = prevBodyOverflowRef.current ?? "";
-        prevBodyOverflowRef.current = null;
-      }
-    };
   }, [isOpen, isClosing]);
 
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen && !isClosing) {
-        onClose();
-      }
+    const shouldBind = isOpen || isClosing;
+    if (!shouldBind) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      if (isClosing) return;
+      setIsClosing(true);
     };
 
-    if (isOpen) {
-      window.addEventListener("keydown", handleEscape);
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleEscape);
-    };
-  }, [isOpen, isClosing, onClose]);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, isClosing]);
 
   useEffect(() => {
     if (isOpen && !isClosing) {
@@ -146,38 +137,39 @@ export const BottomSheetWithdraw = ({
     }
   }, [isOpen, isClosing]);
 
-  if (!shouldRender) return null;
-
-  const handleClose = () => {
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget) return;
     if (isClosing) return;
-    onClose();
+    setIsClosing(true);
   };
 
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget && !isClosing) {
-      handleClose();
-    }
+  const handleSheetAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget) return;
+    if (!isClosing) return;
+    setIsClosing(false);
+    onClose();
   };
 
   const handleConfirm = () => {
     if (disabled || isClosing) return;
     onConfirm?.();
-    handleClose();
+    setIsClosing(true);
   };
 
   const handleCancel = () => {
     if (isClosing) return;
     onCancel?.();
-    handleClose();
+    setIsClosing(true);
   };
+
+  if (!shouldRender) return null;
+
+  const motionState = isClosing ? "closing" : "open";
 
   return (
     <div
-      className={clsx(
-        styles.overlay,
-        isClosing && styles.overlayClosing,
-        overlayClassName
-      )}
+      className={clsx(styles.overlay, overlayClassName)}
+      data-state={motionState}
       onClick={handleOverlayClick}
     >
       <div
@@ -186,11 +178,9 @@ export const BottomSheetWithdraw = ({
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className={clsx(
-          styles.bottomSheet,
-          isClosing && styles.bottomSheetClosing,
-          className
-        )}
+        className={clsx(styles.bottomSheet, className)}
+        data-state={motionState}
+        onAnimationEnd={handleSheetAnimationEnd}
       >
         <div className={styles.contentContainer}>
           <div className={styles.textContainer}>

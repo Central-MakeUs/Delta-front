@@ -25,7 +25,7 @@ const BarGraph02 = ({
   className,
   showTarget = false,
   maxHeightRem = 11.1,
-  minHeightRem = 4,
+  minHeightRem = 4.5,
 }: BarGraph02Props) => {
   const safeMax = maxValue > 0 ? maxValue : 1;
   const safeValue = clamp(value, 0, safeMax);

@@ -7,8 +7,8 @@ export const root = style([
   bgColor["grayscale-0"],
   {
     padding: "1.6rem",
-    borderRadius: vars.radius.r12,
-    boxShadow: `inset 0 0 0 0.1rem ${vars.color.grayscale[200]}`,
+    borderRadius: vars.radius.r20,
+    boxShadow: `inset 0 0 0 0.1rem ${vars.color.grayscale[100]}`,
     display: "flex",
     flexDirection: "column",
     gap: "1.0rem",
@@ -104,5 +104,28 @@ export const listText = style([
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
+  },
+]);
+
+export const emptyRoot = style({
+  height: "27rem",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+});
+
+export const emptyContent = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: "1.6rem",
+  alignItems: "center",
+  justifyContent: "center",
+});
+
+export const emptyText = style([
+  typo.body2.medium,
+  color["grayscale-700"],
+  {
+    textAlign: "center",
   },
 ]);

@@ -43,20 +43,6 @@ export const barGraph = style({
   width: "100%",
 });
 
-export const crown = style([
-  color["etc-crown"],
-  {
-    position: "absolute",
-    top: "1.2rem",
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: "1.6rem",
-    height: "1.6rem",
-    zIndex: vars.zIndex.contentOverlayHigh,
-    pointerEvents: "none",
-  },
-]);
-
 export const rank = style([
   color["grayscale-700"],
   typo.caption.bold,

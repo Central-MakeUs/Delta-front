@@ -1,20 +1,29 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 import clsx from "clsx";
 import * as styles from "@/shared/components/button/button/button.css";
 import Icon from "@/shared/components/icon/icon";
 import type { IconProps } from "@/shared/components/icon/icon";
 
 export type ButtonSize = "32" | "40" | "48" | "56" | "60";
-export type ButtonTone = "surface" | "default" | "dark" | "kakao" | "complete";
+export type ButtonTone =
+  | "surface"
+  | "default"
+  | "dark"
+  | "kakao"
+  | "complete"
+  | "none";
+export type ButtonIconPosition = "left" | "right";
 
 type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
-  label: string;
+  label: ReactNode;
   size?: ButtonSize;
   tone?: ButtonTone;
   fullWidth?: boolean;
   icon?: IconProps["name"];
-  /** rem 단위 숫자 */
+  iconPosition?: ButtonIconPosition;
   iconSize?: number;
+  labelClassName?: string;
+  iconClassName?: string;
 };
 
 export const Button = ({
@@ -23,22 +32,52 @@ export const Button = ({
   tone = "surface",
   fullWidth = false,
   icon,
+  iconPosition = "left",
   iconSize = 2.4,
   className,
+  labelClassName,
+  iconClassName,
   type = "button",
+  disabled,
   ...rest
 }: ButtonProps) => {
+  const iconNode = icon ? (
+    <Icon
+      name={icon}
+      size={iconSize}
+      className={clsx(styles.icon, iconClassName)}
+    />
+  ) : null;
+
+  const toneClassName = tone === "none" ? null : styles.tone[tone];
+  const disabledToneClassName =
+    tone === "none" ? null : disabled && styles.tone.disabled;
+
   return (
     <button
       type={type}
-      className={clsx(styles.button({ size, tone, fullWidth }), className)}
+      disabled={disabled}
+      className={clsx(
+        styles.button({ size, fullWidth }),
+        toneClassName,
+        className,
+        disabledToneClassName
+      )}
       {...rest}
     >
-      {icon ? (
-        <Icon name={icon} size={iconSize} className={styles.icon} />
-      ) : null}
+      {iconPosition === "left" ? iconNode : null}
 
-      <span className={styles.label({ size })}>{label}</span>
+      <span
+        className={clsx(
+          styles.labelBase,
+          styles.labelSizeTypo({ size }),
+          labelClassName
+        )}
+      >
+        {label}
+      </span>
+
+      {iconPosition === "right" ? iconNode : null}
     </button>
   );
 };

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import BarGraph02 from "@/shared/components/bar-graph/bar-graph-02/bar-graph-02";
-import Icon from "@/shared/components/icon/icon";
 import * as s from "@/shared/components/card-graph/card-graph-02/card-graph-02.css";
+import EmptyState from "@/shared/components/empty-state/empty-state";
 
 export type CardGraph02Item = {
   value: number;
@@ -17,19 +17,6 @@ type CardGraph02Props = {
 };
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
-
-const CardGraph02Empty = () => {
-  return (
-    <div className={s.emptyContent}>
-      <Icon name="modal-icon" height={4} width={4.5} />
-      <p className={s.emptyText}>
-        문제 등록 버튼을 눌러
-        <br />
-        먼저 문제를 등록해주세요!
-      </p>
-    </div>
-  );
-};
 
 export const CardGraph02 = ({
   items,
@@ -55,7 +42,11 @@ export const CardGraph02 = ({
         className={clsx(s.root, s.emptyRoot, className)}
         aria-label={ariaLabel}
       >
-        <CardGraph02Empty />
+        <EmptyState
+          iconName="modal-icon"
+          iconSize={4.5}
+          label={`문제 등록 버튼을 눌러\n먼저 문제를 등록해주세요!`}
+        />
       </section>
     );
   }

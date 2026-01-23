@@ -97,3 +97,11 @@ export const graphRowInner = style({
   position: "relative",
   zIndex: vars.zIndex.contentOverlay,
 });
+
+export const emptyWrap = style({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: "50vh",
+  height: "100%",
+});

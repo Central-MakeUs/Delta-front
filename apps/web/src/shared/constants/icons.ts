@@ -9,6 +9,8 @@ export const ICONS = [
   "crown",
   "default-profile",
   "edit",
+  "empty-graph",
+  "empty-problem",
   "file",
   "file-text",
   "filter",

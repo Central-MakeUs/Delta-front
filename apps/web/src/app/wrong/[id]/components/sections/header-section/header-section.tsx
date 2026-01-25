@@ -1,8 +1,14 @@
 import Chip from "@/shared/components/chip/chip";
 import * as styles from "./header-section.css";
-import { WrongDetailData } from "../../mocks/wrong-dummy";
+import type { WrongDetailSectionData } from "../../types";
 
-const HeaderSection = ({ title, subjectChip, chips }: WrongDetailData) => {
+interface HeaderSectionProps {
+  title: WrongDetailSectionData["title"];
+  subjectChip: WrongDetailSectionData["subjectChip"];
+  chips: WrongDetailSectionData["chips"];
+}
+
+const HeaderSection = ({ title, subjectChip, chips }: HeaderSectionProps) => {
   return (
     <div className={styles.headerSection}>
       <Chip

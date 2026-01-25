@@ -5,9 +5,14 @@ import * as styles from "./solution-section.css";
 interface SolutionSectionProps {
   value: string;
   onChange: (value: string) => void;
+  disabled: boolean;
 }
 
-const SolutionSection = ({ value, onChange }: SolutionSectionProps) => {
+const SolutionSection = ({
+  value,
+  onChange,
+  disabled,
+}: SolutionSectionProps) => {
   return (
     <div className={styles.solutionInputWrapper}>
       <TextField
@@ -18,6 +23,7 @@ const SolutionSection = ({ value, onChange }: SolutionSectionProps) => {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         size="body3"
+        readOnly={disabled}
       />
     </div>
   );

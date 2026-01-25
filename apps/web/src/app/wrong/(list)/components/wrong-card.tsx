@@ -61,9 +61,9 @@ const WrongCard = ({
       />
 
       {isCompleted !== undefined && (
-        <div className={s.statusChip}>
+        <div className={isCompleted ? s.statusChipCompleted : s.statusChip}>
           <Icon name={isCompleted ? "check-mark" : "wrong-edit"} size={1.6} />
-          {isCompleted ? "오답 완료" : "오답 전"}
+          <span>{isCompleted ? "오답 완료" : "오답 전"}</span>
         </div>
       )}
 

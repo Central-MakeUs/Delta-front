@@ -60,10 +60,8 @@ export const title = style([color["grayscale-0"], typo.body1.bold]);
 
 export const date = style([color["grayscale-0"], typo.body3.medium]);
 
-export const statusChip = style([
+const statusChipBase = style([
   typo.body3.semibold,
-  color["grayscale-700"],
-  bgColor["grayscale-100"],
   {
     position: "absolute",
     top: 0,
@@ -76,4 +74,16 @@ export const statusChip = style([
     borderRadius: "0 1.2rem",
     zIndex: vars.zIndex.contentOverlayHigh,
   },
+]);
+
+export const statusChip = style([
+  statusChipBase,
+  color["grayscale-700"],
+  bgColor["grayscale-100"],
+]);
+
+export const statusChipCompleted = style([
+  statusChipBase,
+  color["main-500"],
+  bgColor["main-50"],
 ]);

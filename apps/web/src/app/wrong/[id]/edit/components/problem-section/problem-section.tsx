@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Chip from "@/shared/components/chip/chip";
 import * as styles from "./problem-section.css";
-import { WrongDetailData } from "../../../components/mocks/wrong-dummy";
+import type { WrongDetailData } from "../../../components/mocks/wrong-dummy.ts";
 
 export const ProblemSection = ({
   id,

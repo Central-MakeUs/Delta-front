@@ -2,7 +2,7 @@ import { Toggle } from "@/shared/components/toggle/toggle";
 import { NumberChoice } from "@/shared/components/number-choice/number-choice";
 import * as styles from "./answer-section.css";
 import { TextField } from "@/shared/components/text-field/text-field";
-import { WrongDetailData } from "../../../components/mocks/wrong-dummy";
+import type { WrongDetailData } from "../../../components/mocks/wrong-dummy.ts";
 
 export type QuestionType = "objective" | "subjective";
 

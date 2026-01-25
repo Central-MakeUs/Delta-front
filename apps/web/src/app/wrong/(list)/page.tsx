@@ -8,7 +8,6 @@ import BottomSheetSort from "@/shared/components/bottom-sheet/bottom-sheet-sort/
 import BottomSheetFilter from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter";
 import { useWrongFilters } from "@/app/wrong/(list)/hooks/use-wrong-filters";
 import { useProblemListQuery } from "@/shared/apis/problem-list/hooks/use-problem-list-query";
-import type { GetProblemListParams } from "@/shared/apis/problem-list/problem-list-types";
 import { mapProblemListItemToCard } from "@/app/wrong/(list)/utils/map-problem-list-to-cards";
 
 import {
@@ -16,6 +15,7 @@ import {
   SORT_OPTIONS,
   TYPE_FILTERS,
 } from "@/app/wrong/(list)/constants/wrong-filters";
+import { mapFiltersToApiParams } from "./utils/map-filters-to-params";
 
 const WrongPage = () => {
   const {
@@ -38,58 +38,16 @@ const WrongPage = () => {
     applyFilter,
   } = useWrongFilters();
 
-  const apiParams = useMemo<GetProblemListParams>(() => {
-    const params: GetProblemListParams = {
-      page: 0,
-      size: 20, // 기본 페이지 크기
-    };
-
-    if (selectedChapterIds.length > 0) {
-      params.subjectId = selectedChapterIds[0];
-    }
-
-    const firstDropdownValue = Object.values(selectedDropdownIds).flat()[0];
-    if (firstDropdownValue) {
-      params.unitId = firstDropdownValue;
-    }
-
-    if (selectedTypeIds.length > 0) {
-      params.typeId = selectedTypeIds[0];
-    }
-
-    switch (selectedSortId) {
-      case "recent":
-        params.sort = "RECENT";
-        params.status = "ALL";
-        break;
-      case "wrong-incomplete":
-        params.sort = "RECENT";
-        params.status = "UNSOLVED";
-        break;
-      case "wrong-complete":
-        params.sort = "RECENT";
-        params.status = "SOLVED";
-        break;
-      case "type-desc":
-        params.sort = "TYPE_MOST";
-        params.status = "ALL";
-        break;
-      case "type-asc":
-        params.sort = "TYPE_LEAST";
-        params.status = "ALL";
-        break;
-      default:
-        params.sort = "RECENT";
-        params.status = "ALL";
-    }
-
-    return params;
-  }, [
-    selectedChapterIds,
-    selectedTypeIds,
-    selectedDropdownIds,
-    selectedSortId,
-  ]);
+  const apiParams = useMemo(
+    () =>
+      mapFiltersToApiParams({
+        selectedChapterIds,
+        selectedTypeIds,
+        selectedDropdownIds,
+        selectedSortId,
+      }),
+    [selectedChapterIds, selectedTypeIds, selectedDropdownIds, selectedSortId]
+  );
 
   const { data, isLoading } = useProblemListQuery({
     params: apiParams,
@@ -99,16 +57,11 @@ const WrongPage = () => {
     if (!data?.content) return [];
     return data.content.map(mapProblemListItemToCard);
   }, [data]);
-  console.log(visibleCards);
   return (
     <div className={s.page}>
       <div className={s.filterSection}>
         <div className={s.filterRow}>
-          <Filter
-            label="필터"
-            icon="filter"
-            onClick={() => openFilter("chapter")}
-          />
+          <Filter label="필터" icon="filter" onClick={() => openFilter()} />
           <Filter
             label={chapterFilterLabel}
             icon="chevron"

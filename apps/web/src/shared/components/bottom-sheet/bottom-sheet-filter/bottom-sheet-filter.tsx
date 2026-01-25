@@ -33,7 +33,7 @@ export const BottomSheetFilter = ({
   onApply,
   className,
   overlayClassName,
-  initialSection = "chapter",
+  initialSection,
 }: BottomSheetFilterProps) => {
   const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -86,10 +86,12 @@ export const BottomSheetFilter = ({
       syncFromLatest();
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          syncSpacerForSection(initialSection);
-          requestAnimationFrame(() => {
-            scrollToInitialSection(initialSection);
-          });
+          if (initialSection) {
+            syncSpacerForSection(initialSection);
+            requestAnimationFrame(() => {
+              scrollToInitialSection(initialSection);
+            });
+          }
         });
       });
     }, 0);
@@ -164,26 +166,32 @@ export const BottomSheetFilter = ({
           <FilterHeader onClose={requestClose} isClosing={isClosing} />
 
           <div className={styles.contentFrame} ref={contentFrameRef}>
-            <div ref={chapterAnchorRef}>
-              <FilterSection
-                title="단원별"
-                filters={chapterFilters}
-                selectedIds={localChapterIds}
-                onToggle={handleChapterToggle}
-                localDropdownIds={localDropdownIds}
-                onDropdownOptionToggle={handleDropdownToggle}
-              />
-            </div>
+            {(initialSection === "chapter" || !initialSection) && (
+              <div ref={chapterAnchorRef}>
+                <FilterSection
+                  title="단원별"
+                  filters={chapterFilters}
+                  selectedIds={localChapterIds}
+                  onToggle={handleChapterToggle}
+                  localDropdownIds={localDropdownIds}
+                  onDropdownOptionToggle={handleDropdownToggle}
+                />
+              </div>
+            )}
 
-            <div ref={typeAnchorRef}>
-              <Divider className={styles.dividerStyle} />
-              <FilterSection
-                title="유형별"
-                filters={typeFilters}
-                selectedIds={localTypeIds}
-                onToggle={handleTypeToggle}
-              />
-            </div>
+            {(initialSection === "type" || !initialSection) && (
+              <>
+                {!initialSection && <Divider className={styles.dividerStyle} />}
+                <div ref={typeAnchorRef}>
+                  <FilterSection
+                    title="유형별"
+                    filters={typeFilters}
+                    selectedIds={localTypeIds}
+                    onToggle={handleTypeToggle}
+                  />
+                </div>
+              </>
+            )}
 
             <div
               aria-hidden

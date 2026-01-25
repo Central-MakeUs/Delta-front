@@ -1,17 +1,18 @@
 "use client";
 
+import { useMemo } from "react";
 import * as s from "@/app/wrong/(list)/wrong.css";
 import Filter from "@/shared/components/filter/filter";
 import WrongCard from "@/app/wrong/(list)/components/wrong-card";
 import BottomSheetSort from "@/shared/components/bottom-sheet/bottom-sheet-sort/bottom-sheet-sort";
 import BottomSheetFilter from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter";
-import { useVisibleWrongCards } from "@/app/wrong/(list)/hooks/use-visible-wrong-cards";
 import { useWrongFilters } from "@/app/wrong/(list)/hooks/use-wrong-filters";
-import { WRONG_CARDS } from "@/app/wrong/(list)/data/wrong-cards";
+import { useProblemListQuery } from "@/shared/apis/problem-list/hooks/use-problem-list-query";
+import type { GetProblemListParams } from "@/shared/apis/problem-list/problem-list-types";
+import { mapProblemListItemToCard } from "@/app/wrong/(list)/utils/map-problem-list-to-cards";
 
 import {
   CHAPTER_FILTERS,
-  DROPDOWN_SECTION,
   SORT_OPTIONS,
   TYPE_FILTERS,
 } from "@/app/wrong/(list)/constants/wrong-filters";
@@ -37,14 +38,68 @@ const WrongPage = () => {
     applyFilter,
   } = useWrongFilters();
 
-  const visibleCards = useVisibleWrongCards({
-    cards: WRONG_CARDS,
+  const apiParams = useMemo<GetProblemListParams>(() => {
+    const params: GetProblemListParams = {
+      page: 0,
+      size: 20, // 기본 페이지 크기
+    };
+
+    if (selectedChapterIds.length > 0) {
+      params.subjectId = selectedChapterIds[0];
+    }
+
+    const firstDropdownValue = Object.values(selectedDropdownIds).flat()[0];
+    if (firstDropdownValue) {
+      params.unitId = firstDropdownValue;
+    }
+
+    if (selectedTypeIds.length > 0) {
+      params.typeId = selectedTypeIds[0];
+    }
+
+    switch (selectedSortId) {
+      case "recent":
+        params.sort = "RECENT";
+        params.status = "ALL";
+        break;
+      case "wrong-incomplete":
+        params.sort = "RECENT";
+        params.status = "UNSOLVED";
+        break;
+      case "wrong-complete":
+        params.sort = "RECENT";
+        params.status = "SOLVED";
+        break;
+      case "type-desc":
+        params.sort = "TYPE_MOST";
+        params.status = "ALL";
+        break;
+      case "type-asc":
+        params.sort = "TYPE_LEAST";
+        params.status = "ALL";
+        break;
+      default:
+        params.sort = "RECENT";
+        params.status = "ALL";
+    }
+
+    return params;
+  }, [
     selectedChapterIds,
     selectedTypeIds,
     selectedDropdownIds,
     selectedSortId,
+  ]);
+
+  const { data, isLoading } = useProblemListQuery({
+    params: apiParams,
   });
 
+  const visibleCards = useMemo(() => {
+    if (!data?.content) return [];
+    return data.content.map(mapProblemListItemToCard);
+  }, [data]);
+  console.log(visibleCards);
   return (
     <div className={s.page}>
       <div className={s.filterSection}>
@@ -68,7 +123,9 @@ const WrongPage = () => {
 
         <div className={s.sortRow}>
           <span className={s.wrongLabel}>
-            <p className={s.wrongCount}>{visibleCards.length}개</p>
+            <p className={s.wrongCount}>
+              {isLoading ? "..." : (data?.totalElements ?? 0)}개
+            </p>
             <p>의 오답</p>
           </span>
 
@@ -82,17 +139,24 @@ const WrongPage = () => {
       </div>
 
       <div className={s.cardSection}>
-        {visibleCards.map((card) => (
-          <WrongCard
-            key={card.id}
-            title={card.title}
-            date={card.date}
-            imageSrc={card.imageSrc}
-            imageAlt={card.imageAlt}
-            chips={card.chips}
-            href={card.href}
-          />
-        ))}
+        {isLoading ? (
+          <div>로딩 중...</div>
+        ) : visibleCards.length === 0 ? (
+          <div>오답카드가 없습니다.</div>
+        ) : (
+          visibleCards.map((card) => (
+            <WrongCard
+              key={card.id}
+              title={card.title}
+              date={card.date}
+              imageSrc={card.imageSrc}
+              imageAlt="오답 문제 이미지"
+              chips={card.chips}
+              href={card.href}
+              isCompleted={card.isCompleted}
+            />
+          ))
+        )}
       </div>
 
       {isSortOpen && (
@@ -111,7 +175,6 @@ const WrongPage = () => {
           onClose={closeFilter}
           chapterFilters={CHAPTER_FILTERS}
           typeFilters={TYPE_FILTERS}
-          dropdownSection={DROPDOWN_SECTION}
           selectedChapterIds={selectedChapterIds}
           selectedTypeIds={selectedTypeIds}
           selectedDropdownIds={selectedDropdownIds}

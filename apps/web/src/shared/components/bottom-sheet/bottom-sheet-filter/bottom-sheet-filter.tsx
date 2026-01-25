@@ -170,7 +170,6 @@ export const BottomSheetFilter = ({
                 filters={chapterFilters}
                 selectedIds={localChapterIds}
                 onToggle={handleChapterToggle}
-                dropdownSection={dropdownSection}
                 localDropdownIds={localDropdownIds}
                 onDropdownOptionToggle={handleDropdownToggle}
               />

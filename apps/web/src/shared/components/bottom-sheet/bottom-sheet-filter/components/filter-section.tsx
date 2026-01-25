@@ -1,17 +1,14 @@
 import Chip from "@/shared/components/chip/chip";
-import type {
-  FilterOption,
-  DropdownSection,
-} from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
+import type { FilterOption } from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
 import { FilterSelectSection } from "@/shared/components/bottom-sheet/bottom-sheet-filter/components/dropdown-section";
 import * as styles from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter.css";
+import { CHAPTER_DROPDOWN_OPTIONS } from "@/app/wrong/(list)/constants/wrong-filters";
 
 interface FilterSectionProps {
   title: string;
   filters: FilterOption[];
   selectedIds: string[];
   onToggle: (id: string) => void;
-  dropdownSection?: DropdownSection;
   localDropdownIds?: Record<string, string[]>;
   onDropdownOptionToggle?: (chapterId: string, optionId: string) => void;
 }
@@ -21,12 +18,10 @@ export const FilterSection = ({
   filters,
   selectedIds,
   onToggle,
-  dropdownSection,
   localDropdownIds,
   onDropdownOptionToggle,
 }: FilterSectionProps) => {
-  const canShowDropdown =
-    !!dropdownSection && !!localDropdownIds && !!onDropdownOptionToggle;
+  const canShowDropdown = !!localDropdownIds && !!onDropdownOptionToggle;
 
   const selectedChapters = canShowDropdown
     ? filters.filter((f) => selectedIds.includes(f.id))
@@ -54,12 +49,17 @@ export const FilterSection = ({
       {selectedChapters.map((chapter) => {
         const chapterId = chapter.id;
         const chapterSelectedIds = localDropdownIds?.[chapterId] ?? [];
+        const unitOptions = CHAPTER_DROPDOWN_OPTIONS[chapterId] ?? [];
 
         return (
           <FilterSelectSection
             key={chapterId}
             chapterLabel={chapter.label}
-            dropdownSection={dropdownSection!}
+            dropdownSection={{
+              id: chapterId,
+              options: unitOptions,
+              defaultOpen: true,
+            }}
             selectedIds={chapterSelectedIds}
             onToggle={(optionId) =>
               onDropdownOptionToggle!(chapterId, optionId)

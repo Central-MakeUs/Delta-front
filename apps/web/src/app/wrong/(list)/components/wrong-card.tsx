@@ -5,6 +5,7 @@ import Image, { type StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
 import Chip from "@/shared/components/chip/chip";
 import * as s from "@/app/wrong/(list)/components/wrong-card.css";
+import Icon from "@/shared/components/icon/icon";
 
 export type WrongCardProps = {
   title: string;
@@ -16,6 +17,7 @@ export type WrongCardProps = {
     secondary: string[];
   };
   href: string;
+  isCompleted?: boolean;
 };
 
 const WrongCard = ({
@@ -25,6 +27,7 @@ const WrongCard = ({
   imageAlt,
   chips,
   href,
+  isCompleted,
 }: WrongCardProps) => {
   const router = useRouter();
 
@@ -54,7 +57,15 @@ const WrongCard = ({
         priority={false}
         className={s.image}
         sizes="(max-width: 430px) 100vw, 430px"
+        unoptimized
       />
+
+      {isCompleted !== undefined && (
+        <div className={s.statusChip}>
+          <Icon name={isCompleted ? "check-mark" : "wrong-edit"} size={1.6} />
+          {isCompleted ? "오답 완료" : "오답 전"}
+        </div>
+      )}
 
       <div className={s.aboutSection}>
         <div className={s.chipRow}>

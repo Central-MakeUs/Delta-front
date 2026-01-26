@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Chip from "@/shared/components/chip/chip";
 import * as styles from "./problem-section.css";
-import type { WrongDetailData } from "../../../components/mocks/wrong-dummy.ts";
+import type { WrongDetailSectionData } from "../../../components/types";
 
 export const ProblemSection = ({
   id,
@@ -9,7 +9,7 @@ export const ProblemSection = ({
   subjectChip,
   imagePath,
   chips,
-}: WrongDetailData) => {
+}: WrongDetailSectionData) => {
   return (
     <section className={styles.section}>
       <div className={styles.header}>

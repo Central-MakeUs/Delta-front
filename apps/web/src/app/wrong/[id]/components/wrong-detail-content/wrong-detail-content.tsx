@@ -15,6 +15,7 @@ import { useProblemDetailQuery } from "@/shared/apis/problem-detail/hooks/use-pr
 import { useCompleteProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-complete-problem-detail-mutation";
 import { mapProblemDetailToSectionData } from "../utils/map-problem-detail-to-section-data";
 import type { WrongDetailSectionData } from "../types";
+import EmptyState from "@/shared/components/empty-state/empty-state";
 
 const WrongDetailContent = () => {
   const params = useParams();
@@ -36,7 +37,13 @@ const WrongDetailContent = () => {
 
   if (isLoading) return null;
   if (isError || !data || !sectionData) {
-    return <div>데이터를 찾을 수 없습니다.</div>;
+    return (
+      <EmptyState
+        label="잠시 문제가 발생했어요. 다시 한번 시도해주세요."
+        iconName="empty-problem"
+        labelClassName={styles.emptyStateLabel}
+      />
+    );
   }
 
   const handleConfirm = () => {

@@ -24,3 +24,9 @@ export type ProblemDetailResponse = {
   completedAt: string | null;
   createdAt: string;
 };
+
+export type UpdateProblemRequest = {
+  answerChoiceNo?: number;
+  answerValue?: string;
+  solutionText?: string;
+};

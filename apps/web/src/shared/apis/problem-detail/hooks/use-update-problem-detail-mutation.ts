@@ -14,8 +14,11 @@ export const useUpdateProblemDetailMutation = () => {
       problemId: number | string;
       body: UpdateProblemRequest;
     }) => problemDetailApi.update({ problemId, body }),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
+    onSuccess: async (_, variables) => {
+      await queryClient.invalidateQueries({
+        queryKey: problemDetailQueryKeys.detail(variables.problemId),
+      });
+      await queryClient.refetchQueries({
         queryKey: problemDetailQueryKeys.detail(variables.problemId),
       });
     },

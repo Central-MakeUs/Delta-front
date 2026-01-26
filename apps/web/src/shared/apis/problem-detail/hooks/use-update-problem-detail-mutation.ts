@@ -18,9 +18,6 @@ export const useUpdateProblemDetailMutation = () => {
       await queryClient.invalidateQueries({
         queryKey: problemDetailQueryKeys.detail(variables.problemId),
       });
-      await queryClient.refetchQueries({
-        queryKey: problemDetailQueryKeys.detail(variables.problemId),
-      });
     },
   });
 };

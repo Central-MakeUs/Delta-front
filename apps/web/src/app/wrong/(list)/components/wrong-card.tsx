@@ -41,6 +41,7 @@ const WrongCard = ({
       router.push(href);
     }
   };
+  console.log(isCompleted);
 
   return (
     <div

@@ -16,6 +16,8 @@ import {
   TYPE_FILTERS,
 } from "@/app/wrong/(list)/constants/wrong-filters";
 import { mapFiltersToApiParams } from "./utils/map-filters-to-params";
+import EmptyState from "@/shared/components/empty-state/empty-state";
+import AnalysisLoading from "../create/components/analysis-loading/analysis-loading";
 
 const WrongPage = () => {
   const {
@@ -57,6 +59,8 @@ const WrongPage = () => {
     if (!data?.content) return [];
     return data.content.map(mapProblemListItemToCard);
   }, [data]);
+
+  console.log(visibleCards);
   return (
     <div className={s.page}>
       <div className={s.filterSection}>
@@ -93,9 +97,17 @@ const WrongPage = () => {
 
       <div className={s.cardSection}>
         {isLoading ? (
-          <div>로딩 중...</div>
+          <AnalysisLoading message="조건에 맞는 문제를 찾고 있어요…" />
         ) : visibleCards.length === 0 ? (
-          <div>오답카드가 없습니다.</div>
+          <div className={s.emptyStateWrap}>
+            <EmptyState
+              label={`조건에 맞는 문제가 없어요.\n필터를 다시 설정해주세요.`}
+              iconName="filter"
+              iconSize={3.6}
+              iconWrapperClassName={s.emptyStateIconWrap}
+              labelClassName={s.emptyStateText}
+            />
+          </div>
         ) : (
           visibleCards.map((card) => (
             <WrongCard

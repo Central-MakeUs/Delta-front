@@ -2,15 +2,14 @@ import type { ProblemListItem } from "@/shared/apis/problem-list/problem-list-ty
 import type { WrongCardProps } from "@/app/wrong/(list)/components/wrong-card";
 
 const formatDate = (dateString: string): string => {
-  try {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}.${month}.${day}`;
-  } catch {
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) {
     return dateString;
   }
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}.${month}.${day}`;
 };
 
 export const mapProblemListItemToCard = (

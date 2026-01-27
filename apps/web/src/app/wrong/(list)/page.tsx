@@ -17,7 +17,7 @@ import {
 } from "@/app/wrong/(list)/constants/wrong-filters";
 import { mapFiltersToApiParams } from "./utils/map-filters-to-params";
 import EmptyState from "@/shared/components/empty-state/empty-state";
-import AnalysisLoading from "../create/components/analysis-loading/analysis-loading";
+import AnalysisLoading from "@/app/wrong/create/components/analysis-loading/analysis-loading";
 
 const WrongPage = () => {
   const {

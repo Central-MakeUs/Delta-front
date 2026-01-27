@@ -74,7 +74,7 @@ export const emptyStateIconWrap = style([
 ]);
 
 export const emptyStateText = style([
-  typo.body1.medium,
+  typo.body2.medium,
   color["grayscale-700"],
   {
     textAlign: "center",

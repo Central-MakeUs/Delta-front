@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import * as s from "@/app/wrong/(list)/wrong.css";
 import Filter from "@/shared/components/filter/filter";
 import WrongCard from "@/app/wrong/(list)/components/wrong-card";
@@ -17,9 +18,13 @@ import {
 } from "@/app/wrong/(list)/constants/wrong-filters";
 import { mapFiltersToApiParams } from "./utils/map-filters-to-params";
 import EmptyState from "@/shared/components/empty-state/empty-state";
-import AnalysisLoading from "@/app/wrong/create/components/analysis-loading/analysis-loading";
+import ListLoading from "@/app/wrong/(list)/components/list-loading/list-loading";
+import { ERROR_CODES } from "@/shared/apis/error-codes";
+import { ROUTES } from "@/shared/constants/routes";
+import { ApiError } from "@/shared/apis/api-error";
 
 const WrongPage = () => {
+  const router = useRouter();
   const {
     isSortOpen,
     openSort,
@@ -51,9 +56,29 @@ const WrongPage = () => {
     [selectedChapterIds, selectedTypeIds, selectedDropdownIds, selectedSortId]
   );
 
-  const { data, isLoading } = useProblemListQuery({
+  const { data, isLoading, isError, error } = useProblemListQuery({
     params: apiParams,
   });
+
+  useEffect(() => {
+    if (!isError || !error) return;
+
+    if (error instanceof ApiError) {
+      const authErrorCodes = [
+        ERROR_CODES.AUTH.AUTHENTICATION_FAILED,
+        ERROR_CODES.AUTH.ACCESS_DENIED,
+        ERROR_CODES.AUTH.TOKEN_REQUIRED,
+      ];
+
+      if (
+        authErrorCodes.includes(
+          error.code as typeof ERROR_CODES.AUTH.AUTHENTICATION_FAILED
+        )
+      ) {
+        router.replace(ROUTES.AUTH.LOGIN);
+      }
+    }
+  }, [isError, error, router]);
 
   const visibleCards = useMemo(() => {
     if (!data?.content) return [];
@@ -96,7 +121,7 @@ const WrongPage = () => {
 
       <div className={s.cardSection}>
         {isLoading ? (
-          <AnalysisLoading message="조건에 맞는 문제를 찾고 있어요…" />
+          <ListLoading message="조건에 맞는 문제를 찾고 있어요…" />
         ) : visibleCards.length === 0 ? (
           <div className={s.emptyStateWrap}>
             <EmptyState

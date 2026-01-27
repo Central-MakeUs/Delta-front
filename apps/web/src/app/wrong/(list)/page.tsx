@@ -2,6 +2,7 @@
 
 import { useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import axios, { type AxiosError } from "axios";
 import * as s from "@/app/wrong/(list)/wrong.css";
 import Filter from "@/shared/components/filter/filter";
 import WrongCard from "@/app/wrong/(list)/components/wrong-card";
@@ -19,12 +20,22 @@ import {
 import { mapFiltersToApiParams } from "./utils/map-filters-to-params";
 import EmptyState from "@/shared/components/empty-state/empty-state";
 import ListLoading from "@/app/wrong/(list)/components/list-loading/list-loading";
-import { ERROR_CODES } from "@/shared/apis/error-codes";
 import { ROUTES } from "@/shared/constants/routes";
-import { ApiError } from "@/shared/apis/api-error";
+
+type ErrorResponseShape = {
+  status?: number;
+  code?: string;
+  message?: string;
+  data?: unknown;
+};
+
+const getHttpStatus = (err: unknown): number | undefined => {
+  if (!axios.isAxiosError(err)) return undefined;
+  const axErr = err as AxiosError<ErrorResponseShape>;
+  return axErr.response?.status;
+};
 
 const WrongPage = () => {
-  const router = useRouter();
   const {
     isSortOpen,
     openSort,
@@ -56,29 +67,9 @@ const WrongPage = () => {
     [selectedChapterIds, selectedTypeIds, selectedDropdownIds, selectedSortId]
   );
 
-  const { data, isLoading, isError, error } = useProblemListQuery({
+  const { data, isLoading } = useProblemListQuery({
     params: apiParams,
   });
-
-  useEffect(() => {
-    if (!isError || !error) return;
-
-    if (error instanceof ApiError) {
-      const authErrorCodes = [
-        ERROR_CODES.AUTH.AUTHENTICATION_FAILED,
-        ERROR_CODES.AUTH.ACCESS_DENIED,
-        ERROR_CODES.AUTH.TOKEN_REQUIRED,
-      ];
-
-      if (
-        authErrorCodes.includes(
-          error.code as typeof ERROR_CODES.AUTH.AUTHENTICATION_FAILED
-        )
-      ) {
-        router.replace(ROUTES.AUTH.LOGIN);
-      }
-    }
-  }, [isError, error, router]);
 
   const visibleCards = useMemo(() => {
     if (!data?.content) return [];

@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useProblemDetailQuery } from "@/shared/apis/problem-detail/hooks/use-problem-detail-query";
+import { useGetProblemDetailQuery } from "@/shared/apis/problem-detail/hooks/use-get-problem-detail-query";
 import { useUpdateProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-update-problem-detail-mutation";
 import { mapProblemDetailToSectionData } from "../../components/utils/map-problem-detail-to-section-data";
 import type { UpdateProblemRequest } from "@/shared/apis/problem-detail/problem-detail-types";
@@ -10,7 +10,7 @@ import type { WrongDetailSectionData } from "../../components/types";
 export const useWrongEditForm = () => {
   const router = useRouter();
   const { id } = useParams() as { id: string };
-  const { data, isLoading, isError } = useProblemDetailQuery(id);
+  const { data, isLoading, isError } = useGetProblemDetailQuery(id);
   const updateMutation = useUpdateProblemDetailMutation();
 
   const sectionData = useMemo<WrongDetailSectionData | null>(() => {

@@ -11,7 +11,6 @@ import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
 import HeaderShell from "@/shared/components/app-bar/components/header-shell";
 import LeftGroup from "@/shared/components/app-bar/components/left-group";
 import BackButton from "@/shared/components/app-bar/components/back-button";
-import { vars } from "@/shared/styles/theme.css";
 
 const AppBar = (props: AppBarProps) => {
   const router = useRouter();

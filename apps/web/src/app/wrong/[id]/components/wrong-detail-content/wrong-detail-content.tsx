@@ -11,7 +11,7 @@ import {
 } from "@/app/wrong/[id]/components/sections";
 import { BottomButton } from "@/app/wrong/[id]/components/actions";
 import CompleteModal from "@/shared/components/modal/complete-modal/complete-modal";
-import { useProblemDetailQuery } from "@/shared/apis/problem-detail/hooks/use-problem-detail-query";
+import { useGetProblemDetailQuery } from "@/shared/apis/problem-detail/hooks/use-get-problem-detail-query";
 import { useCompleteProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-complete-problem-detail-mutation";
 import { mapProblemDetailToSectionData } from "../utils/map-problem-detail-to-section-data";
 import type { WrongDetailSectionData } from "../types";
@@ -20,7 +20,7 @@ import EmptyState from "@/shared/components/empty-state/empty-state";
 const WrongDetailContent = () => {
   const params = useParams();
   const id = params.id as string;
-  const { data, isLoading, isError } = useProblemDetailQuery(id);
+  const { data, isLoading, isError } = useGetProblemDetailQuery(id);
   const completeMutation = useCompleteProblemDetailMutation();
 
   const initialSolution = useMemo(() => {

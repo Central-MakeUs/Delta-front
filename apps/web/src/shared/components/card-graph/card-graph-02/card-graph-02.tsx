@@ -27,7 +27,7 @@ export const CardGraph02 = ({
     (_, i) =>
       items[i] ?? {
         value: 0,
-        title: "",
+        title: "-",
         valueLabel: "0개",
         tone: "inactive",
       }
@@ -86,11 +86,12 @@ export const CardGraph02 = ({
       <div className={s.list}>
         {normalized.map((item, i) => {
           const rank = pad2(i + 1);
+          const title = item.title?.trim() ? item.title : "-";
 
           return (
             <div key={rank} className={s.listItem}>
               <span className={s.listRank}>{rank}</span>
-              <span className={s.listText}>{item.title}</span>
+              <span className={s.listText}>{title}</span>
             </div>
           );
         })}

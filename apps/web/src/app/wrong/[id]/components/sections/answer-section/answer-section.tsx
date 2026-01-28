@@ -2,9 +2,12 @@ import { useState } from "react";
 import Chip from "@/shared/components/chip/chip";
 import * as styles from "./answer-section.css";
 import Icon from "@/shared/components/icon/icon";
-import { WrongDetailData } from "../../mocks/wrong-dummy";
+import type { WrongDetailSectionData } from "../../types";
 
-interface AnswerSectionProps extends WrongDetailData {
+interface AnswerSectionProps {
+  answerChoice: WrongDetailSectionData["answerChoice"];
+  answerText: WrongDetailSectionData["answerText"];
+  questionType: WrongDetailSectionData["questionType"];
   onAnswerRevealed?: () => void;
 }
 

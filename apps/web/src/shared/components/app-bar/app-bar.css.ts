@@ -92,6 +92,30 @@ export const title = style([
 
 export const icon = style([color["grayscale-900"]]);
 
+export const premiumIcon = style([color["main-500"]]);
+
+export const premiumButton = style([
+  buttonReset,
+  color["main-500"],
+  bgColor["main-50"],
+  {
+    flexShrink: 0,
+    padding: "0.4rem 0.8rem",
+    borderRadius: vars.radius.r24,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "end",
+  },
+]);
+
+export const premiumButtonText = style([
+  typo.caption.semibold,
+  color["main-500"],
+  {
+    paddingLeft: "0.4rem",
+  },
+]);
+
 export const logo = style({
   width: "6.8rem",
   height: "2.4rem",
@@ -109,6 +133,13 @@ export const rightIconButton = style([
   },
 ]);
 
+export const rightButtonGroup = style({
+  display: "flex",
+  alignItems: "center",
+  gap: "0.8rem",
+  marginLeft: "auto",
+});
+
 const sideSlot = style({
   width: APP_BAR_SIDE_SLOT_WIDTH,
   display: "flex",
@@ -125,3 +156,13 @@ export const centerSlot = style({
   justifyContent: "center",
   minWidth: 0,
 });
+
+export const actionButton = style([
+  buttonReset,
+  typo.body3.medium,
+  color["grayscale-400"],
+  {
+    padding: "0.4rem 0.8rem",
+    whiteSpace: "nowrap",
+  },
+]);

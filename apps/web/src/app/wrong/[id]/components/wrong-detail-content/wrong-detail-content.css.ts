@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
-import { bgColor } from "@/shared/styles/color.css";
+import { bgColor, color } from "@/shared/styles/color.css";
+import { typo } from "@/shared/styles/typography.css";
 
 export const page = style({
   display: "flex",
@@ -51,3 +52,11 @@ export const inputContent = style({
   gap: "1.2rem",
   width: "100%",
 });
+
+export const emptyStateLabel = style([
+  typo.body2.medium,
+  color["grayscale-700"],
+  {
+    textAlign: "center",
+  },
+]);

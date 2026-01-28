@@ -46,11 +46,22 @@ const AppBar = (props: AppBarProps) => {
 
     case "basicAction": {
       const onBack = props.onBack ?? backFallback;
+      const actionAriaLabel = props.actionAriaLabel ?? props.actionLabel;
 
       return renderShell(
         "basicAction",
         <>
           <LeftGroup title={props.title} onBack={onBack} />
+          {props.actionLabel && props.onActionClick && (
+            <button
+              type="button"
+              className={s.actionButton}
+              aria-label={actionAriaLabel}
+              onClick={props.onActionClick}
+            >
+              {props.actionLabel}
+            </button>
+          )}
         </>
       );
     }
@@ -67,15 +78,29 @@ const AppBar = (props: AppBarProps) => {
           >
             <Icon name="logo-default" width={6.8} />
           </button>
-
-          <button
-            type="button"
-            className={s.rightIconButton}
-            aria-label="내 정보"
-            onClick={props.onUserClick}
-          >
-            <Icon name="user" size={2.4} className={s.icon} />
-          </button>
+          <div className={s.rightButtonGroup}>
+            <button
+              type="button"
+              className={s.premiumButton}
+              aria-label="프리미엄"
+            >
+              <Icon
+                name="crown"
+                size={1.6}
+                className={s.premiumIcon}
+                fill="currentColor"
+              />
+              <p className={s.premiumButtonText}>PRO</p>
+            </button>
+            <button
+              type="button"
+              className={s.rightIconButton}
+              aria-label="내 정보"
+              onClick={props.onUserClick}
+            >
+              <Icon name="user" size={2.4} className={s.icon} />
+            </button>
+          </div>
         </>
       );
     }

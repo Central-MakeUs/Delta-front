@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import type { TabItem } from "@/shared/components/tab-bar/tab-bar/tab-bar";
 import TabBar from "@/shared/components/tab-bar/tab-bar/tab-bar";
@@ -10,29 +10,59 @@ import * as s from "@/app/(home)/home.css";
 import CardGraph02, {
   type CardGraph02Item,
 } from "@/shared/components/card-graph/card-graph-02/card-graph-02";
-import { ROUTES } from "@/shared/constants/routes";
+import { GRAPH_TABS, ROUTES } from "@/shared/constants/routes";
+
+import type { ProblemStatsSort } from "@/shared/apis/graph/graph-types";
+import { useGraphUnitStatsQuery } from "@/shared/apis/graph/hooks/use-graph-unit-stats-query";
+import { useGraphTypeStatsQuery } from "@/shared/apis/graph/hooks/use-graph-type-stats-query";
 
 type TabValue = "최다 오답 단원" | "최다 오답 유형";
 
 const Home = () => {
   const pathname = usePathname();
   const router = useRouter();
+
   const tabs: readonly TabItem<TabValue>[] = [
     { value: "최다 오답 단원", label: "최다 오답 단원" },
     { value: "최다 오답 유형", label: "최다 오답 유형" },
   ];
 
   const [value, setValue] = useState<TabValue>("최다 오답 단원");
+  const isUnitTab = value === "최다 오답 단원";
 
-  const items: readonly CardGraph02Item[] = [
-    { value: 10, title: "단원명", valueLabel: "10개", tone: "active" },
-    { value: 8, title: "단원명", valueLabel: "8개" },
-    { value: 7, title: "단원명", valueLabel: "7개" },
-    { value: 5, title: "단원명", valueLabel: "5개" },
-  ];
+  const sort: ProblemStatsSort = "MAX";
+
+  const { data: unitGroups = [] } = useGraphUnitStatsQuery({
+    sort,
+    enabled: isUnitTab,
+  });
+
+  const { data: typeGroups = [] } = useGraphTypeStatsQuery({
+    sort,
+    enabled: !isUnitTab,
+  });
+
+  const items: readonly CardGraph02Item[] = useMemo(() => {
+    const groups = isUnitTab ? unitGroups : typeGroups;
+
+    return groups.slice(0, 4).map((g) => {
+      const total = g.rows.reduce((acc, r) => acc + (r.value ?? 0), 0);
+
+      return {
+        value: total,
+        title: g.label,
+        valueLabel: `${total}개`,
+      };
+    });
+  }, [isUnitTab, unitGroups, typeGroups]);
 
   const handleActionClick = () => {
     router.push(`${ROUTES.WRONG.ROOT}?sort=wrong-incomplete`);
+  };
+
+  const handleViewAll = () => {
+    const tab = isUnitTab ? GRAPH_TABS.UNIT : GRAPH_TABS.WRONG;
+    router.push(ROUTES.GRAPH.tab(tab));
   };
 
   return (
@@ -51,12 +81,13 @@ const Home = () => {
           replayKey={pathname}
         />
       </div>
+
       <div className={s.graph}>
         <TabBar
           tabs={tabs}
           value={value}
           onValueChange={setValue}
-          rightSlot={<ViewAllButton onClick={() => console.log("view all")} />}
+          rightSlot={<ViewAllButton onClick={handleViewAll} />}
         />
         <CardGraph02 items={items} />
       </div>

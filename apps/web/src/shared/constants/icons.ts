@@ -14,6 +14,7 @@ export const ICONS = [
   "edit",
   "empty-graph",
   "empty-problem",
+  "error",
   "file",
   "file-text",
   "filter",
@@ -42,6 +43,7 @@ export const ICONS = [
   "triangle",
   "unlock",
   "user",
-  "wrong-check"
+  "wrong-check",
+  "wrong-edit"
 ] as const;
 export type IconName = (typeof ICONS)[number];

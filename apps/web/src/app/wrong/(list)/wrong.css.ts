@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css";
-import { color } from "@/shared/styles/color.css";
+import { bgColor, color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
+import { vars } from "@/shared/styles/theme.css";
 
 export const page = style({
   display: "flex",
@@ -50,3 +51,32 @@ export const cardSection = style({
   flexDirection: "column",
   gap: "1.6rem",
 });
+
+export const emptyStateWrap = style({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  height: "100%",
+  minHeight: "50vh",
+});
+
+export const emptyStateIconWrap = style([
+  bgColor["grayscale-50"],
+  color["grayscale-500"],
+  {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "5.6rem",
+    height: "5.6rem",
+    borderRadius: vars.radius.r32,
+  },
+]);
+
+export const emptyStateText = style([
+  typo.body2.medium,
+  color["grayscale-700"],
+  {
+    textAlign: "center",
+  },
+]);

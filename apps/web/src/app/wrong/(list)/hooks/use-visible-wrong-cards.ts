@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import type { WrongCardData } from "@/app/wrong/(list)/data/wrong-cards";
+import type { WrongCardData } from "@/app/wrong/(list)/types/wrong-card-data";
 
 const toDateNumber = (v: string) => {
   const n = Number(v.replaceAll(".", ""));

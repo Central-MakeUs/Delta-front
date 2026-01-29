@@ -32,7 +32,7 @@ export const useWrongFilters = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const [filterInitialSection, setFilterInitialSection] =
-    useState<BottomSheetFilterInitialSection>("chapter");
+    useState<BottomSheetFilterInitialSection | undefined>(undefined);
 
   const selectedSortId = useMemo<string>(() => {
     const q = searchParams.get(SORT_QUERY_KEY);
@@ -69,7 +69,7 @@ export const useWrongFilters = () => {
     return getTypeSummaryLabel(selectedTypeIds);
   }, [selectedTypeIds]);
 
-  const openFilter = (section: BottomSheetFilterInitialSection) => {
+  const openFilter = (section?: BottomSheetFilterInitialSection) => {
     setFilterInitialSection(section);
     setIsFilterOpen(true);
   };

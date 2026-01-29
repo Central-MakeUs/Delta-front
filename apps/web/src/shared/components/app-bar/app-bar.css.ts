@@ -99,21 +99,17 @@ export const premiumButton = style([
   color["main-500"],
   bgColor["main-50"],
   {
-    flexShrink: 0,
     padding: "0.4rem 0.8rem",
     borderRadius: vars.radius.r24,
+    gap: "0.4rem",
     display: "flex",
     alignItems: "center",
-    justifyContent: "end",
   },
 ]);
 
 export const premiumButtonText = style([
   typo.caption.semibold,
   color["main-500"],
-  {
-    paddingLeft: "0.4rem",
-  },
 ]);
 
 export const logo = style({
@@ -136,7 +132,7 @@ export const rightIconButton = style([
 export const rightButtonGroup = style({
   display: "flex",
   alignItems: "center",
-  gap: "0.8rem",
+  gap: "1.2rem",
   marginLeft: "auto",
 });
 

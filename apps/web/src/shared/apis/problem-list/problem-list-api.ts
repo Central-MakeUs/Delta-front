@@ -7,33 +7,21 @@ import type {
   GetProblemListResponse,
 } from "@/shared/apis/problem-list/problem-list-types";
 
+const normalize = (v?: string | null) => (v ?? "").trim();
+
 const cleanParams = (params: GetProblemListParams): Record<string, unknown> => {
-  const cleaned: Record<string, unknown> = {};
-
-  if (params.subjectId?.trim()) {
-    cleaned.subjectId = params.subjectId;
-  }
-  if (params.unitId?.trim()) {
-    cleaned.unitId = params.unitId;
-  }
-  if (params.typeId?.trim()) {
-    cleaned.typeId = params.typeId;
-  }
-
-  if (params.sort) {
-    cleaned.sort = params.sort;
-  }
-  if (params.status) {
-    cleaned.status = params.status;
-  }
-  if (params.page !== undefined) {
-    cleaned.page = params.page;
-  }
-  if (params.size !== undefined && params.size > 0) {
-    cleaned.size = params.size;
-  }
-
-  return cleaned;
+  const out: Record<string, unknown> = {};
+  const subjectId = normalize(params.subjectId);
+  const unitId = normalize(params.unitId);
+  const typeId = normalize(params.typeId);
+  if (subjectId) out.subjectId = subjectId;
+  if (unitId) out.unitId = unitId;
+  if (typeId) out.typeId = typeId;
+  if (params.sort) out.sort = params.sort;
+  if (params.status) out.status = params.status;
+  if (params.page !== undefined) out.page = params.page;
+  if (params.size !== undefined && params.size > 0) out.size = params.size;
+  return out;
 };
 
 export const getProblemList = async (

@@ -42,6 +42,7 @@ export const ICONS = [
   "triangle",
   "unlock",
   "user",
-  "wrong-check"
+  "wrong-check",
+  "wrong-edit"
 ] as const;
 export type IconName = (typeof ICONS)[number];

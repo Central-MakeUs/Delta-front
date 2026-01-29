@@ -57,6 +57,7 @@ export const fill = style([
     top: BAR_INSET_Y,
     height: BAR_HEIGHT,
     width: fillPercentVar,
+    minWidth: tipOverlapVar,
     borderRadius: vars.radius.full,
     zIndex: vars.zIndex.contentOverlay,
     transitionProperty: "width",

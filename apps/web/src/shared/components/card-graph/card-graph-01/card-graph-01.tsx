@@ -6,9 +6,13 @@ import Icon from "@/shared/components/icon/icon";
 import BarGraph01 from "@/shared/components/bar-graph/bar-graph-01/bar-graph-01";
 import * as s from "@/shared/components/card-graph/card-graph-01/card-graph-01.css";
 
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max);
+
 type CardGraph01Props = {
   monthLabel: string;
   registeredCount: number;
+  solvedCount: number;
   graphPercent: number;
   graphLabel: string;
   onActionClick?: () => void;
@@ -17,12 +21,10 @@ type CardGraph01Props = {
   replayKey?: string | number;
 };
 
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(Math.max(value, min), max);
-
 export const CardGraph01 = ({
   monthLabel,
   registeredCount,
+  solvedCount,
   graphPercent,
   graphLabel,
   onActionClick,
@@ -34,6 +36,8 @@ export const CardGraph01 = ({
   const safePercent = clamp(graphPercent, 0, 100);
   const percentLabel = `${Math.round(safePercent)}%`;
   const resolvedReplayKey = replayKey ?? pathname;
+
+  const isSolvedZero = solvedCount === 0;
 
   return (
     <section className={clsx(s.root, className)} aria-label={ariaLabel}>
@@ -61,6 +65,8 @@ export const CardGraph01 = ({
             percent={safePercent}
             label={graphLabel}
             replayKey={resolvedReplayKey}
+            showMinFillOnZero={isSolvedZero}
+            showTip={!isSolvedZero}
           />
         </div>
       </div>

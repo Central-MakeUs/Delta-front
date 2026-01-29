@@ -30,4 +30,9 @@ export const API_PATHS = {
     UNITS: `${API_V1}/problems/stats/units`,
     TYPES: `${API_V1}/problems/stats/types`,
   },
+  PROBLEM_DETAIL: {
+    DETAIL: (problemId: number | string) => `${API_V1}/problems/${problemId}`,
+    COMPLETE: (problemId: number | string) =>
+      `${API_V1}/problems/${problemId}/complete`,
+  },
 } as const;

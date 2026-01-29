@@ -74,6 +74,10 @@ const Home = () => {
     router.push(`${ROUTES.WRONG.ROOT}?sort=wrong-incomplete`);
   };
 
+  const handleRegisterClick = () => {
+    router.push(`${ROUTES.WRONG.CREATE}`);
+  };
+
   const handleViewAll = () => {
     const tab = isUnitTab ? GRAPH_TABS.UNIT : GRAPH_TABS.WRONG;
     router.push(ROUTES.GRAPH.tab(tab));
@@ -93,6 +97,7 @@ const Home = () => {
           registeredCount={registeredCount}
           graphPercent={graphPercent}
           graphLabel={graphLabel}
+          onEmptyActionClick={handleRegisterClick}
           onActionClick={handleActionClick}
           replayKey={pathname}
         />

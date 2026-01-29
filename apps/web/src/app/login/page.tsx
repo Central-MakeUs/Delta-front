@@ -6,6 +6,7 @@ import { Button } from "@/shared/components/button/button/button";
 import LoginDecorations from "./login-decorations";
 import { ROUTES } from "@/shared/constants/routes";
 import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
+import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
 import * as s from "./login.css";
 
 const LoginPage = () => {
@@ -17,7 +18,8 @@ const LoginPage = () => {
   };
 
   const onAppleStart = () => {
-    router.push(ROUTES.HOME);
+    const url = appleOAuth.buildAuthorizeUrl();
+    if (url) window.location.assign(url);
   };
 
   return (

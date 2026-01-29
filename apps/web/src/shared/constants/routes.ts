@@ -15,6 +15,7 @@ export const ROUTES = {
     LOGIN: "/login",
     SIGNUP_INFO: "/login/info",
     KAKAO_CALLBACK: "/oauth/kakao/callback",
+    APPLE_CALLBACK: "/oauth/apple/callback",
   },
   WRONG: {
     ROOT: `/${WRONG_PREFIX}`,
@@ -37,6 +38,7 @@ export type RouteValue =
   | typeof ROUTES.AUTH.LOGIN
   | typeof ROUTES.AUTH.SIGNUP_INFO
   | typeof ROUTES.AUTH.KAKAO_CALLBACK
+  | typeof ROUTES.AUTH.APPLE_CALLBACK
   | typeof ROUTES.WRONG.ROOT
   | typeof ROUTES.WRONG.CREATE
   | typeof ROUTES.WRONG.CREATE_DONE

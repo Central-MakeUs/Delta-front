@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import BarGraph02 from "@/shared/components/bar-graph/bar-graph-02/bar-graph-02";
 import * as s from "@/shared/components/card-graph/card-graph-02/card-graph-02.css";
+import EmptyState from "@/shared/components/empty-state/empty-state";
 
 export type CardGraph02Item = {
   value: number;
@@ -26,16 +27,31 @@ export const CardGraph02 = ({
     (_, i) =>
       items[i] ?? {
         value: 0,
-        title: "",
+        title: "-",
         valueLabel: "0개",
         tone: "inactive",
       }
   );
 
   const maxInList = Math.max(0, ...normalized.map((x) => x.value));
-  const maxValue = maxInList > 0 ? maxInList : 1;
-
   const allZero = maxInList <= 0;
+
+  if (allZero) {
+    return (
+      <section
+        className={clsx(s.root, s.emptyRoot, className)}
+        aria-label={ariaLabel}
+      >
+        <EmptyState
+          iconName="modal-icon"
+          iconSize={4.5}
+          label={`문제 등록 버튼을 눌러\n먼저 문제를 등록해주세요!`}
+        />
+      </section>
+    );
+  }
+
+  const maxValue = maxInList > 0 ? maxInList : 1;
 
   return (
     <section className={clsx(s.root, className)} aria-label={ariaLabel}>
@@ -43,15 +59,11 @@ export const CardGraph02 = ({
         {normalized.map((item, i) => {
           const rank = pad2(i + 1);
 
-          const inferredTone: "active" | "inactive" = allZero
-            ? "inactive"
-            : item.value === maxInList
-              ? "active"
-              : "inactive";
+          const inferredTone: "active" | "inactive" =
+            item.value === maxInList ? "active" : "inactive";
 
           const tone = item.tone ?? inferredTone;
-
-          const showTarget = !allZero && item.value === maxInList;
+          const showTarget = item.value === maxInList;
 
           return (
             <div key={rank} className={s.barCol}>
@@ -74,11 +86,12 @@ export const CardGraph02 = ({
       <div className={s.list}>
         {normalized.map((item, i) => {
           const rank = pad2(i + 1);
+          const title = item.title?.trim() ? item.title : "-";
 
           return (
             <div key={rank} className={s.listItem}>
               <span className={s.listRank}>{rank}</span>
-              <span className={s.listText}>{item.title}</span>
+              <span className={s.listText}>{title}</span>
             </div>
           );
         })}

@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css";
 import { typo } from "@/shared/styles/typography.css";
-import { color } from "@/shared/styles/color.css";
+import { bgColor, color } from "@/shared/styles/color.css";
+import { vars } from "@/shared/styles/theme.css";
 
 export const page = style({
   position: "relative",
@@ -26,11 +27,17 @@ export const fieldGroup = style({
 
 export const fieldLabel = style([typo.body2.semibold, color["grayscale-700"]]);
 
-export const buttonWrapper = style({
-  display: "flex",
-  position: "sticky",
-  bottom: 0,
-  flexDirection: "column",
-  padding: "1.6rem",
-  width: "100%",
-});
+export const buttonWrapper = style([
+  bgColor["grayscale-0"],
+  {
+    display: "flex",
+    position: "fixed",
+    maxWidth: "43rem",
+    margin: "0 auto",
+    bottom: 0,
+    flexDirection: "column",
+    padding: "1.6rem",
+    width: "100%",
+    zIndex: vars.zIndex.bottomButton,
+  },
+]);

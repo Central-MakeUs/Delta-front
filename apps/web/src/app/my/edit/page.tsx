@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import * as s from "./edit.css";
+import * as s from "@/app/my/edit/edit.css";
 import { ROUTES } from "@/shared/constants/routes";
 import MyProfileSection from "@/app/my/edit/components/my-profile-section";
 import TextField from "@/shared/components/text-field/text-field";

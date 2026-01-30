@@ -1,8 +1,6 @@
 "use client";
 
-import { useMemo, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import axios, { type AxiosError } from "axios";
+import { useMemo } from "react";
 import * as s from "@/app/wrong/(list)/wrong.css";
 import Filter from "@/shared/components/filter/filter";
 import WrongCard from "@/app/wrong/(list)/components/wrong-card";
@@ -11,6 +9,7 @@ import BottomSheetFilter from "@/shared/components/bottom-sheet/bottom-sheet-fil
 import { useWrongFilters } from "@/app/wrong/(list)/hooks/use-wrong-filters";
 import { useProblemListQuery } from "@/shared/apis/problem-list/hooks/use-problem-list-query";
 import { mapProblemListItemToCard } from "@/app/wrong/(list)/utils/map-problem-list-to-cards";
+import { LOADING_MESSAGES } from "@/shared/constants/loading-messages";
 
 import {
   CHAPTER_FILTERS,
@@ -19,21 +18,7 @@ import {
 } from "@/app/wrong/(list)/constants/wrong-filters";
 import { mapFiltersToApiParams } from "./utils/map-filters-to-params";
 import EmptyState from "@/shared/components/empty-state/empty-state";
-import ListLoading from "@/app/wrong/(list)/components/list-loading/list-loading";
-import { ROUTES } from "@/shared/constants/routes";
-
-type ErrorResponseShape = {
-  status?: number;
-  code?: string;
-  message?: string;
-  data?: unknown;
-};
-
-const getHttpStatus = (err: unknown): number | undefined => {
-  if (!axios.isAxiosError(err)) return undefined;
-  const axErr = err as AxiosError<ErrorResponseShape>;
-  return axErr.response?.status;
-};
+import Loading from "@/shared/components/loading/loading";
 
 const WrongPage = () => {
   const {
@@ -112,7 +97,10 @@ const WrongPage = () => {
 
       <div className={s.cardSection}>
         {isLoading ? (
-          <ListLoading message="조건에 맞는 문제를 찾고 있어요…" />
+          <Loading
+            variant="inline"
+            message={LOADING_MESSAGES.FIND_MATCHING_PROBLEMS}
+          />
         ) : visibleCards.length === 0 ? (
           <div className={s.emptyStateWrap}>
             <EmptyState

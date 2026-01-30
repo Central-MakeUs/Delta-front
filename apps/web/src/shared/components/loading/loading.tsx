@@ -2,25 +2,29 @@
 
 import BackButton from "@/shared/components/app-bar/components/back-button";
 import Icon from "@/shared/components/icon/icon";
-import * as s from "@/app/wrong/create/components/analysis-loading/analysis-loading.css";
+import * as s from "@/shared/components/loading/loading.css";
 
-export type AnalysisLoadingProps = {
+export type LoadingVariant = "inline" | "overlay";
+
+export type LoadingProps = {
+  variant?: LoadingVariant;
   message?: string;
   onBack?: () => void;
 };
 
-const AnalysisLoading = ({
+const Loading = ({
+  variant = "inline",
   message = "문제의 단원과 유형을 분석 중이에요..",
   onBack,
-}: AnalysisLoadingProps) => {
+}: LoadingProps) => {
   return (
     <div
-      className={s.overlay}
+      className={variant === "overlay" ? s.overlay : s.inline}
       role="status"
       aria-live="polite"
       aria-busy="true"
     >
-      {onBack ? (
+      {variant === "overlay" && onBack ? (
         <div className={s.backButton}>
           <BackButton onClick={onBack} />
         </div>
@@ -40,4 +44,4 @@ const AnalysisLoading = ({
   );
 };
 
-export default AnalysisLoading;
+export default Loading;

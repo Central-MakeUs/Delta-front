@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteMyProfileImage } from "@/shared/apis/profile-image/profile-image-api";
 import { userProfileImageQueryKey } from "@/shared/apis/profile-image/hooks/use-profile-image-query-key";
+import { userKeys } from "@/shared/apis/user/user-keys";
 
 export const useDeleteMyProfileImageMutation = () => {
   const qc = useQueryClient();
@@ -11,6 +12,7 @@ export const useDeleteMyProfileImageMutation = () => {
     mutationFn: () => deleteMyProfileImage(),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: userProfileImageQueryKey });
+      qc.invalidateQueries({ queryKey: userKeys.me() });
     },
   });
 };

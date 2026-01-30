@@ -56,6 +56,8 @@ const MyEdit = () => {
     setFormData((prev) => ({ ...prev, profileImage: file }));
   }, []);
 
+  const isSaving = updateMyProfile.isPending || uploadProfileImage.isPending;
+
   const handleComplete = useCallback(async () => {
     if (!profile) return;
 
@@ -117,6 +119,7 @@ const MyEdit = () => {
           label="수정 완료"
           fullWidth
           tone="dark"
+          disabled={isSaving}
           onClick={handleComplete}
         />
       </div>

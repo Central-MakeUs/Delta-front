@@ -9,6 +9,8 @@ export const GRAPH_TABS = {
 
 export type GraphTab = (typeof GRAPH_TABS)[keyof typeof GRAPH_TABS];
 
+export type ErrorType = "401" | "404" | "500";
+
 export const ROUTES = {
   HOME: "/",
   AUTH: {
@@ -16,6 +18,8 @@ export const ROUTES = {
     SIGNUP_INFO: "/login/info",
     KAKAO_CALLBACK: "/oauth/kakao/callback",
   },
+  ERROR: "/error",
+  ERROR_WITH_TYPE: (type: ErrorType) => `/error?type=${type}`,
   WRONG: {
     ROOT: `/${WRONG_PREFIX}`,
     CREATE: `/${WRONG_PREFIX}/create`,
@@ -37,6 +41,7 @@ export type RouteValue =
   | typeof ROUTES.AUTH.LOGIN
   | typeof ROUTES.AUTH.SIGNUP_INFO
   | typeof ROUTES.AUTH.KAKAO_CALLBACK
+  | typeof ROUTES.ERROR
   | typeof ROUTES.WRONG.ROOT
   | typeof ROUTES.WRONG.CREATE
   | typeof ROUTES.WRONG.CREATE_DONE

@@ -16,11 +16,13 @@ type RawUserMeData = {
   nickname?: string | null;
 };
 
+export type UserNameUpdateRequest = {
+  nickname: string;
+};
+
 const normalizeMe = (raw: RawUserMeData): UserMeData => {
   const id = raw.id ?? raw.userId ?? 0;
-  if (id === 0) {
-    console.warn("[userApi] User ID is missing from response");
-  }
+  if (id === 0) console.warn("[userApi] User ID is missing from response");
   return { id, email: raw.email ?? null, nickname: raw.nickname ?? null };
 };
 
@@ -30,6 +32,10 @@ export const userApi = {
       API_PATHS.USERS.ME
     );
     return normalizeMe(unwrapApiResponse(res.data));
+  },
+
+  updateMyName: async (body: UserNameUpdateRequest) => {
+    await instance.patch(API_PATHS.USERS.ME, body);
   },
 
   withdrawMyAccount: async () => {

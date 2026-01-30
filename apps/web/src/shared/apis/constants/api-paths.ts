@@ -9,6 +9,7 @@ export const API_PATHS = {
   USERS: {
     ME: `${API_V1}/users/me`,
     WITHDRAWAL: `${API_V1}/users/withdrawal`,
+    PROFILE_IMAGE: "/api/v1/users/me/profile-image",
   },
   STORAGE: {
     IMAGES: `${API_V1}/storage/images`,

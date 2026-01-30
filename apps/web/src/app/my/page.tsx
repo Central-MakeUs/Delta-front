@@ -7,6 +7,7 @@ import MyPageView from "@/app/my/components/my-page-view/my-page-view";
 import { useMyProfileQuery } from "@/shared/apis/user/hooks/use-my-profile-query";
 import { useMyProfileImageQuery } from "@/shared/apis/profile-image/hooks/use-my-profile-image-query";
 import { ROUTES } from "@/shared/constants/routes";
+import { readProfileImageUrl } from "@/app/my/utils/read-profile-image-url";
 
 type ErrorResponseShape = {
   status?: number;
@@ -21,23 +22,8 @@ const getHttpStatus = (err: unknown): number | undefined => {
   return axErr.response?.status;
 };
 
-type ProfileImageShape = {
-  viewUrl?: unknown;
-  imageUrl?: unknown;
-  url?: unknown;
-};
-
-const readProfileImageUrl = (v: unknown): string | null => {
-  if (!v || typeof v !== "object") return null;
-  const o = v as ProfileImageShape;
-
-  const candidate = o.viewUrl ?? o.imageUrl ?? o.url;
-  return typeof candidate === "string" ? candidate : null;
-};
-
 const MyPage = () => {
   const router = useRouter();
-
   const {
     data: profile,
     isLoading: isProfileLoading,

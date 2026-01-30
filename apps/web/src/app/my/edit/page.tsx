@@ -11,34 +11,20 @@ import { useMyProfileQuery } from "@/shared/apis/user/hooks/use-my-profile-query
 import { useMyProfileImageQuery } from "@/shared/apis/profile-image/hooks/use-my-profile-image-query";
 import { useUploadMyProfileImageMutation } from "@/shared/apis/profile-image/hooks/use-upload-my-profile-image-mutation";
 import { useUpdateMyProfileMutation } from "@/shared/apis/user/hooks/use-update-my-name-mutation";
+import { readProfileImageUrl } from "@/app/my/utils/read-profile-image-url";
 
 export type LoginInfoFormData = {
   name: string;
   profileImage: File | null;
 };
 
-type ProfileImageShape = {
-  viewUrl?: unknown;
-  imageUrl?: unknown;
-  url?: unknown;
-};
-
-const readImageUrl = (v: unknown): string | null => {
-  if (!v || typeof v !== "object") return null;
-  const o = v as ProfileImageShape;
-  const candidate = o.viewUrl ?? o.imageUrl ?? o.url;
-  return typeof candidate === "string" ? candidate : null;
-};
-
 const MyEdit = () => {
   const router = useRouter();
-
   const { data: profile, isLoading: isProfileLoading } = useMyProfileQuery();
   const { data: profileImage } = useMyProfileImageQuery();
 
   const uploadProfileImage = useUploadMyProfileImageMutation();
   const updateMyProfile = useUpdateMyProfileMutation();
-
   const [formData, setFormData] = useState<LoginInfoFormData>({
     name: "",
     profileImage: null,
@@ -47,7 +33,7 @@ const MyEdit = () => {
   const name = formData.name;
 
   const profileImageUrl = useMemo(
-    () => readImageUrl(profileImage),
+    () => readProfileImageUrl(profileImage),
     [profileImage]
   );
 

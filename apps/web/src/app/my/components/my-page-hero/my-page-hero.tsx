@@ -38,7 +38,7 @@ const MyPageHero = ({ userName, profileImageUrl = null }: MyPageHeroProps) => {
             aria-label="프로필 수정"
             onClick={goEditProfile}
           >
-            <Icon name="wrong-edit" color="grayscale-500" size={1.6} />
+            <Icon name="wrong-edit" size={1.6} />
           </button>
         </div>
       </div>

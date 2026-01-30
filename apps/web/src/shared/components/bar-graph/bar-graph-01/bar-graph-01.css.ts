@@ -6,6 +6,7 @@ import { typo } from "@/shared/styles/typography.css";
 export const fillPercentVar = createVar();
 export const tipOverlapVar = createVar();
 export const motionMsVar = createVar();
+export const fillMaskVar = createVar();
 
 const BAR_HEIGHT = "2.0rem";
 const BAR_INSET_Y = "0.6rem";
@@ -24,6 +25,27 @@ const TIP_MASK_SVG = encodeURIComponent(`
   />
 </svg>
 `);
+
+const ZERO_FILL_MASK_SVG = encodeURIComponent(`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+  <path
+    d="
+      M85 0
+      H70
+      Q100 0 100 30
+      V70
+      Q100 100 70 100
+      H85
+      Q0 100 0 50
+      Q0 0 85 0
+      Z
+    "
+    fill="black"
+  />
+</svg>
+`);
+
+export const zeroFillMaskUrl = `url("data:image/svg+xml,${ZERO_FILL_MASK_SVG}")`;
 
 export const root = style({
   vars: {
@@ -52,6 +74,9 @@ export const track = style([
 export const fill = style([
   bgColor["main-500"],
   {
+    vars: {
+      [fillMaskVar]: "none",
+    },
     position: "absolute",
     left: 0,
     top: BAR_INSET_Y,
@@ -59,6 +84,14 @@ export const fill = style([
     width: fillPercentVar,
     minWidth: tipOverlapVar,
     borderRadius: vars.radius.full,
+    WebkitMaskImage: fillMaskVar,
+    WebkitMaskRepeat: "no-repeat",
+    WebkitMaskSize: "100% 100%",
+    WebkitMaskPosition: "center",
+    maskImage: fillMaskVar,
+    maskRepeat: "no-repeat",
+    maskSize: "100% 100%",
+    maskPosition: "center",
     zIndex: vars.zIndex.contentOverlay,
     transitionProperty: "width",
     transitionDuration: motionMsVar,

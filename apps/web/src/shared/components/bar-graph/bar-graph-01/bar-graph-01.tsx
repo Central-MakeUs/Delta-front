@@ -44,6 +44,7 @@ export const BarGraph01 = ({
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   const rawPercent = clamp(percent, 0, 100);
+
   const targetVisualPercent = computeVisualPercent({
     rawPercent,
     minPercent,
@@ -55,6 +56,7 @@ export const BarGraph01 = ({
 
   const reduced = prefersReducedMotion();
   const motionMs = reduced ? 0 : computeMotionMs(rawPercent);
+  const isSolvedZeroFill = rawPercent === 0 && showMinFillOnZero;
 
   useBarGraphMotion({
     rootRef,
@@ -81,7 +83,19 @@ export const BarGraph01 = ({
       })}
     >
       <div className={s.track} aria-hidden />
-      {showFill && <div className={s.fill} aria-hidden />}
+      {showFill && (
+        <div
+          className={s.fill}
+          aria-hidden
+          style={
+            isSolvedZeroFill
+              ? assignInlineVars({
+                  [s.fillMaskVar]: s.zeroFillMaskUrl,
+                })
+              : undefined
+          }
+        />
+      )}
       {showFill && shouldShowTip && <div className={s.tip} aria-hidden />}
       {label && <span className={s.label}>{label}</span>}
     </div>

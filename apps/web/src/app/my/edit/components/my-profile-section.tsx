@@ -3,7 +3,6 @@
 import { useState, useEffect, useMemo, useRef, type MouseEvent } from "react";
 import clsx from "clsx";
 import Image from "next/image";
-
 import Icon from "@/shared/components/icon/icon";
 import ActionCard from "@/shared/components/action-card/action-card";
 import * as modalStyles from "@/shared/components/modal/modal/modal.css";

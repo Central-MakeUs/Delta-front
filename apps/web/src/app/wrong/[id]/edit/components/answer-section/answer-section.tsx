@@ -2,7 +2,7 @@ import { Toggle } from "@/shared/components/toggle/toggle";
 import { NumberChoice } from "@/shared/components/number-choice/number-choice";
 import * as styles from "./answer-section.css";
 import { TextField } from "@/shared/components/text-field/text-field";
-import { WrongDetailData } from "../../../components/mocks/wrong-dummy";
+import type { WrongDetailSectionData } from "../../../components/types";
 
 export type QuestionType = "objective" | "subjective";
 
@@ -11,7 +11,7 @@ const TOGGLE_OPTIONS = [
   { value: "subjective" as QuestionType, label: "주관식" },
 ] as const;
 
-export interface AnswerSectionProps extends WrongDetailData {
+export interface AnswerSectionProps extends WrongDetailSectionData {
   onQuestionTypeChange: (value: QuestionType) => void;
   onNumberSelect: (value: number) => void;
   onAnswerChange: (value: string) => void;

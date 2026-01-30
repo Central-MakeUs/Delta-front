@@ -1,20 +1,39 @@
 "use client";
 
+import { useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import axios, { type AxiosError } from "axios";
 import * as s from "@/app/wrong/(list)/wrong.css";
 import Filter from "@/shared/components/filter/filter";
 import WrongCard from "@/app/wrong/(list)/components/wrong-card";
 import BottomSheetSort from "@/shared/components/bottom-sheet/bottom-sheet-sort/bottom-sheet-sort";
 import BottomSheetFilter from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter";
-import { useVisibleWrongCards } from "@/app/wrong/(list)/hooks/use-visible-wrong-cards";
 import { useWrongFilters } from "@/app/wrong/(list)/hooks/use-wrong-filters";
-import { WRONG_CARDS } from "@/app/wrong/(list)/data/wrong-cards";
+import { useProblemListQuery } from "@/shared/apis/problem-list/hooks/use-problem-list-query";
+import { mapProblemListItemToCard } from "@/app/wrong/(list)/utils/map-problem-list-to-cards";
 
 import {
   CHAPTER_FILTERS,
-  DROPDOWN_SECTION,
   SORT_OPTIONS,
   TYPE_FILTERS,
 } from "@/app/wrong/(list)/constants/wrong-filters";
+import { mapFiltersToApiParams } from "./utils/map-filters-to-params";
+import EmptyState from "@/shared/components/empty-state/empty-state";
+import ListLoading from "@/app/wrong/(list)/components/list-loading/list-loading";
+import { ROUTES } from "@/shared/constants/routes";
+
+type ErrorResponseShape = {
+  status?: number;
+  code?: string;
+  message?: string;
+  data?: unknown;
+};
+
+const getHttpStatus = (err: unknown): number | undefined => {
+  if (!axios.isAxiosError(err)) return undefined;
+  const axErr = err as AxiosError<ErrorResponseShape>;
+  return axErr.response?.status;
+};
 
 const WrongPage = () => {
   const {
@@ -37,23 +56,31 @@ const WrongPage = () => {
     applyFilter,
   } = useWrongFilters();
 
-  const visibleCards = useVisibleWrongCards({
-    cards: WRONG_CARDS,
-    selectedChapterIds,
-    selectedTypeIds,
-    selectedDropdownIds,
-    selectedSortId,
+  const apiParams = useMemo(
+    () =>
+      mapFiltersToApiParams({
+        selectedChapterIds,
+        selectedTypeIds,
+        selectedDropdownIds,
+        selectedSortId,
+      }),
+    [selectedChapterIds, selectedTypeIds, selectedDropdownIds, selectedSortId]
+  );
+
+  const { data, isLoading } = useProblemListQuery({
+    params: apiParams,
   });
+
+  const visibleCards = useMemo(() => {
+    if (!data?.content) return [];
+    return data.content.map(mapProblemListItemToCard);
+  }, [data]);
 
   return (
     <div className={s.page}>
       <div className={s.filterSection}>
         <div className={s.filterRow}>
-          <Filter
-            label="필터"
-            icon="filter"
-            onClick={() => openFilter("chapter")}
-          />
+          <Filter label="필터" icon="filter" onClick={() => openFilter()} />
           <Filter
             label={chapterFilterLabel}
             icon="chevron"
@@ -68,7 +95,9 @@ const WrongPage = () => {
 
         <div className={s.sortRow}>
           <span className={s.wrongLabel}>
-            <p className={s.wrongCount}>{visibleCards.length}개</p>
+            <p className={s.wrongCount}>
+              {isLoading ? "..." : (data?.totalElements ?? 0)}개
+            </p>
             <p>의 오답</p>
           </span>
 
@@ -82,17 +111,32 @@ const WrongPage = () => {
       </div>
 
       <div className={s.cardSection}>
-        {visibleCards.map((card) => (
-          <WrongCard
-            key={card.id}
-            title={card.title}
-            date={card.date}
-            imageSrc={card.imageSrc}
-            imageAlt={card.imageAlt}
-            chips={card.chips}
-            href={card.href}
-          />
-        ))}
+        {isLoading ? (
+          <ListLoading message="조건에 맞는 문제를 찾고 있어요…" />
+        ) : visibleCards.length === 0 ? (
+          <div className={s.emptyStateWrap}>
+            <EmptyState
+              label={`조건에 맞는 문제가 없어요.\n필터를 다시 설정해주세요.`}
+              iconName="filter"
+              iconSize={3.6}
+              iconWrapperClassName={s.emptyStateIconWrap}
+              labelClassName={s.emptyStateText}
+            />
+          </div>
+        ) : (
+          visibleCards.map((card) => (
+            <WrongCard
+              key={card.id}
+              title={card.title}
+              date={card.date}
+              imageSrc={card.imageSrc}
+              imageAlt="오답 문제 이미지"
+              chips={card.chips}
+              href={card.href}
+              isCompleted={card.isCompleted}
+            />
+          ))
+        )}
       </div>
 
       {isSortOpen && (
@@ -111,7 +155,6 @@ const WrongPage = () => {
           onClose={closeFilter}
           chapterFilters={CHAPTER_FILTERS}
           typeFilters={TYPE_FILTERS}
-          dropdownSection={DROPDOWN_SECTION}
           selectedChapterIds={selectedChapterIds}
           selectedTypeIds={selectedTypeIds}
           selectedDropdownIds={selectedDropdownIds}

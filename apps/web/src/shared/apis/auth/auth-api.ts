@@ -10,11 +10,29 @@ export type SocialLoginData = {
   isNewUser?: boolean;
 };
 
+export type AppleUserFromApple = {
+  name?: { firstName?: string; lastName?: string };
+  email?: string;
+  sub?: string;
+};
+
 export const authApi = {
   kakaoLogin: async (params: { code: string }) => {
     const res = await instance.post<ApiResponse<SocialLoginData>>(
       API_PATHS.AUTH.KAKAO_LOGIN,
       { code: params.code }
+    );
+
+    return unwrapApiResponse(res.data);
+  },
+
+  appleLogin: async (params: {
+    code: string;
+    user?: AppleUserFromApple | null;
+  }) => {
+    const res = await instance.post<ApiResponse<SocialLoginData>>(
+      API_PATHS.AUTH.APPLE_LOGIN,
+      { code: params.code, user: params.user ?? null }
     );
 
     return unwrapApiResponse(res.data);

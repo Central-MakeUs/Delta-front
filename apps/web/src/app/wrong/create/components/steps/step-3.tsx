@@ -57,6 +57,7 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
   const handleRemove = useCallback(
     async (typeId: string) => {
       if (isReordering) return;
+
       await runRemove(typeId, async () => {
         await removeType(typeId);
       });
@@ -67,9 +68,12 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
   const confirmDelete = useCallback(() => {
     if (!deleteTarget) return;
     void handleRemove(deleteTarget.id);
-  }, [deleteTarget, handleRemove]);
+    closeDeleteModal();
+  }, [closeDeleteModal, deleteTarget, handleRemove]);
 
   if (isTypeLoading) return null;
+
+  const isDraggingNow = Boolean(draggingId);
 
   return (
     <>
@@ -92,9 +96,10 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
           {orderedItems.map((item) => {
             const isSelected = viewSelectedTypeIds.includes(item.id);
             const sortableProps = getSortableProps(item);
-
-            const deletingOrLocked =
-              (removingId === item.id && item.custom) || isReordering;
+            const isRemovingThis = item.custom && removingId === item.id;
+            const cardDisabled = isRemovingThis;
+            const deleteActionDisabled =
+              !item.custom || isRemovingThis || isReordering || isDraggingNow;
 
             return (
               <div
@@ -113,19 +118,20 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
               >
                 <div
                   role="button"
-                  tabIndex={deletingOrLocked ? -1 : 0}
+                  tabIndex={cardDisabled ? -1 : 0}
                   aria-pressed={isSelected}
-                  aria-disabled={deletingOrLocked || undefined}
+                  aria-disabled={cardDisabled || undefined}
                   className={s.typeCard({
                     tone: isSelected ? "dark" : "surface",
-                    disabled: deletingOrLocked,
+                    disabled: cardDisabled,
                   })}
                   onClick={() => {
-                    if (deletingOrLocked) return;
+                    if (cardDisabled) return;
+                    if (isDraggingNow) return;
                     toggleType(item);
                   }}
                   onKeyDown={(e) => {
-                    if (deletingOrLocked) return;
+                    if (cardDisabled) return;
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
                       toggleType(item);
@@ -134,6 +140,7 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
                 >
                   <div className={s.typeCardRow}>
                     <span className={s.typeCardLabel}>{item.label}</span>
+
                     {item.custom ? (
                       <button
                         type="button"
@@ -142,9 +149,9 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
                           isSelected
                             ? s.typeCardActionOnDark
                             : s.typeCardActionOnSurface,
-                          deletingOrLocked && s.typeCardActionDisabled
+                          deleteActionDisabled && s.typeCardActionDisabled
                         )}
-                        disabled={deletingOrLocked}
+                        disabled={deleteActionDisabled}
                         aria-label={`${item.label} 삭제`}
                         onPointerDown={(e) => {
                           e.stopPropagation();
@@ -152,7 +159,7 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          if (deletingOrLocked) return;
+                          if (deleteActionDisabled) return;
                           openDeleteModal({ id: item.id, label: item.label });
                         }}
                       >
@@ -175,6 +182,7 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
           />
         </div>
       </div>
+
       <Modal
         isOpen={Boolean(deleteTarget)}
         onClose={closeDeleteModal}

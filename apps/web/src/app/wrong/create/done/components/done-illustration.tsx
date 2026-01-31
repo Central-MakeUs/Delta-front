@@ -21,6 +21,7 @@ export const DoneIllustration = ({ className }: DoneIllustrationProps) => {
       <div className={s.imageWrap} aria-hidden>
         <Image
           className={s.image}
+          style={{ width: "100%", height: "auto" }}
           src="/wrong-create-done.svg"
           alt=""
           width={350}

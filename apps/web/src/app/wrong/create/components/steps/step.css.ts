@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
-import { color } from "@/shared/styles/color.css";
+import { color, bgColor } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
 import { vars } from "@/shared/styles/theme.css";
 
@@ -168,4 +168,140 @@ export const numberTitleRow = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
+});
+
+export const typeDeleteOverlayDisabled = style({
+  opacity: 0.4,
+  cursor: "default",
+});
+
+export const typeButtonWrap = style({
+  position: "relative",
+  width: "100%",
+  display: "flex",
+  flex: "1 1 0",
+  minWidth: 0,
+});
+
+export const typeButton = style({
+  width: "100%",
+  flex: "1 1 0",
+  minWidth: 0,
+});
+
+export const typeDeleteOverlay = style([
+  bgColor["grayscale-0"],
+  color["error-500"],
+  {
+    position: "absolute",
+    top: "0.8rem",
+    right: "0.8rem",
+    zIndex: vars.zIndex.contentOverlay,
+    width: "2.4rem",
+    height: "2.4rem",
+    borderRadius: vars.radius.full,
+    border: "1px solid currentColor",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+  },
+]);
+
+export const typeOverlayDisabled = style({
+  opacity: 0.4,
+  cursor: "default",
+});
+
+export const typeDragging = style({
+  opacity: 0.75,
+});
+
+export const typeDraggableArea = style({
+  touchAction: "none",
+  userSelect: "none",
+  WebkitUserSelect: "none",
+  WebkitTouchCallout: "none",
+  WebkitTapHighlightColor: "transparent",
+});
+
+export const typeCard = recipe({
+  base: [
+    typo.body2.medium,
+    {
+      width: "100%",
+      minHeight: "5.6rem",
+      padding: "1.6rem",
+      borderRadius: vars.radius.r12,
+
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+
+      cursor: "pointer",
+      outline: "none",
+      userSelect: "none",
+
+      selectors: {
+        "&:focus-visible": {
+          boxShadow: `0 0 0 0.2rem ${vars.color.grayscale[200]}`,
+        },
+      },
+    },
+  ],
+  variants: {
+    tone: {
+      surface: {
+        background: vars.color.grayscale[50],
+        color: vars.color.grayscale[700],
+      },
+      dark: {
+        background: vars.color.grayscale[900],
+        color: vars.color.grayscale[0],
+      },
+    },
+    disabled: {
+      true: { opacity: 0.4, cursor: "default" },
+      false: {},
+    },
+  },
+  defaultVariants: {
+    tone: "surface",
+    disabled: false,
+  },
+});
+
+export const typeCardRow = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "1.2rem",
+});
+
+export const typeCardLabel = style({
+  display: "block",
+});
+
+export const typeCardAction = style({
+  width: "2.4rem",
+  height: "2.4rem",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  border: "none",
+  background: "transparent",
+  padding: 0,
+  cursor: "pointer",
+});
+
+export const typeCardActionOnSurface = style({
+  color: vars.color.grayscale[400],
+});
+
+export const typeCardActionOnDark = style({
+  color: vars.color.grayscale[0],
+});
+
+export const typeCardActionDisabled = style({
+  cursor: "default",
 });

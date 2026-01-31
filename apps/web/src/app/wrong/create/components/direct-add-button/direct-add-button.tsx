@@ -28,7 +28,7 @@ type InputModeProps = CommonProps & {
   mode: "input";
   value: string;
   onValueChange: (next: string) => void;
-  onSubmit: () => void;
+  onSubmit: () => void | Promise<void>;
   onCancel: () => void;
 };
 
@@ -39,6 +39,8 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
   const ariaLabel = props.ariaLabel ?? label;
 
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const pendingSubmitRef = useRef(false);
+  const submittingRef = useRef(false);
 
   useEffect(() => {
     if (props.mode !== "input") return;
@@ -46,6 +48,21 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
   }, [props.mode]);
 
   if (props.mode === "input") {
+    const submit = () => {
+      if (submittingRef.current) return;
+
+      const trimmed = props.value.trim();
+      if (!trimmed) {
+        props.onCancel();
+        return;
+      }
+
+      submittingRef.current = true;
+      Promise.resolve(props.onSubmit()).finally(() => {
+        submittingRef.current = false;
+      });
+    };
+
     const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -53,14 +70,32 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
         return;
       }
 
-      if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+      if (e.key !== "Enter") return;
+
+      if (e.nativeEvent.isComposing) {
+        pendingSubmitRef.current = true;
         e.preventDefault();
-        props.onSubmit();
+        return;
       }
+
+      e.preventDefault();
+      submit();
+    };
+
+    const handleCompositionEnd: React.CompositionEventHandler<
+      HTMLInputElement
+    > = () => {
+      if (!pendingSubmitRef.current) return;
+      pendingSubmitRef.current = false;
+      submit();
+    };
+
+    const handleBlur: React.FocusEventHandler<HTMLInputElement> = () => {
+      if (!props.value.trim()) props.onCancel();
     };
 
     return (
-      <div
+      <form
         className={clsx(
           s.inputWrapper,
           bgColor["grayscale-0"],
@@ -69,6 +104,10 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
           props.className
         )}
         onClick={() => inputRef.current?.focus()}
+        onSubmit={(e) => {
+          e.preventDefault();
+          submit();
+        }}
       >
         <input
           ref={inputRef}
@@ -76,11 +115,18 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
           value={props.value}
           onChange={(e) => props.onValueChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          onBlur={props.onCancel}
+          onCompositionEnd={handleCompositionEnd}
+          onBlur={handleBlur}
           placeholder={label}
           aria-label={ariaLabel}
+          enterKeyHint="done"
+          inputMode="text"
+          autoCapitalize="none"
+          autoCorrect="off"
         />
-      </div>
+
+        <button type="submit" className={s.srOnly} tabIndex={-1} aria-hidden />
+      </form>
     );
   }
 

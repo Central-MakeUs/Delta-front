@@ -84,7 +84,6 @@ const normalizeSummary = (
           }
         : null,
 
-      // ✅ 변경: type -> types
       types: (rawTypes ?? []).map((t) => ({
         id: t?.id ?? "",
         name: t?.name ?? "",

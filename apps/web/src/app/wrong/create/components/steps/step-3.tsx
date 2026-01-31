@@ -134,7 +134,6 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
                 >
                   <div className={s.typeCardRow}>
                     <span className={s.typeCardLabel}>{item.label}</span>
-
                     {item.custom ? (
                       <button
                         type="button"
@@ -148,7 +147,6 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
                         disabled={deletingOrLocked}
                         aria-label={`${item.label} 삭제`}
                         onPointerDown={(e) => {
-                          // 드래그 시작/버튼 클릭 버블링 방지
                           e.stopPropagation();
                         }}
                         onClick={(e) => {

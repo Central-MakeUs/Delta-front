@@ -68,7 +68,6 @@ export const useStep3Selection = ({
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
-
   const spString = sp.toString();
   const params = useMemo(() => new URLSearchParams(spString), [spString]);
   const urlTypeIds = useMemo(() => readTypeIds(params), [params]);

@@ -5,7 +5,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useProblemScanSummaryQuery } from "@/shared/apis/problem-scan/hooks/use-problem-scan-summary-query";
 import { setParams } from "@/app/wrong/create/utils/url-params";
 import { normalize } from "@/app/wrong/create/utils/label-match";
-
 import { useProblemTypesQuery } from "@/shared/apis/problem-type/hooks/use-problem-types-query";
 import { useCreateCustomTypeMutation } from "@/shared/apis/problem-type/hooks/use-create-custom-type-mutation";
 import { useSetProblemTypeActiveMutation } from "@/shared/apis/problem-type/hooks/use-set-problem-type-active-mutation";
@@ -199,7 +198,6 @@ export const useStep3Selection = ({
     [onNextEnabledChange, pushTypeIds, viewSelectedTypeIds]
   );
 
-  // 커스텀 추가 (POST)
   const createMut = useCreateCustomTypeMutation();
 
   const [isAdding, setIsAdding] = useState(false);
@@ -222,7 +220,6 @@ export const useStep3Selection = ({
       return;
     }
 
-    // 이미 존재하는 name이면 그냥 선택만
     const existing = allTypes.find(
       (t) => normalizeName(t.name) === normalizeName(nextLabel)
     );
@@ -297,7 +294,6 @@ export const useStep3Selection = ({
     async (typeId: string) => {
       await activeMut.mutateAsync({ typeId, body: { active: false } });
 
-      // 선택에서 제거도 같이
       const base = viewSelectedTypeIds;
       const next = base.filter((id) => id !== typeId);
 

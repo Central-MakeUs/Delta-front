@@ -28,7 +28,7 @@ type InputModeProps = CommonProps & {
   mode: "input";
   value: string;
   onValueChange: (next: string) => void;
-  onSubmit: () => void;
+  onSubmit: () => void | Promise<void>;
   onCancel: () => void;
 };
 
@@ -39,6 +39,7 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
   const ariaLabel = props.ariaLabel ?? label;
 
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const pendingSubmitRef = useRef(false);
 
   useEffect(() => {
     if (props.mode !== "input") return;
@@ -53,10 +54,23 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
         return;
       }
 
-      if (e.key === "Enter" && !e.nativeEvent.isComposing) {
-        e.preventDefault();
-        props.onSubmit();
+      if (e.key !== "Enter") return;
+
+      if (e.nativeEvent.isComposing) {
+        pendingSubmitRef.current = true;
+        return;
       }
+
+      e.preventDefault();
+      void props.onSubmit();
+    };
+
+    const handleCompositionEnd: React.CompositionEventHandler<
+      HTMLInputElement
+    > = () => {
+      if (!pendingSubmitRef.current) return;
+      pendingSubmitRef.current = false;
+      void props.onSubmit();
     };
 
     return (
@@ -76,6 +90,7 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
           value={props.value}
           onChange={(e) => props.onValueChange(e.target.value)}
           onKeyDown={handleKeyDown}
+          onCompositionEnd={handleCompositionEnd}
           onBlur={props.onCancel}
           placeholder={label}
           aria-label={ariaLabel}

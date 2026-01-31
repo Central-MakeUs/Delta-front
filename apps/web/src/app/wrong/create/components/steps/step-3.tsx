@@ -15,24 +15,18 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
     isTypeLoading,
     viewItems,
     viewSelectedTypeIds,
-
     suggestedNames,
     addSuggested,
-
     isAdding,
     draft,
     setDraft,
     openAdd,
     closeAdd,
     commitAdd,
-
     toggleType,
   } = useStep3Selection({ scanId, onNextEnabledChange });
 
-  if (isTypeLoading) {
-    // 여기 로딩 UI는 프로젝트 스타일대로 교체
-    return <div className={s.container}>유형 불러오는 중…</div>;
-  }
+  if (isTypeLoading) return null;
 
   return (
     <div className={s.container}>

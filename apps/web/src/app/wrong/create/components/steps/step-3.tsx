@@ -12,19 +12,44 @@ type Step3Props = StepProps & {
 
 const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
   const {
+    isTypeLoading,
     viewItems,
     viewSelectedTypeIds,
+
+    suggestedNames,
+    addSuggested,
+
     isAdding,
     draft,
     setDraft,
     openAdd,
     closeAdd,
     commitAdd,
+
     toggleType,
   } = useStep3Selection({ scanId, onNextEnabledChange });
 
+  if (isTypeLoading) {
+    // 여기 로딩 UI는 프로젝트 스타일대로 교체
+    return <div className={s.container}>유형 불러오는 중…</div>;
+  }
+
   return (
     <div className={s.container}>
+      {suggestedNames.length > 0 ? (
+        <div className={s.buttonGrid}>
+          {suggestedNames.map((name) => (
+            <Button
+              key={name}
+              size="56"
+              label={`${name} 추가`}
+              tone="surface"
+              onClick={() => void addSuggested(name)}
+            />
+          ))}
+        </div>
+      ) : null}
+
       <div className={s.buttonGrid}>
         {viewItems.map((item) => {
           const isSelected = viewSelectedTypeIds.includes(item.id);
@@ -45,7 +70,7 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
           mode={isAdding ? "input" : "button"}
           value={draft}
           onValueChange={setDraft}
-          onSubmit={commitAdd}
+          onSubmit={() => void commitAdd()}
           onCancel={closeAdd}
           onClick={openAdd}
         />

@@ -3,32 +3,45 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useProblemScanSummaryQuery } from "@/shared/apis/problem-scan/hooks/use-problem-scan-summary-query";
-import { TYPE_FILTERS } from "@/app/wrong/(list)/constants/wrong-filters";
-import { normalize } from "@/app/wrong/create/utils/label-match";
 import { setParams } from "@/app/wrong/create/utils/url-params";
-import {
-  type TypeItem,
-  computeTypeRecommendation,
-  mergeExtraItem,
-  normalizeTypeLabel,
-  toKebabId,
-} from "@/app/wrong/create/utils/type-recommend";
+import { normalize } from "@/app/wrong/create/utils/label-match";
+
+import { useProblemTypesQuery } from "@/shared/apis/problem-type/hooks/use-problem-types-query";
+import { useCreateCustomTypeMutation } from "@/shared/apis/problem-type/hooks/use-create-custom-type-mutation";
+import { useSetProblemTypeActiveMutation } from "@/shared/apis/problem-type/hooks/use-set-problem-type-active-mutation";
+import { useUpdateCustomTypeMutation } from "@/shared/apis/problem-type/hooks/use-update-custom-type-mutation";
+import type { ProblemTypeItem } from "@/shared/apis/problem-type/problem-type-types";
 
 type UseStep3SelectionArgs = {
   scanId: number | string | null;
   onNextEnabledChange?: (enabled: boolean) => void;
 };
 
+type ViewTypeItem = {
+  id: string;
+  label: string;
+  custom: boolean;
+  active: boolean;
+  sortOrder: number;
+};
+
 type UseStep3SelectionReturn = {
-  viewItems: readonly TypeItem[];
+  isTypeLoading: boolean;
+  viewItems: readonly ViewTypeItem[];
   viewSelectedTypeIds: readonly string[];
+  suggestedNames: readonly string[];
+  addSuggested: (name: string) => Promise<void>;
   isAdding: boolean;
   draft: string;
   setDraft: (v: string) => void;
   openAdd: () => void;
   closeAdd: () => void;
-  commitAdd: () => void;
-  toggleType: (item: TypeItem) => void;
+  commitAdd: () => Promise<void>;
+  toggleType: (item: ViewTypeItem) => void;
+  removeType: (typeId: string) => Promise<void>;
+  restoreType: (typeId: string) => Promise<void>;
+  renameType: (typeId: string, name: string) => Promise<void>;
+  updateSortOrder: (typeId: string, sortOrder: number) => Promise<void>;
 };
 
 const readTypeIds = (sp: URLSearchParams) => {
@@ -41,6 +54,14 @@ const readTypeIds = (sp: URLSearchParams) => {
     .filter(Boolean);
 };
 
+const normalizeName = (v: string) => normalize(v).toLowerCase();
+
+const findTypeIdByName = (types: ProblemTypeItem[], name: string) => {
+  const key = normalizeName(name);
+  const hit = types.find((t) => normalizeName(t.name) === key);
+  return hit?.id ?? null;
+};
+
 export const useStep3Selection = ({
   scanId,
   onNextEnabledChange,
@@ -51,18 +72,31 @@ export const useStep3Selection = ({
 
   const spString = sp.toString();
   const params = useMemo(() => new URLSearchParams(spString), [spString]);
-
   const urlTypeIds = useMemo(() => readTypeIds(params), [params]);
 
-  const [items, setItems] = useState<TypeItem[]>(() =>
-    TYPE_FILTERS.map((v) => ({ id: v.id, label: v.label }))
-  );
+  const { data: allTypesRaw, isLoading: isTypeLoading } =
+    useProblemTypesQuery();
+  const allTypes = allTypesRaw ?? [];
+
+  const activeTypes = useMemo(() => {
+    return allTypes
+      .filter((t) => t.active)
+      .slice()
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+  }, [allTypes]);
+
+  const viewItems = useMemo<readonly ViewTypeItem[]>(() => {
+    return activeTypes.map((t) => ({
+      id: t.id,
+      label: t.name,
+      custom: t.custom,
+      active: t.active,
+      sortOrder: t.sortOrder,
+    }));
+  }, [activeTypes]);
 
   const [selectedTypeIds, setSelectedTypeIds] = useState<string[]>([]);
   const [hasUserTouched, setHasUserTouched] = useState(false);
-
-  const [isAdding, setIsAdding] = useState(false);
-  const [draft, setDraft] = useState("");
 
   const { data: summary } = useProblemScanSummaryQuery(scanId);
 
@@ -71,36 +105,21 @@ export const useStep3Selection = ({
       summary?.classification.types?.map((t) => t?.name).filter(Boolean) ?? [];
 
     const selectedIds: string[] = [];
-    const extraItems: TypeItem[] = [];
+    const unknownNames: string[] = [];
 
     aiTypeNames.forEach((name) => {
-      const rec = computeTypeRecommendation(items, name ?? null);
-
-      if (rec?.selectedId && !selectedIds.includes(rec.selectedId)) {
-        selectedIds.push(rec.selectedId);
-      }
-
-      if (rec?.extraItem) {
-        const exists = extraItems.some(
-          (v) =>
-            v.id === rec.extraItem!.id ||
-            normalizeTypeLabel(v.label) ===
-              normalizeTypeLabel(rec.extraItem!.label)
-        );
-        if (!exists) extraItems.push(rec.extraItem);
+      const id = findTypeIdByName(allTypes, name);
+      if (id) {
+        if (!selectedIds.includes(id)) selectedIds.push(id);
+      } else {
+        const cleaned = normalize(name);
+        if (cleaned && !unknownNames.includes(cleaned))
+          unknownNames.push(cleaned);
       }
     });
 
-    return { selectedIds, extraItems };
-  }, [items, summary]);
-
-  const viewItems = useMemo(() => {
-    if (hasUserTouched) return items;
-
-    return recommended.extraItems.reduce((acc, extra) => {
-      return mergeExtraItem(acc, extra);
-    }, items);
-  }, [hasUserTouched, items, recommended.extraItems]);
+    return { selectedIds, unknownNames };
+  }, [allTypes, summary]);
 
   const viewSelectedTypeIds = useMemo(() => {
     if (urlTypeIds.length > 0) return urlTypeIds;
@@ -117,6 +136,7 @@ export const useStep3Selection = ({
 
   useEffect(() => {
     if (didHydrateRef.current) return;
+    if (isTypeLoading) return;
 
     if (urlTypeIds.length > 0) {
       didHydrateRef.current = true;
@@ -131,11 +151,7 @@ export const useStep3Selection = ({
     const nextIds = recommended.selectedIds;
     if (nextIds.length === 0) return;
 
-    const nextValue = nextIds.join(",");
-
-    const next = setParams(params, {
-      typeIds: nextValue,
-    });
+    const next = setParams(params, { typeIds: nextIds.join(",") });
     const nextQuery = next.toString();
 
     if (nextQuery !== spString) {
@@ -145,21 +161,20 @@ export const useStep3Selection = ({
     didHydrateRef.current = true;
   }, [
     hasUserTouched,
-    urlTypeIds.length,
-    recommended.selectedIds,
+    isTypeLoading,
     params,
-    spString,
     pathname,
+    recommended.selectedIds,
     router,
+    spString,
+    urlTypeIds.length,
   ]);
 
   const pushTypeIds = useCallback(
     (nextTypeIds: string[]) => {
       const nextValue = nextTypeIds.length > 0 ? nextTypeIds.join(",") : null;
 
-      const next = setParams(params, {
-        typeIds: nextValue,
-      });
+      const next = setParams(params, { typeIds: nextValue });
       const nextQuery = next.toString();
       if (nextQuery === spString) return;
 
@@ -167,6 +182,28 @@ export const useStep3Selection = ({
     },
     [params, pathname, router, spString]
   );
+
+  const toggleType = useCallback(
+    (item: ViewTypeItem) => {
+      setHasUserTouched(true);
+
+      const base = viewSelectedTypeIds;
+      const next = base.includes(item.id)
+        ? base.filter((id) => id !== item.id)
+        : [...base, item.id];
+
+      setSelectedTypeIds(next);
+      pushTypeIds(next);
+      onNextEnabledChange?.(next.length > 0);
+    },
+    [onNextEnabledChange, pushTypeIds, viewSelectedTypeIds]
+  );
+
+  // 커스텀 추가 (POST)
+  const createMut = useCreateCustomTypeMutation();
+
+  const [isAdding, setIsAdding] = useState(false);
+  const [draft, setDraft] = useState("");
 
   const openAdd = useCallback(() => {
     setIsAdding(true);
@@ -178,80 +215,128 @@ export const useStep3Selection = ({
     setDraft("");
   }, []);
 
-  const ensureItemInState = useCallback((item: TypeItem) => {
-    setItems((prev) => {
-      const exists = prev.some(
-        (v) =>
-          v.id === item.id ||
-          normalizeTypeLabel(v.label) === normalizeTypeLabel(item.label)
-      );
-
-      return exists ? prev : [...prev, item];
-    });
-  }, []);
-
-  const toggleType = useCallback(
-    (item: TypeItem) => {
-      setHasUserTouched(true);
-      ensureItemInState(item);
-
-      setSelectedTypeIds((prev) => {
-        const next = prev.includes(item.id)
-          ? prev.filter((id) => id !== item.id)
-          : [...prev, item.id];
-
-        onNextEnabledChange?.(next.length > 0);
-        pushTypeIds(next);
-
-        return next;
-      });
-    },
-    [ensureItemInState, onNextEnabledChange, pushTypeIds]
-  );
-
-  const commitAdd = useCallback(() => {
+  const commitAdd = useCallback(async () => {
     const nextLabel = normalize(draft);
-
     if (!nextLabel) {
       closeAdd();
       return;
     }
 
-    setHasUserTouched(true);
-
-    const existing = items.find(
-      (v) => normalizeTypeLabel(v.label) === normalizeTypeLabel(nextLabel)
+    // 이미 존재하는 name이면 그냥 선택만
+    const existing = allTypes.find(
+      (t) => normalizeName(t.name) === normalizeName(nextLabel)
     );
 
-    const nextItem: TypeItem = existing ?? {
-      id: toKebabId(nextLabel),
-      label: nextLabel,
-    };
+    const nextId = existing?.id ?? null;
 
-    ensureItemInState(nextItem);
+    if (nextId) {
+      const base = viewSelectedTypeIds;
+      const next = base.includes(nextId) ? base : [...base, nextId];
 
-    setSelectedTypeIds((prev) => {
-      const next = prev.includes(nextItem.id) ? prev : [...prev, nextItem.id];
-
-      onNextEnabledChange?.(next.length > 0);
+      setHasUserTouched(true);
+      setSelectedTypeIds(next);
       pushTypeIds(next);
+      onNextEnabledChange?.(next.length > 0);
 
-      return next;
-    });
+      closeAdd();
+      return;
+    }
 
-    closeAdd();
+    try {
+      const created = await createMut.mutateAsync({ name: nextLabel });
+
+      const base = viewSelectedTypeIds;
+      const next = base.includes(created.id) ? base : [...base, created.id];
+
+      setHasUserTouched(true);
+      setSelectedTypeIds(next);
+      pushTypeIds(next);
+      onNextEnabledChange?.(next.length > 0);
+
+      closeAdd();
+    } catch (e) {
+      throw e;
+    }
   }, [
+    allTypes,
     closeAdd,
+    createMut,
     draft,
-    ensureItemInState,
-    items,
     onNextEnabledChange,
     pushTypeIds,
+    viewSelectedTypeIds,
   ]);
 
+  const addSuggested = useCallback(
+    async (name: string) => {
+      const cleaned = normalize(name);
+      if (!cleaned) return;
+
+      const existing = allTypes.find(
+        (t) => normalizeName(t.name) === normalizeName(cleaned)
+      );
+
+      const id =
+        existing?.id ?? (await createMut.mutateAsync({ name: cleaned })).id;
+
+      const base = viewSelectedTypeIds;
+      const next = base.includes(id) ? base : [...base, id];
+
+      setHasUserTouched(true);
+      setSelectedTypeIds(next);
+      pushTypeIds(next);
+      onNextEnabledChange?.(next.length > 0);
+    },
+    [allTypes, createMut, onNextEnabledChange, pushTypeIds, viewSelectedTypeIds]
+  );
+
+  const activeMut = useSetProblemTypeActiveMutation();
+  const updateMut = useUpdateCustomTypeMutation();
+
+  const removeType = useCallback(
+    async (typeId: string) => {
+      await activeMut.mutateAsync({ typeId, body: { active: false } });
+
+      // 선택에서 제거도 같이
+      const base = viewSelectedTypeIds;
+      const next = base.filter((id) => id !== typeId);
+
+      setSelectedTypeIds(next);
+      pushTypeIds(next);
+      onNextEnabledChange?.(next.length > 0);
+    },
+    [activeMut, onNextEnabledChange, pushTypeIds, viewSelectedTypeIds]
+  );
+
+  const restoreType = useCallback(
+    async (typeId: string) => {
+      await activeMut.mutateAsync({ typeId, body: { active: true } });
+    },
+    [activeMut]
+  );
+
+  const renameType = useCallback(
+    async (typeId: string, name: string) => {
+      const cleaned = normalize(name);
+      if (!cleaned) return;
+      await updateMut.mutateAsync({ typeId, body: { name: cleaned } });
+    },
+    [updateMut]
+  );
+
+  const updateSortOrder = useCallback(
+    async (typeId: string, sortOrder: number) => {
+      await updateMut.mutateAsync({ typeId, body: { sortOrder } });
+    },
+    [updateMut]
+  );
+
   return {
+    isTypeLoading,
     viewItems,
     viewSelectedTypeIds,
+    suggestedNames: recommended.unknownNames,
+    addSuggested,
     isAdding,
     draft,
     setDraft,
@@ -259,5 +344,9 @@ export const useStep3Selection = ({
     closeAdd,
     commitAdd,
     toggleType,
+    removeType,
+    restoreType,
+    renameType,
+    updateSortOrder,
   };
 };

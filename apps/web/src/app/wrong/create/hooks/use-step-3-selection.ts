@@ -95,6 +95,8 @@ export const useStep3Selection = ({
     const selectedIds: string[] = [];
     const unknownNames: string[] = [];
 
+    const isOnlyNumber = (v: string) => /^\d+$/.test(v);
+
     aiTypeNames.forEach((name) => {
       const id = findTypeIdByName(allTypes, name);
       if (id) {
@@ -103,8 +105,11 @@ export const useStep3Selection = ({
       }
 
       const cleaned = normalize(name);
-      if (cleaned && !unknownNames.includes(cleaned))
-        unknownNames.push(cleaned);
+
+      if (!cleaned) return;
+      if (isOnlyNumber(cleaned)) return;
+
+      if (!unknownNames.includes(cleaned)) unknownNames.push(cleaned);
     });
 
     return { selectedIds, unknownNames };

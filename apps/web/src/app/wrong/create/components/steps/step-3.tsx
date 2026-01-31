@@ -176,7 +176,7 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
             mode={isAdding ? "input" : "button"}
             value={draft}
             onValueChange={setDraft}
-            onSubmit={() => void commitAdd()}
+            onSubmit={commitAdd}
             onCancel={closeAdd}
             onClick={openAdd}
           />

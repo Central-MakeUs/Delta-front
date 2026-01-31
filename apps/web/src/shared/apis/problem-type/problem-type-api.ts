@@ -41,9 +41,10 @@ export const setProblemTypeActive = async (
   typeId: string,
   body: ProblemTypeSetActiveRequest
 ) => {
-  const res = await instance.patch<ApiResponse<ProblemTypeItem>>(
+  const res = await instance.patch<ApiResponse<null>>(
     API_PATHS.PROBLEM_TYPES.ACTIVE(typeId),
     body
   );
-  return unwrapApiResponse(res.data);
+
+  unwrapApiResponse(res.data);
 };

@@ -47,6 +47,15 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
   }, [props.mode]);
 
   if (props.mode === "input") {
+    const submit = () => {
+      const trimmed = props.value.trim();
+      if (!trimmed) {
+        props.onCancel();
+        return;
+      }
+      void props.onSubmit();
+    };
+
     const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -58,11 +67,12 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
 
       if (e.nativeEvent.isComposing) {
         pendingSubmitRef.current = true;
+        e.preventDefault();
         return;
       }
 
       e.preventDefault();
-      void props.onSubmit();
+      submit();
     };
 
     const handleCompositionEnd: React.CompositionEventHandler<
@@ -70,7 +80,13 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
     > = () => {
       if (!pendingSubmitRef.current) return;
       pendingSubmitRef.current = false;
-      void props.onSubmit();
+      submit();
+    };
+
+    const handleBlur: React.FocusEventHandler<HTMLInputElement> = () => {
+      if (!props.value.trim()) {
+        props.onCancel();
+      }
     };
 
     return (
@@ -91,9 +107,11 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
           onChange={(e) => props.onValueChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onCompositionEnd={handleCompositionEnd}
-          onBlur={props.onCancel}
+          onBlur={handleBlur}
           placeholder={label}
           aria-label={ariaLabel}
+          enterKeyHint="done"
+          inputMode="text"
         />
       </div>
     );

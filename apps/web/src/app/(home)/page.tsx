@@ -11,10 +11,10 @@ import CardGraph02, {
   type CardGraph02Item,
 } from "@/shared/components/card-graph/card-graph-02/card-graph-02";
 import { GRAPH_TABS, ROUTES } from "@/shared/constants/routes";
-
 import type { ProblemStatsSort } from "@/shared/apis/graph/graph-types";
 import { useGraphUnitStatsQuery } from "@/shared/apis/graph/hooks/use-graph-unit-stats-query";
 import { useGraphTypeStatsQuery } from "@/shared/apis/graph/hooks/use-graph-type-stats-query";
+import { useProblemMonthlyProgressQuery } from "@/shared/apis/problem-stats/hooks/use-problem-monthly-progress-query";
 
 type TabValue = "최다 오답 단원" | "최다 오답 유형";
 
@@ -31,6 +31,9 @@ const Home = () => {
   const isUnitTab = value === "최다 오답 단원";
 
   const sort: ProblemStatsSort = "MAX";
+  const now = useMemo(() => new Date(), []);
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
 
   const { data: unitGroups = [] } = useGraphUnitStatsQuery({
     sort,
@@ -41,6 +44,17 @@ const Home = () => {
     sort,
     enabled: !isUnitTab,
   });
+
+  const { data: monthly } = useProblemMonthlyProgressQuery({ year, month });
+
+  const registeredCount = monthly?.totalCount ?? 0;
+  const solvedCount = monthly?.solvedCount ?? 0;
+
+  const graphPercent =
+    registeredCount > 0 ? Math.round((solvedCount / registeredCount) * 100) : 0;
+
+  const graphLabel = `${solvedCount}/${registeredCount}`;
+  const monthLabel = `${month}월`;
 
   const items: readonly CardGraph02Item[] = useMemo(() => {
     const groups = isUnitTab ? unitGroups : typeGroups;
@@ -60,6 +74,10 @@ const Home = () => {
     router.push(`${ROUTES.WRONG.ROOT}?sort=wrong-incomplete`);
   };
 
+  const handleRegisterClick = () => {
+    router.push(`${ROUTES.WRONG.CREATE}`);
+  };
+
   const handleViewAll = () => {
     const tab = isUnitTab ? GRAPH_TABS.UNIT : GRAPH_TABS.WRONG;
     router.push(ROUTES.GRAPH.tab(tab));
@@ -72,11 +90,14 @@ const Home = () => {
           안녕하세요
           <br /> 오늘도 세모랑 같이 오답 정리해요!
         </h1>
+
         <CardGraph01
-          monthLabel="1월"
-          registeredCount={24}
-          graphPercent={80}
-          graphLabel="16/24"
+          solvedCount={solvedCount}
+          monthLabel={monthLabel}
+          registeredCount={registeredCount}
+          graphPercent={graphPercent}
+          graphLabel={graphLabel}
+          onEmptyActionClick={handleRegisterClick}
           onActionClick={handleActionClick}
           replayKey={pathname}
         />

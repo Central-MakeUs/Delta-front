@@ -23,6 +23,8 @@ type BarGraph01Props = {
   animate?: boolean;
   animateFromZeroOnMount?: boolean;
   replayKey?: string | number;
+  showMinFillOnZero?: boolean;
+  showTip?: boolean;
 };
 
 export const BarGraph01 = ({
@@ -35,26 +37,31 @@ export const BarGraph01 = ({
   maxPercent = 85,
   animate = true,
   animateFromZeroOnMount = true,
+  showMinFillOnZero = false,
+  showTip,
   replayKey,
 }: BarGraph01Props) => {
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   const rawPercent = clamp(percent, 0, 100);
+
   const targetVisualPercent = computeVisualPercent({
     rawPercent,
     minPercent,
     maxPercent,
   });
 
-  const hasProgress = rawPercent > 0;
+  const showFill = rawPercent > 0 || showMinFillOnZero;
+  const shouldShowTip = showTip ?? rawPercent > 0;
 
   const reduced = prefersReducedMotion();
   const motionMs = reduced ? 0 : computeMotionMs(rawPercent);
+  const isSolvedZeroFill = rawPercent === 0 && showMinFillOnZero;
 
   useBarGraphMotion({
     rootRef,
     fillPercentVar: s.fillPercentVar,
-    hasProgress,
+    hasProgress: showFill,
     animate,
     animateFromZeroOnMount,
     replayKey,
@@ -76,8 +83,20 @@ export const BarGraph01 = ({
       })}
     >
       <div className={s.track} aria-hidden />
-      {hasProgress && <div className={s.fill} aria-hidden />}
-      {hasProgress && <div className={s.tip} aria-hidden />}
+      {showFill && (
+        <div
+          className={s.fill}
+          aria-hidden
+          style={
+            isSolvedZeroFill
+              ? assignInlineVars({
+                  [s.fillMaskVar]: s.zeroFillMaskUrl,
+                })
+              : undefined
+          }
+        />
+      )}
+      {showFill && shouldShowTip && <div className={s.tip} aria-hidden />}
       {label && <span className={s.label}>{label}</span>}
     </div>
   );

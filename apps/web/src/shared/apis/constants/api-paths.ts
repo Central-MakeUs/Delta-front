@@ -10,6 +10,7 @@ export const API_PATHS = {
   USERS: {
     ME: `${API_V1}/users/me`,
     WITHDRAWAL: `${API_V1}/users/withdrawal`,
+    PROFILE_IMAGE: "/api/v1/users/me/profile-image",
   },
   STORAGE: {
     IMAGES: `${API_V1}/storage/images`,
@@ -30,6 +31,7 @@ export const API_PATHS = {
   PROBLEM_STATS: {
     UNITS: `${API_V1}/problems/stats/units`,
     TYPES: `${API_V1}/problems/stats/types`,
+    MONTHLY: `${API_V1}/problems/stats/monthly`,
   },
   PROBLEM_DETAIL: {
     DETAIL: (problemId: number | string) => `${API_V1}/problems/${problemId}`,

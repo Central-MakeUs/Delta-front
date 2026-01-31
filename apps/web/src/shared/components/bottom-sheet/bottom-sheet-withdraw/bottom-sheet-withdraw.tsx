@@ -1,6 +1,13 @@
 "use client";
 
-import React, { useEffect, useId, useMemo, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
 import clsx from "clsx";
 import { Button } from "@/shared/components/button/button/button";
 import * as styles from "./bottom-sheet-withdraw.css";
@@ -45,11 +52,33 @@ export const BottomSheetWithdraw = ({
   const bottomSheetRef = useRef<HTMLDivElement>(null);
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
   const prevIsOpenRef = useRef<boolean>(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevBodyOverflowRef = useRef<string | null>(null);
+  const mountedRef = useRef(false);
 
   const shouldRender = isOpen || isClosing;
   const titleId = useId();
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  const schedule = useCallback((fn: () => void) => {
+    const run = () => {
+      if (!mountedRef.current) return;
+      fn();
+    };
+
+    if (typeof queueMicrotask === "function") {
+      queueMicrotask(run);
+      return;
+    }
+
+    Promise.resolve().then(run);
+  }, []);
 
   const descriptionLines = useMemo(() => {
     if (!description) return [];
@@ -59,108 +88,135 @@ export const BottomSheetWithdraw = ({
     }));
   }, [description]);
 
+  const clearCloseTimer = useCallback(() => {
+    if (!closeTimerRef.current) return;
+    clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = null;
+  }, []);
+
+  const requestClose = useCallback(() => {
+    if (isClosing) return;
+    setIsClosing(true);
+    onClose();
+  }, [isClosing, onClose]);
+
   useEffect(() => {
     const prevIsOpen = prevIsOpenRef.current;
+    if (isOpen === prevIsOpen) return;
 
-    if (isOpen !== prevIsOpen) {
-      prevIsOpenRef.current = isOpen;
+    prevIsOpenRef.current = isOpen;
 
-      if (isOpen) {
-        setIsClosing((prev) => {
-          if (prev) {
-            if (timeoutRef.current) {
-              clearTimeout(timeoutRef.current);
-              timeoutRef.current = null;
-            }
-          }
-          return false;
-        });
-      } else {
-        setIsClosing((prev) => (prev ? prev : true));
-      }
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
     if (isOpen) {
-      if (prevBodyOverflowRef.current === null) {
-        prevBodyOverflowRef.current = document.body.style.overflow;
-      }
-      document.body.style.overflow = "hidden";
+      clearCloseTimer();
+      schedule(() => setIsClosing(false));
+      return;
     }
 
-    if (isClosing) {
-      timeoutRef.current = setTimeout(() => {
-        setIsClosing(false);
-        document.body.style.overflow = prevBodyOverflowRef.current ?? "";
-        prevBodyOverflowRef.current = null;
-      }, ANIMATION_DURATION);
-
-      return () => {
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-          timeoutRef.current = null;
-        }
-        document.body.style.overflow = prevBodyOverflowRef.current ?? "";
-        prevBodyOverflowRef.current = null;
-      };
-    }
-  }, [isOpen, isClosing]);
+    schedule(() => setIsClosing(true));
+  }, [isOpen, clearCloseTimer, schedule]);
 
   useEffect(() => {
-    const shouldBind = isOpen || isClosing;
-    if (!shouldBind) return;
+    clearCloseTimer();
+
+    if (!isOpen && isClosing) {
+      closeTimerRef.current = setTimeout(() => {
+        setIsClosing(false);
+        closeTimerRef.current = null;
+      }, ANIMATION_DURATION);
+    }
+
+    return () => {
+      clearCloseTimer();
+    };
+  }, [isOpen, isClosing, clearCloseTimer]);
+
+  useEffect(() => {
+    if (!shouldRender) return;
+
+    if (prevBodyOverflowRef.current === null) {
+      prevBodyOverflowRef.current = document.body.style.overflow;
+    }
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = prevBodyOverflowRef.current ?? "";
+      prevBodyOverflowRef.current = null;
+    };
+  }, [shouldRender]);
+
+  useEffect(() => {
+    if (!shouldRender) return;
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      if (isClosing) return;
-      setIsClosing(true);
+      requestClose();
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isOpen, isClosing]);
+  }, [shouldRender, requestClose]);
 
   useEffect(() => {
     if (isOpen && !isClosing) {
       previousActiveElementRef.current =
         (document.activeElement as HTMLElement) || null;
-
       requestAnimationFrame(() => {
         bottomSheetRef.current?.focus();
       });
-    } else if (!isOpen && !isClosing && previousActiveElementRef.current) {
+      return;
+    }
+
+    if (!isOpen && !isClosing && previousActiveElementRef.current) {
+      const el = previousActiveElementRef.current;
+      previousActiveElementRef.current = null;
       requestAnimationFrame(() => {
-        previousActiveElementRef.current?.focus();
-        previousActiveElementRef.current = null;
+        el.focus();
       });
     }
   }, [isOpen, isClosing]);
 
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target !== e.currentTarget) return;
-    if (isClosing) return;
-    setIsClosing(true);
-  };
+  const handleOverlayClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (e.target !== e.currentTarget) return;
+      requestClose();
+    },
+    [requestClose]
+  );
 
-  const handleSheetAnimationEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
-    if (e.target !== e.currentTarget) return;
+  const finishClose = useCallback(() => {
+    if (isOpen) return;
     if (!isClosing) return;
+    clearCloseTimer();
     setIsClosing(false);
-    onClose();
-  };
+  }, [isOpen, isClosing, clearCloseTimer]);
 
-  const handleConfirm = () => {
+  const handleSheetAnimationEnd = useCallback(
+    (e: React.AnimationEvent<HTMLDivElement>) => {
+      if (e.target !== e.currentTarget) return;
+      finishClose();
+    },
+    [finishClose]
+  );
+
+  const handleSheetTransitionEnd = useCallback(
+    (e: React.TransitionEvent<HTMLDivElement>) => {
+      if (e.target !== e.currentTarget) return;
+      finishClose();
+    },
+    [finishClose]
+  );
+
+  const handleConfirm = useCallback(() => {
     if (disabled || isClosing) return;
     onConfirm?.();
-    setIsClosing(true);
-  };
+    requestClose();
+  }, [disabled, isClosing, onConfirm, requestClose]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     if (isClosing) return;
     onCancel?.();
-    setIsClosing(true);
-  };
+    requestClose();
+  }, [isClosing, onCancel, requestClose]);
 
   if (!shouldRender) return null;
 
@@ -181,6 +237,7 @@ export const BottomSheetWithdraw = ({
         className={clsx(styles.bottomSheet, className)}
         data-state={motionState}
         onAnimationEnd={handleSheetAnimationEnd}
+        onTransitionEnd={handleSheetTransitionEnd}
       >
         <div className={styles.contentContainer}>
           <div className={styles.textContainer}>

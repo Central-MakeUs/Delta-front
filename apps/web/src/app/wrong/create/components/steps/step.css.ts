@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
-import { color } from "@/shared/styles/color.css";
+import { color, bgColor } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
 import { vars } from "@/shared/styles/theme.css";
 
@@ -168,4 +168,42 @@ export const numberTitleRow = style({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
+});
+
+export const typeButtonWrap = style({
+  position: "relative",
+  width: "100%",
+  display: "flex",
+  flex: "1 1 0",
+  minWidth: 0,
+});
+
+export const typeButton = style({
+  width: "100%",
+  flex: "1 1 0",
+  minWidth: 0,
+});
+
+export const typeDeleteOverlay = style([
+  bgColor["grayscale-0"],
+  color["error-500"],
+  {
+    position: "absolute",
+    top: "0.8rem",
+    right: "0.8rem",
+    zIndex: vars.zIndex.contentOverlay,
+    width: "2.4rem",
+    height: "2.4rem",
+    borderRadius: vars.radius.full,
+    border: "1px solid currentColor",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+  },
+]);
+
+export const typeDeleteOverlayDisabled = style({
+  opacity: 0.4,
+  cursor: "default",
 });

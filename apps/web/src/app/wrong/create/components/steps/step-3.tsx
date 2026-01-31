@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback, useState } from "react";
+import clsx from "clsx";
 import { Button } from "@/shared/components/button/button/button";
 import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";
 import * as s from "@/app/wrong/create/components/steps/step.css";
@@ -24,7 +26,23 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
     closeAdd,
     commitAdd,
     toggleType,
+    removeType,
   } = useStep3Selection({ scanId, onNextEnabledChange });
+
+  const [removingId, setRemovingId] = useState<string | null>(null);
+
+  const handleRemove = useCallback(
+    async (typeId: string) => {
+      if (removingId) return;
+      setRemovingId(typeId);
+      try {
+        await removeType(typeId);
+      } finally {
+        setRemovingId(null);
+      }
+    },
+    [removeType, removingId]
+  );
 
   if (isTypeLoading) return null;
 
@@ -49,14 +67,35 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
           const isSelected = viewSelectedTypeIds.includes(item.id);
 
           return (
-            <Button
-              key={item.id}
-              size="56"
-              label={item.label}
-              tone={isSelected ? "dark" : "surface"}
-              aria-pressed={isSelected}
-              onClick={() => toggleType(item)}
-            />
+            <div key={item.id} className={s.typeButtonWrap}>
+              <Button
+                size="56"
+                label={item.label}
+                tone={isSelected ? "dark" : "surface"}
+                aria-pressed={isSelected}
+                onClick={() => toggleType(item)}
+                className={s.typeButton}
+              />
+
+              {item.custom ? (
+                <button
+                  type="button"
+                  className={clsx(
+                    s.typeDeleteOverlay,
+                    removingId === item.id && s.typeDeleteOverlayDisabled
+                  )}
+                  disabled={removingId === item.id}
+                  aria-label={`${item.label} 삭제`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    void handleRemove(item.id);
+                  }}
+                >
+                  ×
+                </button>
+              ) : null}
+            </div>
           );
         })}
 

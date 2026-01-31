@@ -30,7 +30,7 @@ export const API_PATHS = {
   PROBLEM_TYPES: {
     ROOT: `${API_V1}/problem-types`,
     DETAIL: (typeId: string) => `${API_V1}/problem-types/${typeId}`,
-    ACTIVE: (typeId: string) => `${API_V1}/problem-types/${typeId}/active`,
+    ACTIVE: (typeId: string) => `${API_V1}/problem-types/${typeId}/activation`,
   },
   PROBLEM_STATS: {
     UNITS: `${API_V1}/problems/stats/units`,

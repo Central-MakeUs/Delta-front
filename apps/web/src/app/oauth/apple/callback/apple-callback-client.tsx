@@ -1,51 +1,79 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ROUTES } from "@/shared/constants/routes";
-import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
+import { useAppleExchangeMutation } from "@/shared/apis/auth/hooks/use-apple-exchange-mutation";
+import { userApi } from "@/shared/apis/user/user-api";
+import Loading from "@/shared/components/loading/loading";
 
-type AppleCallbackClientProps = {
-  state: string | null;
-  error: string | null;
-};
+const CONSUMED_LOGIN_KEY = "apple:consumed-login-key";
 
-const AppleCallbackClient = ({ state, error }: AppleCallbackClientProps) => {
+const AppleCallbackView = () => {
   const router = useRouter();
-  const onceRef = useRef(false);
+  const searchParams = useSearchParams();
+  const exchange = useAppleExchangeMutation();
+  const executedRef = useRef(false);
+
+  const loginKey = searchParams.get("loginKey");
+  const errorParam = searchParams.get("error");
 
   useEffect(() => {
-    if (onceRef.current) return;
-    onceRef.current = true;
+    if (executedRef.current) return;
 
-    const redirectLogin = (reason: string, extra?: unknown) => {
-      if (process.env.NODE_ENV !== "production") {
-        console.warn("[apple-callback] redirect to login:", reason, extra);
+    const goLogin = (reason?: string) => {
+      if (process.env.NODE_ENV !== "production" && reason) {
+        console.warn("[apple-callback]", reason);
       }
+      window.sessionStorage.removeItem(CONSUMED_LOGIN_KEY);
       router.replace(ROUTES.AUTH.LOGIN);
     };
 
-    const sp = new URLSearchParams(window.location.search);
-    const resolvedState = state ?? sp.get("state");
-    const resolvedError = error ?? sp.get("error");
-
-    if (resolvedError) {
-      redirectLogin("backend returned error", { resolvedError });
+    if (errorParam) {
+      goLogin("error param: " + errorParam);
       return;
     }
 
-    if (resolvedState) {
-      const ok = appleOAuth.consumeState(resolvedState);
-      if (!ok) {
-        redirectLogin("state validation failed", { resolvedState });
-        return;
-      }
+    if (!loginKey || loginKey.trim() === "") {
+      goLogin("missing loginKey");
+      return;
     }
 
-    router.replace(ROUTES.AUTH.SIGNUP_INFO);
-  }, [state, error, router]);
+    const consumed = window.sessionStorage.getItem(CONSUMED_LOGIN_KEY);
+    if (consumed === loginKey) {
+      router.replace(ROUTES.HOME);
+      return;
+    }
 
-  return null;
+    executedRef.current = true;
+    window.sessionStorage.setItem(CONSUMED_LOGIN_KEY, loginKey);
+
+    exchange
+      .mutateAsync({ loginKey })
+      .then(async (data) => {
+        const profile = await userApi.getMyProfile();
+        const needsSignupInfo =
+          profile.nickname == null ||
+          profile.nickname.trim() === "" ||
+          data.isNewUser === true;
+        if (needsSignupInfo) {
+          router.replace(ROUTES.AUTH.SIGNUP_INFO);
+        } else {
+          router.replace(ROUTES.HOME);
+        }
+      })
+      .catch((e) => {
+        window.sessionStorage.removeItem(CONSUMED_LOGIN_KEY);
+        goLogin("exchange failed");
+        if (process.env.NODE_ENV !== "production") {
+          console.error("[apple-callback] exchange error", e);
+        }
+      });
+  }, [loginKey, errorParam, router, exchange]);
+
+  return (
+    <Loading variant="overlay" message="로그인 처리 중..." />
+  );
 };
 
-export default AppleCallbackClient;
+export default AppleCallbackView;

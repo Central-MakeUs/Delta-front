@@ -26,6 +26,12 @@ const normalizeMe = (raw: RawUserMeData): UserMeData => {
   return { id, email: raw.email ?? null, nickname: raw.nickname ?? null };
 };
 
+export type OnboardingParams = {
+  nickname: string;
+  birthDate: string; // YYYY-MM-DD
+  termsAgreed: boolean;
+};
+
 export const userApi = {
   getMyProfile: async () => {
     const res = await instance.get<ApiResponse<RawUserMeData>>(
@@ -36,6 +42,19 @@ export const userApi = {
 
   updateMyName: async (body: UserNameUpdateRequest) => {
     await instance.patch(API_PATHS.USERS.ME, body);
+  },
+
+  /** 추가 정보 입력 후 회원가입 완료 (ONBOARDING_REQUIRED → ACTIVE) */
+  onboarding: async (params: OnboardingParams) => {
+    const res = await instance.post<ApiResponse<unknown>>(
+      API_PATHS.USERS.ONBOARDING,
+      {
+        nickname: params.nickname.trim(),
+        birthDate: params.birthDate,
+        termsAgreed: params.termsAgreed === true,
+      }
+    );
+    return unwrapApiResponse(res.data);
   },
 
   withdrawMyAccount: async () => {

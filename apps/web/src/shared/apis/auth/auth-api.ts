@@ -38,6 +38,14 @@ export const authApi = {
     return unwrapApiResponse(res.data);
   },
 
+  appleExchange: async (loginKey: string) => {
+    const res = await instance.post<ApiResponse<SocialLoginData>>(
+      API_PATHS.AUTH.APPLE_EXCHANGE,
+      new URLSearchParams({ loginKey }).toString()
+    );
+    return unwrapApiResponse(res.data);
+  },
+
   reissue: async () => {
     const { refreshToken } = tokenStorage.getTokens();
     if (!refreshToken) return;

@@ -1,23 +1,24 @@
-import AppleCallbackClient from "./apple-callback-client";
+import { Suspense } from "react";
+import AppleCallbackView from "./apple-callback-client";
 
-type SearchParams = {
-  state?: string;
-  error?: string;
-};
+const Fallback = () => (
+  <main
+    style={{
+      minHeight: "100dvh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 24,
+    }}
+  >
+    <p style={{ fontSize: 16, color: "#666" }}>로그인 처리 중...</p>
+  </main>
+);
 
-type PageProps = {
-  searchParams?: Promise<SearchParams>;
-};
-
-const AppleCallbackPage = async ({ searchParams }: PageProps) => {
-  const params = searchParams ? await searchParams : undefined;
-
+export default function AppleCallbackPage() {
   return (
-    <AppleCallbackClient
-      state={params?.state ?? null}
-      error={params?.error ?? null}
-    />
+    <Suspense fallback={<Fallback />}>
+      <AppleCallbackView />
+    </Suspense>
   );
-};
-
-export default AppleCallbackPage;
+}

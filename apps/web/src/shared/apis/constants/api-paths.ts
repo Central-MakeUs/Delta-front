@@ -4,11 +4,13 @@ export const API_PATHS = {
   AUTH: {
     KAKAO_LOGIN: `${API_V1}/auth/kakao`,
     APPLE_LOGIN: `${API_V1}/auth/apple`,
+    APPLE_EXCHANGE: `${API_V1}/auth/apple/exchange`,
     REISSUE: `${API_V1}/auth/reissue`,
     LOGOUT: `${API_V1}/auth/logout`,
   },
   USERS: {
     ME: `${API_V1}/users/me`,
+    ONBOARDING: `${API_V1}/users/me/onboarding`,
     WITHDRAWAL: `${API_V1}/users/withdrawal`,
     PROFILE_IMAGE: "/api/v1/users/me/profile-image",
   },

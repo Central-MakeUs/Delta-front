@@ -72,19 +72,20 @@ export const appleOAuth = {
 
   buildAuthorizeUrl: () => {
     const clientId = (process.env.NEXT_PUBLIC_APPLE_CLIENT_ID ?? "").trim();
-    // 애플이 form_post로 보내는 대상은 반드시 프론트엔드 콜백 URL이어야 함 (API URL 아님)
+    // form_post 시 애플이 POST하는 URL. 백엔드 API(예: https://dev.deltasemo.cloud/api/v1/auth/apple) 또는 프론트 콜백 중 하나로 설정
     const redirectUri = (
-      typeof window !== "undefined"
+      process.env.NEXT_PUBLIC_APPLE_REDIRECT_URI?.trim() ||
+      (typeof window !== "undefined"
         ? `${window.location.origin}${ROUTES.AUTH.APPLE_CALLBACK}`
-        : (process.env.NEXT_PUBLIC_APPLE_REDIRECT_URI ?? "").trim()
+        : "")
     ).trim();
 
     safeSessionSet(SPLASH_SUPPRESS_ONCE_KEY, "1");
 
     if (!clientId || !redirectUri) {
       devWarn(
-        "[appleOAuth] NEXT_PUBLIC_APPLE_CLIENT_ID가 없거나, (클라이언트에서는 현재 origin + /oauth/apple/callback이 사용됩니다) " +
-          "Apple Developer Console에 Return URL을 https://도메인/oauth/apple/callback 으로 등록하세요."
+        "[appleOAuth] NEXT_PUBLIC_APPLE_CLIENT_ID 또는 NEXT_PUBLIC_APPLE_REDIRECT_URI가 없습니다. " +
+          "Apple Developer Console의 Return URL과 동일한 redirect_uri를 설정하세요."
       );
       return "";
     }

@@ -170,6 +170,11 @@ export const numberTitleRow = style({
   justifyContent: "space-between",
 });
 
+export const typeDeleteOverlayDisabled = style({
+  opacity: 0.4,
+  cursor: "default",
+});
+
 export const typeButtonWrap = style({
   position: "relative",
   width: "100%",
@@ -203,7 +208,19 @@ export const typeDeleteOverlay = style([
   },
 ]);
 
-export const typeDeleteOverlayDisabled = style({
+export const typeOverlayDisabled = style({
   opacity: 0.4,
   cursor: "default",
+});
+
+export const typeDragging = style({
+  opacity: 0.75,
+});
+
+export const typeDraggableArea = style({
+  touchAction: "none",
+  userSelect: "none",
+  WebkitUserSelect: "none",
+  WebkitTouchCallout: "none",
+  WebkitTapHighlightColor: "transparent",
 });

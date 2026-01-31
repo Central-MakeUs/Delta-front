@@ -1,24 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback } from "react";
 import clsx from "clsx";
 import { Button } from "@/shared/components/button/button/button";
 import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";
 import * as s from "@/app/wrong/create/components/steps/step.css";
 import type { StepProps } from "@/app/wrong/create/page";
 import { useStep3Selection } from "@/app/wrong/create/hooks/use-step-3-selection";
-import { usePointerSortIds } from "@/app/wrong/create/hooks/use-pointer-sort-ids";
+import { useCustomTypeOrder } from "@/app/wrong/create/hooks/use-custom-type-order";
+import { useAsyncIdLock } from "@/app/wrong/create/hooks/use-async-id-lock";
 
 type Step3Props = StepProps & {
   scanId?: number | string | null;
-};
-
-const isSameIds = (a: readonly string[], b: readonly string[]) => {
-  if (a.length !== b.length) return false;
-  for (let i = 0; i < a.length; i += 1) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
 };
 
 const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
@@ -39,105 +32,22 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
     updateSortOrder,
   } = useStep3Selection({ scanId, onNextEnabledChange });
 
-  const [removingId, setRemovingId] = useState<string | null>(null);
-  const [isReordering, setIsReordering] = useState(false);
+  const { lockedId: removingId, run: runRemove } = useAsyncIdLock();
 
-  const customIdsFromServer = useMemo(() => {
-    return viewItems.filter((v) => v.custom).map((v) => v.id);
-  }, [viewItems]);
-
-  const [customOrderIds, setCustomOrderIds] = useState<string[]>(
-    () => customIdsFromServer
-  );
-
-  const handlePersistCustomOrder = useCallback(
-    async (nextCustomIds: string[]) => {
-      const customBySort = viewItems
-        .filter((v) => v.custom)
-        .slice()
-        .sort((a, b) => a.sortOrder - b.sortOrder);
-
-      const sortSlots = customBySort.map((v) => v.sortOrder);
-      const currentSortById = new Map(
-        customBySort.map((v) => [v.id, v.sortOrder])
-      );
-
-      const tasks: Array<Promise<unknown>> = [];
-
-      for (let i = 0; i < nextCustomIds.length; i += 1) {
-        const id = nextCustomIds[i];
-        const nextSortOrder = sortSlots[i];
-        if (nextSortOrder == null) continue;
-        if (currentSortById.get(id) === nextSortOrder) continue;
-        tasks.push(updateSortOrder(id, nextSortOrder));
-      }
-
-      if (tasks.length === 0) return;
-
-      setIsReordering(true);
-      try {
-        await Promise.all(tasks);
-      } finally {
-        setIsReordering(false);
-      }
-    },
-    [updateSortOrder, viewItems]
-  );
-
-  const { draggingId, getItemProps, getPressProps } = usePointerSortIds({
-    ids: customOrderIds,
-    onChange: setCustomOrderIds,
-    onEnd: handlePersistCustomOrder,
-  });
-
-  useEffect(() => {
-    if (isReordering) return;
-    if (draggingId) return;
-
-    setCustomOrderIds((prev) => {
-      if (isSameIds(prev, customIdsFromServer)) return prev;
-      return customIdsFromServer;
+  const { orderedItems, draggingId, isReordering, getSortableProps } =
+    useCustomTypeOrder({
+      items: viewItems,
+      updateSortOrder,
     });
-  }, [customIdsFromServer, draggingId, isReordering]);
-
-  const orderedViewItems = useMemo(() => {
-    if (customOrderIds.length === 0) return viewItems;
-
-    const customMap = new Map(
-      viewItems.filter((v) => v.custom).map((v) => [v.id, v] as const)
-    );
-
-    const orderedCustom = customOrderIds
-      .map((id) => customMap.get(id))
-      .filter(Boolean);
-
-    if (orderedCustom.length === 0) return viewItems;
-
-    const next = viewItems.slice();
-    let j = 0;
-
-    for (let i = 0; i < next.length; i += 1) {
-      if (!next[i].custom) continue;
-      const repl = orderedCustom[j];
-      if (repl) next[i] = repl;
-      j += 1;
-    }
-
-    return next;
-  }, [customOrderIds, viewItems]);
 
   const handleRemove = useCallback(
     async (typeId: string) => {
-      if (removingId || isReordering) return;
-
-      setRemovingId(typeId);
-      try {
+      if (isReordering) return;
+      await runRemove(typeId, async () => {
         await removeType(typeId);
-      } finally {
-        setRemovingId(null);
-      }
+      });
     },
-    [isReordering, removeType, removingId]
+    [isReordering, removeType, runRemove]
   );
 
   if (isTypeLoading) return null;
@@ -159,11 +69,9 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
       ) : null}
 
       <div className={s.buttonGrid}>
-        {orderedViewItems.map((item) => {
+        {orderedItems.map((item) => {
           const isSelected = viewSelectedTypeIds.includes(item.id);
-
-          const sortItemProps = item.custom ? getItemProps(item.id) : {};
-          const pressProps = item.custom ? getPressProps(item.id) : {};
+          const sortableProps = getSortableProps(item);
 
           return (
             <div
@@ -173,8 +81,7 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
                 item.custom && s.typeDraggableArea,
                 draggingId === item.id && s.typeDragging
               )}
-              {...sortItemProps}
-              {...pressProps}
+              {...sortableProps}
               onContextMenuCapture={(e) => {
                 if (!item.custom) return;
                 e.preventDefault();

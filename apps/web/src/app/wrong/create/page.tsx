@@ -3,14 +3,15 @@
 import { useState } from "react";
 import TitleSection from "@/app/wrong/create/components/title-section/title-section";
 import { WRONG_CREATE_STEP_COPY } from "@/app/wrong/create/constants/step-copy";
-import AnalysisLoading from "@/app/wrong/create/components/analysis-loading/analysis-loading";
 import { Button } from "@/shared/components/button/button/button";
+import Loading from "@/shared/components/loading/loading";
 import * as s from "@/app/wrong/create/create.css";
 import { useStep4Form } from "@/app/wrong/create/hooks/use-step4-form";
 import { useWrongCreateRoute } from "@/app/wrong/create/hooks/use-wrong-create-route";
 import { useStep1SummaryTransition } from "@/app/wrong/create/hooks/use-step1-summary-transition";
 import { useWrongCreateSubmit } from "@/app/wrong/create/hooks/use-wrong-create-submit";
 import WrongCreateSteps from "@/app/wrong/create/components/wrong-create-steps/wrong-create-steps";
+import { LOADING_MESSAGES } from "@/shared/constants/loading-messages";
 
 export type StepProps = {
   onNextEnabledChange?: (enabled: boolean) => void;
@@ -99,7 +100,11 @@ const WrongCreatePage = () => {
       </div>
 
       {currentStep === 1 && isStep1Blocked ? (
-        <AnalysisLoading onBack={handleLoadingBack} />
+        <Loading
+          variant="overlay"
+          message={LOADING_MESSAGES.ANALYZE_UNIT_TYPE}
+          onBack={handleLoadingBack}
+        />
       ) : null}
     </div>
   );

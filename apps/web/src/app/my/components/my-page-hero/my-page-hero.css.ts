@@ -1,5 +1,5 @@
 import { style } from "@vanilla-extract/css";
-import { myGradient } from "@/shared/styles/color.css";
+import { bgColor, color, myGradient } from "@/shared/styles/color.css";
 import { vars } from "@/shared/styles/theme.css";
 
 const APP_BAR_HEIGHT = "5.4rem";
@@ -27,3 +27,24 @@ export const profileBlock = style({
   alignItems: "center",
   gap: "0.8rem",
 });
+
+export const nameRow = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "0.8rem",
+});
+
+export const editButton = style([
+  bgColor["grayscale-0"],
+  color["grayscale-500"],
+  {
+    width: "2.8rem",
+    height: "2.8rem",
+    borderRadius: vars.radius.full,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+  },
+]);

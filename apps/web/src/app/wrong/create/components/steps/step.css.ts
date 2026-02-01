@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
-import { color, bgColor } from "@/shared/styles/color.css";
+import { color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
 import { vars } from "@/shared/styles/theme.css";
 
@@ -171,7 +171,7 @@ export const numberTitleRow = style({
 });
 
 export const typeDeleteOverlayDisabled = style({
-  opacity: 0.4,
+  opacity: 0.6,
   cursor: "default",
 });
 
@@ -187,30 +187,6 @@ export const typeButton = style({
   width: "100%",
   flex: "1 1 0",
   minWidth: 0,
-});
-
-export const typeDeleteOverlay = style([
-  bgColor["grayscale-0"],
-  color["error-500"],
-  {
-    position: "absolute",
-    top: "0.8rem",
-    right: "0.8rem",
-    zIndex: vars.zIndex.contentOverlay,
-    width: "2.4rem",
-    height: "2.4rem",
-    borderRadius: vars.radius.full,
-    border: "1px solid currentColor",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-  },
-]);
-
-export const typeOverlayDisabled = style({
-  opacity: 0.4,
-  cursor: "default",
 });
 
 export const typeDragging = style({
@@ -233,15 +209,12 @@ export const typeCard = recipe({
       minHeight: "5.6rem",
       padding: "1.6rem",
       borderRadius: vars.radius.r12,
-
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-
       cursor: "pointer",
       outline: "none",
       userSelect: "none",
-
       selectors: {
         "&:focus-visible": {
           boxShadow: `0 0 0 0.2rem ${vars.color.grayscale[200]}`,
@@ -280,28 +253,4 @@ export const typeCardRow = style({
 
 export const typeCardLabel = style({
   display: "block",
-});
-
-export const typeCardAction = style({
-  width: "2.4rem",
-  height: "2.4rem",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  border: "none",
-  background: "transparent",
-  padding: 0,
-  cursor: "pointer",
-});
-
-export const typeCardActionOnSurface = style({
-  color: vars.color.grayscale[400],
-});
-
-export const typeCardActionOnDark = style({
-  color: vars.color.grayscale[0],
-});
-
-export const typeCardActionDisabled = style({
-  cursor: "default",
 });

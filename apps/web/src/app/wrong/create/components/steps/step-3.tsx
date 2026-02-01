@@ -2,7 +2,6 @@
 
 import { useCallback, useMemo, useState } from "react";
 import clsx from "clsx";
-import Icon from "@/shared/components/icon/icon";
 import { Button } from "@/shared/components/button/button/button";
 import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";
 import * as s from "@/app/wrong/create/components/steps/step.css";
@@ -11,6 +10,8 @@ import { useStep3Selection } from "@/app/wrong/create/hooks/step3/use-step-3-sel
 import { useCustomTypeOrder } from "@/app/wrong/create/hooks/step3/use-custom-type-order";
 import { useAsyncIdLock } from "@/app/wrong/create/hooks/step3/use-async-id-lock";
 import Modal from "@/shared/components/modal/modal/modal";
+import TypeCardHitButton from "@/app/wrong/create/components/type-card/type-card-hit-button";
+import TypeCardDeleteButton from "@/app/wrong/create/components/type-card/type-card-delete-button";
 
 type Step3Props = StepProps & {
   scanId?: number | string | null;
@@ -131,8 +132,11 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
             const sortableProps = getSortableProps(item);
             const isRemovingThis = item.custom && removingId === item.id;
             const cardDisabled = isRemovingThis;
+
             const deleteActionDisabled =
               !item.custom || isRemovingThis || isReordering || isDraggingNow;
+
+            const labelId = `type-label-${item.id}`;
 
             return (
               <div
@@ -150,54 +154,38 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
                 }}
               >
                 <div
-                  role="button"
-                  tabIndex={cardDisabled ? -1 : 0}
-                  aria-pressed={isSelected}
-                  aria-disabled={cardDisabled || undefined}
                   className={s.typeCard({
                     tone: isSelected ? "dark" : "surface",
                     disabled: cardDisabled,
                   })}
-                  onClick={() => {
-                    if (cardDisabled) return;
-                    if (isDraggingNow) return;
-                    toggleType(item);
-                  }}
-                  onKeyDown={(e) => {
-                    if (cardDisabled) return;
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      toggleType(item);
-                    }
-                  }}
                 >
-                  <div className={s.typeCardRow}>
-                    <span className={s.typeCardLabel}>{item.label}</span>
+                  {/* ✅ 내부 토글 버튼 컴포넌트 */}
+                  <TypeCardHitButton
+                    labelId={labelId}
+                    pressed={isSelected}
+                    disabled={cardDisabled}
+                    onClick={() => {
+                      if (cardDisabled) return;
+                      if (isDraggingNow) return;
+                      toggleType(item);
+                    }}
+                  />
 
+                  <div className={s.typeCardRow}>
+                    <span id={labelId} className={s.typeCardLabel}>
+                      {item.label}
+                    </span>
+
+                    {/* ✅ 내부 삭제 버튼 컴포넌트 */}
                     {item.custom ? (
-                      <button
-                        type="button"
-                        className={clsx(
-                          s.typeCardAction,
-                          isSelected
-                            ? s.typeCardActionOnDark
-                            : s.typeCardActionOnSurface,
-                          deleteActionDisabled && s.typeCardActionDisabled
-                        )}
+                      <TypeCardDeleteButton
+                        label={item.label}
+                        selected={isSelected}
                         disabled={deleteActionDisabled}
-                        aria-label={`${item.label} 삭제`}
-                        onPointerDown={(e) => {
-                          e.stopPropagation();
-                        }}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          if (deleteActionDisabled) return;
+                        onDelete={() => {
                           openDeleteModal({ id: item.id, label: item.label });
                         }}
-                      >
-                        <Icon name="multiple" size={2.4} />
-                      </button>
+                      />
                     ) : null}
                   </div>
                 </div>

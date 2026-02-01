@@ -48,12 +48,19 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
   }, [props.mode]);
 
   if (props.mode === "input") {
+    const cancel = () => {
+      pendingSubmitRef.current = false;
+      props.onCancel();
+    };
+
     const submit = () => {
+      pendingSubmitRef.current = false;
+
       if (submittingRef.current) return;
 
       const trimmed = props.value.trim();
       if (!trimmed) {
-        props.onCancel();
+        cancel();
         return;
       }
 
@@ -68,7 +75,7 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
     const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        props.onCancel();
+        cancel();
         return;
       }
 
@@ -93,7 +100,8 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
     };
 
     const handleBlur: React.FocusEventHandler<HTMLInputElement> = () => {
-      if (!props.value.trim()) props.onCancel();
+      pendingSubmitRef.current = false;
+      if (!props.value.trim()) cancel();
     };
 
     return (
@@ -126,7 +134,6 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
           autoCapitalize="none"
           autoCorrect="off"
         />
-
         <button type="submit" className={s.srOnly} tabIndex={-1} aria-hidden />
       </form>
     );

@@ -35,7 +35,9 @@ const clearAuthHeader = (headers: unknown) => {
 
 const syncTokensFromResponseHeaders = (headers: Record<string, unknown>) => {
   const accessRaw = readHeader(headers, ACCESS_HEADER);
-  const refreshRaw = readHeader(headers, REFRESH_TOKEN_HEADER);
+  const refreshRaw =
+    readHeader(headers, REFRESH_TOKEN_HEADER) ||
+    readHeader(headers, "x-refresh-token");
 
   const accessToken = accessRaw ? stripBearer(accessRaw) : null;
   const refreshToken = refreshRaw ?? null;

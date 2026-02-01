@@ -15,7 +15,7 @@ const Fallback = () => (
   </main>
 );
 
-export const AppleCallbackPage = () => {
+const AppleCallbackPage = () => {
   return (
     <Suspense fallback={<Fallback />}>
       <AppleCallbackView />

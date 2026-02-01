@@ -8,7 +8,7 @@ import * as s from "@/app/wrong/create/components/steps/step.css";
 import type { StepProps } from "@/app/wrong/create/page";
 import { CHAPTER_FILTERS } from "@/app/wrong/(list)/constants/wrong-filters";
 import type { ChapterKey } from "@/app/wrong/create/utils/chapter-recommend";
-import { useStep2Selection } from "@/app/wrong/create/hooks/use-step-2-selection";
+import { useStep2Selection } from "@/app/wrong/create/hooks/step2/use-step-2-selection";
 
 type Step2Props = StepProps & {
   scanId?: number | string | null;

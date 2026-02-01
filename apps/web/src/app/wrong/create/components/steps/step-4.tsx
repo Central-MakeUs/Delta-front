@@ -16,7 +16,7 @@ import type {
   ToggleValue,
   Step4FormState,
   Step4Handlers,
-} from "@/app/wrong/create/hooks/use-step4-form";
+} from "@/app/wrong/create/hooks/step4/use-step4-form";
 
 type Step4Props = StepProps & {
   scanId: number | null;

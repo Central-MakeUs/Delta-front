@@ -37,6 +37,7 @@ export const ICONS = [
   "note-default",
   "plus",
   "plus-circle",
+  "pro-modal",
   "reset",
   "search",
   "star",

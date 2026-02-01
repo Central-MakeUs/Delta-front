@@ -28,7 +28,6 @@ export const root = style([
     borderRadius: vars.radius.r12,
     display: "flex",
     flexDirection: "column",
-    gap: "1.0rem",
     position: "relative",
   },
 ]);

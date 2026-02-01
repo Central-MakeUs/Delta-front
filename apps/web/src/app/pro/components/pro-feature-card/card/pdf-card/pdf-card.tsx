@@ -1,7 +1,40 @@
+"use client";
+
+import clsx from "clsx";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import * as s from "./pdf-card.css";
 
 const PdfCard = () => {
+  const [entered, setEntered] = useState(false);
+  const [tapping, setTapping] = useState(false);
+
+  const offRef = useRef<number | null>(null);
+  const bootRef = useRef<number | null>(null);
+
+  const triggerTap = () => {
+    setTapping(false);
+
+    window.setTimeout(() => {
+      setTapping(true);
+    }, 20);
+
+    if (offRef.current) window.clearTimeout(offRef.current);
+    offRef.current = window.setTimeout(() => setTapping(false), 900);
+  };
+
+  useEffect(() => {
+    bootRef.current = window.setTimeout(() => {
+      setEntered(true);
+      triggerTap();
+    }, 2000);
+
+    return () => {
+      if (bootRef.current) window.clearTimeout(bootRef.current);
+      if (offRef.current) window.clearTimeout(offRef.current);
+    };
+  }, []);
+
   return (
     <div className={s.root}>
       <div className={s.pillRow}>
@@ -10,8 +43,14 @@ const PdfCard = () => {
         </div>
       </div>
 
-      <div className={s.artwork}>
-        <div className={s.pdfWrap}>
+      <div
+        className={s.artwork}
+        onPointerEnter={triggerTap}
+        onPointerDown={triggerTap}
+      >
+        <div
+          className={clsx(s.pdfWrap, entered && s.enterOn, tapping && s.tapPdf)}
+        >
           <Image
             src="/pro/02-pdf.svg"
             alt=""
@@ -22,7 +61,13 @@ const PdfCard = () => {
           />
         </div>
 
-        <div className={s.arrowWrap}>
+        <div
+          className={clsx(
+            s.arrowWrap,
+            entered && s.enterOn,
+            tapping && s.tapArrow
+          )}
+        >
           <Image
             src="/pro/02-arrow.svg"
             alt=""

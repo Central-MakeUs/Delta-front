@@ -27,8 +27,11 @@ export const useTypeIdsParam = () => {
       const nextValue = nextTypeIds.length > 0 ? nextTypeIds.join(",") : null;
       const next = setParams(params, { typeIds: nextValue });
       const nextQuery = next.toString();
+
       if (nextQuery === spString) return;
-      router.replace(`${pathname}?${nextQuery}`, { scroll: false });
+
+      const nextUrl = nextQuery ? `${pathname}?${nextQuery}` : pathname;
+      router.replace(nextUrl, { scroll: false });
     },
     [params, pathname, router, spString]
   );

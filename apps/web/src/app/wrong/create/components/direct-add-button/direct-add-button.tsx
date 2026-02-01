@@ -58,9 +58,11 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
       }
 
       submittingRef.current = true;
-      Promise.resolve(props.onSubmit()).finally(() => {
-        submittingRef.current = false;
-      });
+      Promise.resolve()
+        .then(() => props.onSubmit())
+        .finally(() => {
+          submittingRef.current = false;
+        });
     };
 
     const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {

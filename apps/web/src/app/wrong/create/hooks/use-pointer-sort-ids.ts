@@ -44,11 +44,13 @@ export const usePointerSortIds = ({
   cancelDistance = 12,
 }: UsePointerSortIdsArgs): UsePointerSortIdsReturn => {
   const idsRef = useRef(ids);
+  const latestIdsRef = useRef(ids);
   const onChangeRef = useRef(onChange);
   const onEndRef = useRef(onEnd);
 
   useEffect(() => {
     idsRef.current = ids;
+    latestIdsRef.current = ids;
   }, [ids]);
 
   useEffect(() => {
@@ -111,6 +113,12 @@ export const usePointerSortIds = ({
   }, [clearTimer, restoreBodyTouchAction]);
 
   useEffect(() => {
+    return () => {
+      cleanup();
+    };
+  }, [cleanup]);
+
+  useEffect(() => {
     if (!tracking) return;
 
     const onMove = (e: PointerEvent) => {
@@ -140,7 +148,7 @@ export const usePointerSortIds = ({
       const activeId = dragRef.current.activeId;
       if (!activeId || !overId) return;
 
-      const current = idsRef.current;
+      const current = latestIdsRef.current;
       const from = current.indexOf(activeId);
       const to = current.indexOf(overId);
       if (from < 0 || to < 0 || from === to) return;
@@ -148,6 +156,7 @@ export const usePointerSortIds = ({
       const next = arrayMove(current, from, to);
       if (isSameIds(current, next)) return;
 
+      latestIdsRef.current = next;
       onChangeRef.current(next);
     };
 
@@ -164,7 +173,11 @@ export const usePointerSortIds = ({
       suppressClickRef.current = true;
       setDraggingId(null);
 
-      await onEndRef.current?.(idsRef.current.slice());
+      try {
+        await onEndRef.current?.(latestIdsRef.current.slice());
+      } catch (err) {
+        console.error(err);
+      }
     };
 
     const onUp = (e: PointerEvent) => {
@@ -196,6 +209,8 @@ export const usePointerSortIds = ({
         e
       ) => {
         if (e.pointerType === "mouse" && e.button !== 0) return;
+
+        latestIdsRef.current = idsRef.current;
 
         dragRef.current.pointerId = e.pointerId;
         dragRef.current.startX = e.clientX;

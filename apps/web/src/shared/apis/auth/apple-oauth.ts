@@ -72,7 +72,6 @@ export const appleOAuth = {
 
   buildAuthorizeUrl: () => {
     const clientId = (process.env.NEXT_PUBLIC_APPLE_CLIENT_ID ?? "").trim();
-    // form_post 시 애플이 POST하는 URL. 백엔드 API(예: https://dev.deltasemo.cloud/api/v1/auth/apple) 또는 프론트 콜백 중 하나로 설정
     const redirectUri = (
       process.env.NEXT_PUBLIC_APPLE_REDIRECT_URI?.trim() ||
       (typeof window !== "undefined"

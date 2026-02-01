@@ -50,7 +50,7 @@ const FormSection = ({
     <>
       <div className={styles.formSection}>
         <div className={styles.fieldGroup}>
-          <label className={styles.fieldLabel}>닉네임</label>
+          <label className={styles.fieldLabel}>이름</label>
           <TextField
             variant="plain"
             placeholder="이름을 입력해주세요"

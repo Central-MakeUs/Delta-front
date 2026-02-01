@@ -15,10 +15,12 @@ const Fallback = () => (
   </main>
 );
 
-export default function AppleCallbackPage() {
+export const AppleCallbackPage = () => {
   return (
     <Suspense fallback={<Fallback />}>
       <AppleCallbackView />
     </Suspense>
   );
-}
+};
+
+export default AppleCallbackPage;

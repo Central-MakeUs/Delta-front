@@ -1,19 +1,60 @@
 "use client";
 
+import { useCallback, useMemo, useState } from "react";
+import clsx from "clsx";
 import { Button } from "@/shared/components/button/button/button";
 import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";
 import * as s from "@/app/wrong/create/components/steps/step.css";
 import type { StepProps } from "@/app/wrong/create/page";
-import { useStep3Selection } from "@/app/wrong/create/hooks/use-step-3-selection";
+import { useStep3Selection } from "@/app/wrong/create/hooks/step3/use-step-3-selection";
+import { useCustomTypeOrder } from "@/app/wrong/create/hooks/step3/use-custom-type-order";
+import { useAsyncIdLock } from "@/app/wrong/create/hooks/step3/use-async-id-lock";
+import Modal from "@/shared/components/modal/modal/modal";
+import TypeCardHitButton from "@/app/wrong/create/components/type-card/type-card-hit-button";
+import TypeCardDeleteButton from "@/app/wrong/create/components/type-card/type-card-delete-button";
 
 type Step3Props = StepProps & {
   scanId?: number | string | null;
 };
 
+type DeleteTarget = { id: string; label: string };
+
+type ItemLike = {
+  id: string;
+};
+
+const reconcileOrder = <T extends ItemLike>(
+  ordered: readonly T[],
+  source: readonly T[]
+) => {
+  const byId = new Map(source.map((v) => [v.id, v]));
+  const seen = new Set<string>();
+  const out: T[] = [];
+
+  ordered.forEach((it) => {
+    const real = byId.get(it.id);
+    if (!real) return;
+    if (seen.has(real.id)) return;
+    seen.add(real.id);
+    out.push(real);
+  });
+
+  source.forEach((it) => {
+    if (seen.has(it.id)) return;
+    seen.add(it.id);
+    out.push(it);
+  });
+
+  return out;
+};
+
 const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
   const {
+    isTypeLoading,
     viewItems,
     viewSelectedTypeIds,
+    suggestedNames,
+    addSuggested,
     isAdding,
     draft,
     setDraft,
@@ -21,36 +62,159 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
     closeAdd,
     commitAdd,
     toggleType,
+    removeType,
+    updateSortOrder,
   } = useStep3Selection({ scanId, onNextEnabledChange });
 
+  const { lockedId: removingId, run: runRemove } = useAsyncIdLock();
+
+  const { orderedItems, draggingId, isReordering, getSortableProps } =
+    useCustomTypeOrder({
+      items: viewItems,
+      updateSortOrder,
+    });
+
+  const orderedItemsSafe = useMemo(() => {
+    return reconcileOrder(orderedItems, viewItems);
+  }, [orderedItems, viewItems]);
+
+  const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
+
+  const closeDeleteModal = useCallback(() => {
+    setDeleteTarget(null);
+  }, []);
+
+  const openDeleteModal = useCallback((target: DeleteTarget) => {
+    setDeleteTarget(target);
+  }, []);
+
+  const handleRemove = useCallback(
+    async (typeId: string) => {
+      if (isReordering) return;
+
+      await runRemove(typeId, async () => {
+        await removeType(typeId);
+      });
+    },
+    [isReordering, removeType, runRemove]
+  );
+
+  const confirmDelete = useCallback(() => {
+    if (!deleteTarget) return;
+    void handleRemove(deleteTarget.id);
+    closeDeleteModal();
+  }, [closeDeleteModal, deleteTarget, handleRemove]);
+
+  if (isTypeLoading) return null;
+
+  const isDraggingNow = Boolean(draggingId);
+
   return (
-    <div className={s.container}>
-      <div className={s.buttonGrid}>
-        {viewItems.map((item) => {
-          const isSelected = viewSelectedTypeIds.includes(item.id);
+    <>
+      <div className={s.container}>
+        {suggestedNames.length > 0 ? (
+          <div className={s.buttonGrid}>
+            {suggestedNames.map((name) => (
+              <Button
+                key={name}
+                size="56"
+                label={`${name} 추가`}
+                tone="surface"
+                onClick={() => void addSuggested(name)}
+              />
+            ))}
+          </div>
+        ) : null}
 
-          return (
-            <Button
-              key={item.id}
-              size="56"
-              label={item.label}
-              tone={isSelected ? "dark" : "surface"}
-              aria-pressed={isSelected}
-              onClick={() => toggleType(item)}
-            />
-          );
-        })}
+        <div className={s.buttonGrid}>
+          {orderedItemsSafe.map((item) => {
+            const isSelected = viewSelectedTypeIds.includes(item.id);
+            const sortableProps = getSortableProps(item);
+            const isRemovingThis = item.custom && removingId === item.id;
+            const cardDisabled = isRemovingThis;
 
-        <DirectAddButton
-          mode={isAdding ? "input" : "button"}
-          value={draft}
-          onValueChange={setDraft}
-          onSubmit={commitAdd}
-          onCancel={closeAdd}
-          onClick={openAdd}
-        />
+            const deleteActionDisabled =
+              !item.custom || isRemovingThis || isReordering || isDraggingNow;
+
+            const labelId = `type-label-${item.id}`;
+
+            return (
+              <div
+                key={item.id}
+                className={clsx(
+                  s.typeButtonWrap,
+                  item.custom && s.typeDraggableArea,
+                  draggingId === item.id && s.typeDragging
+                )}
+                {...sortableProps}
+                onContextMenuCapture={(e) => {
+                  if (!item.custom) return;
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                <div
+                  className={s.typeCard({
+                    tone: isSelected ? "dark" : "surface",
+                    disabled: cardDisabled,
+                  })}
+                >
+                  {/* ✅ 내부 토글 버튼 컴포넌트 */}
+                  <TypeCardHitButton
+                    labelId={labelId}
+                    pressed={isSelected}
+                    disabled={cardDisabled}
+                    onClick={() => {
+                      if (cardDisabled) return;
+                      if (isDraggingNow) return;
+                      toggleType(item);
+                    }}
+                  />
+
+                  <div className={s.typeCardRow}>
+                    <span id={labelId} className={s.typeCardLabel}>
+                      {item.label}
+                    </span>
+
+                    {/* ✅ 내부 삭제 버튼 컴포넌트 */}
+                    {item.custom ? (
+                      <TypeCardDeleteButton
+                        label={item.label}
+                        selected={isSelected}
+                        disabled={deleteActionDisabled}
+                        onDelete={() => {
+                          openDeleteModal({ id: item.id, label: item.label });
+                        }}
+                      />
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
+          <DirectAddButton
+            mode={isAdding ? "input" : "button"}
+            value={draft}
+            onValueChange={setDraft}
+            onSubmit={commitAdd}
+            onCancel={closeAdd}
+            onClick={openAdd}
+          />
+        </div>
       </div>
-    </div>
+
+      <Modal
+        isOpen={Boolean(deleteTarget)}
+        onClose={closeDeleteModal}
+        title="유형 삭제"
+        description="정말 유형을 삭제하시겠어요?"
+        cancelLabel="취소"
+        confirmLabel="삭제"
+        onCancel={closeDeleteModal}
+        onConfirm={confirmDelete}
+      />
+    </>
   );
 };
 

@@ -16,17 +16,12 @@ export const isGraphTab = (value: string | null): value is GraphTab => {
 };
 
 export const getIsBottomNavHidden = (pathname: string) => {
-  if (pathname === ROUTES.AUTH.LOGIN) return true;
-  if (pathname === ROUTES.AUTH.SIGNUP_INFO) return true;
-  if (pathname.startsWith(ROUTES.WRONG.CREATE)) return true;
+  if (pathname === ROUTES.HOME) return false;
+  if (pathname === ROUTES.WRONG.ROOT) return false;
+  if (pathname.startsWith(ROUTES.GRAPH.ROOT)) return false;
+  if (pathname === ROUTES.MY.ROOT) return false;
 
-  if (pathname.startsWith(`${ROUTES.WRONG.ROOT}/`)) {
-    const segments = pathname.split("/").filter(Boolean);
-    if (segments.length === 2) return true;
-    if (segments.length === 3 && segments[2] === "edit") return true;
-  }
-
-  return false;
+  return true;
 };
 
 export const getBottomNavActiveKey = (pathname: string): NavKey => {

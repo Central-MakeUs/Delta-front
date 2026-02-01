@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import * as styles from "./login-info-content.css";
+import { setAuthFresh } from "@/shared/apis/auth/auth-events";
 import { ROUTES } from "@/shared/constants/routes";
 import BottomSheetTerms from "@/shared/components/bottom-sheet/bottom-sheet-terms/bottom-sheet-terms";
 import {
@@ -34,6 +35,7 @@ const LoginInfoContent = () => {
   const [isTermsSheetOpen, setIsTermsSheetOpen] = useState(false);
 
   const handleComplete = () => {
+    setAuthFresh();
     router.push(ROUTES.HOME);
   };
 

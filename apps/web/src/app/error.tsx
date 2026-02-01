@@ -27,9 +27,7 @@ const getStatus = (error: Error): number | undefined => {
   return status;
 };
 
-/** HTTP status → 에러 페이지 타입 (401/403→401, 404→404, 그 외→500) */
 const getErrorType = (status: number | undefined): ErrorType => {
-  if (status === 401 || status === 403) return "401";
   if (status === 404) return "404";
   if (status !== undefined && status >= 500) return "500";
   return "500";
@@ -45,16 +43,17 @@ const ErrorBoundary = ({ error }: ErrorPageProps) => {
       console.error("Error boundary caught an error:", error);
     }
 
-    // 401/403 → 로그인 페이지 타입, 5xx → 서버 오류 타입으로 리다이렉트
     if (status === 401 || status === 403) {
-      router.replace(ROUTES.ERROR_WITH_TYPE("401"));
+      router.replace(ROUTES.AUTH.LOGIN);
       return;
     }
     if (status !== undefined && status >= 500) {
-      router.replace(ROUTES.ERROR_WITH_TYPE("500"));
+      router.replace(`${ROUTES.ERROR.ROOT}?type=500`);
       return;
     }
   }, [error, status, router]);
+
+  if (status === 401 || status === 403) return null;
 
   return <ErrorPageContent errorType={errorType} />;
 };

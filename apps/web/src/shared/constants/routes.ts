@@ -9,7 +9,7 @@ export const GRAPH_TABS = {
 
 export type GraphTab = (typeof GRAPH_TABS)[keyof typeof GRAPH_TABS];
 
-export type ErrorType = "401" | "404" | "500";
+export type ErrorType = "404" | "500";
 
 export const ROUTES = {
   HOME: "/",
@@ -18,8 +18,10 @@ export const ROUTES = {
     SIGNUP_INFO: "/login/info",
     KAKAO_CALLBACK: "/oauth/kakao/callback",
   },
-  ERROR: "/error",
-  ERROR_WITH_TYPE: (type: ErrorType) => `/error?type=${type}`,
+  ERROR: {
+    ROOT: "/error",
+    NOT_FOUND: "/not-found",
+  },
   WRONG: {
     ROOT: `/${WRONG_PREFIX}`,
     CREATE: `/${WRONG_PREFIX}/create`,

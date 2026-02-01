@@ -3,7 +3,10 @@ import { tokenStorage } from "@/shared/apis/token-storage";
 import { ApiError } from "@/shared/apis/api-error";
 import { isApiResponseError } from "@/shared/apis/api-types";
 import { ERROR_CODES } from "@/shared/apis/error-codes";
-import { emitAuthLogout } from "@/shared/apis/auth/auth-events";
+import {
+  emitAuthLogout,
+  isInAuthFlow,
+} from "@/shared/apis/auth/auth-events";
 import { API_PATHS } from "@/shared/apis/constants/api-paths";
 import { API_HEADERS } from "@/shared/apis/constants/api-headers";
 
@@ -122,7 +125,10 @@ instance.interceptors.response.use(
       apiError.status === 401 &&
       apiError.code === ERROR_CODES.AUTH.TOKEN_REQUIRED
     ) {
-      handleAuthDead();
+      // OAuth 콜백 등 토큰 발급 직전 401은 무시 (로그인 페이지로 튕기지 않도록)
+      if (!isInAuthFlow()) {
+        handleAuthDead();
+      }
       throw apiError;
     }
 

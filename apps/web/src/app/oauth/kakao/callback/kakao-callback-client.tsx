@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/shared/constants/routes";
+import { setAuthFresh } from "@/shared/apis/auth/auth-events";
 import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import { useKakaoLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-login-mutation";
 
@@ -78,6 +79,7 @@ const KakaoCallbackClient = ({
     void (async () => {
       try {
         const response = await login.mutateAsync({ code: resolvedCode });
+        setAuthFresh();
         const { isNewUser } = response;
         if (isNewUser) {
           router.replace(ROUTES.AUTH.SIGNUP_INFO);

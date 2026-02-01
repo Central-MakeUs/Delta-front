@@ -3,9 +3,9 @@ import { typo } from "@/shared/styles/typography.css";
 import { color } from "@/shared/styles/color.css";
 
 export const page = style({
-  minHeight: "100dvh",
   display: "flex",
   flexDirection: "column",
+  height: "90vh",
   alignItems: "center",
   justifyContent: "center",
   padding: "2.4rem 1.6rem",
@@ -22,19 +22,18 @@ export const content = style({
 });
 
 export const iconWrapper = style({
-  width: "8rem",
-  height: "8rem",
+  width: "5.6rem",
+  height: "5.6rem",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
 });
 
 export const title = style([
-  typo.h2,
-  color["grayscale-900"],
+  typo.body2.medium,
+  color["grayscale-700"],
   {
     textAlign: "center",
-    fontWeight: 600,
   },
 ]);
 

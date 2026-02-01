@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/shared/constants/routes";
 import { userApi } from "@/shared/apis/user/user-api";
+import { useUploadMyProfileImageMutation } from "@/shared/apis/profile-image/hooks/use-upload-my-profile-image-mutation";
 import type { LoginInfoFormData } from "./use-login-info-form";
 
 /** 폼 birthDate (YYYY/MM/DD) → API birthDate (YYYY-MM-DD) */
@@ -26,6 +27,7 @@ type Params = {
 
 export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
   const router = useRouter();
+  const uploadProfileImage = useUploadMyProfileImageMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -45,6 +47,9 @@ export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
         birthDate: birthDateApi,
         termsAgreed: true,
       });
+      if (formData.profileImage) {
+        await uploadProfileImage.mutateAsync(formData.profileImage);
+      }
       router.replace(ROUTES.HOME);
     } catch (e: unknown) {
       if (process.env.NODE_ENV !== "production") {
@@ -54,9 +59,18 @@ export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [canSubmit, isSubmitting, formData.nickname, birthDateApi, router]);
+  }, [
+    canSubmit,
+    isSubmitting,
+    formData.nickname,
+    formData.profileImage,
+    birthDateApi,
+    router,
+    uploadProfileImage,
+  ]);
 
-  const isButtonDisabled = !canSubmit || isSubmitting;
+  const isButtonDisabled =
+    !canSubmit || isSubmitting || uploadProfileImage.isPending;
 
   return {
     handleComplete,

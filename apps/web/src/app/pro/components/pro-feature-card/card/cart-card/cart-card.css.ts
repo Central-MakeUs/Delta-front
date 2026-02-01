@@ -3,15 +3,69 @@ import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 import { bgColor, color } from "@/shared/styles/color.css";
 
-export const card = style([
+export const card = style({
+  width: "100%",
+  height: "21.0rem",
+  position: "relative",
+  borderRadius: vars.radius.r12,
+  transformStyle: "preserve-3d",
+  transition:
+    "transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 420ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+  willChange: "transform",
+  "@media": {
+    "(prefers-reduced-motion: reduce)": {
+      transition: "none",
+    },
+  },
+});
+
+export const surface = style([
   bgColor["grayscale-0"],
   {
-    width: "15.7rem",
-    height: "21.0rem",
-    position: "relative",
+    position: "absolute",
+    inset: 0,
     borderRadius: vars.radius.r12,
+    overflow: "hidden",
   },
 ]);
+
+export const sheen = style({
+  position: "absolute",
+  inset: 0,
+  opacity: 0,
+  transition: "opacity 300ms ease",
+  pointerEvents: "none",
+  background:
+    "radial-gradient(60% 70% at var(--mx, 50%) var(--my, 20%), rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.0) 60%)",
+  "@media": {
+    "(prefers-reduced-motion: reduce)": {
+      transition: "none",
+    },
+  },
+});
+
+export const glow = style({
+  position: "absolute",
+  inset: "-1.2rem",
+  opacity: 0,
+  transition: "opacity 300ms ease",
+  pointerEvents: "none",
+  background:
+    "radial-gradient(40% 40% at var(--mx, 50%) var(--my, 30%), rgba(255, 96, 74, 0.22) 0%, rgba(255, 96, 74, 0) 70%)",
+  "@media": {
+    "(prefers-reduced-motion: reduce)": {
+      transition: "none",
+    },
+  },
+});
+
+export const interactiveOn = style({
+  boxShadow:
+    "0 1.2rem 3.2rem rgba(0,0,0,0.10), 0 0.8rem 1.6rem rgba(0,0,0,0.06)",
+});
+
+export const sheenOn = style({ opacity: 0.75 });
+export const glowOn = style({ opacity: 1 });
 
 export const title = style([
   typo.caption.semibold,
@@ -20,7 +74,6 @@ export const title = style([
     position: "absolute",
     left: "1.2rem",
     top: "1.2rem",
-    margin: 0,
   },
 ]);
 
@@ -37,10 +90,23 @@ export const bars = style({
 export const bar = style({
   width: "2.8rem",
   borderRadius: vars.radius.r4,
+  transformOrigin: "bottom",
+  transform: "scaleY(0)",
+  transition: "transform 650ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+  willChange: "transform",
+  "@media": {
+    "(prefers-reduced-motion: reduce)": {
+      transition: "none",
+      transform: "scaleY(1)",
+    },
+  },
 });
 
-export const barGray = style([bgColor["grayscale-200"]]);
+export const barsOn = style({
+  transform: "scaleY(1)",
+});
 
+export const barGray = style([bgColor["grayscale-100"]]);
 export const barAccent = style([bgColor["main-200"]]);
 
 export const divider = style([
@@ -49,7 +115,7 @@ export const divider = style([
     position: "absolute",
     left: "1.2rem",
     right: "1.2rem",
-    top: "11.9rem",
+    top: "11.4rem",
     height: "0.05rem",
   },
 ]);
@@ -57,9 +123,9 @@ export const divider = style([
 export const lineBox = style({
   position: "absolute",
   left: "1.2rem",
-  top: "14.05rem",
+  top: "13rem",
   width: "13.35rem",
-  height: "5.7rem",
+  height: "7.6rem",
   boxSizing: "border-box",
 });
 
@@ -80,12 +146,41 @@ export const linePath = style({
   fill: "none",
   stroke: vars.color.grayscale[50],
   strokeWidth: 1.2,
+  strokeDasharray: "var(--dash, 1)",
+  strokeDashoffset: "var(--dash, 1)",
+  transition: "stroke-dashoffset 900ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+  willChange: "stroke-dashoffset",
+  "@media": {
+    "(prefers-reduced-motion: reduce)": {
+      transition: "none",
+      strokeDashoffset: "0",
+    },
+  },
 });
 
-export const dot = style([
-  {
-    fill: vars.color.main[100],
-    stroke: vars.color.main[200],
-    strokeWidth: 1.5,
+export const lineOn = style({
+  strokeDashoffset: "0",
+});
+
+export const dot = style({
+  fill: vars.color.main[100],
+  stroke: vars.color.main[200],
+  strokeWidth: 1.5,
+  opacity: 0,
+  transform: "scale(0.6)",
+  transition:
+    "opacity 300ms ease, transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+  transformOrigin: "center",
+  "@media": {
+    "(prefers-reduced-motion: reduce)": {
+      transition: "none",
+      opacity: 1,
+      transform: "scale(1)",
+    },
   },
-]);
+});
+
+export const dotOn = style({
+  opacity: 1,
+  transform: "scale(1)",
+});

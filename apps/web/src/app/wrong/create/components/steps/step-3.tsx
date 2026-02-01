@@ -1,15 +1,15 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import clsx from "clsx";
 import Icon from "@/shared/components/icon/icon";
 import { Button } from "@/shared/components/button/button/button";
 import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";
 import * as s from "@/app/wrong/create/components/steps/step.css";
 import type { StepProps } from "@/app/wrong/create/page";
-import { useStep3Selection } from "@/app/wrong/create/hooks/use-step-3-selection";
-import { useCustomTypeOrder } from "@/app/wrong/create/hooks/use-custom-type-order";
-import { useAsyncIdLock } from "@/app/wrong/create/hooks/use-async-id-lock";
+import { useStep3Selection } from "@/app/wrong/create/hooks/step3/use-step-3-selection";
+import { useCustomTypeOrder } from "@/app/wrong/create/hooks/step3/use-custom-type-order";
+import { useAsyncIdLock } from "@/app/wrong/create/hooks/step3/use-async-id-lock";
 import Modal from "@/shared/components/modal/modal/modal";
 
 type Step3Props = StepProps & {
@@ -17,6 +17,35 @@ type Step3Props = StepProps & {
 };
 
 type DeleteTarget = { id: string; label: string };
+
+type ItemLike = {
+  id: string;
+};
+
+const reconcileOrder = <T extends ItemLike>(
+  ordered: readonly T[],
+  source: readonly T[]
+) => {
+  const byId = new Map(source.map((v) => [v.id, v]));
+  const seen = new Set<string>();
+  const out: T[] = [];
+
+  ordered.forEach((it) => {
+    const real = byId.get(it.id);
+    if (!real) return;
+    if (seen.has(real.id)) return;
+    seen.add(real.id);
+    out.push(real);
+  });
+
+  source.forEach((it) => {
+    if (seen.has(it.id)) return;
+    seen.add(it.id);
+    out.push(it);
+  });
+
+  return out;
+};
 
 const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
   const {
@@ -43,6 +72,10 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
       items: viewItems,
       updateSortOrder,
     });
+
+  const orderedItemsSafe = useMemo(() => {
+    return reconcileOrder(orderedItems, viewItems);
+  }, [orderedItems, viewItems]);
 
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
 
@@ -93,7 +126,7 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
         ) : null}
 
         <div className={s.buttonGrid}>
-          {orderedItems.map((item) => {
+          {orderedItemsSafe.map((item) => {
             const isSelected = viewSelectedTypeIds.includes(item.id);
             const sortableProps = getSortableProps(item);
             const isRemovingThis = item.custom && removingId === item.id;

@@ -8,8 +8,8 @@ import { useCreateCustomTypeMutation } from "@/shared/apis/problem-type/hooks/us
 import { useSetProblemTypeActiveMutation } from "@/shared/apis/problem-type/hooks/use-set-problem-type-active-mutation";
 import { useUpdateCustomTypeMutation } from "@/shared/apis/problem-type/hooks/use-update-custom-type-mutation";
 import type { ProblemTypeItem } from "@/shared/apis/problem-type/problem-type-types";
-import { useTypeIdsParam } from "@/app/wrong/create/hooks/use-type-ids-param";
-import { useOptimisticProblemTypes } from "@/app/wrong/create/hooks/use-optimistic-problem-types";
+import { useTypeIdsParam } from "@/app/wrong/create/hooks/step3/use-type-ids-param";
+import { useOptimisticProblemTypes } from "@/app/wrong/create/hooks/step3/use-optimistic-problem-types";
 
 type UseStep3SelectionArgs = {
   scanId: number | string | null;
@@ -51,15 +51,26 @@ const findTypeIdByName = (types: ProblemTypeItem[], name: string) => {
   return hit?.id ?? null;
 };
 
+const uniqById = (list: ProblemTypeItem[]) => {
+  const map = new Map<string, ProblemTypeItem>();
+  list.forEach((t) => {
+    map.set(t.id, t);
+  });
+  return Array.from(map.values());
+};
+
 export const useStep3Selection = ({
   scanId,
   onNextEnabledChange,
 }: UseStep3SelectionArgs): UseStep3SelectionReturn => {
   const { urlTypeIds, replaceTypeIds, params, spString, pathname } =
     useTypeIdsParam();
+
   const { data: allTypesRaw, isLoading: isTypeLoading } =
     useProblemTypesQuery();
+
   const allTypes = allTypesRaw ?? [];
+
   const {
     mergedTypes,
     markInactive,
@@ -70,7 +81,8 @@ export const useStep3Selection = ({
   } = useOptimisticProblemTypes(allTypes);
 
   const activeTypes = useMemo(() => {
-    return mergedTypes
+    const uniq = uniqById(mergedTypes);
+    return uniq
       .filter((t) => t.active)
       .slice()
       .sort((a, b) => a.sortOrder - b.sortOrder);
@@ -105,7 +117,6 @@ export const useStep3Selection = ({
       }
 
       const cleaned = normalize(name);
-
       if (!cleaned) return;
       if (isOnlyNumber(cleaned)) return;
 
@@ -191,6 +202,9 @@ export const useStep3Selection = ({
   );
 
   const createMut = useCreateCustomTypeMutation();
+  const activeMut = useSetProblemTypeActiveMutation();
+  const updateMut = useUpdateCustomTypeMutation();
+
   const [isAdding, setIsAdding] = useState(false);
   const [draft, setDraft] = useState("");
 
@@ -206,34 +220,50 @@ export const useStep3Selection = ({
 
   const commitAdd = useCallback(async () => {
     const nextLabel = normalize(draft);
-    if (!nextLabel) {
-      closeAdd();
-      return;
-    }
-    const existing = allTypes.find(
-      (t) => normalizeName(t.name) === normalizeName(nextLabel)
-    );
 
-    if (existing?.id) {
+    try {
+      if (!nextLabel) return;
+
+      const existing = allTypes.find(
+        (t) => normalizeName(t.name) === normalizeName(nextLabel)
+      );
+
+      if (existing?.id) {
+        if (!existing.active) {
+          await activeMut.mutateAsync({
+            typeId: existing.id,
+            body: { active: true },
+          });
+        }
+
+        unmarkInactive(existing.id);
+
+        const base = viewSelectedTypeIds;
+        const next = base.includes(existing.id) ? base : [...base, existing.id];
+
+        commitSelected(next, true);
+        return;
+      }
+
+      const created = await createMut.mutateAsync({ name: nextLabel });
+
+      unmarkInactive(created.id);
+
       const base = viewSelectedTypeIds;
-      const next = base.includes(existing.id) ? base : [...base, existing.id];
+      const next = base.includes(created.id) ? base : [...base, created.id];
+
       commitSelected(next, true);
+    } finally {
       closeAdd();
-      return;
     }
-
-    const created = await createMut.mutateAsync({ name: nextLabel });
-    const base = viewSelectedTypeIds;
-    const next = base.includes(created.id) ? base : [...base, created.id];
-
-    commitSelected(next, true);
-    closeAdd();
   }, [
+    activeMut,
     allTypes,
     closeAdd,
     commitSelected,
     createMut,
     draft,
+    unmarkInactive,
     viewSelectedTypeIds,
   ]);
 
@@ -245,21 +275,47 @@ export const useStep3Selection = ({
       const existing = allTypes.find(
         (t) => normalizeName(t.name) === normalizeName(cleaned)
       );
-      const id =
-        existing?.id ?? (await createMut.mutateAsync({ name: cleaned })).id;
+
+      if (existing?.id) {
+        if (!existing.active) {
+          await activeMut.mutateAsync({
+            typeId: existing.id,
+            body: { active: true },
+          });
+        }
+
+        unmarkInactive(existing.id);
+
+        const base = viewSelectedTypeIds;
+        const next = base.includes(existing.id) ? base : [...base, existing.id];
+
+        commitSelected(next, true);
+        return;
+      }
+
+      const created = await createMut.mutateAsync({ name: cleaned });
+
+      unmarkInactive(created.id);
+
       const base = viewSelectedTypeIds;
-      const next = base.includes(id) ? base : [...base, id];
+      const next = base.includes(created.id) ? base : [...base, created.id];
+
       commitSelected(next, true);
     },
-    [allTypes, commitSelected, createMut, viewSelectedTypeIds]
+    [
+      activeMut,
+      allTypes,
+      commitSelected,
+      createMut,
+      unmarkInactive,
+      viewSelectedTypeIds,
+    ]
   );
-
-  const activeMut = useSetProblemTypeActiveMutation();
-  const updateMut = useUpdateCustomTypeMutation();
 
   const removeType = useCallback(
     async (typeId: string) => {
       markInactive(typeId);
+
       const prevSelected = viewSelectedTypeIds;
       const nextSelected = prevSelected.filter((id) => id !== typeId);
       commitSelected(nextSelected, true);

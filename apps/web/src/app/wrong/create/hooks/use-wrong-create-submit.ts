@@ -13,7 +13,7 @@ import {
   inferSubjectiveFormat,
   normalize,
 } from "@/app/wrong/create/utils/answer-format";
-import type { Step4FormState } from "@/app/wrong/create/hooks/use-step4-form";
+import type { Step4FormState } from "@/app/wrong/create/hooks/step4/use-step4-form";
 
 type Params = {
   currentStep: number;

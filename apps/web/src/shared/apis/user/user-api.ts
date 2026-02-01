@@ -7,6 +7,7 @@ export type UserMeData = {
   id: number;
   email?: string | null;
   nickname?: string | null;
+  oauthProvider?: string | null;
 };
 
 type RawUserMeData = {
@@ -14,6 +15,7 @@ type RawUserMeData = {
   userId?: number;
   email?: string | null;
   nickname?: string | null;
+  oauthProvider?: string | null;
 };
 
 export type UserNameUpdateRequest = {
@@ -23,7 +25,12 @@ export type UserNameUpdateRequest = {
 const normalizeMe = (raw: RawUserMeData): UserMeData => {
   const id = raw.id ?? raw.userId ?? 0;
   if (id === 0) console.warn("[userApi] User ID is missing from response");
-  return { id, email: raw.email ?? null, nickname: raw.nickname ?? null };
+  return {
+    id,
+    email: raw.email ?? null,
+    nickname: raw.nickname ?? null,
+    oauthProvider: raw.oauthProvider ?? null,
+  };
 };
 
 export type OnboardingParams = {

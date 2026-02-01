@@ -59,11 +59,12 @@ const MyPage = () => {
 
   if (isProfileLoading) return null;
   if (!profile) return null;
-
+  console.log(profile);
   return (
     <MyPageView
       userName={profile.nickname ?? ""}
       linkedEmail={profile.email ?? ""}
+      provider={profile.oauthProvider ?? ""}
       profileImageUrl={profileImageUrl}
       onLogout={() => router.replace(ROUTES.AUTH.LOGIN)}
       onWithdraw={() => router.replace(ROUTES.AUTH.LOGIN)}

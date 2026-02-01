@@ -71,9 +71,7 @@ const AppleCallbackView = () => {
       });
   }, [loginKey, errorParam, router, exchange]);
 
-  return (
-    <Loading variant="overlay" message="로그인 처리 중..." />
-  );
+  return <Loading variant="overlay" message="로그인 처리 중..." />;
 };
 
 export default AppleCallbackView;

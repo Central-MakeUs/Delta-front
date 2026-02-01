@@ -12,7 +12,10 @@ type Props = {
 };
 
 export const ProIllustration = ({ variant }: Props) => {
-  if (variant === "pro-01") return <ChartCard />;
+  if (variant === "pro-01")
+    return (
+      <ChartCard bars={[80, 62, 48, 92]} line={[22, 46, 35, 18, 52, 78]} />
+    );
   if (variant === "pro-02") return <PdfCard />;
   if (variant === "pro-03") return <TutorCard />;
   if (variant === "pro-04") return <ExpansionCard />;

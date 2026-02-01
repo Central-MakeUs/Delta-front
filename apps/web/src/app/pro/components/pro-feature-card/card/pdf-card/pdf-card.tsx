@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import * as s from "./pdf-card.css";
 

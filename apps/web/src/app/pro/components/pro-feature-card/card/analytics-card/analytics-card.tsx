@@ -17,7 +17,7 @@ const AnalyticsCard = () => {
             alt=""
             fill
             priority
-            sizes="(9.5rem"
+            sizes="9.5rem"
             style={{ objectFit: "contain" }}
           />
         </div>

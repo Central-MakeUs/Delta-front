@@ -16,6 +16,15 @@ export const useRevealOnScroll = (options?: Options) => {
     const el = ref.current;
     if (!el) return;
 
+    const once = options?.once ?? true;
+    const rootMargin = options?.rootMargin ?? "0px 0px -10% 0px";
+    const threshold = options?.threshold ?? 0.15;
+
+    if (typeof IntersectionObserver === "undefined") {
+      const id = window.setTimeout(() => setRevealed(true), 0);
+      return () => window.clearTimeout(id);
+    }
+
     const obs = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
@@ -23,16 +32,12 @@ export const useRevealOnScroll = (options?: Options) => {
 
         if (entry.isIntersecting) {
           setRevealed(true);
-          if (options?.once ?? true) obs.unobserve(el);
-        } else if (!(options?.once ?? true)) {
+          if (once) obs.unobserve(el);
+        } else if (!once) {
           setRevealed(false);
         }
       },
-      {
-        root: null,
-        rootMargin: options?.rootMargin ?? "0px 0px -10% 0px",
-        threshold: options?.threshold ?? 0.15,
-      }
+      { root: null, rootMargin, threshold }
     );
 
     obs.observe(el);

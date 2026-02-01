@@ -11,11 +11,13 @@ const PdfCard = () => {
 
   const offRef = useRef<number | null>(null);
   const bootRef = useRef<number | null>(null);
+  const onRef = useRef<number | null>(null);
 
   const triggerTap = () => {
     setTapping(false);
 
-    window.setTimeout(() => {
+    if (onRef.current) window.clearTimeout(onRef.current);
+    onRef.current = window.setTimeout(() => {
       setTapping(true);
     }, 20);
 
@@ -32,6 +34,7 @@ const PdfCard = () => {
     return () => {
       if (bootRef.current) window.clearTimeout(bootRef.current);
       if (offRef.current) window.clearTimeout(offRef.current);
+      if (onRef.current) window.clearTimeout(onRef.current);
     };
   }, []);
 

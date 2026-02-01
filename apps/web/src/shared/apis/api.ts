@@ -116,8 +116,18 @@ instance.interceptors.response.use(
     const payload = err.response?.data;
     const headers = (err.response?.headers ?? {}) as Record<string, unknown>;
     const traceId = readHeader(headers, TRACE_HEADER);
+    const status = err.response?.status;
 
-    if (!isApiResponseError(payload)) throw err;
+    const shouldEmitAuthLogout = (s: number | undefined): boolean => {
+      if (s !== 401 && s !== 403) return false;
+      if (s === 401 && isInAuthFlow()) return false;
+      return true;
+    };
+
+    if (!isApiResponseError(payload)) {
+      if (shouldEmitAuthLogout(status)) handleAuthDead();
+      throw err;
+    }
 
     const apiError = ApiError.fromPayload(payload, traceId);
 
@@ -125,10 +135,7 @@ instance.interceptors.response.use(
       apiError.status === 401 &&
       apiError.code === ERROR_CODES.AUTH.TOKEN_REQUIRED
     ) {
-      // OAuth 콜백 등 토큰 발급 직전 401은 무시 (로그인 페이지로 튕기지 않도록)
-      if (!isInAuthFlow()) {
-        handleAuthDead();
-      }
+      if (shouldEmitAuthLogout(apiError.status)) handleAuthDead();
       throw apiError;
     }
 
@@ -137,7 +144,10 @@ instance.interceptors.response.use(
       apiError.code === ERROR_CODES.AUTH.AUTHENTICATION_FAILED &&
       !config._retry;
 
-    if (!canRetry) throw apiError;
+    if (!canRetry) {
+      if (shouldEmitAuthLogout(apiError.status)) handleAuthDead();
+      throw apiError;
+    }
 
     config._retry = true;
 

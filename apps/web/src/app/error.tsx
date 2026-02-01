@@ -33,7 +33,7 @@ const getErrorType = (status: number | undefined): ErrorType => {
   return "500";
 };
 
-const ErrorBoundary = ({ error }: ErrorPageProps) => {
+const ErrorBoundary = ({ error, reset }: ErrorPageProps) => {
   const router = useRouter();
   const status = getStatus(error);
   const errorType = getErrorType(status);
@@ -55,7 +55,7 @@ const ErrorBoundary = ({ error }: ErrorPageProps) => {
 
   if (status === 401 || status === 403) return null;
 
-  return <ErrorPageContent errorType={errorType} />;
+  return <ErrorPageContent errorType={errorType} onReset={reset} />;
 };
 
 export default ErrorBoundary;

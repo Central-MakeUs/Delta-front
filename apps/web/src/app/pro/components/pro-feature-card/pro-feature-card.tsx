@@ -44,7 +44,6 @@ export const ProFeatureCard = ({ item, index }: Props) => {
       </div>
 
       <div className={s.illu}>
-        {item.badgeText && <span className={s.badge}>{item.badgeText}</span>}
         <ProIllustration variant={item.illustration} />
       </div>
     </div>

@@ -9,7 +9,6 @@ export type ProFeatureItem = {
   code: ProFeatureCode;
   proLabel: string; // PRO 01
   ribbonSide: "left" | "right";
-  badgeText?: string;
   title: string;
   titleEn: string;
   desc: string;
@@ -30,7 +29,6 @@ export const PRO_FEATURES: ProFeatureItem[] = [
     code: "pro-02",
     proLabel: "PRO 02",
     ribbonSide: "right",
-    badgeText: "개인 맞춤형 오답",
     title: "Click 맞춤형\n문제 PDF 내보내기",
     titleEn: "Efficiency",
     desc: "필요한 오답만 쏙쏙!\n시험지 PDF로 만들어요.",
@@ -49,7 +47,6 @@ export const PRO_FEATURES: ProFeatureItem[] = [
     code: "pro-04",
     proLabel: "PRO 04",
     ribbonSide: "right",
-    badgeText: "개인 맞춤형 문제",
     title: "취약점 집중\n유사 문항 제공",
     titleEn: "Expansion",
     desc: "유사 문제로 완전히\n익숙해질 때까지 풀어요.",
@@ -59,7 +56,6 @@ export const PRO_FEATURES: ProFeatureItem[] = [
     code: "pro-05",
     proLabel: "PRO 05",
     ribbonSide: "left",
-    badgeText: "예상 성적 리포트",
     title: "AI 성적\n예측 시뮬레이션",
     titleEn: "Analytics",
     desc: "현재 기준 예상 점수 및\n다음 학습 목표를 알려줘요.",

@@ -7,7 +7,7 @@ export const card = style([
   bgColor["grayscale-50"],
   {
     position: "relative",
-    borderRadius: vars.radius.r24,
+    borderRadius: vars.radius.r16,
     padding: "2.0rem",
     display: "flex",
     gap: "1.6rem",
@@ -106,30 +106,14 @@ export const desc = style([
 export const illu = style([
   bgColor["grayscale-0"],
   {
-    width: "14.6rem",
-    minWidth: "14.6rem",
-    height: "16.0rem",
+    width: "15.7rem",
+    height: "20.8rem",
     borderRadius: vars.radius.r16,
     position: "relative",
     overflow: "hidden",
-    border: "0.1rem solid rgba(0,0,0,0.06)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-  },
-]);
-
-export const badge = style([
-  typo.caption.medium,
-  color["grayscale-700"],
-  bgColor["grayscale-50"],
-  {
-    position: "absolute",
-    top: "1.2rem",
-    left: "1.2rem",
-    padding: "0.6rem 1.2rem",
-    borderRadius: vars.radius.full,
-    border: "0.1rem solid rgba(0,0,0,0.05)",
   },
 ]);
 

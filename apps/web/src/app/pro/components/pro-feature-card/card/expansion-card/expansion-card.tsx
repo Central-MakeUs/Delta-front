@@ -18,7 +18,7 @@ const ExpansionCard = () => {
           alt=""
           fill
           priority
-          sizes="(max-width: 430px) 66px, 66px"
+          sizes="10rem"
           style={{ objectFit: "contain" }}
         />
       </div>

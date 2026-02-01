@@ -89,16 +89,15 @@ export const head = style([
 ]);
 
 export const en = style([
-  typo.subtitle.bold,
+  typo.body1.semibold,
   color["grayscale-900"],
   { display: "block" },
 ]);
 
 export const desc = style([
-  typo.body2.medium,
+  typo.body3.medium,
   color["grayscale-700"],
   {
-    margin: 0,
     whiteSpace: "pre-line",
   },
 ]);

@@ -1,7 +1,7 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
-import { color, bgColor } from "@/shared/styles/color.css";
+import { color } from "@/shared/styles/color.css";
 
 export const root = style({
   height: "22.5rem",
@@ -59,13 +59,15 @@ export const title = style([typo.h1, color["main-800"]]);
 
 export const multiply = style({
   position: "absolute",
-  left: "1.6rem",
-  top: "2.0rem",
-  width: "5.6rem",
-  height: "5.6rem",
+  left: "1rem",
+  top: "-0.8rem",
+  width: "6rem",
+  height: "6rem",
   opacity: 0.45,
   zIndex: vars.zIndex.contentOverlay,
   pointerEvents: "none",
+  transform: "rotate(110deg)",
+  transformOrigin: "center",
 });
 
 export const divide = style({
@@ -74,9 +76,11 @@ export const divide = style({
   top: "5.2rem",
   width: "5.6rem",
   height: "5.6rem",
-  opacity: 0.45,
+  opacity: 0.2,
   zIndex: vars.zIndex.contentOverlay,
   pointerEvents: "none",
+  transform: "rotate(188deg)",
+  transformOrigin: "center",
 });
 
 export const blocks = style({

@@ -23,7 +23,7 @@ export const PRO_FEATURES: ProFeatureItem[] = [
     ribbonSide: "left",
     title: "심층 리포트",
     titleEn: "Logic Analysis",
-    desc: "오답을 유형이 아니라 왜 틀렸는지까지 파헤쳐서 보여줘요.",
+    desc: "오답을 유형이 아니라\n 왜 틀렸는지까지 파헤쳐서 보여줘요.",
     illustration: "pro-01",
   },
   {
@@ -33,7 +33,7 @@ export const PRO_FEATURES: ProFeatureItem[] = [
     badgeText: "개인 맞춤형 오답",
     title: "Click 맞춤형\n문제 PDF 내보내기",
     titleEn: "Efficiency",
-    desc: "필요한 오답만 쏙쏙! 시험지 PDF로 만들어요.",
+    desc: "필요한 오답만 쏙쏙!\n시험지 PDF로 만들어요.",
     illustration: "pro-02",
   },
   {
@@ -42,7 +42,7 @@ export const PRO_FEATURES: ProFeatureItem[] = [
     ribbonSide: "left",
     title: "AI 과외",
     titleEn: "Personalized Solution",
-    desc: "오답이 아닌 틀린 이유를 명확히 알려줘요.",
+    desc: "오답이 아닌 틀린 이유를\n명확히 알려줘요.",
     illustration: "pro-03",
   },
   {
@@ -52,7 +52,7 @@ export const PRO_FEATURES: ProFeatureItem[] = [
     badgeText: "개인 맞춤형 문제",
     title: "취약점 집중\n유사 문항 제공",
     titleEn: "Expansion",
-    desc: "유사 문제로 완전히 익숙해질 때까지 풀어요.",
+    desc: "유사 문제로 완전히\n익숙해질 때까지 풀어요.",
     illustration: "pro-04",
   },
   {
@@ -62,7 +62,7 @@ export const PRO_FEATURES: ProFeatureItem[] = [
     badgeText: "예상 성적 리포트",
     title: "AI 성적\n예측 시뮬레이션",
     titleEn: "Analytics",
-    desc: "현재 기준 예상 점수 및 다음 학습 목표를 알려줘요.",
+    desc: "현재 기준 예상 점수 및\n다음 학습 목표를 알려줘요.",
     illustration: "pro-05",
   },
 ];

@@ -81,10 +81,9 @@ export const text = style({
 });
 
 export const head = style([
-  typo.subtitle.bold,
+  typo.body1.semibold,
   color["grayscale-900"],
   {
-    margin: 0,
     whiteSpace: "pre-line",
   },
 ]);

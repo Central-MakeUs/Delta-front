@@ -2,11 +2,11 @@
 
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
-import * as s from "./pro.css";
-import { PRO_FEATURES } from "./constants/pro-features";
+import * as s from "@/app/pro/pro.css";
+import { PRO_FEATURES } from "@/app/pro/constants/pro-features";
 import { ProHero } from "@/app/pro/components/pro-hero/pro-hero";
 import { ProFeatureCard } from "@/app/pro/components/pro-feature-card/pro-feature-card";
-import { FixedBottomCta } from "@/app/pro/components/fixed-bottom-cta/fixed-bottom-cta";
+import BottomCta from "@/app/pro/components/bottom-cta/bottom-cta";
 
 const ProPage = () => {
   const router = useRouter();
@@ -37,7 +37,7 @@ const ProPage = () => {
         </section>
       </main>
 
-      <FixedBottomCta label="결제하러가기" onClick={onPay} />
+      <BottomCta label="결제하러가기" onClick={onPay} />
     </div>
   );
 };

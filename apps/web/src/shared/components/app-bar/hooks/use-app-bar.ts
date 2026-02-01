@@ -35,6 +35,7 @@ export const useAppBar = (): UseAppBarResult => {
         variant: "default",
         onLogoClick: () => router.push(ROUTES.HOME),
         onUserClick: () => router.push(ROUTES.MY.ROOT),
+        onProClick: () => router.push(ROUTES.PRO.ROOT),
       },
     };
   }

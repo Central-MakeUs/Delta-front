@@ -40,9 +40,7 @@ const ChartCard = ({
   bars,
   line,
 }: Props) => {
-  const rootRef = useRef<HTMLDivElement | null>(null);
   const pathRef = useRef<SVGPathElement | null>(null);
-  const [active, setActive] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   const safeBars = bars.slice(0, 4).map(clamp01);
@@ -71,57 +69,21 @@ const ChartCard = ({
     [pathPoints]
   );
 
-  // 라인 길이 측정해서 dash 세팅
   useEffect(() => {
     const el = pathRef.current;
     if (!el) return;
+
     const len = el.getTotalLength();
     el.style.setProperty("--dash", String(len));
-    // mount 애니메이션 트리거
+
     requestAnimationFrame(() => setMounted(true));
   }, [d]);
 
-  const setPointerVars = (clientX: number, clientY: number) => {
-    const el = rootRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const px = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
-    const py = Math.min(Math.max((clientY - rect.top) / rect.height, 0), 1);
-
-    el.style.setProperty("--mx", `${(px * 100).toFixed(1)}%`);
-    el.style.setProperty("--my", `${(py * 100).toFixed(1)}%`);
-
-    const rotY = (px - 0.5) * 10;
-    const rotX = (0.5 - py) * 10;
-    el.style.transform = `perspective(600px) rotateX(${rotX.toFixed(
-      2
-    )}deg) rotateY(${rotY.toFixed(2)}deg) translateY(-0.2rem)`;
-  };
-
-  const resetTilt = () => {
-    const el = rootRef.current;
-    if (!el) return;
-    el.style.transform = "perspective(600px) rotateX(0deg) rotateY(0deg)";
-    el.style.setProperty("--mx", "50%");
-    el.style.setProperty("--my", "20%");
-  };
-
   return (
-    <div
-      ref={rootRef}
-      className={clsx(s.card, active && s.interactiveOn, className)}
-      onPointerEnter={() => setActive(true)}
-      onPointerLeave={() => {
-        setActive(false);
-        resetTilt();
-      }}
-      onPointerMove={(e) => setPointerVars(e.clientX, e.clientY)}
-      onPointerDown={(e) => setPointerVars(e.clientX, e.clientY)}
-      style={{ transform: "perspective(600px) rotateX(0deg) rotateY(0deg)" }}
-    >
+    <div className={clsx(s.card, mounted && s.introOn, className)}>
       <div className={s.surface}>
-        <div className={clsx(s.glow, active && s.glowOn)} />
-        <div className={clsx(s.sheen, active && s.sheenOn)} />
+        <div className={s.glow} />
+        <div className={s.sheen} />
 
         <p className={s.title}>{title}</p>
 
@@ -176,9 +138,7 @@ const ChartCard = ({
                 r={DOT_R}
                 className={clsx(s.dot, mounted && s.dotOn)}
                 vectorEffect="non-scaling-stroke"
-                style={{
-                  transitionDelay: `${240 + i * 70}ms`,
-                }}
+                style={{ transitionDelay: `${240 + i * 70}ms` }}
               />
             ))}
           </svg>

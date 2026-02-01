@@ -7,6 +7,7 @@ import AppBarGate from "@/shared/components/app-bar/app-bar-gate";
 import BottomNav from "@/shared/components/bottom-nav/bottom-nav";
 import FabButton from "@/shared/components/button/fab-button/fab-button";
 import Splash from "@/shared/components/splash/splash";
+import { ToastProvider } from "@/shared/components/toast/toast-provider";
 
 type ClientShellProps = {
   children: ReactNode;
@@ -17,6 +18,7 @@ const ClientShell = ({ children }: ClientShellProps) => {
 
   return (
     <QueryProvider>
+      <ToastProvider />
       <Splash onDone={() => setContentKey((k) => k + 1)} />
       <AppBarGate />
       <div key={contentKey}>{children}</div>

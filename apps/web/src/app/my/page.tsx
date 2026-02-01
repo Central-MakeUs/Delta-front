@@ -59,7 +59,6 @@ const MyPage = () => {
 
   if (isProfileLoading) return null;
   if (!profile) return null;
-  console.log(profile);
   return (
     <MyPageView
       userName={profile.nickname ?? ""}

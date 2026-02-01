@@ -60,9 +60,14 @@ export const useTypeMaintenance = ({
   const restoreType = useCallback(
     async (typeId: string) => {
       unmarkInactive(typeId);
-      await setTypeActive(typeId, true);
+      try {
+        await setTypeActive(typeId, true);
+      } catch (e) {
+        markInactive(typeId);
+        throw e;
+      }
     },
-    [setTypeActive, unmarkInactive]
+    [markInactive, setTypeActive, unmarkInactive]
   );
 
   const renameType = useCallback(

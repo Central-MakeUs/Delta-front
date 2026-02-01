@@ -68,11 +68,8 @@ export const useTypeAddFlow = ({
   );
 
   const commitAdd = useCallback(async () => {
-    try {
-      await upsertByName(draft);
-    } finally {
-      closeAdd();
-    }
+    await upsertByName(draft);
+    closeAdd();
   }, [closeAdd, draft, upsertByName]);
 
   const addSuggested = useCallback(

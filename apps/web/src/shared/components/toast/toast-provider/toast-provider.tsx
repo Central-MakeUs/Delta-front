@@ -1,6 +1,7 @@
 "use client";
 
 import { Toaster } from "react-hot-toast";
+import * as s from "@/shared/components/toast/toast-provider/toast-provider.css";
 
 export const ToastProvider = () => {
   return (
@@ -8,13 +9,14 @@ export const ToastProvider = () => {
       position="bottom-center"
       gutter={12}
       toastOptions={{ duration: 2500 }}
+      containerClassName={s.container}
       containerStyle={{
-        width: "100%",
-        maxWidth: "43rem",
         left: "50%",
         transform: "translateX(-50%)",
-        bottom: "1.6rem",
-        zIndex: 16,
+        maxWidth: "43rem",
+        width: "100%",
+        boxSizing: "border-box",
+        bottom: "calc(1.6rem + env(safe-area-inset-bottom))",
       }}
     />
   );

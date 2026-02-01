@@ -13,12 +13,17 @@ const leaveKeyframes = keyframes({
   to: { opacity: 0, transform: "translateY(-0.6rem)" },
 });
 
+export const container = style({
+  padding: "0 1.6rem",
+  width: "100%",
+});
+
 export const root = style([
   bgColor["grayscale-700"],
   color["grayscale-50"],
   {
     width: "100%",
-    margin: "0 1.6rem",
+    boxSizing: "border-box",
     padding: "1.2rem",
     borderRadius: vars.radius.r12,
     display: "flex",
@@ -29,20 +34,9 @@ export const root = style([
 ]);
 
 export const frame = style({
-  width: "100%",
   display: "flex",
   alignItems: "center",
-  gap: "0.8rem",
-});
-
-export const iconWrap = style({
-  width: "2.4rem",
-  height: "2.4rem",
-  borderRadius: vars.radius.full,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  flex: "0 0 auto",
+  gap: "1rem",
 });
 
 export const iconSuccess = style([
@@ -53,11 +47,6 @@ export const iconError = style([
   bgColor["warning-500"],
   color["grayscale-900"],
 ]);
-
-export const icon = style({
-  width: "2.0rem",
-  height: "2.0rem",
-});
 
 export const message = style([
   typo.body3.medium,

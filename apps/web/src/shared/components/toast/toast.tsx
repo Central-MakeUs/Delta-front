@@ -1,7 +1,7 @@
 "use client";
 
 import toast from "react-hot-toast";
-import { ToastItem } from "./toast-item/toast-item";
+import { ToastItem } from "@/shared/components/toast/toast-item/toast-item";
 
 export type ToastVariant = "success" | "error";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import * as s from "./toast-item.css";
+import * as s from "@/shared/components/toast/toast-item/toast-item.css";
 import Icon from "@/shared/components/icon/icon";
 import type { IconName } from "@/shared/constants/icons";
 
@@ -27,25 +27,20 @@ export const ToastItem = ({
   const iconName = ICON_NAME_BY_VARIANT[variant];
 
   return (
-    <div
-      className={`${s.root} ${visible ? s.enter : s.leave}`}
-      role="status"
-      aria-live="polite"
-    >
-      <div className={s.frame}>
-        <div
-          className={`${s.iconWrap} ${variant === "success" ? s.iconSuccess : s.iconError}`}
-          aria-hidden
-        >
-          <Icon name={iconName} className={s.icon} />
+    <div className={s.container}>
+      <div
+        className={`${s.root} ${visible ? s.enter : s.leave}`}
+        role="status"
+        aria-live="polite"
+      >
+        <div className={s.frame}>
+          <Icon name={iconName} size={2.4} />
+          <p className={s.message}>{message}</p>
         </div>
-
-        <p className={s.message}>{message}</p>
+        <button type="button" onClick={onClose} className={s.srOnly}>
+          닫기
+        </button>
       </div>
-
-      <button type="button" onClick={onClose} className={s.srOnly}>
-        닫기
-      </button>
     </div>
   );
 };

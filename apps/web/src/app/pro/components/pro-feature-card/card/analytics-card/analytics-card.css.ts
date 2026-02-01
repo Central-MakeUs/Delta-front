@@ -58,6 +58,6 @@ export const aiWrap = style({
   position: "absolute",
   left: "0",
   top: "5.7rem",
-  zIndex: "1",
+  zIndex: vars.zIndex.contentOverlay,
   pointerEvents: "none",
 });

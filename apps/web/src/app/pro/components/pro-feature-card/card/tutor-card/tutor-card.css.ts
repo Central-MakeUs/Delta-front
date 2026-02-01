@@ -1,4 +1,5 @@
 import { style } from "@vanilla-extract/css";
+import { vars } from "@/shared/styles/theme.css";
 
 export const root = style({
   width: "100%",
@@ -30,6 +31,6 @@ export const pencilWrap = style({
   position: "absolute",
   right: "0",
   top: "5rem",
-  zIndex: "1",
+  zIndex: vars.zIndex.contentOverlay,
   pointerEvents: "none",
 });

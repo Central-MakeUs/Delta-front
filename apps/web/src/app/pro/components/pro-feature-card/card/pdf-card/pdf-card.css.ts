@@ -60,7 +60,7 @@ export const arrowWrap = style({
   position: "absolute",
   right: "0",
   top: "4rem",
-  zIndex: "1",
+  zIndex: vars.zIndex.contentOverlay,
   pointerEvents: "none",
   transformOrigin: "20% 30%",
   willChange: "transform, opacity",

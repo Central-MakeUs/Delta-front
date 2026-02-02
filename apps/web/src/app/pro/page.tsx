@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import * as s from "@/app/pro/pro.css";
 import { PRO_FEATURES } from "@/app/pro/constants/pro-features";
@@ -11,10 +11,6 @@ import CompleteModal from "@/shared/components/modal/complete-modal/complete-mod
 
 const ProPage = () => {
   const router = useRouter();
-
-  const onBack = useCallback(() => {
-    router.back();
-  }, [router]);
 
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
@@ -28,7 +24,7 @@ const ProPage = () => {
 
   return (
     <div className={s.page}>
-      <ProHero onBack={onBack} />
+      <ProHero onBack={() => router.back()} />
 
       <main className={s.main}>
         <h2 className={s.title}>

@@ -67,7 +67,7 @@ export const crown = style({
 });
 
 export const ribbonText = style([
-  typo.button1,
+  typo.body3.semibold,
   color["grayscale-0"],
   { whiteSpace: "nowrap" },
 ]);

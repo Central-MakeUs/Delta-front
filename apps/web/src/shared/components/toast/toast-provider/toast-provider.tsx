@@ -16,7 +16,6 @@ export const ToastProvider = () => {
         maxWidth: "43rem",
         width: "100%",
         boxSizing: "border-box",
-        bottom: "calc(1.6rem + env(safe-area-inset-bottom))",
       }}
     />
   );

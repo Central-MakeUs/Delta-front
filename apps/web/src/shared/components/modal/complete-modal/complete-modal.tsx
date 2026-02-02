@@ -16,6 +16,8 @@ export interface CompleteModalProps {
   size?: "sm" | "md" | "lg";
   className?: string;
   overlayClassName?: string;
+  iconName?: React.ComponentProps<typeof Icon>["name"];
+  actions?: "both" | "cancelOnly" | "confirmOnly";
 }
 
 export const CompleteModal = ({
@@ -30,14 +32,11 @@ export const CompleteModal = ({
   size = "md",
   className,
   overlayClassName,
+  iconName = "modal-icon",
+  actions = "both",
 }: CompleteModalProps) => {
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-
+    document.body.style.overflow = isOpen ? "hidden" : "unset";
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -45,26 +44,17 @@ export const CompleteModal = ({
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
-      }
+      if (e.key === "Escape" && isOpen) onClose();
     };
 
-    if (isOpen) {
-      window.addEventListener("keydown", handleEscape);
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleEscape);
-    };
+    if (isOpen) window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
+    if (e.target === e.currentTarget) onClose();
   };
 
   const handleCancel = () => {
@@ -77,6 +67,9 @@ export const CompleteModal = ({
     onClose();
   };
 
+  const showCancel = actions === "both" || actions === "cancelOnly";
+  const showConfirm = actions === "both" || actions === "confirmOnly";
+
   return (
     <div
       className={clsx(styles.overlay, overlayClassName)}
@@ -86,11 +79,7 @@ export const CompleteModal = ({
         <div className={styles.header}>
           <div className={styles.contentContainer}>
             <div className={styles.iconContainer}>
-              <Icon
-                name="modal-icon"
-                size={6.427}
-                className={styles.icon}
-              />
+              <Icon name={iconName} size={6.427} className={styles.icon} />
             </div>
             <div className={styles.textContainer}>
               <h2 className={styles.title}>{title}</h2>
@@ -103,24 +92,29 @@ export const CompleteModal = ({
 
         <div className={styles.footer}>
           <div className={styles.buttonContainer}>
-            <div className={styles.buttonWrapper}>
-              <Button
-                label={cancelLabel}
-                size="48"
-                tone="surface"
-                fullWidth
-                onClick={handleCancel}
-              />
-            </div>
-            <div className={styles.buttonWrapper}>
-              <Button
-                label={confirmLabel}
-                size="48"
-                tone="dark"
-                fullWidth
-                onClick={handleConfirm}
-              />
-            </div>
+            {showCancel && (
+              <div className={styles.buttonWrapper}>
+                <Button
+                  label={cancelLabel}
+                  size="48"
+                  tone="surface"
+                  fullWidth
+                  onClick={handleCancel}
+                />
+              </div>
+            )}
+
+            {showConfirm && (
+              <div className={styles.buttonWrapper}>
+                <Button
+                  label={confirmLabel}
+                  size="48"
+                  tone="dark"
+                  fullWidth
+                  onClick={handleConfirm}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -129,4 +123,3 @@ export const CompleteModal = ({
 };
 
 export default CompleteModal;
-

@@ -19,6 +19,7 @@ type MyPageViewProps = {
   userName: string;
   linkedEmail: string;
   profileImageUrl?: string | null;
+  provider: string;
   onBack?: () => void;
   onLogout?: () => void;
   onWithdraw?: () => void;
@@ -28,6 +29,7 @@ const MyPageView = ({
   userName,
   linkedEmail,
   profileImageUrl = null,
+  provider,
   onLogout,
   onWithdraw,
 }: MyPageViewProps) => {
@@ -95,7 +97,8 @@ const MyPageView = ({
                 <div className={s.linkedAccountLabel}>연동된 계정</div>
 
                 <div className={s.linkedAccountValue}>
-                  <Icon name="kakao" size={2} />
+                  {provider === "KAKAO" && <Icon name="kakao" size={2} />}
+                  {provider === "APPLE" && <Icon name="apple" size={2} />}
                   <span className={s.emailText}>{linkedEmail}</span>
                 </div>
               </div>

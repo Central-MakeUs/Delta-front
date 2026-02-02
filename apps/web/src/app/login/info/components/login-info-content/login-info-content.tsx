@@ -1,10 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import * as styles from "./login-info-content.css";
-import { setAuthFresh } from "@/shared/apis/auth/auth-events";
-import { ROUTES } from "@/shared/constants/routes";
 import BottomSheetTerms from "@/shared/components/bottom-sheet/bottom-sheet-terms/bottom-sheet-terms";
 import {
   ProfileSection,
@@ -12,32 +8,29 @@ import {
   AgreementSection,
   BottomButtonSection,
 } from "@/app/login/info/components/sections";
+import { useLoginInfoForm } from "../../hooks/use-login-info-form";
+import { useOnboardingSubmit } from "../../hooks/use-onboarding-submit";
 
-const termsContent = [
+const TERMS_CONTENT = [
   "여기에 이용약관 내용이 들어갑니다.",
   "개인정보 수집 및 이용에 대한 동의 내용입니다.",
 ];
 
-export type LoginInfoFormData = {
-  name: string;
-  birthDate: string;
-  profileImage: File | null;
-};
-
 const LoginInfoContent = () => {
-  const router = useRouter();
-  const [formData, setFormData] = useState<LoginInfoFormData>({
-    name: "",
-    birthDate: "",
-    profileImage: null,
-  });
-  const [isAgreed, setIsAgreed] = useState(false);
-  const [isTermsSheetOpen, setIsTermsSheetOpen] = useState(false);
+  const {
+    formData,
+    isAgreed,
+    isTermsSheetOpen,
+    updateField,
+    setIsAgreed,
+    openTermsSheet,
+    closeTermsSheet,
+    agreeFromTermsSheet,
+  } = useLoginInfoForm();
 
-  const handleComplete = () => {
-    setAuthFresh();
-    router.push(ROUTES.HOME);
-  };
+  const { handleComplete, submitError, isButtonDisabled } = useOnboardingSubmit(
+    { formData, isAgreed }
+  );
 
   return (
     <main className={styles.page}>
@@ -49,41 +42,39 @@ const LoginInfoContent = () => {
 
         <ProfileSection
           profileImage={formData.profileImage}
-          onProfileImageChange={(file) =>
-            setFormData((prev) => ({ ...prev, profileImage: file }))
-          }
+          onProfileImageChange={(file) => updateField("profileImage", file)}
         />
 
         <FormSection
-          name={formData.name}
+          name={formData.nickname}
           birthDate={formData.birthDate}
-          onNameChange={(value) =>
-            setFormData((prev) => ({ ...prev, name: value }))
-          }
-          onBirthDateChange={(value) =>
-            setFormData((prev) => ({ ...prev, birthDate: value }))
-          }
+          onNameChange={(value) => updateField("nickname", value)}
+          onBirthDateChange={(value) => updateField("birthDate", value)}
         />
 
         <AgreementSection
           isAgreed={isAgreed}
-          onTermsClick={() => setIsTermsSheetOpen(true)}
+          onTermsClick={openTermsSheet}
           onAgreementChange={setIsAgreed}
         />
+
+        {submitError && (
+          <p className={styles.errorText} role="alert">
+            {submitError}
+          </p>
+        )}
       </div>
 
       <BottomButtonSection
         onComplete={handleComplete}
-        disabled={
-          !formData.name.trim() || !formData.birthDate.trim() || !isAgreed
-        }
+        disabled={isButtonDisabled}
       />
 
       <BottomSheetTerms
         isOpen={isTermsSheetOpen}
-        onClose={() => setIsTermsSheetOpen(false)}
-        onAgree={() => setIsAgreed(true)}
-        termsContent={termsContent}
+        onClose={closeTermsSheet}
+        onAgree={agreeFromTermsSheet}
+        termsContent={TERMS_CONTENT}
       />
     </main>
   );

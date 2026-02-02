@@ -3,11 +3,14 @@ const API_V1 = "/api/v1" as const;
 export const API_PATHS = {
   AUTH: {
     KAKAO_LOGIN: `${API_V1}/auth/kakao`,
+    APPLE_LOGIN: `${API_V1}/auth/apple`,
+    APPLE_EXCHANGE: `${API_V1}/auth/apple/exchange`,
     REISSUE: `${API_V1}/auth/reissue`,
     LOGOUT: `${API_V1}/auth/logout`,
   },
   USERS: {
     ME: `${API_V1}/users/me`,
+    ONBOARDING: `${API_V1}/users/me/onboarding`,
     WITHDRAWAL: `${API_V1}/users/withdrawal`,
     PROFILE_IMAGE: "/api/v1/users/me/profile-image",
   },
@@ -26,6 +29,11 @@ export const API_PATHS = {
   },
   PROBLEM_LIST: {
     ROOT: `${API_V1}/problems`,
+  },
+  PROBLEM_TYPES: {
+    ROOT: `${API_V1}/problem-types`,
+    DETAIL: (typeId: string) => `${API_V1}/problem-types/${typeId}`,
+    ACTIVE: (typeId: string) => `${API_V1}/problem-types/${typeId}/activation`,
   },
   PROBLEM_STATS: {
     UNITS: `${API_V1}/problems/stats/units`,

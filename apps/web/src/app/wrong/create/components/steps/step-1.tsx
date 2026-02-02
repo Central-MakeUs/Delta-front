@@ -5,7 +5,7 @@ import ActionCard from "@/shared/components/action-card/action-card";
 import {
   useImageSourcePicker,
   type ImagePickSource,
-} from "@/app/wrong/create/hooks/use-image-source-picker";
+} from "@/app/wrong/create/hooks/step1/use-image-source-picker";
 import * as s from "@/app/wrong/create/create.css";
 import { useCreateProblemScanMutation } from "@/shared/apis/problem-scan/hooks/use-create-problem-scan-mutation";
 import type { ProblemScanCreateResponse } from "@/shared/apis/problem-scan/problem-scan-types";

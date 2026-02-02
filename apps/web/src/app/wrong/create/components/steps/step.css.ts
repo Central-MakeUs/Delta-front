@@ -169,3 +169,88 @@ export const numberTitleRow = style({
   alignItems: "center",
   justifyContent: "space-between",
 });
+
+export const typeDeleteOverlayDisabled = style({
+  opacity: 0.6,
+  cursor: "default",
+});
+
+export const typeButtonWrap = style({
+  position: "relative",
+  width: "100%",
+  display: "flex",
+  flex: "1 1 0",
+  minWidth: 0,
+});
+
+export const typeButton = style({
+  width: "100%",
+  flex: "1 1 0",
+  minWidth: 0,
+});
+
+export const typeDragging = style({
+  opacity: 0.75,
+});
+
+export const typeDraggableArea = style({
+  touchAction: "none",
+  userSelect: "none",
+  WebkitUserSelect: "none",
+  WebkitTouchCallout: "none",
+  WebkitTapHighlightColor: "transparent",
+});
+
+export const typeCard = recipe({
+  base: [
+    typo.body2.medium,
+    {
+      width: "100%",
+      minHeight: "5.6rem",
+      padding: "1.6rem",
+      borderRadius: vars.radius.r12,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      outline: "none",
+      userSelect: "none",
+      selectors: {
+        "&:focus-visible": {
+          boxShadow: `0 0 0 0.2rem ${vars.color.grayscale[200]}`,
+        },
+      },
+    },
+  ],
+  variants: {
+    tone: {
+      surface: {
+        background: vars.color.grayscale[50],
+        color: vars.color.grayscale[700],
+      },
+      dark: {
+        background: vars.color.grayscale[900],
+        color: vars.color.grayscale[0],
+      },
+    },
+    disabled: {
+      true: { opacity: 0.4, cursor: "default" },
+      false: {},
+    },
+  },
+  defaultVariants: {
+    tone: "surface",
+    disabled: false,
+  },
+});
+
+export const typeCardRow = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "1.2rem",
+});
+
+export const typeCardLabel = style({
+  display: "block",
+});

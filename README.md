@@ -1,4 +1,4 @@
-# 세모 <img src="https://github.com/user-attachments/assets/5b44b7ae-e23b-4e6f-a965-d8d8f896aa87" width="115" align="left" /><img width="165" alt="image" src="https://github.com/user-attachments/assets/f365177a-6cbe-49eb-8f9f-7c9d52b946dd" align="right" />
+# 세모 <img src="https://github.com/user-attachments/assets/5b44b7ae-e23b-4e6f-a965-d8d8f896aa87" width="115" align="left" />
 
 나만의 수학 오답노트
 
@@ -281,7 +281,6 @@ PR이 `develop`, `main`에 올라오면 아래 체크가 자동 수행됩니다.
 - `test`
 - `build`
 
-
 ### 🚀 CD (Vercel)
 
 배포는 **Vercel**로 운영합니다.
@@ -292,7 +291,7 @@ PR이 `develop`, `main`에 올라오면 아래 체크가 자동 수행됩니다.
 <div align="center">
 <img width="200" alt="image" src="https://github.com/user-attachments/assets/dec0520d-88a7-4caf-8660-77ed40352212" />
 
-**Delta-front Wiki**  
+**Delta-front Wiki**
 _세모 · 나만의 수학 오답노트_
 
 [Home](https://github.com/Central-MakeUs/Delta-front/wiki) · [CI/CD](https://github.com/Central-MakeUs/Delta-front/wiki/CI-CD) · [Convention](https://github.com/Central-MakeUs/Delta-front/wiki/PR-%26-Branch-Strategy) · [Troubleshooting](https://github.com/Central-MakeUs/Delta-front/wiki/Troubleshooting)

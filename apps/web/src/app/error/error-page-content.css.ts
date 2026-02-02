@@ -5,6 +5,7 @@ import { color } from "@/shared/styles/color.css";
 export const page = style({
   display: "flex",
   flexDirection: "column",
+  width: "100%",
   height: "90vh",
   alignItems: "center",
   justifyContent: "center",

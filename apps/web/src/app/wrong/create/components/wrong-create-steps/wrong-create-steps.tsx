@@ -9,7 +9,7 @@ import type { StepProps } from "@/app/wrong/create/page";
 import type {
   Step4FormState,
   Step4Handlers,
-} from "@/app/wrong/create/hooks/use-step4-form";
+} from "@/app/wrong/create/hooks/step4/use-step4-form";
 
 type WrongCreateStepsProps = {
   currentStep: number;

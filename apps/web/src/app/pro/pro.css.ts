@@ -11,7 +11,7 @@ export const page = style({
 });
 
 export const main = style({
-  padding: "3.2rem 1.6rem 5rem",
+  padding: "3.2rem 1.6rem 10rem",
   display: "flex",
   flexDirection: "column",
   gap: "2.4rem",

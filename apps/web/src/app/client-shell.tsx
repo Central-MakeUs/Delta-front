@@ -8,6 +8,7 @@ import AppBarGate from "@/shared/components/app-bar/app-bar-gate";
 import BottomNav from "@/shared/components/bottom-nav/bottom-nav";
 import FabButton from "@/shared/components/button/fab-button/fab-button";
 import Splash from "@/shared/components/splash/splash";
+import QueryLoadingOverlay from "@/shared/components/loading/query-loading-overlay";
 
 type ClientShellProps = {
   children: ReactNode;
@@ -20,6 +21,7 @@ const ClientShell = ({ children }: ClientShellProps) => {
     <QueryProvider>
       <AuthLogoutListener />
       <Splash onDone={() => setContentKey((k) => k + 1)} />
+      <QueryLoadingOverlay />
       <AppBarGate />
       <div key={contentKey}>{children}</div>
       <BottomNav />

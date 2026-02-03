@@ -1,22 +1,77 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useState } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ApiError } from "@/shared/apis/api-error";
+import { ERROR_CODES } from "@/shared/apis/error-codes";
 
-export default function QueryProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const toastErrorSafe = (message: string) => {
+  if (typeof window === "undefined") return;
+
+  import("@/shared/components/toast/toast")
+    .then(({ toastError }) => toastError(message, 6.5))
+    .catch(() => undefined);
+};
+
+const getErrorMessage = (e: unknown) => {
+  if (e instanceof ApiError) return e.message || "요청에 실패했어요.";
+  if (e instanceof Error) return e.message || "요청에 실패했어요.";
+  return "요청에 실패했어요.";
+};
+
+const shouldToast = (e: unknown) => {
+  if (!(e instanceof ApiError)) return true;
+
+  const isAuthNoise =
+    (e.status === 401 && e.code === ERROR_CODES.AUTH.TOKEN_REQUIRED) ||
+    (e.status === 401 && e.code === ERROR_CODES.AUTH.AUTHENTICATION_FAILED);
+
+  return !isAuthNoise;
+};
+
+const readToastFlag = (
+  meta: Record<string, unknown> | undefined,
+  fallback: boolean
+) => {
+  const v = meta?.toast;
+  return typeof v === "boolean" ? v : fallback;
+};
+
+const QueryProvider = ({ children }: { children: ReactNode }) => {
   const [queryClient] = useState(
     () =>
       new QueryClient({
+        queryCache: new QueryCache({
+          onError: (e, query) => {
+            const toast = readToastFlag(query.meta, false);
+            if (!toast) return;
+            if (!shouldToast(e)) return;
+            toastErrorSafe(getErrorMessage(e));
+          },
+        }),
+        mutationCache: new MutationCache({
+          onError: (e, _vars, _ctx, mutation) => {
+            const toast = readToastFlag(mutation.meta, true);
+            if (!toast) return;
+            if (!shouldToast(e)) return;
+            toastErrorSafe(getErrorMessage(e));
+          },
+        }),
         defaultOptions: {
           queries: {
-            refetchOnWindowFocus: false, // 윈도우가 다시 포커스되었을때 데이터를 refetch
-            refetchOnMount: false, // 데이터가 stale 상태이면 컴포넌트가 마운트될 때 refetch
-            retry: 1, // API 요청 실패시 재시도 하는 옵션
+            refetchOnWindowFocus: false,
+            refetchOnMount: false,
+            retry: 1,
+          },
+          mutations: {
+            retry: 1,
           },
         },
       })
@@ -30,4 +85,6 @@ export default function QueryProvider({
       ) : null}
     </QueryClientProvider>
   );
-}
+};
+
+export default QueryProvider;

@@ -9,12 +9,14 @@ export type LoadingVariant = "inline" | "overlay";
 export type LoadingProps = {
   variant?: LoadingVariant;
   message?: string;
+  showMessage?: boolean;
   onBack?: () => void;
 };
 
 const Loading = ({
   variant = "inline",
   message = "문제의 단원과 유형을 분석 중이에요..",
+  showMessage = true,
   onBack,
 }: LoadingProps) => {
   return (
@@ -38,7 +40,7 @@ const Loading = ({
           </div>
         </div>
 
-        <p className={s.message}>{message}</p>
+        {showMessage ? <p className={s.message}>{message}</p> : null}
       </div>
     </div>
   );

@@ -15,7 +15,6 @@ export const ICONS = [
   "edit",
   "empty-graph",
   "empty-problem",
-  "error",
   "error-404",
   "error-500",
   "file",

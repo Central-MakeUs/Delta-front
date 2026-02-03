@@ -124,8 +124,15 @@ export const useAppBar = (): UseAppBarResult => {
     };
   }
 
-  // 기타 페이지
-  return { isHidden: true };
+  // 기타 페이지 (404 등)
+  return {
+    isHidden: false,
+    props: {
+      variant: "basic",
+      title: "",
+      onBack: () => router.back(),
+    },
+  };
 };
 
 export default useAppBar;

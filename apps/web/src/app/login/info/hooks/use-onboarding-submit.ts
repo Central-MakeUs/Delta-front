@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { setAuthFresh } from "@/shared/apis/auth/auth-events";
 import { ROUTES } from "@/shared/constants/routes";
 import { userApi } from "@/shared/apis/user/user-api";
 import { useUploadMyProfileImageMutation } from "@/shared/apis/profile-image/hooks/use-upload-my-profile-image-mutation";
@@ -50,6 +51,7 @@ export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
       if (formData.profileImage) {
         await uploadProfileImage.mutateAsync(formData.profileImage);
       }
+      setAuthFresh();
       router.replace(ROUTES.HOME);
     } catch (e: unknown) {
       if (process.env.NODE_ENV !== "production") {

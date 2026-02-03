@@ -39,6 +39,9 @@ export const ROUTES = {
     ROOT: `/${GRAPH_PREFIX}`,
     tab: (tab: GraphTab) => `/${GRAPH_PREFIX}?tab=${tab}`,
   },
+  PRO: {
+    ROOT: `/pro`,
+  },
 } as const;
 
 export type RouteValue =
@@ -55,4 +58,5 @@ export type RouteValue =
   | typeof ROUTES.WRONG.CREATE_DONE
   | typeof ROUTES.MY.ROOT
   | typeof ROUTES.MY.EDIT
-  | typeof ROUTES.GRAPH.ROOT;
+  | typeof ROUTES.GRAPH.ROOT
+  | typeof ROUTES.PRO.ROOT;

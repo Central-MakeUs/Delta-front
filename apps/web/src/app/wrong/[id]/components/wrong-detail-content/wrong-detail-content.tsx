@@ -40,7 +40,7 @@ const WrongDetailContent = () => {
     return (
       <EmptyState
         label="잠시 문제가 발생했어요. 다시 한번 시도해주세요."
-        iconName="error"
+        iconName="error-500"
         labelClassName={styles.emptyStateLabel}
       />
     );

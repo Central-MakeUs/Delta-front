@@ -1,16 +1,27 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { ErrorPageContent } from "@/app/error/error-page-content";
 import type { ApiError } from "@/shared/apis/api-error";
+import { ROUTES } from "@/shared/constants/routes";
+import { toastError } from "@/shared/components/toast/toast";
 
 type ErrorPageProps = {
   error: Error & { digest?: string };
 };
 
+const isInAuthFlow = (pathname: string | null): boolean => {
+  if (!pathname) return false;
+  if (pathname === ROUTES.AUTH.LOGIN) return true;
+  if (pathname.startsWith(ROUTES.AUTH.SIGNUP_INFO)) return true;
+  if (pathname.startsWith("/oauth")) return true;
+  return false;
+};
+
 const ErrorBoundary = ({ error }: ErrorPageProps) => {
   const router = useRouter();
+  const pathname = usePathname();
 
   const status =
     (error as ApiError).status || (error as { status?: number }).status;
@@ -21,11 +32,12 @@ const ErrorBoundary = ({ error }: ErrorPageProps) => {
     }
 
     if (status === 401) {
-      router.replace("/error?type=401");
-    } else if (status && status >= 500) {
-      router.replace("/error?type=500");
+      if (!isInAuthFlow(pathname)) {
+        toastError("로그인이 만료됐어요.");
+      }
+      router.replace(ROUTES.AUTH.LOGIN);
     }
-  }, [error, router, status]);
+  }, [error, pathname, router, status]);
 
   let errorType: "401" | "404" | "500" = "500";
   if (status === 401) {

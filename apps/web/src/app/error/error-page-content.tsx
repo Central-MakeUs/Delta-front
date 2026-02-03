@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ErrorType } from "@/shared/constants/routes";
+import { ErrorType, ROUTES } from "@/shared/constants/routes";
 import { Button } from "@/shared/components/button/button/button";
 import Icon from "@/shared/components/icon/icon";
 import type { IconName } from "@/shared/constants/icons";
@@ -14,9 +14,9 @@ type ErrorPageContentProps = {
 export const ErrorPageContent = ({ errorType }: ErrorPageContentProps) => {
   const router = useRouter();
 
-  // const handleLogin = () => {
-  //   router.push("/login");
-  // };
+  const handleLogin = () => {
+    router.push(ROUTES.AUTH.LOGIN);
+  };
 
   const handleGoHome = () => {
     router.push("/");
@@ -33,21 +33,14 @@ export const ErrorPageContent = ({ errorType }: ErrorPageContentProps) => {
 
   const getErrorContent = () => {
     switch (errorType) {
-      // case "401":
-      //   return {
-      //     icon: "error",
-      //     title: "로그인이 만료됐어요.",
-      //     description: (
-      //       <>
-      //         세션이 만료되었거나 접근 권한이 없습니다.
-      //         <br />
-      //         다시 로그인 해주세요.
-      //       </>
-      //     ),
-      //     buttons: (
-      //       <Button label="로그인 하러 가기" size="48" onClick={handleLogin} />
-      //     ),
-      //   };
+      case "401":
+        return {
+          icon: "error-500",
+          title: "로그인이 만료됐어요.",
+          buttons: (
+            <Button label="로그인 하러 가기" size="48" onClick={handleLogin} />
+          ),
+        };
       case "404":
         return {
           icon: "error-404",

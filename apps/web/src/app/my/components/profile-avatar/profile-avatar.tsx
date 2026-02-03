@@ -8,15 +8,38 @@ type ProfileAvatarProps = {
   alt: string;
 };
 
+type LoadState = {
+  src: string | null;
+  loaded: boolean;
+  failed: boolean;
+};
+
 const ProfileAvatar = ({ src, alt }: ProfileAvatarProps) => {
   const imageSrc =
     typeof src === "string" && src.trim().length > 0 ? src.trim() : null;
 
-  const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
-  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const [state, setState] = useState<LoadState>({
+    src: null,
+    loaded: false,
+    failed: false,
+  });
 
-  const showImage =
-    imageSrc !== null && loadedSrc === imageSrc && failedSrc !== imageSrc;
+  const current =
+    state.src === imageSrc
+      ? state
+      : { src: imageSrc, loaded: false, failed: false };
+
+  const showImage = imageSrc !== null && current.loaded && !current.failed;
+
+  const handleLoadComplete = () => {
+    if (!imageSrc) return;
+    setState({ src: imageSrc, loaded: true, failed: false });
+  };
+
+  const handleError = () => {
+    if (!imageSrc) return;
+    setState({ src: imageSrc, loaded: false, failed: true });
+  };
 
   return (
     <div className={s.avatar}>
@@ -25,17 +48,18 @@ const ProfileAvatar = ({ src, alt }: ProfileAvatarProps) => {
           key={imageSrc}
           className={showImage ? s.image : s.imageHidden}
           src={imageSrc}
-          alt={alt}
+          alt={showImage ? alt : ""}
+          aria-hidden={!showImage}
           width={92}
           height={92}
           sizes="92px"
-          onLoadingComplete={() => setLoadedSrc(imageSrc)}
-          onError={() => setFailedSrc(imageSrc)}
+          onLoadingComplete={handleLoadComplete}
+          onError={handleError}
         />
       ) : null}
 
       {!showImage ? (
-        <div className={s.fallback} aria-label={alt}>
+        <div className={s.fallback} role="img" aria-label={alt}>
           <Icon name="default-profile" size={9.2} />
         </div>
       ) : null}

@@ -32,10 +32,10 @@ const QueryLoadingOverlay = () => {
   }, [open]);
 
   useEffect(() => {
-    if (ignore) return;
-
     if (showTimerRef.current) window.clearTimeout(showTimerRef.current);
     if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
+
+    if (ignore) return;
 
     if (active) {
       if (openRef.current) return;

@@ -2,6 +2,7 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import Loading from "@/shared/components/loading/loading";
+import * as s from "@/shared/components/loading/loading.css";
 
 const AppLoading = () => {
   const pathname = usePathname();
@@ -15,7 +16,7 @@ const AppLoading = () => {
 
   if (isWrongPage || isWrongCreateStep2or3) return null;
 
-  return <Loading variant="overlay" showMessage={false} />;
+  return <Loading className={s.all} unstyled showMessage={false} />;
 };
 
 export default AppLoading;

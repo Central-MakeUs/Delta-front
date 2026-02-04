@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useIsFetching, useIsMutating } from "@tanstack/react-query";
 import { usePathname, useSearchParams } from "next/navigation";
 import Loading from "@/shared/components/loading/loading";
+import * as s from "@/shared/components/loading/loading.css";
 
 const SHOW_DELAY_MS = 300;
 const HIDE_DELAY_MS = 150;
@@ -62,7 +63,7 @@ const QueryLoadingOverlay = () => {
 
   if (ignore || !open) return null;
 
-  return <Loading variant="overlay" showMessage={false} />;
+  return <Loading className={s.all} unstyled showMessage={false} />;
 };
 
 export default QueryLoadingOverlay;

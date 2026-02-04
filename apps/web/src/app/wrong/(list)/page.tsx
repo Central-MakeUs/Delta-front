@@ -54,7 +54,7 @@ const WrongPage = () => {
 
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useProblemScrollInfiniteQuery({ params: scrollParams });
-  console.log(data, isFetchingNextPage, hasNextPage);
+
   const sentinelRef = useRef<HTMLDivElement>(null);
   const isFetchingNextRef = useRef(false);
 

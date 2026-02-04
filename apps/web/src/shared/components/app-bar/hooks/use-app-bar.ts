@@ -1,6 +1,6 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
-import { ROUTES } from "@/shared/constants/routes";
+import { ROUTES, GRAPH_TABS, type GraphTab } from "@/shared/constants/routes";
 import {
   getWrongRouteMatch,
   parseProgress,
@@ -19,6 +19,9 @@ const buildUrl = (pathname: string, params: URLSearchParams) => {
   const qs = params.toString();
   return qs ? `${pathname}?${qs}` : pathname;
 };
+
+const isGraphTab = (v: string | null): v is GraphTab =>
+  v === GRAPH_TABS.UNIT || v === GRAPH_TABS.WRONG;
 
 export const useAppBar = (): UseAppBarResult => {
   const router = useRouter();
@@ -49,6 +52,27 @@ export const useAppBar = (): UseAppBarResult => {
         title: "내 정보",
         surface: "transparent",
         onBack: () => router.back(),
+      },
+    };
+  }
+
+  if (pathname.startsWith(ROUTES.GRAPH.ROOT)) {
+    const urlTab = sp.get("tab");
+    const tab: GraphTab = isGraphTab(urlTab) ? urlTab : GRAPH_TABS.UNIT;
+
+    return {
+      isHidden: false,
+      props: {
+        variant: "graphTabs",
+        tabs: [
+          { value: GRAPH_TABS.UNIT, label: "단원별" },
+          { value: GRAPH_TABS.WRONG, label: "유형별" },
+        ],
+        value: tab,
+        onValueChange: (next) =>
+          router.replace(ROUTES.GRAPH.tab(next as GraphTab)),
+        surface: "transparent",
+        tabsAriaLabel: "학습 탭",
       },
     };
   }

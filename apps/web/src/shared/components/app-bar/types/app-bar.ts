@@ -4,7 +4,8 @@ export type AppBarVariant =
   | "basicAction"
   | "default"
   | "progress"
-  | "title";
+  | "title"
+  | "graphTabs";
 
 export type CommonProps = {
   className?: string;
@@ -21,7 +22,7 @@ export type BasicProps = CommonProps & {
 export type BasicActionProps = CommonProps & {
   variant: "basicAction";
   title: string;
-  actionLabel: string; // "수정하기"
+  actionLabel: string;
   onBack?: () => void;
   onActionClick?: () => void;
   actionAriaLabel?: string;
@@ -37,11 +38,10 @@ export type DefaultProps = CommonProps & {
 export type ProgressProps = CommonProps & {
   variant: "progress";
   total: number;
-  currentStep: number; // 1-base
+  currentStep: number;
   onBack?: () => void;
   onSkip?: () => void;
   skipLabel?: string;
-
   onStepChange?: (nextStep: number) => void;
 };
 
@@ -50,9 +50,26 @@ export type TitleOnlyProps = CommonProps & {
   title: string;
 };
 
+export type NonEmptyArray<T> = readonly [T, ...T[]];
+
+export type TabItem<V extends string = string> = {
+  value: V;
+  label: string;
+};
+
+export type GraphTabsProps<V extends string = string> = CommonProps & {
+  variant: "graphTabs";
+  tabs: NonEmptyArray<TabItem<V>>;
+  value: V;
+  onValueChange: (next: V) => void;
+  onBack?: () => void;
+  tabsAriaLabel?: string;
+};
+
 export type AppBarProps =
   | BasicProps
   | BasicActionProps
   | DefaultProps
   | ProgressProps
-  | TitleOnlyProps;
+  | TitleOnlyProps
+  | GraphTabsProps;

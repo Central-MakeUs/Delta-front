@@ -9,7 +9,6 @@ export const shouldHideAppBar = (pathname: string) => {
   if (pathname === ROUTES.AUTH.LOGIN) return true;
   if (pathname === ROUTES.PRO.ROOT) return true;
   if (pathname === ROUTES.WRONG.CREATE_DONE) return true;
-  if (pathname.startsWith(ROUTES.GRAPH.ROOT)) return true;
   return false;
 };
 

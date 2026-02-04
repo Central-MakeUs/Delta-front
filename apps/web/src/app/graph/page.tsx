@@ -1,13 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import * as s from "@/app/graph/graph.css";
-import LineTabBar from "@/shared/components/tab-bar/line-tab-bar/line-tab-bar";
 import BarGraphHorizontal from "@/shared/components/bar-graph/bar-graph-horizontal/bar-graph-horizontal";
 import Filter from "@/shared/components/filter/filter";
 import WrongStatus from "@/app/graph/components/wrong-status/wrong-status";
-import { GRAPH_TABS, ROUTES, type GraphTab } from "@/shared/constants/routes";
+import { GRAPH_TABS, type GraphTab } from "@/shared/constants/routes";
 import BottomSheetSort from "@/shared/components/bottom-sheet/bottom-sheet-sort/bottom-sheet-sort";
 import {
   GRAPH_SORT_OPTIONS,
@@ -24,7 +23,6 @@ const isGraphTab = (v: string | null): v is GraphTab =>
   v === GRAPH_TABS.UNIT || v === GRAPH_TABS.WRONG;
 
 const GraphPage = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const urlTab = searchParams.get("tab");
   const tab: GraphTab = isGraphTab(urlTab) ? urlTab : GRAPH_TABS.UNIT;
@@ -56,18 +54,6 @@ const GraphPage = () => {
 
   return (
     <div className={s.page}>
-      <div className={s.stickyTop}>
-        <LineTabBar
-          items={[
-            { value: GRAPH_TABS.UNIT, label: "단원별" },
-            { value: GRAPH_TABS.WRONG, label: "유형별" },
-          ]}
-          value={tab}
-          onValueChange={(next) => router.replace(ROUTES.GRAPH.tab(next))}
-          ariaLabel="학습 탭"
-        />
-      </div>
-
       <div className={s.content}>
         <div className={s.titleSection}>
           <h1 className={s.title}>{TITLE_BY_TAB[tab]}</h1>

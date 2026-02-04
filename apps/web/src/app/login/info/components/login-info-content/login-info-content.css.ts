@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
+import { color } from "@/shared/styles/color.css";
 
 export const page = style({
   position: "relative",
@@ -22,5 +23,13 @@ export const title = style([
   {
     display: "flex",
     color: vars.color.grayscale[900],
+  },
+]);
+
+export const errorText = style([
+  typo.body2.regular,
+  color["error-500"],
+  {
+    marginTop: "0.8rem",
   },
 ]);

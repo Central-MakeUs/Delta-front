@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useState } from "react";
+import { AuthLogoutListener } from "@/shared/apis/auth/auth-logout-listener";
 import QueryProvider from "@/shared/utils/query-provider";
 import AppBarGate from "@/shared/components/app-bar/app-bar-gate";
 import BottomNav from "@/shared/components/bottom-nav/bottom-nav";
@@ -17,6 +18,7 @@ const ClientShell = ({ children }: ClientShellProps) => {
 
   return (
     <QueryProvider>
+      <AuthLogoutListener />
       <Splash onDone={() => setContentKey((k) => k + 1)} />
       <AppBarGate />
       <div key={contentKey}>{children}</div>

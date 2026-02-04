@@ -30,6 +30,7 @@ export type BasicActionProps = CommonProps & {
 export type DefaultProps = CommonProps & {
   variant: "default";
   onLogoClick?: () => void;
+  onProClick?: () => void;
   onUserClick?: () => void;
 };
 

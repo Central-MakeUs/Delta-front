@@ -7,7 +7,7 @@ import ActionCard from "@/shared/components/action-card/action-card";
 import * as modalStyles from "@/shared/components/modal/modal/modal.css";
 import * as styles from "./profile-section.css";
 import { Button } from "@/shared/components/button/button/button";
-import { useImageSourcePicker } from "@/app/wrong/create/hooks/use-image-source-picker";
+import { useImageSourcePicker } from "@/app/wrong/create/hooks/step1/use-image-source-picker";
 import Image from "next/image";
 
 interface ProfileSectionProps {

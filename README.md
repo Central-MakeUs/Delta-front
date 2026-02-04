@@ -1,4 +1,4 @@
-# 세모 <img src="https://github.com/user-attachments/assets/5b44b7ae-e23b-4e6f-a965-d8d8f896aa87" width="115" align="left" /><img width="165" alt="image" src="https://github.com/user-attachments/assets/f365177a-6cbe-49eb-8f9f-7c9d52b946dd" align="right" />
+# 세모 <img src="https://github.com/user-attachments/assets/5b44b7ae-e23b-4e6f-a965-d8d8f896aa87" width="115" align="left" />
 
 나만의 수학 오답노트
 
@@ -19,7 +19,15 @@
 오답이 쌓이면, 다시 풀고 정리할 이유가 생기고
 그 과정이 반복되면 공부가 “지속되는” 경험으로 바뀝니다.
 ```
+### 세모로 공부하면, 성적이 달라지는 이유
 
+```
+- 오답을 유형이 아니라 왜 틀렸는지까지 파헤쳐서 보여줘요.
+- 필요한 오답만 쏙쏙! 시험지 PDF로 만들어요.
+- 오답이 아닌 틀린 이유를 명확히 알려줘요.  
+- 유사 문제로 완전히 익숙해질 때까지 풀어요.
+- 현재 기준 예상 점수와 다음 학습 목표를 알려줘요.
+```
 ---
 
 ## 팀원
@@ -281,7 +289,6 @@ PR이 `develop`, `main`에 올라오면 아래 체크가 자동 수행됩니다.
 - `test`
 - `build`
 
-
 ### 🚀 CD (Vercel)
 
 배포는 **Vercel**로 운영합니다.
@@ -292,7 +299,7 @@ PR이 `develop`, `main`에 올라오면 아래 체크가 자동 수행됩니다.
 <div align="center">
 <img width="200" alt="image" src="https://github.com/user-attachments/assets/dec0520d-88a7-4caf-8660-77ed40352212" />
 
-**Delta-front Wiki**  
+**Delta-front Wiki**
 _세모 · 나만의 수학 오답노트_
 
 [Home](https://github.com/Central-MakeUs/Delta-front/wiki) · [CI/CD](https://github.com/Central-MakeUs/Delta-front/wiki/CI-CD) · [Convention](https://github.com/Central-MakeUs/Delta-front/wiki/PR-%26-Branch-Strategy) · [Troubleshooting](https://github.com/Central-MakeUs/Delta-front/wiki/Troubleshooting)

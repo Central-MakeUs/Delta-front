@@ -83,6 +83,7 @@ const AppBar = (props: AppBarProps) => {
               type="button"
               className={s.premiumButton}
               aria-label="프리미엄"
+              onClick={props.onProClick}
             >
               <Icon
                 name="crown"

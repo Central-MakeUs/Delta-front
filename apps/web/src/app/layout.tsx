@@ -7,6 +7,7 @@ import { SPRITE } from "@/shared/constants/sprite";
 import { lightTheme } from "@/shared/styles/theme.css";
 import { rootStyle } from "@/shared/styles/global.css";
 import ClientShell from "@/app/client-shell";
+import { ToastProvider } from "@/shared/components/toast/toast-provider/toast-provider";
 
 export const metadata: Metadata = {
   title: "세모",
@@ -36,6 +37,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
     <html lang="ko" className={lightTheme}>
       <body>
         <SvgSpriteInjector />
+        <ToastProvider />
         <div className={rootStyle}>
           <Suspense fallback={null}>
             <ClientShell>{children}</ClientShell>

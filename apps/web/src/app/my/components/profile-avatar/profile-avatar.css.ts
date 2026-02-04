@@ -25,3 +25,7 @@ export const fallback = style({
   alignItems: "center",
   justifyContent: "center",
 });
+
+export const imageHidden = style({
+  opacity: 0,
+});

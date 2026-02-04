@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import Icon from "@/shared/components/icon/icon";
 import ProgressBar from "@/shared/components/progress-bar/progress-bar";
+import LineTabBar from "@/shared/components/tab-bar/line-tab-bar/line-tab-bar";
 import * as s from "@/shared/components/app-bar/app-bar.css";
 import { APP_BAR_DEFAULT_ARIA_LABEL } from "@/shared/components/app-bar/constants/app-bar";
 import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
@@ -134,6 +135,20 @@ const AppBar = (props: AppBarProps) => {
       return renderShell(
         "title",
         <span className={s.title}>{props.title}</span>
+      );
+    }
+
+    case "graphTabs": {
+      return renderShell(
+        "graphTabs",
+        <div className={s.stickyTop}>
+          <LineTabBar
+            items={props.tabs}
+            value={props.value}
+            onValueChange={props.onValueChange}
+            ariaLabel={props.tabsAriaLabel ?? "학습 탭"}
+          />
+        </div>
       );
     }
   }

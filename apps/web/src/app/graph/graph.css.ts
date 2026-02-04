@@ -15,13 +15,6 @@ export const page = style({
   backgroundColor: vars.color.bg,
 });
 
-export const stickyTop = style({
-  position: "sticky",
-  top: 0,
-  zIndex: vars.zIndex.header,
-  backgroundColor: vars.color.bg,
-});
-
 export const content = style({
   padding: "2rem 1.6rem",
   display: "flex",

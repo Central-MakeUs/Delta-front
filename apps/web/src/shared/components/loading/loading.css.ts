@@ -16,6 +16,16 @@ export const inline = style({
   padding: "4rem 0",
 });
 
+export const all = style({
+  position: "fixed",
+  inset: 0,
+  zIndex: vars.zIndex.modalOverlay,
+  display: "grid",
+  placeItems: "center",
+  height: "100dvh",
+  overflow: "hidden",
+});
+
 export const overlay = style([
   bgColor["grayscale-0"],
   {

@@ -14,6 +14,7 @@ import { useLogoutMutation } from "@/shared/apis/auth/hooks/use-logout-mutation"
 import { useWithdrawalMutation } from "@/shared/apis/user/hooks/use-withdrawal-mutation";
 import { ROUTES } from "@/shared/constants/routes";
 import BottomSheetWithdraw from "@/shared/components/bottom-sheet/bottom-sheet-withdraw/bottom-sheet-withdraw";
+import { toastError, toastSuccess } from "@/shared/components/toast/toast";
 
 type MyPageViewProps = {
   userName: string;
@@ -54,7 +55,12 @@ const MyPageView = ({
 
   const handleLogoutConfirm = () => {
     if (logoutMutation.isPending) return;
+
     logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        toastSuccess("로그아웃되었습니다.");
+        router.replace(ROUTES.AUTH.LOGIN);
+      },
       onSettled: () => {
         closeLogoutModal();
         onLogout?.();
@@ -76,11 +82,12 @@ const MyPageView = ({
 
     withdrawalMutation.mutate(undefined, {
       onSuccess: () => {
+        toastSuccess("회원 탈퇴가 완료되었어요.");
         if (onWithdraw) onWithdraw();
         else router.replace(ROUTES.AUTH.LOGIN);
       },
       onError: () => {
-        window.alert("회원 탈퇴에 실패했어요. 잠시 후 다시 시도해 주세요.");
+        toastError("회원 탈퇴에 실패했어요. 잠시 후 다시 시도해 주세요.");
       },
     });
   };

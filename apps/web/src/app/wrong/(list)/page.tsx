@@ -10,7 +10,6 @@ import { useWrongFilters } from "@/app/wrong/(list)/hooks/use-wrong-filters";
 import { useProblemListQuery } from "@/shared/apis/problem-list/hooks/use-problem-list-query";
 import { mapProblemListItemToCard } from "@/app/wrong/(list)/utils/map-problem-list-to-cards";
 import { LOADING_MESSAGES } from "@/shared/constants/loading-messages";
-
 import {
   CHAPTER_FILTERS,
   SORT_OPTIONS,
@@ -52,7 +51,7 @@ const WrongPage = () => {
     [selectedChapterIds, selectedTypeIds, selectedDropdownIds, selectedSortId]
   );
 
-  const { data, isLoading } = useProblemListQuery({
+  const { data, isLoading, isFetching } = useProblemListQuery({
     params: apiParams,
   });
 
@@ -61,11 +60,13 @@ const WrongPage = () => {
     return data.content.map(mapProblemListItemToCard);
   }, [data]);
 
+  const showInlineLoading = isLoading || (isFetching && !data);
+
   return (
     <div className={s.page}>
       <div className={s.filterSection}>
         <div className={s.filterRow}>
-          <Filter label="필터" icon="filter" onClick={() => openFilter()} />
+          <Filter label="필터" icon="filter" onClick={openFilter} />
           <Filter
             label={chapterFilterLabel}
             icon="chevron"
@@ -81,7 +82,7 @@ const WrongPage = () => {
         <div className={s.sortRow}>
           <span className={s.wrongLabel}>
             <p className={s.wrongCount}>
-              {isLoading ? "..." : (data?.totalElements ?? 0)}개
+              {isFetching ? ".." : (data?.totalElements ?? 0)}개
             </p>
             <p>의 오답</p>
           </span>
@@ -96,7 +97,7 @@ const WrongPage = () => {
       </div>
 
       <div className={s.cardSection}>
-        {isLoading ? (
+        {showInlineLoading ? (
           <Loading
             variant="inline"
             message={LOADING_MESSAGES.FIND_MATCHING_PROBLEMS}
@@ -133,7 +134,7 @@ const WrongPage = () => {
           onClose={closeSort}
           options={SORT_OPTIONS}
           selectedOptionId={selectedSortId}
-          onSelect={(optionId) => setSelectedSortId(optionId)}
+          onSelect={setSelectedSortId}
         />
       )}
 

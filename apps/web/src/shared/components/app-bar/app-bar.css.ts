@@ -54,6 +54,9 @@ export const root = recipe({
       default: { justifyContent: "space-between" },
       progress: { justifyContent: "space-between" },
       title: { justifyContent: "flex-start" },
+      graphTabs: {
+        paddingInline: 0,
+      },
     },
   },
   defaultVariants: {
@@ -162,3 +165,11 @@ export const actionButton = style([
     whiteSpace: "nowrap",
   },
 ]);
+
+export const stickyTop = style({
+  position: "sticky",
+  top: 0,
+  zIndex: vars.zIndex.header,
+  backgroundColor: vars.color.bg,
+  width: "100%",
+});

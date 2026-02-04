@@ -80,3 +80,9 @@ export const emptyStateText = style([
     textAlign: "center",
   },
 ]);
+
+/** 무한 스크롤 감지용: 높이 있어야 IntersectionObserver가 안정적으로 동작 */
+export const scrollSentinel = style({
+  minHeight: 1,
+  width: "100%",
+});

@@ -23,7 +23,7 @@ export const mapProblemListItemToCard = (
     id: String(item.problemId),
     title: `${unitName} 문제`,
     date: formatDate(item.createdAt),
-    imageSrc: item.previewImage.viewUrl,
+    imageSrc: item.previewImage?.viewUrl ?? "",
     chips: {
       primary: subjectName,
       secondary: typeNames,

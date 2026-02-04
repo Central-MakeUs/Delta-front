@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef, useEffect } from "react";
 import * as s from "@/app/wrong/(list)/wrong.css";
 import Filter from "@/shared/components/filter/filter";
 import WrongCard from "@/app/wrong/(list)/components/wrong-card";
 import BottomSheetSort from "@/shared/components/bottom-sheet/bottom-sheet-sort/bottom-sheet-sort";
 import BottomSheetFilter from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter";
 import { useWrongFilters } from "@/app/wrong/(list)/hooks/use-wrong-filters";
-import { useProblemListQuery } from "@/shared/apis/problem-list/hooks/use-problem-list-query";
+import { useProblemScrollInfiniteQuery } from "@/shared/apis/problem-list/hooks/use-problem-scroll-infinite-query";
 import { mapProblemListItemToCard } from "@/app/wrong/(list)/utils/map-problem-list-to-cards";
 import { LOADING_MESSAGES } from "@/shared/constants/loading-messages";
 
@@ -16,7 +16,7 @@ import {
   SORT_OPTIONS,
   TYPE_FILTERS,
 } from "@/app/wrong/(list)/constants/wrong-filters";
-import { mapFiltersToApiParams } from "./utils/map-filters-to-params";
+import { mapFiltersToScrollParams } from "./utils/map-filters-to-params";
 import EmptyState from "@/shared/components/empty-state/empty-state";
 import Loading from "@/shared/components/loading/loading";
 
@@ -41,9 +41,9 @@ const WrongPage = () => {
     applyFilter,
   } = useWrongFilters();
 
-  const apiParams = useMemo(
+  const scrollParams = useMemo(
     () =>
-      mapFiltersToApiParams({
+      mapFiltersToScrollParams({
         selectedChapterIds,
         selectedTypeIds,
         selectedDropdownIds,
@@ -52,14 +52,38 @@ const WrongPage = () => {
     [selectedChapterIds, selectedTypeIds, selectedDropdownIds, selectedSortId]
   );
 
-  const { data, isLoading } = useProblemListQuery({
-    params: apiParams,
-  });
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useProblemScrollInfiniteQuery({ params: scrollParams });
+  console.log(data, isFetchingNextPage, hasNextPage);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const isFetchingNextRef = useRef(false);
+
+  useEffect(() => {
+    isFetchingNextRef.current = isFetchingNextPage;
+  }, [isFetchingNextPage]);
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || !hasNextPage) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && !isFetchingNextRef.current)
+          fetchNextPage();
+      },
+      { rootMargin: "200px", threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasNextPage, fetchNextPage]);
 
   const visibleCards = useMemo(() => {
-    if (!data?.content) return [];
-    return data.content.map(mapProblemListItemToCard);
+    if (!data?.pages) return [];
+    return data.pages.flatMap((page) =>
+      page.content.map(mapProblemListItemToCard)
+    );
   }, [data]);
+
+  const totalElements = data?.pages?.[0]?.totalElements ?? 0;
 
   return (
     <div className={s.page}>
@@ -81,7 +105,7 @@ const WrongPage = () => {
         <div className={s.sortRow}>
           <span className={s.wrongLabel}>
             <p className={s.wrongCount}>
-              {isLoading ? "..." : (data?.totalElements ?? 0)}개
+              {isLoading ? "..." : totalElements}개
             </p>
             <p>의 오답</p>
           </span>
@@ -112,18 +136,29 @@ const WrongPage = () => {
             />
           </div>
         ) : (
-          visibleCards.map((card) => (
-            <WrongCard
-              key={card.id}
-              title={card.title}
-              date={card.date}
-              imageSrc={card.imageSrc}
-              imageAlt="오답 문제 이미지"
-              chips={card.chips}
-              href={card.href}
-              isCompleted={card.isCompleted}
-            />
-          ))
+          <>
+            {visibleCards.map((card) => (
+              <WrongCard
+                key={card.id}
+                title={card.title}
+                date={card.date}
+                imageSrc={card.imageSrc}
+                imageAlt="오답 문제 이미지"
+                chips={card.chips}
+                href={card.href}
+                isCompleted={card.isCompleted}
+              />
+            ))}
+            {hasNextPage && (
+              <div ref={sentinelRef} className={s.scrollSentinel} aria-hidden />
+            )}
+            {isFetchingNextPage && (
+              <Loading
+                variant="inline"
+                message={LOADING_MESSAGES.FIND_MATCHING_PROBLEMS}
+              />
+            )}
+          </>
         )}
       </div>
 

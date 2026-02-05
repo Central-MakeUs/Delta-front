@@ -2,12 +2,12 @@
 
 import React from "react";
 import clsx from "clsx";
-import * as styles from "./calendar-view.css";
-import * as sharedStyles from "../../date-picker.css";
-import Icon from "../../../icon/icon";
-import { Button } from "../../../button/button/button";
-import { DAYS, MONTHS } from "../../constants";
-import { isFutureDate } from "../../utils/date-utils";
+import * as styles from "@/shared/components/date-picker/components/calendar-view/calendar-view.css";
+import * as sharedStyles from "@/shared/components/date-picker/date-picker.css";
+import Icon from "@/shared/components/icon/icon";
+import { Button } from "@/shared/components/button/button/button";
+import { DAYS, MONTHS } from "@/shared/components/date-picker/constants";
+import { isFutureDate } from "@/shared/components/date-picker/utils/date-utils";
 
 interface CalendarViewProps {
   currentMonth: Date;
@@ -43,9 +43,10 @@ interface CalendarViewProps {
     isPrevMonth: boolean
   ) => boolean;
   animationClass?: string;
+  calendarViewRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-export const CalendarView: React.FC<CalendarViewProps> = ({
+export const CalendarView = ({
   currentMonth,
   tempSelectedDate,
   monthYearButtonRef,
@@ -60,13 +61,17 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   isSelectedDate,
   isToday,
   animationClass,
-}) => {
+  calendarViewRef,
+}: CalendarViewProps) => {
   const days = getDaysInMonth(currentMonth);
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
 
   return (
-    <div className={clsx(sharedStyles.viewPanel, animationClass)}>
+    <div
+      ref={calendarViewRef}
+      className={clsx(sharedStyles.viewPanel, animationClass)}
+    >
       <div className={styles.header}>
         <div className={styles.datePickerContent}>
           <button
@@ -111,9 +116,9 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
 
         <div className={styles.days}>
           {days.map((dayInfo, index) => {
-            if (dayInfo === null) {
+            if (dayInfo === null)
               return <div key={index} className={styles.empty} />;
-            }
+
             const { day, isCurrentMonth, isPrevMonth } = dayInfo;
             const isFuture = isFutureDate(
               day,
@@ -121,6 +126,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               isPrevMonth,
               currentMonth
             );
+
             return (
               <button
                 key={`${day}-${index}-${isCurrentMonth}`}
@@ -146,9 +152,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
                   [styles.prevMonth]: !isCurrentMonth,
                 })}
                 onClick={() => {
-                  if (!isFuture) {
-                    onDateClick(day, isCurrentMonth, isPrevMonth);
-                  }
+                  if (!isFuture) onDateClick(day, isCurrentMonth, isPrevMonth);
                 }}
               >
                 {day}

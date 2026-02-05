@@ -1,5 +1,8 @@
 import { useEffect, useLayoutEffect, useCallback, type RefObject } from "react";
-import type { Transition, View } from "../utils/transition-utils";
+import type {
+  Transition,
+  View,
+} from "@/shared/components/date-picker/utils/transition-utils";
 
 type ViewRefs = Partial<Record<View, RefObject<HTMLElement | null>>>;
 
@@ -9,12 +12,19 @@ const getViewHeight = (
   refs: ViewRefs
 ) => {
   if (view === "calendar") {
-    const el = viewStackRef.current?.querySelector(
+    const stack = viewStackRef.current;
+    if (!stack) return 0;
+
+    const el = stack.querySelector(
       '[class*="viewPanel"]'
     ) as HTMLElement | null;
-    return el?.scrollHeight ?? 0;
+
+    const h = el?.scrollHeight ?? 0;
+    return h > 0 ? Math.ceil(h) + 1 : 0;
   }
-  return refs[view]?.current?.scrollHeight ?? 0;
+
+  const h = refs[view]?.current?.scrollHeight ?? 0;
+  return h > 0 ? Math.ceil(h) + 1 : 0;
 };
 
 export const useViewStackHeight = (params: {
@@ -34,7 +44,11 @@ export const useViewStackHeight = (params: {
 
     const targetView = transition ? transition.to : activeView;
     const h = getViewHeight(viewStackRef, targetView, viewRefs);
-    if (h > 0) stack.style.height = `${h}px`;
+
+    if (h > 0) {
+      stack.style.height = `${h}px`;
+      stack.style.minHeight = `${h}px`;
+    }
   }, [viewStackRef, viewRefs, transition, activeView]);
 
   useLayoutEffect(() => {
@@ -46,10 +60,11 @@ export const useViewStackHeight = (params: {
 
   useEffect(() => {
     if (!isOpen) return;
-    if (!viewStackRef.current) return;
+
+    const stack = viewStackRef.current;
+    if (!stack) return;
 
     const ro = new ResizeObserver(() => applyHeight());
-    const stack = viewStackRef.current;
     const calendarEl = stack.querySelector('[class*="viewPanel"]');
     if (calendarEl instanceof HTMLElement) ro.observe(calendarEl);
 
@@ -60,4 +75,3 @@ export const useViewStackHeight = (params: {
     return () => ro.disconnect();
   }, [isOpen, viewStackRef, viewRefs, applyHeight, depsKey]);
 };
-

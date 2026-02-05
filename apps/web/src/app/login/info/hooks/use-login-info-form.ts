@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 
-type LoginInfoFormData = {
+export type LoginInfoFormData = {
   nickname: string;
   birthDate: string;
   profileImage: File | null;

@@ -1,11 +1,16 @@
-import { GetProblemListParams } from "@/shared/apis/problem-list/problem-list-types";
+import type {
+  GetProblemScrollParams,
+  ProblemScrollSort,
+  ProblemScrollStatus,
+} from "@/shared/apis/problem-list/problem-scroll-types";
 
-export const mapFiltersToApiParams = (state: {
+/** 스크롤 API용 파라미터. sort는 RECENT/OLDEST만 지원. */
+export const mapFiltersToScrollParams = (state: {
   selectedChapterIds: string[];
   selectedDropdownIds: Record<string, string[]>;
   selectedTypeIds: string[];
   selectedSortId: string;
-}): GetProblemListParams => {
+}): Omit<GetProblemScrollParams, "lastId" | "lastCreatedAt"> => {
   const {
     selectedChapterIds,
     selectedDropdownIds,
@@ -13,9 +18,9 @@ export const mapFiltersToApiParams = (state: {
     selectedSortId,
   } = state;
 
-  const params: GetProblemListParams = {
-    page: 0,
+  const params: Omit<GetProblemScrollParams, "lastId" | "lastCreatedAt"> = {
     size: 20,
+    includePreviewUrl: true,
     sort: "RECENT",
     status: "ALL",
   };
@@ -23,16 +28,19 @@ export const mapFiltersToApiParams = (state: {
   if (selectedChapterIds[0]) params.subjectId = selectedChapterIds[0];
 
   const unitId = Object.values(selectedDropdownIds).flat()[0];
-  if (unitId) params.unitId = unitId as string;
+  if (unitId) params.unitId = unitId;
 
   if (selectedTypeIds[0]) params.typeId = selectedTypeIds[0];
 
-  const sortMap: Record<string, Partial<GetProblemListParams>> = {
+  const sortMap: Record<
+    string,
+    { sort: ProblemScrollSort; status: ProblemScrollStatus }
+  > = {
     recent: { sort: "RECENT", status: "ALL" },
     "wrong-incomplete": { sort: "RECENT", status: "UNSOLVED" },
     "wrong-complete": { sort: "RECENT", status: "SOLVED" },
-    "type-desc": { sort: "TYPE_MOST", status: "ALL" },
-    "type-asc": { sort: "TYPE_LEAST", status: "ALL" },
+    "type-desc": { sort: "RECENT", status: "ALL" },
+    "type-asc": { sort: "OLDEST", status: "ALL" },
   };
 
   return { ...params, ...sortMap[selectedSortId] };

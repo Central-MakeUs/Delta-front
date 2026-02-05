@@ -51,7 +51,6 @@ export const AnswerSection = ({
             fullWidth
             value={answerText || ""}
             onChange={(e) => onAnswerChange(e.target.value)}
-            // className={styles.answerTextField}
           />
         )}
       </div>

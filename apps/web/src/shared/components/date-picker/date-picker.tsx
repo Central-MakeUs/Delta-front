@@ -121,9 +121,7 @@ export const DatePicker = ({
                   day,
                   isCurrentMonth,
                   tempSelectedDate,
-                  currentMonth,
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  _isPrevMonth
+                  currentMonth
                 ) =>
                   isSelectedDate(
                     day,
@@ -132,13 +130,9 @@ export const DatePicker = ({
                     currentMonth
                   )
                 }
-                isToday={(
-                  day,
-                  isCurrentMonth,
-                  currentMonth,
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  _isPrevMonth
-                ) => isToday(day, isCurrentMonth, currentMonth)}
+                isToday={(day, isCurrentMonth, currentMonth) =>
+                  isToday(day, isCurrentMonth, currentMonth)
+                }
                 animationClass={getPanelAnimClass("calendar", transition)}
               />
             )}

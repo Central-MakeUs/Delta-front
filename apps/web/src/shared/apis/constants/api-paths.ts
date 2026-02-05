@@ -28,7 +28,7 @@ export const API_PATHS = {
     ROOT: `${API_V1}/problems`,
   },
   PROBLEM_LIST: {
-    ROOT: `${API_V1}/problems`,
+    SCROLL: `${API_V1}/problems/scroll`,
   },
   PROBLEM_TYPES: {
     ROOT: `${API_V1}/problem-types`,

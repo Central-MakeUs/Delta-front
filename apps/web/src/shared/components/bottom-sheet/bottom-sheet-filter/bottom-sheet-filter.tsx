@@ -36,6 +36,7 @@ export const BottomSheetFilter = ({
   initialSection,
 }: BottomSheetFilterProps) => {
   const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasScrolledToInitialRef = useRef(false);
 
   const clearSyncTimer = () => {
     if (!syncTimerRef.current) return;
@@ -79,7 +80,10 @@ export const BottomSheetFilter = ({
   } = useInitialSectionScroll();
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      hasScrolledToInitialRef.current = false;
+      return;
+    }
 
     clearSyncTimer();
     syncTimerRef.current = setTimeout(() => {
@@ -88,9 +92,11 @@ export const BottomSheetFilter = ({
         requestAnimationFrame(() => {
           if (initialSection) {
             syncSpacerForSection(initialSection);
-            requestAnimationFrame(() => {
-              scrollToInitialSection(initialSection);
-            });
+            if (initialSection === "chapter") {
+              requestAnimationFrame(() => {
+                scrollToInitialSection(initialSection);
+              });
+            }
           }
         });
       });
@@ -106,6 +112,20 @@ export const BottomSheetFilter = ({
     syncSpacerForSection,
     scrollToInitialSection,
   ]);
+
+  useEffect(() => {
+    if (
+      !isOpen ||
+      initialSection !== "type" ||
+      bottomSpacerHeightRem <= 0 ||
+      hasScrolledToInitialRef.current
+    )
+      return;
+    hasScrolledToInitialRef.current = true;
+    requestAnimationFrame(() => {
+      scrollToInitialSection("type");
+    });
+  }, [isOpen, initialSection, bottomSpacerHeightRem, scrollToInitialSection]);
 
   const shouldRender = isOpen || isClosing;
   if (!shouldRender) return null;
@@ -166,32 +186,27 @@ export const BottomSheetFilter = ({
           <FilterHeader onClose={requestClose} isClosing={isClosing} />
 
           <div className={styles.contentFrame} ref={contentFrameRef}>
-            {(initialSection === "chapter" || !initialSection) && (
-              <div ref={chapterAnchorRef}>
-                <FilterSection
-                  title="단원별"
-                  filters={chapterFilters}
-                  selectedIds={localChapterIds}
-                  onToggle={handleChapterToggle}
-                  localDropdownIds={localDropdownIds}
-                  onDropdownOptionToggle={handleDropdownToggle}
-                />
-              </div>
-            )}
+            <div ref={chapterAnchorRef}>
+              <FilterSection
+                title="단원별"
+                filters={chapterFilters}
+                selectedIds={localChapterIds}
+                onToggle={handleChapterToggle}
+                localDropdownIds={localDropdownIds}
+                onDropdownOptionToggle={handleDropdownToggle}
+              />
+            </div>
 
-            {(initialSection === "type" || !initialSection) && (
-              <>
-                {!initialSection && <Divider className={styles.dividerStyle} />}
-                <div ref={typeAnchorRef}>
-                  <FilterSection
-                    title="유형별"
-                    filters={typeFilters}
-                    selectedIds={localTypeIds}
-                    onToggle={handleTypeToggle}
-                  />
-                </div>
-              </>
-            )}
+            <Divider />
+
+            <div ref={typeAnchorRef}>
+              <FilterSection
+                title="유형별"
+                filters={typeFilters}
+                selectedIds={localTypeIds}
+                onToggle={handleTypeToggle}
+              />
+            </div>
 
             <div
               aria-hidden

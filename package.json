@@ -1,23 +1,35 @@
 {
-    "name": "cmc-apps",
-    "version": "1.0.0",
-    "private": true,
-    "description": "CMC Apps Monorepo",
-    "scripts": {
-        "web": "pnpm --filter web dev",
-        "app": "pnpm --filter app start",
-        "build:web": "pnpm --filter web build",
-        "lint:web": "pnpm --filter web lint",
-        "lint:app": "pnpm --filter app lint",
-        "format:web": "pnpm --filter web format",
-        "format:check:web": "pnpm --filter web format:check",
-        "install:all": "pnpm install"
-    },
-    "devDependencies": {
-        "pnpm": "^9.0.0"
-    },
-    "engines": {
-        "node": ">=18.0.0",
-        "pnpm": ">=9.0.0"
-    }
+  "name": "cmc-apps",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CMC Apps Monorepo",
+  "scripts": {
+    "web": "pnpm --filter web dev",
+    "app": "pnpm --filter app start",
+    "build:web": "pnpm --filter web build",
+    "lint:web": "pnpm --filter web lint",
+    "lint:app": "pnpm --filter app lint",
+    "format:web": "pnpm --filter web format",
+    "format:check:web": "pnpm --filter web format:check",
+    "install:all": "pnpm install",
+    "prepare": "husky",
+    "icons:gen": "pnpm -C apps/web icons:gen"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "pnpm -C apps/app lint:fix",
+      "pnpm -C apps/web lint:fix"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.2.0",
+    "@commitlint/config-conventional": "^20.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "pnpm": "^9.0.0"
+  },
+  "engines": {
+    "node": ">=22.12.0",
+    "pnpm": ">=9.0.0"
+  }
 }

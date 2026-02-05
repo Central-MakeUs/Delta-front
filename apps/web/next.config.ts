@@ -1,7 +1,20 @@
 import type { NextConfig } from "next";
+import { createVanillaExtractPlugin } from "@vanilla-extract/next-plugin";
+
+const withVanillaExtract = createVanillaExtractPlugin();
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
+  reactCompiler: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "delta-semo.s3.ap-northeast-2.amazonaws.com",
+        pathname: "/**",
+      },
+    ],
+  },
 };
 
-export default nextConfig;
+export default withVanillaExtract(nextConfig);

@@ -1,0 +1,75 @@
+export type AppBarSurface = "solid" | "transparent";
+export type AppBarVariant =
+  | "basic"
+  | "basicAction"
+  | "default"
+  | "progress"
+  | "title"
+  | "graphTabs";
+
+export type CommonProps = {
+  className?: string;
+  ariaLabel?: string;
+  surface?: AppBarSurface;
+};
+
+export type BasicProps = CommonProps & {
+  variant: "basic";
+  title: string;
+  onBack?: () => void;
+};
+
+export type BasicActionProps = CommonProps & {
+  variant: "basicAction";
+  title: string;
+  actionLabel: string;
+  onBack?: () => void;
+  onActionClick?: () => void;
+  actionAriaLabel?: string;
+};
+
+export type DefaultProps = CommonProps & {
+  variant: "default";
+  onLogoClick?: () => void;
+  onProClick?: () => void;
+  onUserClick?: () => void;
+};
+
+export type ProgressProps = CommonProps & {
+  variant: "progress";
+  total: number;
+  currentStep: number;
+  onBack?: () => void;
+  onSkip?: () => void;
+  skipLabel?: string;
+  onStepChange?: (nextStep: number) => void;
+};
+
+export type TitleOnlyProps = CommonProps & {
+  variant: "title";
+  title: string;
+};
+
+export type NonEmptyArray<T> = readonly [T, ...T[]];
+
+export type TabItem<V extends string = string> = {
+  value: V;
+  label: string;
+};
+
+export type GraphTabsProps<V extends string = string> = CommonProps & {
+  variant: "graphTabs";
+  tabs: NonEmptyArray<TabItem<V>>;
+  value: V;
+  onValueChange: (next: V) => void;
+  onBack?: () => void;
+  tabsAriaLabel?: string;
+};
+
+export type AppBarProps =
+  | BasicProps
+  | BasicActionProps
+  | DefaultProps
+  | ProgressProps
+  | TitleOnlyProps
+  | GraphTabsProps;

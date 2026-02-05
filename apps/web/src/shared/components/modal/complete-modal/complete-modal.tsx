@@ -15,6 +15,7 @@ export interface CompleteModalProps {
   onConfirm?: () => void;
   size?: "sm" | "md" | "lg";
   className?: string;
+  descriptionClassName?: string;
   overlayClassName?: string;
   iconName?: React.ComponentProps<typeof Icon>["name"];
   actions?: "both" | "cancelOnly" | "confirmOnly";
@@ -32,6 +33,7 @@ export const CompleteModal = ({
   size = "md",
   className,
   overlayClassName,
+  descriptionClassName,
   iconName = "modal-icon",
   actions = "both",
 }: CompleteModalProps) => {
@@ -84,7 +86,9 @@ export const CompleteModal = ({
             <div className={styles.textContainer}>
               <h2 className={styles.title}>{title}</h2>
               {description && (
-                <p className={styles.description}>{description}</p>
+                <p className={clsx(styles.description, descriptionClassName)}>
+                  {description}
+                </p>
               )}
             </div>
           </div>

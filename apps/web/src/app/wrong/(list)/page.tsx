@@ -106,9 +106,7 @@ const WrongPage = () => {
 
         <div className={s.sortRow}>
           <span className={s.wrongLabel}>
-            <p className={s.wrongCount}>
-              {isLoading ? "..." : totalElements}개
-            </p>
+            <p className={s.wrongCount}>{isLoading ? "0" : totalElements}개</p>
             <p>의 오답</p>
           </span>
 

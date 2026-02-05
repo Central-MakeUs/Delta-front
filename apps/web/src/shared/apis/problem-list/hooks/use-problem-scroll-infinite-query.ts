@@ -30,7 +30,8 @@ export const useProblemScrollInfiniteQuery = (args: {
     getNextPageParam: (
       lastPage: GetProblemScrollResponse
     ): ProblemScrollNextCursor | undefined => {
-      if (lastPage.hasNext && lastPage.nextCursor) return lastPage.nextCursor;
+      if (!lastPage.hasNext) return undefined;
+      if (lastPage.nextCursor) return lastPage.nextCursor;
       if (lastPage.content.length >= size) {
         const last = lastPage.content[lastPage.content.length - 1];
         if (last)

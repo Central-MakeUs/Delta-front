@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useGetProblemDetailQuery } from "@/shared/apis/problem-detail/hooks/use-get-problem-detail-query";
+import { toastError } from "@/shared/components/toast/toast";
 import { useUpdateProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-update-problem-detail-mutation";
 import { mapProblemDetailToSectionData } from "../../components/utils/map-problem-detail-to-section-data";
 import type { UpdateProblemRequest } from "@/shared/apis/problem-detail/problem-detail-types";
@@ -88,8 +89,8 @@ export const useWrongEditForm = () => {
       });
       setIsCompleteModalOpen(false);
       router.push(`/wrong/${id}`);
-    } catch (error) {
-      console.error("수정 실패:", error);
+    } catch {
+      toastError("수정에 실패했어요. 다시 시도해 주세요.", 6.5);
     }
   };
 

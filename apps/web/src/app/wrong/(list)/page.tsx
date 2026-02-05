@@ -85,6 +85,8 @@ const WrongPage = () => {
 
   const totalElements = data?.pages?.[0]?.totalElements ?? 0;
 
+  const showInlineLoading = isLoading || (isFetchingNextPage && !data);
+
   return (
     <div className={s.page}>
       <div className={s.filterSection}>
@@ -120,7 +122,7 @@ const WrongPage = () => {
       </div>
 
       <div className={s.cardSection}>
-        {isLoading ? (
+        {showInlineLoading ? (
           <Loading
             variant="inline"
             message={LOADING_MESSAGES.FIND_MATCHING_PROBLEMS}

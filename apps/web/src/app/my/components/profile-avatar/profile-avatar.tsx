@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useState } from "react";
 import Icon from "@/shared/components/icon/icon";
 import * as s from "@/app/my/components/profile-avatar/profile-avatar.css";
 
@@ -7,25 +8,61 @@ type ProfileAvatarProps = {
   alt: string;
 };
 
+type LoadState = {
+  src: string | null;
+  loaded: boolean;
+  failed: boolean;
+};
+
 const ProfileAvatar = ({ src, alt }: ProfileAvatarProps) => {
-  const hasImage = typeof src === "string" && src.length > 0;
+  const imageSrc =
+    typeof src === "string" && src.trim().length > 0 ? src.trim() : null;
+
+  const [state, setState] = useState<LoadState>({
+    src: null,
+    loaded: false,
+    failed: false,
+  });
+
+  const current =
+    state.src === imageSrc
+      ? state
+      : { src: imageSrc, loaded: false, failed: false };
+
+  const showImage = imageSrc !== null && current.loaded && !current.failed;
+
+  const handleLoadComplete = () => {
+    if (!imageSrc) return;
+    setState({ src: imageSrc, loaded: true, failed: false });
+  };
+
+  const handleError = () => {
+    if (!imageSrc) return;
+    setState({ src: imageSrc, loaded: false, failed: true });
+  };
 
   return (
     <div className={s.avatar}>
-      {hasImage ? (
+      {imageSrc ? (
         <Image
-          className={s.image}
-          src={src}
-          alt={alt}
+          key={imageSrc}
+          className={showImage ? s.image : s.imageHidden}
+          src={imageSrc}
+          alt={showImage ? alt : ""}
+          aria-hidden={!showImage}
           width={92}
           height={92}
           sizes="92px"
+          onLoadingComplete={handleLoadComplete}
+          onError={handleError}
         />
-      ) : (
-        <div className={s.fallback} aria-label={alt}>
+      ) : null}
+
+      {!showImage ? (
+        <div className={s.fallback} role="img" aria-label={alt}>
           <Icon name="default-profile" size={9.2} />
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

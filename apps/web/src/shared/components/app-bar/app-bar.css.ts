@@ -66,7 +66,6 @@ export const root = recipe({
 
 export const buttonReset = style({
   appearance: "none",
-  background: "transparent",
   border: "none",
   padding: 0,
   margin: 0,

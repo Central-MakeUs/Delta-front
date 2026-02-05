@@ -49,7 +49,7 @@ export const useInitialSectionScroll = () => {
       const typeBlockHeightPx = typeBlock.getBoundingClientRect().height;
 
       const fullGapPx = Math.max(0, viewportHeightPx - typeBlockHeightPx);
-      const reducedGapPx = fullGapPx * 0.75;
+      const reducedGapPx = fullGapPx * 0.85;
       setBottomSpacerHeightRem(reducedGapPx / 10);
     },
     []

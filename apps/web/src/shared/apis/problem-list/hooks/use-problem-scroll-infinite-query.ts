@@ -31,7 +31,6 @@ export const useProblemScrollInfiniteQuery = (args: {
       lastPage: GetProblemScrollResponse
     ): ProblemScrollNextCursor | undefined => {
       if (lastPage.hasNext && lastPage.nextCursor) return lastPage.nextCursor;
-      // API에서 nextCursor를 안 보내도, 한 페이지가 꽉 찼으면 마지막 항목으로 커서 보강
       if (lastPage.content.length >= size) {
         const last = lastPage.content[lastPage.content.length - 1];
         if (last)

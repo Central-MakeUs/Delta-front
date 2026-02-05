@@ -113,7 +113,6 @@ export const BottomSheetFilter = ({
     scrollToInitialSection,
   ]);
 
-  // initialSection === "type"일 때는 스페이서가 DOM에 반영된 뒤에만 스크롤 (스페이서 state 비동기 반영)
   useEffect(() => {
     if (
       !isOpen ||
@@ -198,7 +197,7 @@ export const BottomSheetFilter = ({
               />
             </div>
 
-            <Divider className={styles.dividerStyle} />
+            <Divider />
 
             <div ref={typeAnchorRef}>
               <FilterSection

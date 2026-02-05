@@ -25,16 +25,18 @@ export const useWrongEditForm = () => {
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
   useEffect(() => {
-    if (sectionData) {
-      setQuestionType(sectionData.questionType);
-      setSelectedNumber(sectionData.answerChoice);
-      setAnswerText(sectionData.answerText || "");
-    }
-    if (data?.solutionText) {
-      setSolution(data.solutionText);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.problemId]);
+    if (!sectionData && data?.solutionText == null) return;
+    queueMicrotask(() => {
+      if (sectionData) {
+        setQuestionType(sectionData.questionType);
+        setSelectedNumber(sectionData.answerChoice);
+        setAnswerText(sectionData.answerText || "");
+      }
+      if (data?.solutionText) {
+        setSolution(data.solutionText);
+      }
+    });
+  }, [sectionData, data?.solutionText]);
 
   const handleQuestionTypeChange = (value: QuestionType) => {
     setQuestionType(value);

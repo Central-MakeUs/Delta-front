@@ -10,6 +10,7 @@ const NavigationListener = () => {
   const lastToRef = useRef<string | null>(null);
 
   useEffect(() => {
+    lastToRef.current = null;
     return onNavigate(({ to, replace }) => {
       if (pathname === to) return;
       if (lastToRef.current === to) return;

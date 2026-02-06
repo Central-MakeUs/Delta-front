@@ -175,7 +175,6 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
                       {item.label}
                     </span>
 
-                    {/* ✅ 내부 삭제 버튼 컴포넌트 */}
                     {item.custom ? (
                       <TypeCardDeleteButton
                         label={item.label}

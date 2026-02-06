@@ -155,11 +155,10 @@ const Step3 = ({ onNextEnabledChange, scanId = null }: Step3Props) => {
               >
                 <div
                   className={s.typeCard({
-                    tone: isSelected ? "dark" : "surface",
+                    tone: isSelected ? "active" : "surface",
                     disabled: cardDisabled,
                   })}
                 >
-                  {/* ✅ 내부 토글 버튼 컴포넌트 */}
                   <TypeCardHitButton
                     labelId={labelId}
                     pressed={isSelected}

@@ -21,11 +21,13 @@ export const all = style([
   {
     position: "fixed",
     inset: 0,
-    zIndex: vars.zIndex.modalOverlay,
+    zIndex: vars.zIndex.loading,
     display: "grid",
     placeItems: "center",
     height: "100dvh",
     overflow: "hidden",
+    maxWidth: "43rem",
+    margin: "0 auto",
   },
 ]);
 

@@ -49,6 +49,7 @@ export const inputContent = style({
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
+  cursor: "default",
   gap: "1.2rem",
   width: "100%",
 });

@@ -9,8 +9,6 @@ type Params = {
   onSelect?: (file: File, source: ImagePickSource) => void;
 };
 
-const isImageFile = (file: File) => file.type.startsWith("image/");
-
 const resetAndClick = (ref: RefObject<HTMLInputElement | null>) => {
   const el = ref.current;
   if (!el) return;
@@ -40,11 +38,6 @@ export const useImageSourcePicker = ({
     (source: ImagePickSource) => (e: ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) return;
-
-      if (!isImageFile(file)) {
-        e.target.value = "";
-        return;
-      }
 
       onSelect?.(file, source);
       e.target.value = "";

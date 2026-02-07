@@ -25,30 +25,26 @@ const MyEdit = () => {
 
   const uploadProfileImage = useUploadMyProfileImageMutation();
   const updateMyProfile = useUpdateMyProfileMutation();
+
   const [formData, setFormData] = useState<LoginInfoFormData>({
     name: "",
     profileImage: null,
   });
 
-  const name = formData.name;
+  const [isNameDirty, setIsNameDirty] = useState(false);
 
   const profileImageUrl = useMemo(
     () => readProfileImageUrl(profileImage),
     [profileImage]
   );
 
-  const hydratedName = useMemo(() => {
-    if (!profile) return false;
-    return name.trim().length > 0;
-  }, [profile, name]);
-
   const resolvedName = useMemo(() => {
-    if (!profile) return name;
-    if (hydratedName) return name;
-    return profile.nickname ?? "";
-  }, [profile, hydratedName, name]);
+    if (!profile) return formData.name;
+    return isNameDirty ? formData.name : (profile.nickname ?? "");
+  }, [profile, isNameDirty, formData.name]);
 
   const onNameChange = useCallback((v: string) => {
+    setIsNameDirty(true);
     setFormData((prev) => ({ ...prev, name: v }));
   }, []);
 
@@ -57,12 +53,16 @@ const MyEdit = () => {
   }, []);
 
   const isSaving = updateMyProfile.isPending || uploadProfileImage.isPending;
+  const isNameBlank = resolvedName.trim().length === 0;
 
   const handleComplete = useCallback(async () => {
     if (!profile) return;
 
     const nextName = resolvedName.trim();
-    const nameChanged = (profile.nickname ?? "") !== nextName;
+    if (nextName.length === 0) return;
+
+    const nameChanged = isNameDirty && (profile.nickname ?? "") !== nextName;
+
     const imageChanged = !!formData.profileImage;
 
     if (!nameChanged && !imageChanged) {
@@ -82,6 +82,7 @@ const MyEdit = () => {
   }, [
     profile,
     resolvedName,
+    isNameDirty,
     formData.profileImage,
     updateMyProfile,
     uploadProfileImage,
@@ -119,7 +120,7 @@ const MyEdit = () => {
           label="수정 완료"
           fullWidth
           tone="dark"
-          disabled={isSaving}
+          disabled={isSaving || isNameBlank}
           onClick={handleComplete}
         />
       </div>

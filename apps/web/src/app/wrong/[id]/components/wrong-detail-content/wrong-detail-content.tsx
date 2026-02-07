@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import * as styles from "./wrong-detail-content.css";
 import {
@@ -26,7 +26,6 @@ const WrongDetailContent = () => {
   const completeMutation = useCompleteProblemDetailMutation();
 
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
-
   const [isConfettiOpen, setIsConfettiOpen] = useState(false);
   const [confettiPlayId, setConfettiPlayId] = useState(0);
 
@@ -36,33 +35,6 @@ const WrongDetailContent = () => {
   }, [data]);
 
   const solution = data?.solutionText ?? "";
-
-  const openConfetti = useCallback(() => {
-    setConfettiPlayId((p) => p + 1);
-    setIsConfettiOpen(true);
-  }, []);
-
-  const closeConfetti = useCallback(() => {
-    setIsConfettiOpen(false);
-  }, []);
-
-  const handleConfirm = useCallback(() => {
-    setIsCompleteModalOpen(true);
-  }, []);
-
-  const handleCloseModal = useCallback(() => {
-    setIsCompleteModalOpen(false);
-  }, []);
-
-  const handleComplete = useCallback(async () => {
-    await completeMutation.mutateAsync({
-      problemId: id,
-      solutionText: solution,
-    });
-
-    setIsCompleteModalOpen(false);
-    openConfetti();
-  }, [completeMutation, id, openConfetti, solution]);
 
   if (isLoading) return null;
 
@@ -76,6 +48,33 @@ const WrongDetailContent = () => {
     );
   }
 
+  const openConfetti = () => {
+    setConfettiPlayId((p) => p + 1);
+    setIsConfettiOpen(true);
+  };
+
+  const closeConfetti = () => {
+    setIsConfettiOpen(false);
+  };
+
+  const handleConfirm = () => {
+    setIsCompleteModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsCompleteModalOpen(false);
+  };
+
+  const handleComplete = async () => {
+    await completeMutation.mutateAsync({
+      problemId: id,
+      solutionText: solution,
+    });
+
+    setIsCompleteModalOpen(false);
+    openConfetti();
+  };
+
   return (
     <div className={styles.page}>
       <Confetti
@@ -83,12 +82,10 @@ const WrongDetailContent = () => {
         playId={confettiPlayId}
         onComplete={closeConfetti}
       />
-
       <div className={styles.contentWrapper}>
         <div className={styles.mainContent}>
           <HeaderSection {...sectionData} />
           <QuestionSection {...sectionData} />
-
           <div className={styles.inputSection}>
             <div className={styles.inputContent}>
               <AnswerSection {...sectionData} />
@@ -97,7 +94,6 @@ const WrongDetailContent = () => {
           </div>
         </div>
       </div>
-
       <BottomButton
         onClick={handleConfirm}
         disabled={
@@ -105,7 +101,6 @@ const WrongDetailContent = () => {
         }
         isCompleted={data.completed}
       />
-
       <CompleteModal
         title="오답을 완료할까요?"
         description="입력한 풀이는 저장되며, 오답이 완료 처리돼요."

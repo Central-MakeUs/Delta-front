@@ -10,7 +10,7 @@ export const overlay = style({
   maxWidth: "43rem",
   paddingTop: "env(safe-area-inset-top)",
   pointerEvents: "none",
-  zIndex: vars.zIndex.toast,
+  zIndex: vars.zIndex.splash,
   opacity: "0.8",
 });
 

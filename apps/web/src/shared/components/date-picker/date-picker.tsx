@@ -1,22 +1,24 @@
 "use client";
 
-import React from "react";
 import clsx from "clsx";
-import * as styles from "./date-picker.css";
-import { CalendarView } from "./components/calendar-view/calendar-view";
-import { YearMonthPicker } from "./components/year-month-picker/year-month-picker";
-import { YearPicker } from "./components/year-picker/year-picker";
-import { useViewStackHeight } from "./hooks/use-view-stack-height";
-import { useDatePickerState } from "./hooks/use-date-picker-state";
-import { useDatePickerHandlers } from "./hooks/use-date-picker-handlers";
-import { useDatePickerEffects } from "./hooks/use-date-picker-effects";
+import * as styles from "@/shared/components/date-picker/date-picker.css";
+import { CalendarView } from "@/shared/components/date-picker/components/calendar-view/calendar-view";
+import { YearMonthPicker } from "@/shared/components/date-picker/components/year-month-picker/year-month-picker";
+import { YearPicker } from "@/shared/components/date-picker/components/year-picker/year-picker";
+import { useViewStackHeight } from "@/shared/components/date-picker/hooks/use-view-stack-height";
+import { useDatePickerState } from "@/shared/components/date-picker/hooks/use-date-picker-state";
+import { useDatePickerHandlers } from "@/shared/components/date-picker/hooks/use-date-picker-handlers";
+import { useDatePickerEffects } from "@/shared/components/date-picker/hooks/use-date-picker-effects";
 import {
   getDaysInMonth,
   isSelectedDate,
   isToday,
   getYearList,
-} from "./utils/date-utils";
-import { getPanelAnimClass, getTargetView } from "./utils/transition-utils";
+} from "@/shared/components/date-picker/utils/date-utils";
+import {
+  getPanelAnimClass,
+  getTargetView,
+} from "@/shared/components/date-picker/utils/transition-utils";
 
 export interface DatePickerProps {
   isOpen: boolean;
@@ -117,21 +119,11 @@ export const DatePicker = ({
                 onComplete={handlers.handleComplete}
                 onClose={onClose}
                 getDaysInMonth={getDaysInMonth}
-                isSelectedDate={(
-                  day,
-                  isCurrentMonth,
-                  tempSelectedDate,
-                  currentMonth
-                ) =>
-                  isSelectedDate(
-                    day,
-                    isCurrentMonth,
-                    tempSelectedDate,
-                    currentMonth
-                  )
+                isSelectedDate={(day, isCurrentMonth, tempSelected, current) =>
+                  isSelectedDate(day, isCurrentMonth, tempSelected, current)
                 }
-                isToday={(day, isCurrentMonth, currentMonth) =>
-                  isToday(day, isCurrentMonth, currentMonth)
+                isToday={(day, isCurrentMonth, current) =>
+                  isToday(day, isCurrentMonth, current)
                 }
                 animationClass={getPanelAnimClass("calendar", transition)}
               />

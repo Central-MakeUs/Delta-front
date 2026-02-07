@@ -10,6 +10,7 @@ import {
 } from "@/app/login/info/components/sections";
 import { useLoginInfoForm } from "../../hooks/use-login-info-form";
 import { useOnboardingSubmit } from "../../hooks/use-onboarding-submit";
+import { useMyProfileQuery } from "@/shared/apis/user/hooks/use-my-profile-query";
 
 const TERMS_CONTENT = [
   "여기에 이용약관 내용이 들어갑니다.",
@@ -17,6 +18,10 @@ const TERMS_CONTENT = [
 ];
 
 const LoginInfoContent = () => {
+  const { data: profile } = useMyProfileQuery();
+
+  const initialNickname = profile?.nickname ?? "";
+
   const {
     formData,
     isAgreed,
@@ -26,7 +31,7 @@ const LoginInfoContent = () => {
     openTermsSheet,
     closeTermsSheet,
     agreeFromTermsSheet,
-  } = useLoginInfoForm();
+  } = useLoginInfoForm({ initialNickname });
 
   const { handleComplete, submitError, isButtonDisabled } = useOnboardingSubmit(
     { formData, isAgreed }

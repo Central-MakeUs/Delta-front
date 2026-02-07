@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import * as styles from "./wrong-detail-content.css";
 import {
@@ -20,14 +20,10 @@ import EmptyState from "@/shared/components/empty-state/empty-state";
 const WrongDetailContent = () => {
   const params = useParams();
   const id = params.id as string;
+
   const { data, isLoading, isError } = useGetProblemDetailQuery(id);
   const completeMutation = useCompleteProblemDetailMutation();
 
-  const initialSolution = useMemo(() => {
-    return data?.completed && data.solutionText ? data.solutionText : "";
-  }, [data?.completed, data?.solutionText]);
-
-  const [solution, setSolution] = useState(initialSolution);
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
   const sectionData = useMemo<WrongDetailSectionData | null>(() => {
@@ -36,6 +32,7 @@ const WrongDetailContent = () => {
   }, [data]);
 
   if (isLoading) return null;
+
   if (isError || !data || !sectionData) {
     return (
       <EmptyState
@@ -45,6 +42,9 @@ const WrongDetailContent = () => {
       />
     );
   }
+
+  const solution = data.solutionText ?? "";
+  const isSolutionReadOnly = true;
 
   const handleConfirm = () => {
     setIsCompleteModalOpen(true);
@@ -59,6 +59,7 @@ const WrongDetailContent = () => {
       problemId: id,
       solutionText: solution,
     });
+
     setIsCompleteModalOpen(false);
   };
 
@@ -67,7 +68,6 @@ const WrongDetailContent = () => {
       <div className={styles.contentWrapper}>
         <div className={styles.mainContent}>
           <HeaderSection {...sectionData} />
-
           <QuestionSection {...sectionData} />
 
           <div className={styles.inputSection}>
@@ -75,8 +75,8 @@ const WrongDetailContent = () => {
               <AnswerSection {...sectionData} />
               <SolutionSection
                 value={solution}
-                onChange={setSolution}
-                disabled={data.completed}
+                onChange={() => {}}
+                disabled={isSolutionReadOnly}
               />
             </div>
           </div>
@@ -85,7 +85,9 @@ const WrongDetailContent = () => {
 
       <BottomButton
         onClick={handleConfirm}
-        disabled={!solution.trim() || data.completed}
+        disabled={
+          !solution.trim() || data.completed || completeMutation.isPending
+        }
         isCompleted={data.completed}
       />
 

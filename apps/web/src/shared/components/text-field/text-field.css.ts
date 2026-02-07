@@ -15,9 +15,6 @@ export const container = recipe({
       padding: "1.6rem",
       flex: 1,
       transition: "all 0.2s",
-      selectors: {
-        "&:focus-within": { borderColor: vars.color.grayscale[400] },
-      },
     },
   ],
   variants: {
@@ -25,6 +22,17 @@ export const container = recipe({
       true: { width: "100%" },
       false: { width: "auto" },
     },
+    focusEffect: {
+      true: {
+        selectors: {
+          "&:focus-within": { borderColor: vars.color.grayscale[400] },
+        },
+      },
+      false: {},
+    },
+  },
+  defaultVariants: {
+    focusEffect: true,
   },
 });
 

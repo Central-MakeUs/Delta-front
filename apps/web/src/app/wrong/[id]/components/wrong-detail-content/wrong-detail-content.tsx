@@ -16,6 +16,7 @@ import { useCompleteProblemDetailMutation } from "@/shared/apis/problem-detail/h
 import { mapProblemDetailToSectionData } from "../utils/map-problem-detail-to-section-data";
 import type { WrongDetailSectionData } from "../types";
 import EmptyState from "@/shared/components/empty-state/empty-state";
+import Confetti from "@/app/wrong/[id]/components/confetti/confetti";
 
 const WrongDetailContent = () => {
   const params = useParams();
@@ -25,11 +26,15 @@ const WrongDetailContent = () => {
   const completeMutation = useCompleteProblemDetailMutation();
 
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [isConfettiOpen, setIsConfettiOpen] = useState(false);
+  const [confettiPlayId, setConfettiPlayId] = useState(0);
 
   const sectionData = useMemo<WrongDetailSectionData | null>(() => {
     if (!data) return null;
     return mapProblemDetailToSectionData(data);
   }, [data]);
+
+  const solution = data?.solutionText ?? "";
 
   if (isLoading) return null;
 
@@ -43,8 +48,14 @@ const WrongDetailContent = () => {
     );
   }
 
-  const solution = data.solutionText ?? "";
-  const isSolutionReadOnly = true;
+  const openConfetti = () => {
+    setConfettiPlayId((p) => p + 1);
+    setIsConfettiOpen(true);
+  };
+
+  const closeConfetti = () => {
+    setIsConfettiOpen(false);
+  };
 
   const handleConfirm = () => {
     setIsCompleteModalOpen(true);
@@ -61,28 +72,28 @@ const WrongDetailContent = () => {
     });
 
     setIsCompleteModalOpen(false);
+    openConfetti();
   };
 
   return (
     <div className={styles.page}>
+      <Confetti
+        isOpen={isConfettiOpen}
+        playId={confettiPlayId}
+        onComplete={closeConfetti}
+      />
       <div className={styles.contentWrapper}>
         <div className={styles.mainContent}>
           <HeaderSection {...sectionData} />
           <QuestionSection {...sectionData} />
-
           <div className={styles.inputSection}>
             <div className={styles.inputContent}>
               <AnswerSection {...sectionData} />
-              <SolutionSection
-                value={solution}
-                onChange={() => {}}
-                disabled={isSolutionReadOnly}
-              />
+              <SolutionSection value={solution} onChange={() => {}} disabled />
             </div>
           </div>
         </div>
       </div>
-
       <BottomButton
         onClick={handleConfirm}
         disabled={
@@ -90,7 +101,6 @@ const WrongDetailContent = () => {
         }
         isCompleted={data.completed}
       />
-
       <CompleteModal
         title="오답을 완료할까요?"
         description="입력한 풀이는 저장되며, 오답이 완료 처리돼요."

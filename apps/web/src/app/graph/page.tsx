@@ -7,7 +7,9 @@ import BarGraphHorizontal from "@/shared/components/bar-graph/bar-graph-horizont
 import Filter from "@/shared/components/filter/filter";
 import WrongStatus from "@/app/graph/components/wrong-status/wrong-status";
 import { GRAPH_TABS, type GraphTab } from "@/shared/constants/routes";
-import BottomSheetSort from "@/shared/components/bottom-sheet/bottom-sheet-sort/bottom-sheet-sort";
+import BottomSheetSort, {
+  type SortOption,
+} from "@/shared/components/bottom-sheet/bottom-sheet-sort/bottom-sheet-sort";
 import {
   GRAPH_SORT_OPTIONS,
   type GraphSortId,
@@ -34,23 +36,33 @@ const GraphPage = () => {
   const openSort = () => setIsSortOpen(true);
   const closeSort = () => setIsSortOpen(false);
 
-  const selectedSortLabel =
-    GRAPH_SORT_OPTIONS.find((o) => o.id === selectedSortId)?.label ??
-    "최다 오답순";
+  const effectiveSortId: GraphSortId =
+    tab === GRAPH_TABS.WRONG && selectedSortId === "default"
+      ? "most-wrong"
+      : selectedSortId;
 
-  const apiSort = SORT_TO_API[selectedSortId] ?? "DEFAULT";
+  const sortOptions: SortOption[] =
+    tab === GRAPH_TABS.WRONG
+      ? [...GRAPH_SORT_OPTIONS].filter((o) => o.id !== "default")
+      : [...GRAPH_SORT_OPTIONS];
+
+  const selectedSortLabel =
+    sortOptions.find((o) => o.id === effectiveSortId)?.label ?? "최다 오답순";
+
+  const apiSort = SORT_TO_API[effectiveSortId] ?? "DEFAULT";
 
   const { groups: graphGroups } = useGraphGroups(tab, apiSort);
+
   const { minValue: domainMin, maxValue: domainMax } = useMemo(
     () => computeDomain(graphGroups),
     [graphGroups]
   );
 
-  const replayKey = `${tab}-${selectedSortId}`;
+  const replayKey = `${tab}-${effectiveSortId}`;
 
-  const hasRenderableGraph = useMemo(() => {
-    return graphGroups.some((g) => Boolean(toBarRowsTuple(g.rows)));
-  }, [graphGroups]);
+  const hasRenderableGraph = graphGroups.some((g) =>
+    Boolean(toBarRowsTuple(g.rows))
+  );
 
   return (
     <div className={s.page}>
@@ -108,8 +120,8 @@ const GraphPage = () => {
       <BottomSheetSort
         isOpen={isSortOpen}
         onClose={closeSort}
-        options={[...GRAPH_SORT_OPTIONS]}
-        selectedOptionId={selectedSortId}
+        options={sortOptions}
+        selectedOptionId={effectiveSortId}
         onSelect={(optionId) => setSelectedSortId(optionId as GraphSortId)}
       />
     </div>

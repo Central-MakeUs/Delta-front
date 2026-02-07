@@ -23,6 +23,7 @@ type Step1Props = {
 const Step1 = ({ onNext, onSelectImage, disabled = false }: Step1Props) => {
   const createScanMutation = useCreateProblemScanMutation();
   const minLoading = useMinLoading(MIN_UPLOAD_LOADING_MS);
+
   const isUploading = createScanMutation.isPending || minLoading.isHolding;
   const isBusy = disabled || isUploading;
 

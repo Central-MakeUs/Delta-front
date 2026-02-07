@@ -2,6 +2,7 @@ import { useState, useRef, useMemo, useEffect } from "react";
 import type { Transition } from "../utils/transition-utils";
 
 const TRANSITION_MS = 600;
+const DEFAULT_YEAR = 2010;
 
 export interface DatePickerState {
   transition: Transition | null;
@@ -42,21 +43,26 @@ export const useDatePickerState = (
   isOpen: boolean,
   selectedDate: Date | null
 ) => {
+  const baseDate = selectedDate ?? new Date(DEFAULT_YEAR, 0, 1);
+  const baseYear = baseDate.getFullYear();
+  const baseMonth = baseDate.getMonth();
+
   const [transition, setTransition] = useState<Transition | null>(null);
-  const [currentMonth, setCurrentMonth] = useState(selectedDate || new Date());
+  const [currentMonth, setCurrentMonth] = useState(baseDate);
+
   const [isYearMonthPickerOpen, setIsYearMonthPickerOpen] = useState(false);
   const [isYearPickerOpen, setIsYearPickerOpen] = useState(false);
+
   const [draftYearMonth, setDraftYearMonth] = useState(() => ({
-    year: (selectedDate || new Date()).getFullYear(),
-    month: (selectedDate || new Date()).getMonth(),
+    year: baseYear,
+    month: baseMonth,
   }));
-  const [draftYear, setDraftYear] = useState(() =>
-    (selectedDate || new Date()).getFullYear()
-  );
+
+  const [draftYear, setDraftYear] = useState(() => baseYear);
+
   const [yearRange, setYearRange] = useState(() => {
-    const currentYear = (selectedDate || new Date()).getFullYear();
-    const startYear = currentYear - 5;
-    const endYear = currentYear + 6;
+    const startYear = baseYear - 5;
+    const endYear = baseYear + 6;
     return { start: startYear, end: endYear };
   });
 
@@ -82,7 +88,7 @@ export const useDatePickerState = (
       });
     }
     prevIsOpenRef.current = isOpen;
-  }, [isOpen, setIsYearMonthPickerOpen, setIsYearPickerOpen, setTransition]);
+  }, [isOpen]);
 
   const tempSelectedDate = useMemo(() => {
     if (!isOpen) return null;

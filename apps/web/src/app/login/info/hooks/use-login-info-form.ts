@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 
 export type LoginInfoFormData = {
   nickname: string;
@@ -8,27 +8,56 @@ export type LoginInfoFormData = {
   profileImage: File | null;
 };
 
-const INITIAL_FORM_DATA: LoginInfoFormData = {
-  nickname: "",
-  birthDate: "",
-  profileImage: null,
+type UseLoginInfoFormParams = {
+  initialNickname?: string;
 };
 
-export const useLoginInfoForm = () => {
-  const [formData, setFormData] = useState<LoginInfoFormData>(INITIAL_FORM_DATA);
+export const useLoginInfoForm = ({
+  initialNickname,
+}: UseLoginInfoFormParams = {}) => {
+  const [nickname, setNickname] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+
+  const [isNicknameTouched, setIsNicknameTouched] = useState(false);
+
   const [isAgreed, setIsAgreed] = useState(false);
   const [isTermsSheetOpen, setIsTermsSheetOpen] = useState(false);
 
-  const updateField = useCallback(<K extends keyof LoginInfoFormData>(
-    field: K,
-    value: LoginInfoFormData[K]
-  ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  }, []);
+  const effectiveNickname = isNicknameTouched
+    ? nickname
+    : nickname.trim()
+      ? nickname
+      : (initialNickname ?? "").trim();
+
+  const formData: LoginInfoFormData = {
+    nickname: effectiveNickname,
+    birthDate,
+    profileImage,
+  };
+
+  const updateField = useCallback(
+    <K extends keyof LoginInfoFormData>(
+      key: K,
+      value: LoginInfoFormData[K]
+    ) => {
+      if (key === "nickname") {
+        if (!isNicknameTouched) setIsNicknameTouched(true);
+        setNickname(value as string);
+        return;
+      }
+      if (key === "birthDate") setBirthDate(value as string);
+      else setProfileImage(value as File | null);
+    },
+    [isNicknameTouched]
+  );
 
   const openTermsSheet = useCallback(() => setIsTermsSheetOpen(true), []);
   const closeTermsSheet = useCallback(() => setIsTermsSheetOpen(false), []);
-  const agreeFromTermsSheet = useCallback(() => setIsAgreed(true), []);
+  const agreeFromTermsSheet = useCallback(() => {
+    setIsAgreed(true);
+    setIsTermsSheetOpen(false);
+  }, []);
 
   return {
     formData,

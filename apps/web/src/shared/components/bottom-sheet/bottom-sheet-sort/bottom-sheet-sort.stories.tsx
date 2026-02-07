@@ -146,7 +146,6 @@ const NoSelectionStoryComponent = () => {
   );
 };
 
-/** 선택된 옵션이 없는 경우 */
 export const NoSelection: Story = {
   render: () => <NoSelectionStoryComponent />,
 };

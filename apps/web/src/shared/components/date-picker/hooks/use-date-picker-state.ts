@@ -2,6 +2,7 @@ import { useState, useRef, useMemo, useEffect } from "react";
 import type { Transition } from "../utils/transition-utils";
 
 const TRANSITION_MS = 600;
+const DEFAULT_YEAR = 2010;
 
 export interface DatePickerState {
   transition: Transition | null;
@@ -42,23 +43,27 @@ export const useDatePickerState = (
   isOpen: boolean,
   selectedDate: Date | null
 ) => {
+  const initialDate = selectedDate ?? new Date(DEFAULT_YEAR, 0, 1);
+  const initialYear = initialDate.getFullYear();
+  const initialMonth = initialDate.getMonth();
+
   const [transition, setTransition] = useState<Transition | null>(null);
-  const [currentMonth, setCurrentMonth] = useState(selectedDate || new Date());
+  const [currentMonth, setCurrentMonth] = useState(initialDate);
+
   const [isYearMonthPickerOpen, setIsYearMonthPickerOpen] = useState(false);
   const [isYearPickerOpen, setIsYearPickerOpen] = useState(false);
+
   const [draftYearMonth, setDraftYearMonth] = useState(() => ({
-    year: (selectedDate || new Date()).getFullYear(),
-    month: (selectedDate || new Date()).getMonth(),
+    year: initialYear,
+    month: initialMonth,
   }));
-  const [draftYear, setDraftYear] = useState(() =>
-    (selectedDate || new Date()).getFullYear()
-  );
-  const [yearRange, setYearRange] = useState(() => {
-    const currentYear = (selectedDate || new Date()).getFullYear();
-    const startYear = currentYear - 5;
-    const endYear = currentYear + 6;
-    return { start: startYear, end: endYear };
-  });
+
+  const [draftYear, setDraftYear] = useState(() => initialYear);
+
+  const [yearRange, setYearRange] = useState(() => ({
+    start: initialYear - 5,
+    end: initialYear + 6,
+  }));
 
   const datePickerRef = useRef<HTMLDivElement | null>(null);
   const monthYearButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -70,19 +75,33 @@ export const useDatePickerState = (
   const prevIsOpenRef = useRef(isOpen);
 
   useEffect(() => {
-    if (isOpen && !prevIsOpenRef.current) {
+    const justOpened = isOpen && !prevIsOpenRef.current;
+    const justClosed = !isOpen && prevIsOpenRef.current;
+
+    if (justOpened) {
+      const date = selectedDate ?? new Date(DEFAULT_YEAR, 0, 1);
+      const year = date.getFullYear();
+      const month = date.getMonth();
+
       requestAnimationFrame(() => {
         setUserSelectedDate(null);
+        setCurrentMonth(date);
+        setDraftYearMonth({ year, month });
+        setDraftYear(year);
+        setYearRange({ start: year - 5, end: year + 6 });
       });
-    } else if (!isOpen && prevIsOpenRef.current) {
+    }
+
+    if (justClosed) {
       requestAnimationFrame(() => {
         setIsYearMonthPickerOpen(false);
         setIsYearPickerOpen(false);
         setTransition(null);
       });
     }
+
     prevIsOpenRef.current = isOpen;
-  }, [isOpen, setIsYearMonthPickerOpen, setIsYearPickerOpen, setTransition]);
+  }, [isOpen, selectedDate]);
 
   const tempSelectedDate = useMemo(() => {
     if (!isOpen) return null;

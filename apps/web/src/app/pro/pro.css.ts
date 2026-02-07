@@ -30,3 +30,7 @@ export const list = style({
   flexDirection: "column",
   gap: "2.0rem",
 });
+
+export const proModalDescription = style({
+  whiteSpace: "nowrap",
+});

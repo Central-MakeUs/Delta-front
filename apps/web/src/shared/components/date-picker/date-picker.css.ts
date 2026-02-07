@@ -12,23 +12,23 @@ const zoomOut = keyframes({
 });
 
 const slideInFromRight = keyframes({
-  from: { opacity: 0, transform: "translateX(28px)" },
+  from: { opacity: 0, transform: "translateX(2.8rem)" },
   to: { opacity: 1, transform: "translateX(0)" },
 });
 
 const slideInFromLeft = keyframes({
-  from: { opacity: 0, transform: "translateX(-28px)" },
+  from: { opacity: 0, transform: "translateX(-2.8rem)" },
   to: { opacity: 1, transform: "translateX(0)" },
 });
 
 const slideOutToLeft = keyframes({
   from: { opacity: 1, transform: "translateX(0)" },
-  to: { opacity: 0, transform: "translateX(-28px)" },
+  to: { opacity: 0, transform: "translateX(-2.8rem)" },
 });
 
 const slideOutToRight = keyframes({
   from: { opacity: 1, transform: "translateX(0)" },
-  to: { opacity: 0, transform: "translateX(28px)" },
+  to: { opacity: 0, transform: "translateX(2.8rem)" },
 });
 
 export const overlay = style({
@@ -39,6 +39,7 @@ export const overlay = style({
   alignItems: "center",
   justifyContent: "center",
   backgroundColor: "rgba(0, 0, 0, 0.4)",
+  boxSizing: "border-box",
 });
 
 export const datePicker = style({
@@ -50,10 +51,13 @@ export const datePicker = style({
   top: "50%",
   transform: "translate(-50%, -50%)",
   backgroundColor: vars.color.grayscale[0],
-  boxShadow: "0px 0px 14px rgba(88, 88, 88, 0.12)",
+  boxShadow: "0 0 1.4rem rgba(88, 88, 88, 0.12)",
   borderRadius: vars.radius.r12,
   animation: `${zoomIn} 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)`,
+  outline: "none",
   selectors: {
+    "&:focus": { outline: "none" },
+    "&:focus-visible": { outline: "none" },
     "&.closing": {
       animation: `${zoomOut} 0.2s ease-in forwards`,
     },
@@ -62,7 +66,7 @@ export const datePicker = style({
 
 export const viewStack = style({
   position: "relative",
-  width: "34rem",
+  width: "100%",
   minHeight: "34rem",
   overflow: "hidden",
   transition:
@@ -70,7 +74,7 @@ export const viewStack = style({
 });
 
 export const viewStackCalendar = style({
-  minHeight: "39.8rem",
+  minHeight: "44.2rem",
 });
 
 export const viewStackPicker = style({

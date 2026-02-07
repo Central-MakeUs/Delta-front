@@ -3,12 +3,11 @@ import { tokenStorage } from "@/shared/apis/token-storage";
 import { ApiError } from "@/shared/apis/api-error";
 import { isApiResponseError } from "@/shared/apis/api-types";
 import { ERROR_CODES } from "@/shared/apis/error-codes";
-import {
-  emitAuthLogout,
-  isInAuthFlow,
-} from "@/shared/apis/auth/auth-events";
+import { emitAuthLogout, isInAuthFlow } from "@/shared/apis/auth/auth-events";
 import { API_PATHS } from "@/shared/apis/constants/api-paths";
 import { API_HEADERS } from "@/shared/apis/constants/api-headers";
+import { ROUTES } from "@/shared/constants/routes";
+import { emitNavigate } from "@/shared/navigation/navigation-events";
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -120,8 +119,12 @@ instance.interceptors.response.use(
     const traceId = readHeader(headers, TRACE_HEADER);
     const status = err.response?.status;
 
-    const shouldEmitAuthLogout = (s: number | undefined): boolean => {
+    const shouldEmitAuthLogout = (
+      s: number | undefined,
+      code?: string
+    ): boolean => {
       if (s !== 401 && s !== 403) return false;
+      if (s === 403 && code === "USER_003") return false;
       if (s === 401 && isInAuthFlow()) return false;
       return true;
     };
@@ -133,11 +136,20 @@ instance.interceptors.response.use(
 
     const apiError = ApiError.fromPayload(payload, traceId);
 
+    if (apiError.status === 403 && apiError.code === "USER_003") {
+      syncTokensFromResponseHeaders(headers);
+
+      emitNavigate({ to: ROUTES.AUTH.SIGNUP_INFO, replace: true });
+
+      throw apiError;
+    }
+
     if (
       apiError.status === 401 &&
       apiError.code === ERROR_CODES.AUTH.TOKEN_REQUIRED
     ) {
-      if (shouldEmitAuthLogout(apiError.status)) handleAuthDead();
+      if (shouldEmitAuthLogout(apiError.status, apiError.code))
+        handleAuthDead();
       throw apiError;
     }
 
@@ -147,7 +159,8 @@ instance.interceptors.response.use(
       !config._retry;
 
     if (!canRetry) {
-      if (shouldEmitAuthLogout(apiError.status)) handleAuthDead();
+      if (shouldEmitAuthLogout(apiError.status, apiError.code))
+        handleAuthDead();
       throw apiError;
     }
 

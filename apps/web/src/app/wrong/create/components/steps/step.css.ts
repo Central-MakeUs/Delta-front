@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
-import { color } from "@/shared/styles/color.css";
+import { bgColor, color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
 import { vars } from "@/shared/styles/theme.css";
 
@@ -224,14 +224,8 @@ export const typeCard = recipe({
   ],
   variants: {
     tone: {
-      surface: {
-        background: vars.color.grayscale[50],
-        color: vars.color.grayscale[700],
-      },
-      dark: {
-        background: vars.color.grayscale[900],
-        color: vars.color.grayscale[0],
-      },
+      surface: [bgColor["grayscale-50"], color["grayscale-700"]],
+      active: [bgColor["main-100"], color["main-500"]],
     },
     disabled: {
       true: { opacity: 0.4, cursor: "default" },

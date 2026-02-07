@@ -74,6 +74,7 @@ const FormSection = ({
                 onClick={handleDateFieldClick}
                 aria-label="생년월일 선택"
                 size={2.4}
+                cursor="pointer"
               />
             }
             placeholder="YYYY/MM/DD"

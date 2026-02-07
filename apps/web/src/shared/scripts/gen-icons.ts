@@ -19,34 +19,34 @@ if (!fs.existsSync(outDir)) {
   fs.mkdirSync(outDir, { recursive: true });
 }
 
-function stripXmlAndDoctype(svg: string) {
-  return svg
+const stripXmlAndDoctype = (svg: string) =>
+  svg
     .replace(/<\?xml[\s\S]*?\?>/gi, "")
     .replace(/<!doctype[\s\S]*?>/gi, "")
     .trim();
-}
 
-function extractViewBox(svg: string) {
+const extractViewBox = (svg: string) => {
   const open = svg.match(/<svg\b([^>]*)>/i);
   const attrs = open?.[1] ?? "";
+
   const vb = attrs.match(/\bviewBox=["']([^"']+)["']/i)?.[1];
   if (vb) return vb;
 
   const w = attrs.match(/\bwidth=["']([^"']+)["']/i)?.[1];
   const h = attrs.match(/\bheight=["']([^"']+)["']/i)?.[1];
+
   const wn = w ? Number(String(w).replace(/[^\d.]/g, "")) : NaN;
   const hn = h ? Number(String(h).replace(/[^\d.]/g, "")) : NaN;
+
   if (Number.isFinite(wn) && Number.isFinite(hn)) return `0 0 ${wn} ${hn}`;
-
   return "0 0 24 24";
-}
+};
 
-function extractInner(svg: string) {
-  return svg
+const extractInner = (svg: string) =>
+  svg
     .replace(/^[\s\S]*?<svg\b[^>]*>/i, "")
     .replace(/<\/svg>\s*$/i, "")
     .trim();
-}
 
 /* 1) 아이콘 파일 목록 */
 const files = fs

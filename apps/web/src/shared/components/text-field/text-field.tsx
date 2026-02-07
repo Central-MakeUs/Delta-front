@@ -16,6 +16,7 @@ export interface TextFieldProps extends Omit<
   prefix?: React.ReactNode;
   size?: TextFieldFontSize;
   heightSize?: TextFieldHeightSize;
+  focusEffect?: boolean;
 }
 
 export const TextField = ({
@@ -27,10 +28,11 @@ export const TextField = ({
   prefix,
   size = "body3",
   heightSize = "md",
+  focusEffect = true,
   ...rest
 }: TextFieldProps) => {
   return (
-    <div className={clsx(styles.container({ fullWidth }))}>
+    <div className={clsx(styles.container({ fullWidth, focusEffect }))}>
       <div
         className={clsx(
           styles.textareaWrapper({
@@ -46,6 +48,7 @@ export const TextField = ({
             {prefix}
           </div>
         )}
+
         <textarea
           className={clsx(
             styles.textarea({

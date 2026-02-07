@@ -23,7 +23,7 @@ export const all = style([
     inset: 0,
     maxWidth: "43rem",
     margin: "0 auto",
-    zIndex: vars.zIndex.modalOverlay,
+    zIndex: vars.zIndex.loading,
     display: "grid",
     placeItems: "center",
     height: "100dvh",

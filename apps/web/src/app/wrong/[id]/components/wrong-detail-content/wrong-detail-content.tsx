@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import * as styles from "./wrong-detail-content.css";
 import {
@@ -16,6 +16,7 @@ import { useCompleteProblemDetailMutation } from "@/shared/apis/problem-detail/h
 import { mapProblemDetailToSectionData } from "../utils/map-problem-detail-to-section-data";
 import type { WrongDetailSectionData } from "../types";
 import EmptyState from "@/shared/components/empty-state/empty-state";
+import Confetti from "@/app/wrong/[id]/components/confetti/confetti";
 
 const WrongDetailContent = () => {
   const params = useParams();
@@ -26,10 +27,42 @@ const WrongDetailContent = () => {
 
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
+  const [isConfettiOpen, setIsConfettiOpen] = useState(false);
+  const [confettiPlayId, setConfettiPlayId] = useState(0);
+
   const sectionData = useMemo<WrongDetailSectionData | null>(() => {
     if (!data) return null;
     return mapProblemDetailToSectionData(data);
   }, [data]);
+
+  const solution = data?.solutionText ?? "";
+
+  const openConfetti = useCallback(() => {
+    setConfettiPlayId((p) => p + 1);
+    setIsConfettiOpen(true);
+  }, []);
+
+  const closeConfetti = useCallback(() => {
+    setIsConfettiOpen(false);
+  }, []);
+
+  const handleConfirm = useCallback(() => {
+    setIsCompleteModalOpen(true);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setIsCompleteModalOpen(false);
+  }, []);
+
+  const handleComplete = useCallback(async () => {
+    await completeMutation.mutateAsync({
+      problemId: id,
+      solutionText: solution,
+    });
+
+    setIsCompleteModalOpen(false);
+    openConfetti();
+  }, [completeMutation, id, openConfetti, solution]);
 
   if (isLoading) return null;
 
@@ -43,28 +76,14 @@ const WrongDetailContent = () => {
     );
   }
 
-  const solution = data.solutionText ?? "";
-  const isSolutionReadOnly = true;
-
-  const handleConfirm = () => {
-    setIsCompleteModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsCompleteModalOpen(false);
-  };
-
-  const handleComplete = async () => {
-    await completeMutation.mutateAsync({
-      problemId: id,
-      solutionText: solution,
-    });
-
-    setIsCompleteModalOpen(false);
-  };
-
   return (
     <div className={styles.page}>
+      <Confetti
+        isOpen={isConfettiOpen}
+        playId={confettiPlayId}
+        onComplete={closeConfetti}
+      />
+
       <div className={styles.contentWrapper}>
         <div className={styles.mainContent}>
           <HeaderSection {...sectionData} />
@@ -73,11 +92,7 @@ const WrongDetailContent = () => {
           <div className={styles.inputSection}>
             <div className={styles.inputContent}>
               <AnswerSection {...sectionData} />
-              <SolutionSection
-                value={solution}
-                onChange={() => {}}
-                disabled={isSolutionReadOnly}
-              />
+              <SolutionSection value={solution} onChange={() => {}} disabled />
             </div>
           </div>
         </div>

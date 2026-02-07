@@ -43,7 +43,6 @@ interface CalendarViewProps {
     isPrevMonth: boolean
   ) => boolean;
   animationClass?: string;
-  calendarViewRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export const CalendarView = ({
@@ -61,17 +60,13 @@ export const CalendarView = ({
   isSelectedDate,
   isToday,
   animationClass,
-  calendarViewRef,
 }: CalendarViewProps) => {
   const days = getDaysInMonth(currentMonth);
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
 
   return (
-    <div
-      ref={calendarViewRef}
-      className={clsx(sharedStyles.viewPanel, animationClass)}
-    >
+    <div className={clsx(sharedStyles.viewPanel, animationClass)}>
       <div className={styles.header}>
         <div className={styles.datePickerContent}>
           <button

@@ -50,6 +50,7 @@ const ProPage = () => {
         cancelLabel="확인"
         actions="cancelOnly"
         iconName="pro-modal"
+        descriptionClassName={s.proModalDescription}
       />
     </div>
   );

@@ -17,7 +17,15 @@ export const cardSection = style({
 });
 
 export const inputDisplay = style({
-  display: "none",
+  position: "absolute",
+  width: "0.1rem",
+  height: "0.1rem",
+  padding: 0,
+  margin: "-0.1rem",
+  overflow: "hidden",
+  clip: "rect(0, 0, 0, 0)",
+  whiteSpace: "nowrap",
+  border: 0,
 });
 
 export const stepShell = style({

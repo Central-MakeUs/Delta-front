@@ -17,6 +17,7 @@ const SolutionSection = ({
     <div className={styles.solutionInputWrapper}>
       <TextField
         heightSize="lg"
+        focusEffect={false}
         fullWidth
         prefix={<Chip size="md" shape="pill" label="풀이" />}
         placeholder="풀이를 입력해주세요."

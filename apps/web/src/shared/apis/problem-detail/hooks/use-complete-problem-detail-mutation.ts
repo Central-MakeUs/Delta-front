@@ -16,11 +16,11 @@ export const useCompleteProblemDetailMutation = () => {
     mutationKey: COMPLETE_PROBLEM_DETAIL_MUTATION_KEY,
     mutationFn: ({
       problemId,
-      solutionText,
+      memoText,
     }: {
       problemId: number | string;
-      solutionText: string;
-    }) => problemDetailApi.complete({ problemId, solutionText }),
+      memoText: string;
+    }) => problemDetailApi.complete({ problemId, memoText }),
 
     onSuccess: async (_, variables) => {
       qc.setQueryData<ProblemDetailResponse | undefined>(
@@ -31,7 +31,7 @@ export const useCompleteProblemDetailMutation = () => {
           return {
             ...old,
             completed: true,
-            solutionText: variables.solutionText,
+            memoText: variables.memoText,
           };
         }
       );

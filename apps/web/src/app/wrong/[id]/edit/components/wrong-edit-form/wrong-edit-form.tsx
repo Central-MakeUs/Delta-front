@@ -60,7 +60,11 @@ export const WrongEditForm = () => {
             tone="dark"
             label="수정 완료"
             size="48"
-            disabled={isPending}
+            disabled={
+              isPending ||
+              (questionType === "subjective" && answerText.trim() === "") ||
+              (questionType === "objective" && selectedNumber === null)
+            }
           />
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import clsx from "clsx";
 import * as styles from "./text-field.css";
 
@@ -19,6 +19,14 @@ export interface TextFieldProps extends Omit<
   focusEffect?: boolean;
 }
 
+const MIN_TEXTAREA_HEIGHT = 24;
+
+const adjustTextareaHeight = (el: HTMLTextAreaElement | null) => {
+  if (!el || el.getAttribute("data-fixed-height") === "true") return;
+  el.style.height = "auto";
+  el.style.height = `${Math.max(el.scrollHeight, MIN_TEXTAREA_HEIGHT)}px`;
+};
+
 export const TextField = ({
   variant = "default",
   prefixPosition = "left",
@@ -29,8 +37,23 @@ export const TextField = ({
   size = "body3",
   heightSize = "md",
   focusEffect = true,
+  value,
+  onInput,
   ...rest
 }: TextFieldProps) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const isPlain = variant === "plain";
+
+  useEffect(() => {
+    if (isPlain) return;
+    adjustTextareaHeight(textareaRef.current);
+  }, [value, isPlain]);
+
+  const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
+    if (!isPlain) adjustTextareaHeight(e.currentTarget);
+    onInput?.(e);
+  };
+
   return (
     <div className={clsx(styles.container({ fullWidth, focusEffect }))}>
       <div
@@ -38,7 +61,7 @@ export const TextField = ({
           styles.textareaWrapper({
             variant,
             disabled,
-            size: variant === "plain" ? undefined : heightSize,
+            size: isPlain ? undefined : heightSize,
             direction,
           })
         )}
@@ -50,6 +73,7 @@ export const TextField = ({
         )}
 
         <textarea
+          ref={textareaRef}
           className={clsx(
             styles.textarea({
               variant,
@@ -58,6 +82,9 @@ export const TextField = ({
             })
           )}
           disabled={disabled}
+          value={value}
+          onInput={handleInput}
+          data-fixed-height={isPlain ? "true" : undefined}
           {...rest}
         />
       </div>

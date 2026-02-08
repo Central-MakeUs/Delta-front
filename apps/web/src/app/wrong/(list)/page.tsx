@@ -220,8 +220,9 @@ const WrongPage = () => {
             label="위로 올라가기"
             icon="arrow-right"
             size="lg"
-            shape="square"
+            shape="pill"
             tone="white-surface"
+            state="active"
             onClick={scrollToTop}
             ariaLabel="목록 맨 위로 스크롤"
           />

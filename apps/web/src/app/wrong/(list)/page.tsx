@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useRef, useEffect } from "react";
+import { useMemo, useRef, useEffect, useState } from "react";
+import clsx from "clsx";
 import * as s from "@/app/wrong/(list)/wrong.css";
 import Filter from "@/shared/components/filter/filter";
 import WrongCard from "@/app/wrong/(list)/components/wrong-card";
@@ -10,6 +11,7 @@ import { useWrongFilters } from "@/app/wrong/(list)/hooks/use-wrong-filters";
 import { useProblemScrollInfiniteQuery } from "@/shared/apis/problem-list/hooks/use-problem-scroll-infinite-query";
 import { mapProblemListItemToCard } from "@/app/wrong/(list)/utils/map-problem-list-to-cards";
 import { LOADING_MESSAGES } from "@/shared/constants/loading-messages";
+import Chip from "@/shared/components/chip/chip";
 
 import {
   CHAPTER_FILTERS,
@@ -19,6 +21,9 @@ import {
 import { mapFiltersToScrollParams } from "./utils/map-filters-to-params";
 import EmptyState from "@/shared/components/empty-state/empty-state";
 import Loading from "@/shared/components/loading/loading";
+import Icon from "@/shared/components/icon/icon";
+
+const SCROLL_THRESHOLD_PX = 400;
 
 const WrongPage = () => {
   const {
@@ -84,6 +89,23 @@ const WrongPage = () => {
   }, [data]);
 
   const totalElements = data?.pages?.[0]?.totalElements ?? 0;
+
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setShowScrollToTop(
+        visibleCards.length >= 2 && window.scrollY > SCROLL_THRESHOLD_PX
+      );
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [visibleCards.length]);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const showInlineLoading = isLoading || (isFetchingNextPage && !data);
 
@@ -185,6 +207,25 @@ const WrongPage = () => {
           onApply={applyFilter}
           initialSection={filterInitialSection}
         />
+      )}
+
+      {visibleCards.length >= 2 && (
+        <div
+          className={clsx(
+            s.scrollToTopWrap,
+            showScrollToTop && s.scrollToTopWrapVisible
+          )}
+        >
+          <Chip
+            label="위로 올라가기"
+            icon="arrow-right"
+            size="lg"
+            shape="square"
+            tone="white-surface"
+            onClick={scrollToTop}
+            ariaLabel="목록 맨 위로 스크롤"
+          />
+        </div>
       )}
     </div>
   );

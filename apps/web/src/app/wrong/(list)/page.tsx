@@ -108,7 +108,7 @@ const WrongPage = () => {
   };
 
   const showInlineLoading = isLoading || (isFetchingNextPage && !data);
-
+  console.log(visibleCards);
   return (
     <div className={s.page}>
       <div className={s.filterSection}>

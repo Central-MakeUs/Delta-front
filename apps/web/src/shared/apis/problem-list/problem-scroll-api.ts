@@ -1,54 +1,74 @@
 import { instance } from "@/shared/apis/api";
-import type { ApiResponse } from "@/shared/apis/api-types";
-import { unwrapApiResponse } from "@/shared/apis/api-types";
+import {
+  type ApiResponse,
+  unwrapApiResponse,
+} from "@/shared/apis/api-types";
 import { API_PATHS } from "@/shared/apis/constants/api-paths";
 import type {
   GetProblemScrollParams,
   GetProblemScrollResponse,
 } from "@/shared/apis/problem-list/problem-scroll-types";
 
-const normalize = (v?: string | null) => (v ?? "").trim();
+type QueryParams = Record<
+  string,
+  string | number | string[] | boolean | undefined
+>;
 
-const cleanParams = (
-  params: GetProblemScrollParams
-): Record<string, unknown> => {
-  const out: Record<string, unknown> = {};
-  const subjectId = normalize(params.subjectId);
-  const unitId = normalize(params.unitId);
-  const typeId = normalize(params.typeId);
-  if (subjectId) out.subjectId = subjectId;
-  if (unitId) out.unitId = unitId;
-  if (typeId) out.typeId = typeId;
-  if (params.sort) out.sort = params.sort;
-  if (params.status) out.status = params.status;
-  if (params.lastId !== undefined) out.lastId = params.lastId;
-  if (params.lastCreatedAt) out.lastCreatedAt = params.lastCreatedAt;
-  if (params.size !== undefined && params.size > 0) out.size = params.size;
-  if (params.includePreviewUrl !== undefined)
-    out.includePreviewUrl = params.includePreviewUrl;
-  return out;
+const trimFilter = (arr?: string[] | null): string[] =>
+  (arr ?? []).map((s) => (s ?? "").trim()).filter(Boolean);
+
+const toQueryParams = (params: GetProblemScrollParams): QueryParams => {
+  const subjectIds = trimFilter(params.subjectIds);
+  const unitIds = trimFilter(params.unitIds);
+  const typeIds = trimFilter(params.typeIds);
+  return {
+    ...(subjectIds.length && { subjectIds }),
+    ...(unitIds.length && { unitIds }),
+    ...(typeIds.length && { typeIds }),
+    ...(params.sort && { sort: params.sort }),
+    ...(params.status && { status: params.status }),
+    ...(params.lastId !== undefined && { lastId: params.lastId }),
+    ...(params.lastCreatedAt && { lastCreatedAt: params.lastCreatedAt }),
+    ...(params.size != null && params.size > 0 && { size: params.size }),
+    ...(params.includePreviewUrl !== undefined && {
+      includePreviewUrl: params.includePreviewUrl,
+    }),
+  };
+};
+
+const serializeParams = (p: QueryParams): string => {
+  const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(p)) {
+    if (value === undefined || value === null) continue;
+    if (Array.isArray(value)) {
+      value.forEach((v) => search.append(key, String(v)));
+    } else {
+      search.append(key, String(value));
+    }
+  }
+  return search.toString();
 };
 
 type RawScrollResponse = GetProblemScrollResponse & {
   next_cursor?: { last_id?: number; last_created_at?: string };
 };
 
-/** API가 snake_case(next_cursor, last_id, last_created_at)로 올 수 있으므로 camelCase로 정규화 */
-const normalizeScrollResponse = (
+const toNextCursor = (raw: RawScrollResponse) => {
+  const c = raw.nextCursor ?? raw.next_cursor;
+  if (!c) return undefined;
+  const lastId =
+    "lastId" in c ? c.lastId : (c as { last_id?: number }).last_id ?? 0;
+  const lastCreatedAt =
+    "lastCreatedAt" in c
+      ? c.lastCreatedAt
+      : (c as { last_created_at?: string }).last_created_at ?? "";
+  return { lastId, lastCreatedAt };
+};
+
+const normalizeResponse = (
   raw: RawScrollResponse
 ): GetProblemScrollResponse => {
-  const snake = raw.next_cursor;
-  const cursor = raw.nextCursor
-    ? {
-        lastId: raw.nextCursor.lastId,
-        lastCreatedAt: raw.nextCursor.lastCreatedAt,
-      }
-    : snake
-      ? {
-          lastId: snake.last_id ?? 0,
-          lastCreatedAt: snake.last_created_at ?? "",
-        }
-      : undefined;
+  const cursor = toNextCursor(raw);
   return {
     content: raw.content,
     hasNext: raw.hasNext,
@@ -60,12 +80,13 @@ const normalizeScrollResponse = (
 export const getProblemScroll = async (
   params: GetProblemScrollParams
 ): Promise<GetProblemScrollResponse> => {
+  const query = toQueryParams(params);
   const res = await instance.get<ApiResponse<RawScrollResponse>>(
     API_PATHS.PROBLEM_LIST.SCROLL,
     {
-      params: cleanParams(params),
+      params: query,
+      paramsSerializer: serializeParams,
     }
   );
-
-  return normalizeScrollResponse(unwrapApiResponse(res.data));
+  return normalizeResponse(unwrapApiResponse(res.data));
 };

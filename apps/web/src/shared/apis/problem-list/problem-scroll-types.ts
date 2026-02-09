@@ -1,12 +1,20 @@
-import type { ProblemListItem } from "@/shared/apis/problem-list/problem-list-types";
-
 export type ProblemScrollSort = "RECENT" | "OLDEST";
 export type ProblemScrollStatus = "ALL" | "UNSOLVED" | "SOLVED";
 
+export type ProblemListItem = {
+  id: string;
+  title: string;
+  imageSrc: string;
+  typeIds: string[];
+  dropdownIds: string[];
+  chapterId: string;
+  createdAt: string;
+};
+
 export type GetProblemScrollParams = {
-  subjectId?: string;
-  unitId?: string;
-  typeId?: string;
+  subjectIds?: string[];
+  unitIds?: string[];
+  typeIds?: string[];
   sort?: ProblemScrollSort;
   status?: ProblemScrollStatus;
   lastId?: number;

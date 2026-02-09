@@ -2,14 +2,14 @@ import type { GetProblemScrollParams } from "@/shared/apis/problem-list/problem-
 
 const baseParamsKey = (params?: GetProblemScrollParams) => {
   if (!params) return null;
-  const subjectId = params.subjectId ?? null;
-  const unitId = params.unitId ?? null;
-  const typeId = params.typeId ?? null;
+  const subjectIds = params.subjectIds?.join(",") ?? "";
+  const unitIds = params.unitIds?.join(",") ?? "";
+  const typeIds = params.typeIds?.join(",") ?? "";
   const sort = params.sort ?? null;
   const status = params.status ?? null;
   const size = params.size ?? null;
   const includePreviewUrl = params.includePreviewUrl ?? null;
-  return `${subjectId ?? ""}|${unitId ?? ""}|${typeId ?? ""}|${sort ?? ""}|${status ?? ""}|${size ?? ""}|${includePreviewUrl ?? ""}`;
+  return `${subjectIds}|${unitIds}|${typeIds}|${sort ?? ""}|${status ?? ""}|${size ?? ""}|${includePreviewUrl ?? ""}`;
 };
 
 export const problemScrollQueryKeys = {

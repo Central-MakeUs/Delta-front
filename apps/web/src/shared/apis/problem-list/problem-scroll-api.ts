@@ -1,8 +1,5 @@
 import { instance } from "@/shared/apis/api";
-import {
-  type ApiResponse,
-  unwrapApiResponse,
-} from "@/shared/apis/api-types";
+import { type ApiResponse, unwrapApiResponse } from "@/shared/apis/api-types";
 import { API_PATHS } from "@/shared/apis/constants/api-paths";
 import type {
   GetProblemScrollParams,
@@ -57,11 +54,11 @@ const toNextCursor = (raw: RawScrollResponse) => {
   const c = raw.nextCursor ?? raw.next_cursor;
   if (!c) return undefined;
   const lastId =
-    "lastId" in c ? c.lastId : (c as { last_id?: number }).last_id ?? 0;
+    "lastId" in c ? c.lastId : ((c as { last_id?: number }).last_id ?? 0);
   const lastCreatedAt =
     "lastCreatedAt" in c
       ? c.lastCreatedAt
-      : (c as { last_created_at?: string }).last_created_at ?? "";
+      : ((c as { last_created_at?: string }).last_created_at ?? "");
   return { lastId, lastCreatedAt };
 };
 

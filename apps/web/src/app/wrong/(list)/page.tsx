@@ -21,7 +21,6 @@ import {
 import { mapFiltersToScrollParams } from "./utils/map-filters-to-params";
 import EmptyState from "@/shared/components/empty-state/empty-state";
 import Loading from "@/shared/components/loading/loading";
-import Icon from "@/shared/components/icon/icon";
 
 const SCROLL_THRESHOLD_PX = 400;
 
@@ -59,7 +58,7 @@ const WrongPage = () => {
 
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useProblemScrollInfiniteQuery({ params: scrollParams });
-
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const isFetchingNextRef = useRef(false);
 
@@ -90,8 +89,6 @@ const WrongPage = () => {
 
   const totalElements = data?.pages?.[0]?.totalElements ?? 0;
 
-  const [showScrollToTop, setShowScrollToTop] = useState(false);
-
   useEffect(() => {
     const onScroll = () => {
       setShowScrollToTop(
@@ -108,7 +105,7 @@ const WrongPage = () => {
   };
 
   const showInlineLoading = isLoading || (isFetchingNextPage && !data);
-  console.log(visibleCards);
+
   return (
     <div className={s.page}>
       <div className={s.filterSection}>

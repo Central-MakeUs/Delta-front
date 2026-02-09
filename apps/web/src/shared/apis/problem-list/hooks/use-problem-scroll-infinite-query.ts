@@ -36,7 +36,7 @@ export const useProblemScrollInfiniteQuery = (args: {
         const last = lastPage.content[lastPage.content.length - 1];
         if (last)
           return {
-            lastId: Number(last.id),
+            lastId: last.problemId,
             lastCreatedAt: last.createdAt,
           };
       }

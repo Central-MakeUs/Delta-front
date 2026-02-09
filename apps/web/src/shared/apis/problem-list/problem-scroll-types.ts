@@ -1,14 +1,15 @@
 export type ProblemScrollSort = "RECENT" | "OLDEST";
 export type ProblemScrollStatus = "ALL" | "UNSOLVED" | "SOLVED";
 
-export type ProblemListItem = {
-  id: string;
-  title: string;
-  imageSrc: string;
-  typeIds: string[];
-  dropdownIds: string[];
-  chapterId: string;
+/** 스크롤 API 응답의 문제 항목 (subject, unit, types 등 포함) */
+export type ProblemScrollItem = {
+  problemId: number;
+  subject: { id: string; name: string };
+  unit: { id: string; name: string };
+  types: Array<{ id: string; name: string }>;
+  previewImage?: { assetId: number; viewUrl: string };
   createdAt: string;
+  isCompleted?: boolean;
 };
 
 export type GetProblemScrollParams = {
@@ -29,7 +30,7 @@ export type ProblemScrollNextCursor = {
 };
 
 export type GetProblemScrollResponse = {
-  content: ProblemListItem[];
+  content: ProblemScrollItem[];
   hasNext: boolean;
   nextCursor?: ProblemScrollNextCursor;
   totalElements?: number;

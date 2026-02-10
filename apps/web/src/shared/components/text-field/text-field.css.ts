@@ -68,7 +68,7 @@ export const textareaWrapper = recipe({
     },
     size: {
       lg: { minHeight: "17.6rem" },
-      md: { minHeight: "1.6rem" },
+      md: { minHeight: "2.4rem" },
     },
   },
   defaultVariants: {
@@ -100,10 +100,12 @@ export const textarea = recipe({
       outline: "none",
       flex: 1,
       width: "100%",
+      minHeight: "2.4rem",
       border: "none",
       background: "transparent",
       resize: "none",
       fontFamily: "inherit",
+      fieldSizing: "content",
     },
   ],
   variants: {

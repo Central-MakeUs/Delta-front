@@ -2,7 +2,7 @@
 
 import type { ButtonHTMLAttributes, MouseEvent } from "react";
 import clsx from "clsx";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ROUTES } from "@/shared/constants/routes";
 import Icon from "@/shared/components/icon/icon";
 import type { IconProps } from "@/shared/components/icon/icon";
@@ -24,6 +24,7 @@ const FabButton = ({
   ...rest
 }: Props) => {
   const pathname = usePathname();
+  const sp = useSearchParams();
   const router = useRouter();
 
   const SHOW_ON_PATHS = [
@@ -38,7 +39,16 @@ const FabButton = ({
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     onClick?.(e);
     if (e.defaultPrevented) return;
-    router.push(ROUTES.WRONG.CREATE);
+
+    const qs = sp.toString();
+    const from = `${pathname}${qs ? `?${qs}` : ""}`;
+
+    const nextParams = new URLSearchParams();
+    nextParams.set("step", "1");
+    nextParams.set("total", "4");
+    nextParams.set("from", from);
+
+    router.push(`${ROUTES.WRONG.CREATE}?${nextParams.toString()}`);
   };
 
   const ariaLabel = rest["aria-label"] ?? label;

@@ -40,8 +40,19 @@ export const useWrongCreateRoute = () => {
       });
     }
 
+    // ✅ step1 재시작: Step2 추천이 새 summary 기준으로 다시 박히도록 URL 선택값 싹 제거
+    if (safe === 1) {
+      nextParams.delete("chapterId");
+      nextParams.delete("unitId");
+      nextParams.delete("typeIds");
+    }
+
+    const nextScanId = readScanId(nextParams);
+    if (!nextScanId && safe > 1) return;
+
     const nextQuery = nextParams.toString();
     if (nextQuery === spString) return;
+
     router.replace(`${pathname}?${nextQuery}`, { scroll: false });
   };
 
@@ -58,3 +69,5 @@ export const useWrongCreateRoute = () => {
     goStep,
   };
 };
+
+export default useWrongCreateRoute;

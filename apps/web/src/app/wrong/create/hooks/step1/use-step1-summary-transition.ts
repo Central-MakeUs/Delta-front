@@ -8,25 +8,22 @@ const SUMMARY_FETCH_DELAY_MS = 4000;
 const SUMMARY_POLL_INTERVAL_MS = 2000;
 const SUMMARY_MAX_WAIT_MS = 15000;
 
-type RouterLike = {
-  replace: (href: string, options?: { scroll?: boolean }) => void;
-};
-
 type Params = {
   currentStep: number;
   scanId: number | null;
   spString: string;
   pathname: string;
-  router: RouterLike;
+  router: { replace: (href: string, options?: { scroll?: boolean }) => void };
   goStep: (nextStep: number, extra?: Record<string, string | null>) => void;
+};
+
+const defer = (fn: () => void) => {
+  Promise.resolve().then(fn);
 };
 
 export const useStep1SummaryTransition = ({
   currentStep,
   scanId,
-  spString,
-  pathname,
-  router,
   goStep,
 }: Params) => {
   const [scanIdForSummaryQuery, setScanIdForSummaryQuery] = useState<
@@ -38,6 +35,17 @@ export const useStep1SummaryTransition = ({
   const delayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const maxWaitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const transitionedScanIdRef = useRef<number | null>(null);
+  const flowScanIdRef = useRef<number | null>(null);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const clearDelayTimer = useCallback(() => {
     if (!delayTimerRef.current) return;
@@ -66,6 +74,59 @@ export const useStep1SummaryTransition = ({
   useEffect(() => {
     return () => clearAllTimers();
   }, [clearAllTimers]);
+
+  useEffect(() => {
+    const active = currentStep === 1 && !!scanId;
+
+    if (!active) {
+      flowScanIdRef.current = null;
+      transitionedScanIdRef.current = null;
+      clearAllTimers();
+
+      defer(() => {
+        if (!mountedRef.current) return;
+        if (currentStep === 1 && scanId) return;
+        setIsWaitingDelay(false);
+        setIsRetryActionsVisible(false);
+        setScanIdForSummaryQuery(null);
+      });
+
+      return;
+    }
+
+    if (flowScanIdRef.current === scanId) return;
+
+    flowScanIdRef.current = scanId;
+    transitionedScanIdRef.current = null;
+
+    clearAllTimers();
+
+    const flowId = scanId;
+
+    defer(() => {
+      if (!mountedRef.current) return;
+      if (flowScanIdRef.current !== flowId) return;
+      setIsRetryActionsVisible(false);
+      setScanIdForSummaryQuery(null);
+      setIsWaitingDelay(true);
+    });
+
+    maxWaitTimerRef.current = setTimeout(() => {
+      if (!mountedRef.current) return;
+      if (flowScanIdRef.current !== flowId) return;
+      setIsRetryActionsVisible(true);
+      clearPollTimer();
+      maxWaitTimerRef.current = null;
+    }, SUMMARY_MAX_WAIT_MS);
+
+    delayTimerRef.current = setTimeout(() => {
+      if (!mountedRef.current) return;
+      if (flowScanIdRef.current !== flowId) return;
+      setScanIdForSummaryQuery(flowId);
+      setIsWaitingDelay(false);
+      delayTimerRef.current = null;
+    }, SUMMARY_FETCH_DELAY_MS);
+  }, [currentStep, scanId, clearAllTimers, clearPollTimer]);
 
   const {
     data: prefetchedSummary,
@@ -101,23 +162,22 @@ export const useStep1SummaryTransition = ({
     if (!scanIdForSummaryQuery) return;
     if (!isSummaryReady && !isSummaryError) return;
 
-    const nextParams = new URLSearchParams(spString);
-    nextParams.set("step", "2");
-    nextParams.set("scanId", String(scanId));
+    if (transitionedScanIdRef.current === scanId) return;
+    transitionedScanIdRef.current = scanId;
 
-    const nextQuery = nextParams.toString();
-    if (nextQuery === spString) return;
-
-    router.replace(`${pathname}?${nextQuery}`, { scroll: false });
+    goStep(2, {
+      scanId: String(scanId),
+      chapterId: null,
+      unitId: null,
+      typeIds: null,
+    });
   }, [
     currentStep,
     scanId,
     scanIdForSummaryQuery,
     isSummaryReady,
     isSummaryError,
-    spString,
-    pathname,
-    router,
+    goStep,
   ]);
 
   useEffect(() => {
@@ -162,31 +222,37 @@ export const useStep1SummaryTransition = ({
     setIsRetryActionsVisible(false);
     clearPollTimer();
     clearMaxWaitTimer();
+
+    const flowId = flowScanIdRef.current;
+
+    if (flowId) {
+      maxWaitTimerRef.current = setTimeout(() => {
+        if (!mountedRef.current) return;
+        if (flowScanIdRef.current !== flowId) return;
+        setIsRetryActionsVisible(true);
+        clearPollTimer();
+        maxWaitTimerRef.current = null;
+      }, SUMMARY_MAX_WAIT_MS);
+    }
+
     refetchSummary();
   }, [refetchSummary, clearPollTimer, clearMaxWaitTimer]);
 
   const handleUploaded = useCallback(
     (res: ProblemScanCreateResponse) => {
-      goStep(1, { scanId: String(res.scanId) });
+      const nextScanId = res.scanId;
 
-      clearAllTimers();
-      setIsRetryActionsVisible(false);
-      setScanIdForSummaryQuery(null);
-      setIsWaitingDelay(true);
+      transitionedScanIdRef.current = null;
+      flowScanIdRef.current = null;
 
-      maxWaitTimerRef.current = setTimeout(() => {
-        setIsRetryActionsVisible(true);
-        clearPollTimer();
-        maxWaitTimerRef.current = null;
-      }, SUMMARY_MAX_WAIT_MS);
-
-      delayTimerRef.current = setTimeout(() => {
-        setScanIdForSummaryQuery(res.scanId);
-        setIsWaitingDelay(false);
-        delayTimerRef.current = null;
-      }, SUMMARY_FETCH_DELAY_MS);
+      goStep(1, {
+        scanId: String(nextScanId),
+        chapterId: null,
+        unitId: null,
+        typeIds: null,
+      });
     },
-    [goStep, clearAllTimers, clearPollTimer]
+    [goStep]
   );
 
   const isStep1Blocked =
@@ -202,3 +268,5 @@ export const useStep1SummaryTransition = ({
     retrySummary,
   };
 };
+
+export default useStep1SummaryTransition;

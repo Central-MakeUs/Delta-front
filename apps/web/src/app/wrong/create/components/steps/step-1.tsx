@@ -11,6 +11,7 @@ import { useCreateProblemScanMutation } from "@/shared/apis/problem-scan/hooks/u
 import type { ProblemScanCreateResponse } from "@/shared/apis/problem-scan/problem-scan-types";
 import { validateImageFile } from "@/app/wrong/create/utils/image-file-guard";
 import { useMinLoading } from "@/app/wrong/create/utils/use-min-loading";
+import { toastError } from "@/shared/components/toast/toast";
 
 const MIN_UPLOAD_LOADING_MS = 1000;
 
@@ -50,7 +51,10 @@ const Step1 = ({ onNext, onSelectImage, disabled = false }: Step1Props) => {
           },
           onError: () => {
             minLoading.cancel();
-            window.alert("문제 스캔 업로드에 실패했어요. 다시 시도해 주세요.");
+            toastError(
+              "문제 스캔 업로드에 실패했어요. 다시 시도해 주세요.",
+              6.5
+            );
           },
         }
       );

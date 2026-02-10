@@ -10,5 +10,6 @@ export const useProblemScanSummaryQuery = (scanId: number | string | null) => {
     queryFn: () =>
       problemScanApi.getSummary({ scanId: scanId as number | string }),
     enabled: !!scanId,
+    placeholderData: undefined,
   });
 };

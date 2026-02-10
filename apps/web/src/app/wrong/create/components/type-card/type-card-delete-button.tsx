@@ -13,18 +13,13 @@ export type TypeCardDeleteButtonProps = {
 
 const TypeCardDeleteButton = ({
   label,
-  selected,
   disabled = false,
   onDelete,
 }: TypeCardDeleteButtonProps) => {
   return (
     <button
       type="button"
-      className={clsx(
-        s.typeCardAction,
-        selected ? s.typeCardActionOnDark : s.typeCardActionOnSurface,
-        disabled && s.typeCardActionDisabled
-      )}
+      className={clsx(s.typeCardAction, disabled && s.typeCardActionDisabled)}
       disabled={disabled}
       aria-label={`${label} 삭제`}
       onPointerDown={(e) => {

@@ -15,7 +15,7 @@ const QuestionSection = ({ imagePath }: QuestionSectionProps) => {
           src={imagePath}
           alt="문제 이미지"
           width={375}
-          height={238}
+          height={240}
           className={styles.image}
           priority
           unoptimized

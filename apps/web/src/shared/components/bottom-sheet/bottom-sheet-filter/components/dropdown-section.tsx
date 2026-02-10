@@ -1,5 +1,5 @@
 import Icon from "@/shared/components/icon/icon";
-import Checkbox from "@/shared/components/checkbox/checkbox";
+import Chip from "@/shared/components/chip/chip";
 import type { DropdownSection } from "@/shared/components/bottom-sheet/bottom-sheet-filter/types";
 import * as styles from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter.css";
 
@@ -25,15 +25,17 @@ export const FilterSelectSection = ({
         <span className={styles.dropdownTitle}>{chapterLabel}</span>
       </div>
 
-      <div className={styles.checkboxList}>
+      <div className={styles.chipContainer}>
         {dropdownSection.options.map((option) => {
-          const isChecked = selectedIds.includes(option.id);
+          const isSelected = selectedIds.includes(option.id);
           return (
-            <Checkbox
+            <Chip
               key={option.id}
               label={option.label}
-              checked={isChecked}
-              onChange={() => onToggle(option.id)}
+              size="lg"
+              shape="square"
+              state={isSelected ? "active" : "default"}
+              onClick={() => onToggle(option.id)}
             />
           );
         })}

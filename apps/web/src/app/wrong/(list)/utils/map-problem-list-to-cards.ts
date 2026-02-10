@@ -1,5 +1,5 @@
-import type { ProblemListItem } from "@/shared/apis/problem-list/problem-list-types";
 import type { WrongCardProps } from "@/app/wrong/(list)/components/wrong-card";
+import type { ProblemScrollItem } from "@/shared/apis/problem-list/problem-scroll-types";
 
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
@@ -13,7 +13,7 @@ const formatDate = (dateString: string): string => {
 };
 
 export const mapProblemListItemToCard = (
-  item: ProblemListItem
+  item: ProblemScrollItem
 ): Omit<WrongCardProps, "imageAlt"> & { id: string } => {
   const subjectName = item.subject.name;
   const unitName = item.unit.name;

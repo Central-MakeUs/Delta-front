@@ -1,6 +1,8 @@
 import clsx from "clsx";
 import type { ButtonHTMLAttributes } from "react";
 import * as s from "@/shared/components/chip/chip.css";
+import Icon from "@/shared/components/icon/icon";
+import type { IconName } from "@/shared/constants/icons";
 
 export type ChipSize = "xs" | "md" | "lg";
 export type ChipShape = "pill" | "square";
@@ -11,10 +13,13 @@ export type ChipTone =
   | "soft"
   | "solid"
   | "white"
-  | "white-accent";
+  | "white-accent"
+  | "white-surface";
 
 type ChipProps = {
   label: string;
+  icon?: IconName;
+  iconRotate?: 0 | 90 | 180 | 270;
   size?: ChipSize;
   shape?: ChipShape;
   state?: ChipState;
@@ -31,6 +36,8 @@ type ChipProps = {
 
 export const Chip = ({
   label,
+  icon,
+  iconRotate = 270,
   size = "lg",
   shape = "pill",
   state = "default",
@@ -56,6 +63,11 @@ export const Chip = ({
       data-state={state}
       data-tone={tone}
     >
+      {icon ? (
+        <span className={s.iconWrap} aria-hidden>
+          <Icon name={icon} size={2.4} rotate={iconRotate} />
+        </span>
+      ) : null}
       <span className={s.label}>{label}</span>
     </button>
   );

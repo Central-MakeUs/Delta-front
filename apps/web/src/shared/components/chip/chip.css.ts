@@ -94,7 +94,7 @@ export const chip = recipe({
     },
     {
       variants: { size: "lg", shape: "pill", state: "active" },
-      style: { padding: "0.8rem 1.6rem", borderRadius: vars.radius.r48 },
+      style: { padding: "0.8rem 1.2rem", borderRadius: vars.radius.r48 },
     },
     {
       variants: { size: "lg", shape: "square" },

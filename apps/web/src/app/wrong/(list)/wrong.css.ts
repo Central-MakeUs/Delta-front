@@ -94,7 +94,7 @@ export const scrollToTopWrap = style({
   display: "flex",
   justifyContent: "center",
   boxShadow: vars.shadow.e400,
-  borderRadius: vars.radius.r12,
+  borderRadius: vars.radius.full,
   opacity: 0,
   transform: "translateX(-50%) translateY(1.2rem)",
   pointerEvents: "none",

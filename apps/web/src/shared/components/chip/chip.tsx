@@ -19,7 +19,7 @@ export type ChipTone =
 type ChipProps = {
   label: string;
   icon?: IconName;
-  iconRotate?: 90 | 180 | 270;
+  iconRotate?: 0 | 90 | 180 | 270;
   size?: ChipSize;
   shape?: ChipShape;
   state?: ChipState;

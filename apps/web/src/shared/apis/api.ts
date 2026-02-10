@@ -16,7 +16,7 @@ export const REFRESH_TOKEN_HEADER = API_HEADERS.REFRESH_TOKEN;
 const ACCESS_HEADER = API_HEADERS.AUTHORIZATION;
 const TRACE_HEADER = API_HEADERS.TRACE_ID;
 
-type RetryConfig = AxiosRequestConfig & {
+export type RetryConfig = AxiosRequestConfig & {
   _retry?: boolean;
   _skipAuthRefresh?: boolean;
 };

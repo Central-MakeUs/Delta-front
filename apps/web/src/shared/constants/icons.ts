@@ -33,6 +33,7 @@ export const ICONS = [
   "message-square",
   "minus",
   "modal-icon",
+  "more",
   "multiple",
   "note-active",
   "note-default",

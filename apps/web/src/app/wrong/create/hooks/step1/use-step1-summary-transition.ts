@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ProblemScanCreateResponse } from "@/shared/apis/problem-scan/problem-scan-types";
 import { useProblemScanSummaryQuery } from "@/shared/apis/problem-scan/hooks/use-problem-scan-summary-query";
+import { toastError } from "@/shared/components/toast/toast";
+import { getFailToastMessage } from "@/app/wrong/create/utils/get-fail-toast-message";
 
 const SUMMARY_FETCH_DELAY_MS = 4000;
 const SUMMARY_POLL_INTERVAL_MS = 2000;
@@ -21,6 +23,67 @@ const defer = (fn: () => void) => {
   Promise.resolve().then(fn);
 };
 
+const isObject = (v: unknown): v is Record<string, unknown> =>
+  typeof v === "object" && v !== null;
+
+const unwrapDataLayers = (raw: unknown, maxDepth = 6) => {
+  let cur: unknown = raw;
+
+  for (let i = 0; i < maxDepth; i += 1) {
+    if (!isObject(cur)) break;
+    if (!("data" in cur)) break;
+    cur = cur.data;
+  }
+
+  return cur;
+};
+
+const readStringField = (raw: unknown, key: string) => {
+  const unwrapped = unwrapDataLayers(raw);
+  if (!isObject(unwrapped)) return null;
+
+  const v = unwrapped[key];
+  if (typeof v !== "string") return null;
+
+  const t = v.trim();
+  return t.length > 0 ? t : null;
+};
+
+const readStatus = (raw: unknown) => readStringField(raw, "status");
+const readFailReason = (raw: unknown) => readStringField(raw, "failReason");
+
+const readClassification = (raw: unknown) => {
+  const unwrapped = unwrapDataLayers(raw);
+  if (!isObject(unwrapped)) return null;
+
+  const cls = unwrapped.classification;
+  if (!isObject(cls)) return null;
+
+  const needsReview =
+    typeof cls.needsReview === "boolean" ? cls.needsReview : false;
+
+  const subject =
+    isObject(cls.subject) && typeof cls.subject.id === "string"
+      ? { id: cls.subject.id }
+      : null;
+
+  const unit =
+    isObject(cls.unit) && typeof cls.unit.id === "string"
+      ? { id: cls.unit.id }
+      : null;
+
+  const types = Array.isArray(cls.types) ? cls.types : [];
+
+  const hasTypes = types.length > 0;
+
+  return {
+    needsReview,
+    hasSubject: !!subject?.id,
+    hasUnit: !!unit?.id,
+    hasTypes,
+  };
+};
+
 export const useStep1SummaryTransition = ({
   currentStep,
   scanId,
@@ -36,9 +99,10 @@ export const useStep1SummaryTransition = ({
   const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const maxWaitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const transitionedScanIdRef = useRef<number | null>(null);
-  const flowScanIdRef = useRef<number | null>(null);
   const mountedRef = useRef(true);
+  const flowScanIdRef = useRef<number | null>(null);
+  const transitionedScanIdRef = useRef<number | null>(null);
+  const failedScanIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -76,19 +140,17 @@ export const useStep1SummaryTransition = ({
   }, [clearAllTimers]);
 
   useEffect(() => {
-    const active = currentStep === 1 && !!scanId;
-
-    if (!active) {
+    if (!scanId) {
       flowScanIdRef.current = null;
       transitionedScanIdRef.current = null;
+      failedScanIdRef.current = null;
       clearAllTimers();
 
       defer(() => {
         if (!mountedRef.current) return;
-        if (currentStep === 1 && scanId) return;
+        setScanIdForSummaryQuery(null);
         setIsWaitingDelay(false);
         setIsRetryActionsVisible(false);
-        setScanIdForSummaryQuery(null);
       });
 
       return;
@@ -98,6 +160,7 @@ export const useStep1SummaryTransition = ({
 
     flowScanIdRef.current = scanId;
     transitionedScanIdRef.current = null;
+    failedScanIdRef.current = null;
 
     clearAllTimers();
 
@@ -106,10 +169,19 @@ export const useStep1SummaryTransition = ({
     defer(() => {
       if (!mountedRef.current) return;
       if (flowScanIdRef.current !== flowId) return;
+      setScanIdForSummaryQuery(flowId);
       setIsRetryActionsVisible(false);
-      setScanIdForSummaryQuery(null);
-      setIsWaitingDelay(true);
+      setIsWaitingDelay(currentStep === 1);
     });
+
+    if (currentStep === 1) {
+      delayTimerRef.current = setTimeout(() => {
+        if (!mountedRef.current) return;
+        if (flowScanIdRef.current !== flowId) return;
+        setIsWaitingDelay(false);
+        delayTimerRef.current = null;
+      }, SUMMARY_FETCH_DELAY_MS);
+    }
 
     maxWaitTimerRef.current = setTimeout(() => {
       if (!mountedRef.current) return;
@@ -118,38 +190,76 @@ export const useStep1SummaryTransition = ({
       clearPollTimer();
       maxWaitTimerRef.current = null;
     }, SUMMARY_MAX_WAIT_MS);
-
-    delayTimerRef.current = setTimeout(() => {
-      if (!mountedRef.current) return;
-      if (flowScanIdRef.current !== flowId) return;
-      setScanIdForSummaryQuery(flowId);
-      setIsWaitingDelay(false);
-      delayTimerRef.current = null;
-    }, SUMMARY_FETCH_DELAY_MS);
-  }, [currentStep, scanId, clearAllTimers, clearPollTimer]);
+  }, [scanId, currentStep, clearAllTimers, clearPollTimer]);
 
   const {
     data: prefetchedSummary,
     isFetching: isSummaryFetching,
     isError: isSummaryError,
     refetch: refetchSummary,
-  } = useProblemScanSummaryQuery(
-    currentStep === 1 ? scanIdForSummaryQuery : null
+  } = useProblemScanSummaryQuery(scanIdForSummaryQuery);
+
+  const failReason = useMemo(
+    () => readFailReason(prefetchedSummary),
+    [prefetchedSummary]
+  );
+  const scanStatus = useMemo(
+    () => readStatus(prefetchedSummary),
+    [prefetchedSummary]
+  );
+
+  const isFailed = useMemo(() => {
+    if (failReason) return true;
+    if (scanStatus === "FAILED") return true;
+    return false;
+  }, [failReason, scanStatus]);
+
+  useEffect(() => {
+    if (!scanIdForSummaryQuery) return;
+    if (!isFailed) return;
+
+    if (failedScanIdRef.current === scanIdForSummaryQuery) return;
+    failedScanIdRef.current = scanIdForSummaryQuery;
+
+    clearAllTimers();
+
+    toastError(getFailToastMessage(failReason ?? "UNKNOWN"), 6.5);
+
+    defer(() => {
+      if (!mountedRef.current) return;
+
+      setScanIdForSummaryQuery(null);
+      setIsWaitingDelay(false);
+      setIsRetryActionsVisible(false);
+
+      goStep(1, {
+        scanId: null,
+        chapterId: null,
+        unitId: null,
+        typeIds: null,
+      });
+    });
+  }, [scanIdForSummaryQuery, isFailed, failReason, clearAllTimers, goStep]);
+
+  const clsState = useMemo(
+    () => readClassification(prefetchedSummary),
+    [prefetchedSummary]
   );
 
   const isSummaryReady = useMemo(() => {
     if (!prefetchedSummary) return false;
+    if (isFailed) return false;
 
-    const cls = prefetchedSummary.classification;
-    const hasSubject = !!cls?.subject?.id;
-    const hasUnit = !!cls?.unit?.id;
-    const hasTypes = Array.isArray(cls?.types) && cls.types.length > 0;
-    const isAiDone = prefetchedSummary.status === "AI_DONE";
-    const needsReview = cls?.needsReview === true;
+    if (!clsState) return false;
+    if (clsState.needsReview) return true;
 
-    if (needsReview) return true;
-    return isAiDone && hasSubject && hasUnit && hasTypes;
-  }, [prefetchedSummary]);
+    return (
+      scanStatus === "AI_DONE" &&
+      clsState.hasSubject &&
+      clsState.hasUnit &&
+      clsState.hasTypes
+    );
+  }, [prefetchedSummary, isFailed, clsState, scanStatus]);
 
   const showRetryActions = useMemo(() => {
     const isErrorStable = isSummaryError && !isSummaryFetching;
@@ -160,7 +270,8 @@ export const useStep1SummaryTransition = ({
     if (currentStep !== 1) return;
     if (!scanId) return;
     if (!scanIdForSummaryQuery) return;
-    if (!isSummaryReady && !isSummaryError) return;
+    if (isFailed) return;
+    if (!isSummaryReady) return;
 
     if (transitionedScanIdRef.current === scanId) return;
     transitionedScanIdRef.current = scanId;
@@ -175,14 +286,19 @@ export const useStep1SummaryTransition = ({
     currentStep,
     scanId,
     scanIdForSummaryQuery,
+    isFailed,
     isSummaryReady,
-    isSummaryError,
     goStep,
   ]);
 
   useEffect(() => {
-    if (currentStep !== 1) return;
     if (!scanIdForSummaryQuery) return;
+
+    if (isFailed) {
+      clearPollTimer();
+      clearMaxWaitTimer();
+      return;
+    }
 
     if (isSummaryReady) {
       clearPollTimer();
@@ -208,8 +324,8 @@ export const useStep1SummaryTransition = ({
 
     return () => clearPollTimer();
   }, [
-    currentStep,
     scanIdForSummaryQuery,
+    isFailed,
     isSummaryReady,
     isSummaryError,
     showRetryActions,
@@ -242,8 +358,9 @@ export const useStep1SummaryTransition = ({
     (res: ProblemScanCreateResponse) => {
       const nextScanId = res.scanId;
 
-      transitionedScanIdRef.current = null;
       flowScanIdRef.current = null;
+      transitionedScanIdRef.current = null;
+      failedScanIdRef.current = null;
 
       goStep(1, {
         scanId: String(nextScanId),

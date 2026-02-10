@@ -6,7 +6,7 @@ export const useProblemScanSummaryQuery = (scanId: number | string | null) => {
   return useQuery({
     queryKey: scanId
       ? problemScanQueryKeys.summary(scanId)
-      : problemScanQueryKeys.all,
+      : problemScanQueryKeys.summary("disabled"),
     queryFn: () =>
       problemScanApi.getSummary({ scanId: scanId as number | string }),
     enabled: !!scanId,

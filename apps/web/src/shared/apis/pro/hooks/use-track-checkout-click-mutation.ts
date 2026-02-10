@@ -6,4 +6,5 @@ import type { ApiError } from "@/shared/apis/api-error";
 export const useTrackCheckoutClickMutation = () =>
   useMutation<TrackCheckoutClickResponse, ApiError, void>({
     mutationFn: () => trackCheckoutClick(),
+    onError: () => undefined,
   });

@@ -25,12 +25,16 @@ export const mapFiltersToScrollParams = (state: {
     status: "ALL",
   };
 
-  if (selectedChapterIds[0]) params.subjectId = selectedChapterIds[0];
+  const subjectIds = selectedChapterIds.filter((id) => (id ?? "").trim());
+  if (subjectIds.length) params.subjectIds = subjectIds;
 
-  const unitId = Object.values(selectedDropdownIds).flat()[0];
-  if (unitId) params.unitId = unitId;
+  const unitIds = Object.values(selectedDropdownIds)
+    .flat()
+    .filter((id) => (id ?? "").trim());
+  if (unitIds.length) params.unitIds = unitIds;
 
-  if (selectedTypeIds[0]) params.typeId = selectedTypeIds[0];
+  const typeIds = selectedTypeIds.filter((id) => (id ?? "").trim());
+  if (typeIds.length) params.typeIds = typeIds;
 
   const sortMap: Record<
     string,

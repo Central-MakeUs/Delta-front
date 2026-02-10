@@ -1,11 +1,11 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { problemScrollQueryKeys } from "@/shared/apis/problem-list/problem-scroll-query-keys";
 import { getProblemScroll } from "@/shared/apis/problem-list/problem-scroll-api";
-import type {
+import {
   GetProblemScrollParams,
   GetProblemScrollResponse,
   ProblemScrollNextCursor,
 } from "@/shared/apis/problem-list/problem-scroll-types";
+import { problemScrollQueryKeys } from "@/shared/apis/problem-list/problem-scroll-query-keys";
 
 const DEFAULT_SIZE = 20;
 

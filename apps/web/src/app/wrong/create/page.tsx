@@ -35,7 +35,7 @@ const WrongCreatePage = () => {
     WRONG_CREATE_STEP_COPY[currentStep as keyof typeof WRONG_CREATE_STEP_COPY];
   const showNext = currentStep === 2 || currentStep === 3 || currentStep === 4;
 
-  const { form, handlers, isNextEnabled: step4Enabled } = useStep4Form();
+  const { form, handlers } = useStep4Form();
 
   const { handleUploaded, isStep1Blocked } = useStep1SummaryTransition({
     currentStep,
@@ -52,7 +52,6 @@ const WrongCreatePage = () => {
     unitId,
     typeIds,
     stepNextEnabled,
-    step4Enabled,
     form,
     goStep,
     router,

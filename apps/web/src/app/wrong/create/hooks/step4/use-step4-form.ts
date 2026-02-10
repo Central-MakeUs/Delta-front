@@ -8,7 +8,7 @@ export type Step4FormState = {
   type: ToggleValue;
   answerChoice: number | null;
   answerText: string;
-  solutionText: string;
+  memoText: string;
 };
 
 export type Step4Handlers = {
@@ -22,7 +22,7 @@ const INITIAL_FORM: Step4FormState = {
   type: "objective",
   answerChoice: null,
   answerText: "",
-  solutionText: "",
+  memoText: "",
 };
 
 const computeNextEnabled = (form: Step4FormState) => {
@@ -31,7 +31,7 @@ const computeNextEnabled = (form: Step4FormState) => {
       ? form.answerChoice !== null
       : form.answerText.trim().length > 0;
 
-  const hasSolution = form.solutionText.trim().length > 0;
+  const hasSolution = form.memoText.trim().length > 0;
   return hasAnswer && hasSolution;
 };
 
@@ -77,7 +77,7 @@ export const useStep4Form = (
 
   const handleSolutionChange = useCallback(
     (nextSolution: string) => {
-      updateForm({ solutionText: nextSolution });
+      updateForm({ memoText: nextSolution });
     },
     [updateForm]
   );

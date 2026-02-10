@@ -5,10 +5,17 @@ import type { ProblemScanCreateResponse } from "@/shared/apis/problem-scan/probl
 import { useProblemScanSummaryQuery } from "@/shared/apis/problem-scan/hooks/use-problem-scan-summary-query";
 import { toastError } from "@/shared/components/toast/toast";
 import { getFailToastMessage } from "@/app/wrong/create/utils/get-fail-toast-message";
-
-const SUMMARY_FETCH_DELAY_MS = 4000;
-const SUMMARY_POLL_INTERVAL_MS = 2000;
-const SUMMARY_MAX_WAIT_MS = 15000;
+import {
+  defer,
+  readClassification,
+  readFailReason,
+  readStatus,
+} from "@/app/wrong/create/utils/scan-summary-reader";
+import {
+  SUMMARY_FETCH_DELAY_MS,
+  SUMMARY_MAX_WAIT_MS,
+  SUMMARY_POLL_INTERVAL_MS,
+} from "@/app/wrong/create/constants/summary-time";
 
 type Params = {
   currentStep: number;
@@ -17,71 +24,6 @@ type Params = {
   pathname: string;
   router: { replace: (href: string, options?: { scroll?: boolean }) => void };
   goStep: (nextStep: number, extra?: Record<string, string | null>) => void;
-};
-
-const defer = (fn: () => void) => {
-  Promise.resolve().then(fn);
-};
-
-const isObject = (v: unknown): v is Record<string, unknown> =>
-  typeof v === "object" && v !== null;
-
-const unwrapDataLayers = (raw: unknown, maxDepth = 6) => {
-  let cur: unknown = raw;
-
-  for (let i = 0; i < maxDepth; i += 1) {
-    if (!isObject(cur)) break;
-    if (!("data" in cur)) break;
-    cur = cur.data;
-  }
-
-  return cur;
-};
-
-const readStringField = (raw: unknown, key: string) => {
-  const unwrapped = unwrapDataLayers(raw);
-  if (!isObject(unwrapped)) return null;
-
-  const v = unwrapped[key];
-  if (typeof v !== "string") return null;
-
-  const t = v.trim();
-  return t.length > 0 ? t : null;
-};
-
-const readStatus = (raw: unknown) => readStringField(raw, "status");
-const readFailReason = (raw: unknown) => readStringField(raw, "failReason");
-
-const readClassification = (raw: unknown) => {
-  const unwrapped = unwrapDataLayers(raw);
-  if (!isObject(unwrapped)) return null;
-
-  const cls = unwrapped.classification;
-  if (!isObject(cls)) return null;
-
-  const needsReview =
-    typeof cls.needsReview === "boolean" ? cls.needsReview : false;
-
-  const subject =
-    isObject(cls.subject) && typeof cls.subject.id === "string"
-      ? { id: cls.subject.id }
-      : null;
-
-  const unit =
-    isObject(cls.unit) && typeof cls.unit.id === "string"
-      ? { id: cls.unit.id }
-      : null;
-
-  const types = Array.isArray(cls.types) ? cls.types : [];
-
-  const hasTypes = types.length > 0;
-
-  return {
-    needsReview,
-    hasSubject: !!subject?.id,
-    hasUnit: !!unit?.id,
-    hasTypes,
-  };
 };
 
 export const useStep1SummaryTransition = ({

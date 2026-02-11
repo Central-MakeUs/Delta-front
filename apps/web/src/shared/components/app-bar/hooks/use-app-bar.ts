@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
 import { ROUTES, GRAPH_TABS, type GraphTab } from "@/shared/constants/routes";
@@ -27,6 +28,13 @@ export const useAppBar = (): UseAppBarResult => {
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
+
+  const [isWrongDetailMenuOpen, setIsWrongDetailMenuOpen] = useState(false);
+
+  const closeWrongDetailMenu = useMemo(
+    () => () => setIsWrongDetailMenuOpen(false),
+    []
+  );
 
   if (shouldHideAppBar(pathname)) return { isHidden: true };
 
@@ -125,14 +133,42 @@ export const useAppBar = (): UseAppBarResult => {
   }
 
   if (wrongMatch.type === "detail") {
+    const openMenu = () => setIsWrongDetailMenuOpen(true);
+
+    const goEdit = () => {
+      closeWrongDetailMenu();
+      router.push(ROUTES.WRONG.EDIT(wrongMatch.id));
+    };
+
+    const openDeleteModal = () => {
+      closeWrongDetailMenu();
+
+      const nextParams = new URLSearchParams(sp.toString());
+      nextParams.set("delete", "1");
+      router.replace(buildUrl(pathname, nextParams), { scroll: false });
+    };
+
     return {
       isHidden: false,
       props: {
         variant: "basicAction",
         title: "오답 상세 보기",
-        actionLabel: "수정하기",
         onBack: () => router.push(ROUTES.WRONG.ROOT),
-        onActionClick: () => router.push(ROUTES.WRONG.EDIT(wrongMatch.id)),
+
+        actionIcon: "more",
+        actionIconSize: 2.4,
+        actionAriaLabel: "오답 메뉴",
+        onActionClick: openMenu,
+
+        actionMenu: {
+          isOpen: isWrongDetailMenuOpen,
+          onClose: closeWrongDetailMenu,
+          title: "옵션",
+          items: [
+            { label: "수정하기", onClick: goEdit },
+            { label: "삭제하기", tone: "danger", onClick: openDeleteModal },
+          ],
+        },
       },
     };
   }

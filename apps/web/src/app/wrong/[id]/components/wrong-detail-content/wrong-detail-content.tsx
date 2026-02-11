@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import * as styles from "./wrong-detail-content.css";
 import {
@@ -28,13 +28,28 @@ const WrongDetailContent = () => {
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const [isConfettiOpen, setIsConfettiOpen] = useState(false);
   const [confettiPlayId, setConfettiPlayId] = useState(0);
+  const [memoText, setMemoText] = useState("");
+  const prevProblemIdRef = useRef<number | undefined>(undefined);
 
   const sectionData = useMemo<WrongDetailSectionData | null>(() => {
     if (!data) return null;
     return mapProblemDetailToSectionData(data);
   }, [data]);
 
-  const solution = data?.solutionText ?? "";
+  useEffect(() => {
+    if (!data) return;
+    if (prevProblemIdRef.current !== data.problemId) {
+      prevProblemIdRef.current = data.problemId;
+      queueMicrotask(() =>
+        setMemoText(data.memoText ?? data.solutionText ?? "")
+      );
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (!data?.completed) return;
+    queueMicrotask(() => setMemoText(data.memoText ?? data.solutionText ?? ""));
+  }, [data?.completed, data?.memoText, data?.solutionText]);
 
   if (isLoading) return null;
 
@@ -57,7 +72,7 @@ const WrongDetailContent = () => {
     setIsConfettiOpen(false);
   };
 
-  const handleConfirm = () => {
+  const openCompleteModal = () => {
     setIsCompleteModalOpen(true);
   };
 
@@ -68,7 +83,7 @@ const WrongDetailContent = () => {
   const handleComplete = async () => {
     await completeMutation.mutateAsync({
       problemId: id,
-      solutionText: solution,
+      memoText,
     });
 
     setIsCompleteModalOpen(false);
@@ -89,15 +104,19 @@ const WrongDetailContent = () => {
           <div className={styles.inputSection}>
             <div className={styles.inputContent}>
               <AnswerSection {...sectionData} />
-              <SolutionSection value={solution} onChange={() => {}} disabled />
+              <SolutionSection
+                value={memoText}
+                onChange={setMemoText}
+                disabled={data.completed}
+              />
             </div>
           </div>
         </div>
       </div>
       <BottomButton
-        onClick={handleConfirm}
+        onClick={openCompleteModal}
         disabled={
-          !solution.trim() || data.completed || completeMutation.isPending
+          !memoText.trim() || data.completed || completeMutation.isPending
         }
         isCompleted={data.completed}
       />

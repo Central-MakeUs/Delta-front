@@ -6,17 +6,16 @@ import { vars } from "@/shared/styles/theme.css";
 export const answerButtonWrapper = style({
   position: "relative",
   width: "100%",
-  height: "5rem",
+  minHeight: "5rem",
   borderRadius: vars.radius.r12,
   overflow: "hidden",
 });
 
 export const answerButtonOverlay = style({
   position: "absolute",
+  inset: 0,
   width: "100%",
-  height: "5rem",
-  left: 0,
-  top: 0,
+  height: "100%",
   background: "rgba(214, 214, 214, 0.1)",
   backdropFilter: "blur(0.6rem)",
   WebkitBackdropFilter: "blur(0.6rem)",
@@ -61,9 +60,23 @@ export const answerChipContent = style({
   display: "flex",
   alignItems: "center",
   gap: "0.8rem",
+  minWidth: 0,
 });
 
-export const answerNumber = style([typo.body3.medium, color["grayscale-700"]]);
+export const answerChipLabelWrap = style({
+  flexShrink: 0,
+});
+
+export const answerNumber = style([
+  typo.body3.medium,
+  color["grayscale-700"],
+  {
+    wordBreak: "break-word",
+    whiteSpace: "pre-wrap",
+    flex: "1 1 0%",
+    minWidth: 0,
+  },
+]);
 
 export const answerButtonText = style([
   typo.body3.semibold,

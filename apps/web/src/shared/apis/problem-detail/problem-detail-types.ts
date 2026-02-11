@@ -20,6 +20,7 @@ export type ProblemDetailResponse = {
   answerChoiceNo: number | null;
   answerValue: string | null;
   solutionText: string | null;
+  memoText?: string | null;
   completed: boolean;
   completedAt: string | null;
   createdAt: string;

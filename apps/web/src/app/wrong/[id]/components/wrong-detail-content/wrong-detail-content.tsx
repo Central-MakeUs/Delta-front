@@ -46,8 +46,8 @@ const WrongDetailContent = () => {
 
   useEffect(() => {
     if (!data?.completed) return;
-    queueMicrotask(() => setMemoText(data.memoText ?? data.memoText ?? ""));
-  }, [data?.completed, data?.memoText, data?.memoText]);
+    queueMicrotask(() => setMemoText(data.memoText ?? ""));
+  }, [data?.completed, data?.memoText]);
 
   if (isLoading) return null;
 

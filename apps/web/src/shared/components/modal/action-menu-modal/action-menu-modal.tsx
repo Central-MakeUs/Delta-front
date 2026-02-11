@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import * as s from "@/shared/components/modal/action-menu-modal/action-menu-modal.css";
 import CompleteModal from "@/shared/components/modal/complete-modal/complete-modal";
+import { useDeleteProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-delete-problem-detail-mutation";
+import { ROUTES } from "@/shared/constants/routes";
 
 type Item = {
   label: string;
@@ -18,17 +21,21 @@ type Props = {
 };
 
 const ActionMenuModal = ({ isOpen, title, items, onClose }: Props) => {
-  const [pendingDangerAction, setPendingDangerAction] = useState<
-    null | (() => void)
-  >(null);
-  const isConfirmOpen = pendingDangerAction !== null;
+  const router = useRouter();
+  const params = useParams();
+  const problemId = (params?.id as string | undefined) ?? undefined;
+
+  const deleteMutation = useDeleteProblemDetailMutation();
+
+  const [pendingDangerItem, setPendingDangerItem] = useState<Item | null>(null);
+  const isConfirmOpen = pendingDangerItem !== null;
 
   useEffect(() => {
     if (!isOpen && !isConfirmOpen) return;
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      if (isConfirmOpen) setPendingDangerAction(null);
+      if (isConfirmOpen) setPendingDangerItem(null);
       else onClose();
     };
 
@@ -40,7 +47,7 @@ const ActionMenuModal = ({ isOpen, title, items, onClose }: Props) => {
 
   const handleItemClick = (item: Item) => {
     if (item.tone === "danger") {
-      setPendingDangerAction(() => item.onClick);
+      setPendingDangerItem(item);
       onClose();
       return;
     }
@@ -49,11 +56,22 @@ const ActionMenuModal = ({ isOpen, title, items, onClose }: Props) => {
     onClose();
   };
 
-  const handleCloseConfirm = () => setPendingDangerAction(null);
+  const handleCloseConfirm = () => setPendingDangerItem(null);
 
   const handleConfirm = () => {
-    pendingDangerAction?.();
-    setPendingDangerAction(null);
+    const item = pendingDangerItem;
+    setPendingDangerItem(null);
+
+    if (!item) return;
+
+    if (item.label === "삭제하기" && problemId) {
+      deleteMutation.mutate(problemId, {
+        onSuccess: () => router.replace(ROUTES.WRONG.ROOT),
+      });
+      return;
+    }
+
+    item.onClick();
   };
 
   return (

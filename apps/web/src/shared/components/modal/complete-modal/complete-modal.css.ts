@@ -8,6 +8,8 @@ export const overlay = style([
   bgColor["overDim-40"],
   {
     position: "fixed",
+    maxWidth: "43rem",
+    margin: "0 auto",
     top: 0,
     left: 0,
     right: 0,

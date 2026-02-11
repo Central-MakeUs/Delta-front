@@ -33,7 +33,9 @@ const AnswerSection = ({
     <div className={styles.answerButtonWrapper}>
       <div className={styles.answerChipWrapper}>
         <div className={styles.answerChipContent}>
-          <Chip size="md" shape="pill" label="정답" />
+          <span className={styles.answerChipLabelWrap}>
+            <Chip size="md" shape="pill" label="정답" />
+          </span>
           {questionType === "objective" ? (
             <span className={styles.answerNumber}>{answerChoice}</span>
           ) : (

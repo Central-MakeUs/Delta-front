@@ -11,5 +11,6 @@ export interface WrongDetailSectionData {
   answerChoice: number | null;
   answerText: string | null;
   chips: ChipData[];
+  memoText: string | null;
   isCompleted: boolean;
 }

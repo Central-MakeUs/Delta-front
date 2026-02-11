@@ -21,6 +21,7 @@ type RawCurriculumItem = {
 type RawProblemScanSummaryResponse = {
   scanId?: number;
   status?: "UPLOADED" | "OCR_DONE" | "AI_DONE" | "FAILED" | string;
+  failReason?: string | null;
   originalImage?: {
     assetId?: number;
     viewUrl?: string;
@@ -64,6 +65,7 @@ const normalizeSummary = (
   return {
     scanId: requireNumber(raw.scanId, "scanId"),
     status: coerceStatus(raw.status) as ProblemScanSummaryResponse["status"],
+    failReason: raw.failReason ?? null,
     originalImage: {
       assetId: raw.originalImage?.assetId ?? 0,
       viewUrl: raw.originalImage?.viewUrl ?? "",

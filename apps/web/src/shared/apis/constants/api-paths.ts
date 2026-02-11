@@ -45,4 +45,7 @@ export const API_PATHS = {
     COMPLETE: (problemId: number | string) =>
       `${API_V1}/problems/${problemId}/complete`,
   },
+  PRO: {
+    CHECKOUT_CLICK: `${API_V1}/pro/checkout-click`,
+  },
 } as const;

@@ -10,7 +10,7 @@ export interface IconProps extends React.SVGProps<SVGSVGElement> {
   /** 채움 아이콘일 때만 사용: "currentColor" */
   fill?: string;
   className?: string;
-  rotate?: 90 | 180 | 270;
+  rotate?: 0 | 90 | 180 | 270;
   ariaHidden?: boolean;
   ariaLabel?: string;
 }

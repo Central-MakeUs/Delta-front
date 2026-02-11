@@ -27,6 +27,7 @@ export type ProblemScanOriginalImage = {
 
 export type ProblemScanSummaryResponse = {
   scanId: number;
+  failReason?: string | null;
   status: ProblemScanStatus;
   originalImage: ProblemScanOriginalImage;
   classification: ProblemScanSummaryClassification;

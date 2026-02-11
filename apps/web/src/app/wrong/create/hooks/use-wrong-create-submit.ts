@@ -21,7 +21,6 @@ type Params = {
   unitId: string | null;
   typeIds: string | null;
   stepNextEnabled: boolean;
-  step4Enabled: boolean;
   form: Step4FormState;
   goStep: (nextStep: number, extra?: Record<string, string | null>) => void;
   router: AppRouterInstance;
@@ -34,20 +33,21 @@ const parseTypeIds = (raw: string | null) => {
     .filter((v): v is string => Boolean(v));
 };
 
+const DEFAULT_SUBJECTIVE_FORMAT: AnswerFormat = "TEXT";
+
 export const useWrongCreateSubmit = ({
   currentStep,
   scanId,
   unitId,
   typeIds,
   stepNextEnabled,
-  step4Enabled,
   form,
   goStep,
   router,
 }: Params) => {
   const createMutation = useCreateWrongAnswerCardMutation();
 
-  const canNext = currentStep === 4 ? step4Enabled : stepNextEnabled;
+  const canNext = currentStep === 4 ? true : stepNextEnabled;
 
   const handleNext = async () => {
     if (!canNext) return;
@@ -69,36 +69,37 @@ export const useWrongCreateSubmit = ({
 
     const finalUnitId = normalize(unitId);
     const finalTypeIds = parseTypeIds(typeIds);
-    const solutionText = normalize(form.solutionText);
     if (!finalUnitId) return;
     if (finalTypeIds.length === 0) return;
 
-    let answerFormat: AnswerFormat;
-    let answerChoiceNo: number | null = null;
-    let answerValue: string | null = null;
+    const memoText = normalize(form.memoText);
 
-    if (form.type === "objective") {
-      answerFormat = "CHOICE";
-      answerChoiceNo = form.answerChoice;
+    const normalizedAnswerText = normalize(form.answerText);
 
-      if (answerChoiceNo === null) return;
-      if (answerChoiceNo < 1) return;
-    } else {
-      const v = normalize(form.answerText);
-      if (!v) return;
-
-      answerFormat = inferSubjectiveFormat(v);
-      answerValue = v;
-    }
+    const answerFormat: AnswerFormat =
+      form.type === "objective"
+        ? "CHOICE"
+        : normalizedAnswerText
+          ? inferSubjectiveFormat(normalizedAnswerText)
+          : DEFAULT_SUBJECTIVE_FORMAT;
 
     const payload: ProblemCreateRequest = {
       scanId,
       finalUnitId,
       finalTypeIds,
       answerFormat,
-      answerChoiceNo,
-      answerValue,
-      solutionText,
+
+      ...(form.type === "objective" &&
+      form.answerChoice !== null &&
+      form.answerChoice >= 1
+        ? { answerChoiceNo: form.answerChoice }
+        : {}),
+
+      ...(form.type === "subjective" && normalizedAnswerText
+        ? { answerValue: normalizedAnswerText }
+        : {}),
+
+      ...(memoText ? { memoText } : {}),
     };
 
     try {

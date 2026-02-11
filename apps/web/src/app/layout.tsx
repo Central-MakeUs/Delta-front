@@ -8,6 +8,15 @@ import { lightTheme } from "@/shared/styles/theme.css";
 import { rootStyle } from "@/shared/styles/global.css";
 import ClientShell from "@/app/client-shell";
 import { ToastProvider } from "@/shared/components/toast/toast-provider/toast-provider";
+import type { Viewport } from "next";
+import NavigationListener from "@/shared/navigation/navigation-listener";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata: Metadata = {
   title: "세모",
@@ -36,6 +45,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="ko" className={lightTheme}>
       <body>
+        <NavigationListener />
         <SvgSpriteInjector />
         <ToastProvider />
         <div className={rootStyle}>

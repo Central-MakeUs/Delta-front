@@ -50,7 +50,6 @@ const sanitizeList = (v: unknown): ProblemTypeItem[] => {
   return v.filter(isProblemTypeItem);
 };
 
-// ✅ 중복 제거(같은 id면 마지막 값으로 덮어쓰기)
 const dedupeById = (list: ProblemTypeItem[]) => {
   const map = new Map<string, ProblemTypeItem>();
   list.forEach((t) => {

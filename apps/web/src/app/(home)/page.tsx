@@ -35,16 +35,8 @@ const Home = () => {
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
 
-  const { data: unitGroups = [] } = useGraphUnitStatsQuery({
-    sort,
-    enabled: isUnitTab,
-  });
-
-  const { data: typeGroups = [] } = useGraphTypeStatsQuery({
-    sort,
-    enabled: !isUnitTab,
-  });
-
+  const { data: unitGroups = [] } = useGraphUnitStatsQuery({ sort });
+  const { data: typeGroups = [] } = useGraphTypeStatsQuery({ sort });
   const { data: monthly } = useProblemMonthlyProgressQuery({ year, month });
 
   const registeredCount = monthly?.totalCount ?? 0;

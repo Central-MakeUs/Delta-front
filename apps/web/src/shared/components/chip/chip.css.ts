@@ -4,6 +4,13 @@ import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 import { color, bgColor } from "@/shared/styles/color.css";
 
+export const iconWrap = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexShrink: 0,
+});
+
 export const label = style({
   color: "inherit",
   whiteSpace: "nowrap",
@@ -74,6 +81,7 @@ export const chip = recipe({
       solid: [bgColor["main-500"], color["grayscale-0"]],
       white: [bgColor["grayscale-0"], color["grayscale-900"]],
       "white-accent": [bgColor["grayscale-0"], color["main-500"]],
+      "white-surface": [bgColor["grayscale-0"], color["grayscale-700"]],
     },
   },
 
@@ -83,6 +91,10 @@ export const chip = recipe({
     {
       variants: { size: "lg", shape: "pill" },
       style: { padding: "1.2rem 2.4rem", borderRadius: vars.radius.r48 },
+    },
+    {
+      variants: { size: "lg", shape: "pill", state: "active" },
+      style: { padding: "0.8rem 1.2rem", borderRadius: vars.radius.r48 },
     },
     {
       variants: { size: "lg", shape: "square" },

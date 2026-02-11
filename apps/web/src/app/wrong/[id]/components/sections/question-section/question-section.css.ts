@@ -4,7 +4,7 @@ import { vars } from "@/shared/styles/theme.css";
 export const imageContainer = style({
   boxSizing: "border-box",
   width: "100%",
-  height: "23.8rem",
+  height: "auto",
   background: vars.color.grayscale[50],
   border: `0.1rem solid ${vars.color.grayscale[100]}`,
   borderRadius: vars.radius.r12,
@@ -16,6 +16,7 @@ export const imageContainer = style({
 
 export const image = style({
   width: "100%",
-  height: "100%",
-  objectFit: "contain",
+  height: "auto",
+  display: "block",
+  verticalAlign: "middle",
 });

@@ -54,7 +54,7 @@ export const image = style([
   {
     boxSizing: "border-box",
     width: "100%",
-    height: "23.8rem",
+    height: "auto",
     border: `0.1rem solid ${vars.color.grayscale[100]}`,
     borderRadius: vars.radius.r12,
     objectFit: "cover",

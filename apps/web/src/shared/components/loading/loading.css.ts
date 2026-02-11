@@ -21,7 +21,9 @@ export const all = style([
   {
     position: "fixed",
     inset: 0,
-    zIndex: vars.zIndex.modalOverlay,
+    maxWidth: "43rem",
+    margin: "0 auto",
+    zIndex: vars.zIndex.loading,
     display: "grid",
     placeItems: "center",
     height: "100dvh",

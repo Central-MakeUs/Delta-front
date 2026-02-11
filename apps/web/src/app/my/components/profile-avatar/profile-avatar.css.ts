@@ -1,15 +1,19 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
+import { bgColor } from "@/shared/styles/color.css";
 
-export const avatar = style({
-  width: "9.2rem",
-  height: "9.2rem",
-  borderRadius: vars.radius.full,
-  overflow: "hidden",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-});
+export const avatar = style([
+  bgColor["grayscale-0"],
+  {
+    width: "9.2rem",
+    height: "9.2rem",
+    borderRadius: vars.radius.full,
+    overflow: "hidden",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+]);
 
 export const image = style({
   width: "100%",

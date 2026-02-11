@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import * as styles from "./wrong-detail-content.css";
 import {
@@ -16,6 +16,7 @@ import { useCompleteProblemDetailMutation } from "@/shared/apis/problem-detail/h
 import { mapProblemDetailToSectionData } from "../utils/map-problem-detail-to-section-data";
 import type { WrongDetailSectionData } from "../types";
 import EmptyState from "@/shared/components/empty-state/empty-state";
+import Confetti from "@/app/wrong/[id]/components/confetti/confetti";
 
 const WrongDetailContent = () => {
   const params = useParams();
@@ -25,28 +26,53 @@ const WrongDetailContent = () => {
   const completeMutation = useCompleteProblemDetailMutation();
 
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [isConfettiOpen, setIsConfettiOpen] = useState(false);
+  const [confettiPlayId, setConfettiPlayId] = useState(0);
+  const [memoText, setMemoText] = useState("");
+  const prevProblemIdRef = useRef<number | undefined>(undefined);
 
   const sectionData = useMemo<WrongDetailSectionData | null>(() => {
     if (!data) return null;
     return mapProblemDetailToSectionData(data);
   }, [data]);
 
+  useEffect(() => {
+    if (!data) return;
+    if (prevProblemIdRef.current !== data.problemId) {
+      prevProblemIdRef.current = data.problemId;
+      queueMicrotask(() => setMemoText(data.memoText ?? ""));
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (!data?.completed) return;
+    queueMicrotask(() => setMemoText(data.memoText ?? ""));
+  }, [data?.completed, data?.memoText]);
+
   if (isLoading) return null;
 
   if (isError || !data || !sectionData) {
     return (
-      <EmptyState
-        label="잠시 문제가 발생했어요. 다시 한번 시도해주세요."
-        iconName="error-500"
-        labelClassName={styles.emptyStateLabel}
-      />
+      <div className={styles.emptyWrap}>
+        <EmptyState
+          label="잠시 문제가 발생했어요. 다시 한번 시도해주세요."
+          iconName="error-500"
+          labelClassName={styles.emptyStateLabel}
+        />
+      </div>
     );
   }
 
-  const solution = data.solutionText ?? "";
-  const isSolutionReadOnly = true;
+  const openConfetti = () => {
+    setConfettiPlayId((p) => p + 1);
+    setIsConfettiOpen(true);
+  };
 
-  const handleConfirm = () => {
+  const closeConfetti = () => {
+    setIsConfettiOpen(false);
+  };
+
+  const openCompleteModal = () => {
     setIsCompleteModalOpen(true);
   };
 
@@ -57,40 +83,43 @@ const WrongDetailContent = () => {
   const handleComplete = async () => {
     await completeMutation.mutateAsync({
       problemId: id,
-      solutionText: solution,
+      memoText,
     });
 
     setIsCompleteModalOpen(false);
+    openConfetti();
   };
 
   return (
     <div className={styles.page}>
+      <Confetti
+        isOpen={isConfettiOpen}
+        playId={confettiPlayId}
+        onComplete={closeConfetti}
+      />
       <div className={styles.contentWrapper}>
         <div className={styles.mainContent}>
           <HeaderSection {...sectionData} />
           <QuestionSection {...sectionData} />
-
           <div className={styles.inputSection}>
             <div className={styles.inputContent}>
               <AnswerSection {...sectionData} />
               <SolutionSection
-                value={solution}
-                onChange={() => {}}
-                disabled={isSolutionReadOnly}
+                value={memoText}
+                onChange={setMemoText}
+                disabled={data.completed}
               />
             </div>
           </div>
         </div>
       </div>
-
       <BottomButton
-        onClick={handleConfirm}
+        onClick={openCompleteModal}
         disabled={
-          !solution.trim() || data.completed || completeMutation.isPending
+          !memoText.trim() || data.completed || completeMutation.isPending
         }
         isCompleted={data.completed}
       />
-
       <CompleteModal
         title="오답을 완료할까요?"
         description="입력한 풀이는 저장되며, 오답이 완료 처리돼요."

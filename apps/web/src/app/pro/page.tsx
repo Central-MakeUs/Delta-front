@@ -8,13 +8,17 @@ import { ProHero } from "@/app/pro/components/pro-hero/pro-hero";
 import { ProFeatureCard } from "@/app/pro/components/pro-feature-card/pro-feature-card";
 import BottomCta from "@/app/pro/components/bottom-cta/bottom-cta";
 import CompleteModal from "@/shared/components/modal/complete-modal/complete-modal";
+import { useTrackCheckoutClickMutation } from "@/shared/apis/pro/hooks/use-track-checkout-click-mutation";
 
 const ProPage = () => {
   const router = useRouter();
 
+  const trackCheckoutClickMutation = useTrackCheckoutClickMutation();
+
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
   const handleConfirm = () => {
+    trackCheckoutClickMutation.mutate();
     setIsCompleteModalOpen(true);
   };
 
@@ -50,6 +54,7 @@ const ProPage = () => {
         cancelLabel="확인"
         actions="cancelOnly"
         iconName="pro-modal"
+        descriptionClassName={s.proModalDescription}
       />
     </div>
   );

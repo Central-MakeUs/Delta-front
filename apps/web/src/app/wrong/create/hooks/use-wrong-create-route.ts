@@ -40,8 +40,18 @@ export const useWrongCreateRoute = () => {
       });
     }
 
+    if (safe === 1) {
+      nextParams.delete("chapterId");
+      nextParams.delete("unitId");
+      nextParams.delete("typeIds");
+    }
+
+    const nextScanId = readScanId(nextParams);
+    if (!nextScanId && safe > 1) return;
+
     const nextQuery = nextParams.toString();
     if (nextQuery === spString) return;
+
     router.replace(`${pathname}?${nextQuery}`, { scroll: false });
   };
 
@@ -58,3 +68,5 @@ export const useWrongCreateRoute = () => {
     goStep,
   };
 };
+
+export default useWrongCreateRoute;

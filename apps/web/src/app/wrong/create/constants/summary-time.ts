@@ -1,0 +1,3 @@
+export const SUMMARY_FETCH_DELAY_MS = 4000;
+export const SUMMARY_POLL_INTERVAL_MS = 2000;
+export const SUMMARY_MAX_WAIT_MS = 15000;

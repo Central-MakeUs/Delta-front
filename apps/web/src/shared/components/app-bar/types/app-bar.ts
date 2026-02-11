@@ -1,3 +1,6 @@
+import type React from "react";
+import type { IconProps } from "@/shared/components/icon/icon";
+
 export type AppBarSurface = "solid" | "transparent";
 export type AppBarVariant =
   | "basic"
@@ -19,13 +22,42 @@ export type BasicProps = CommonProps & {
   onBack?: () => void;
 };
 
+export type NonEmptyArray<T> = readonly [T, ...T[]];
+
+export type ActionMenuItem = {
+  id: string;
+  label: string;
+  tone?: "default" | "danger";
+  onClick: () => void;
+  confirmTitle?: string;
+  confirmDescription?: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  iconName?: React.ComponentProps<
+    typeof import("@/shared/components/icon/icon").default
+  >["name"];
+};
+
+export type ActionMenuProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
+  items: NonEmptyArray<ActionMenuItem>;
+};
+
 export type BasicActionProps = CommonProps & {
   variant: "basicAction";
   title: string;
-  actionLabel: string;
+
+  actionLabel?: string;
+  actionIcon?: IconProps["name"];
+  actionIconSize?: number;
+
   onBack?: () => void;
   onActionClick?: () => void;
   actionAriaLabel?: string;
+
+  actionMenu?: ActionMenuProps;
 };
 
 export type DefaultProps = CommonProps & {
@@ -49,8 +81,6 @@ export type TitleOnlyProps = CommonProps & {
   variant: "title";
   title: string;
 };
-
-export type NonEmptyArray<T> = readonly [T, ...T[]];
 
 export type TabItem<V extends string = string> = {
   value: V;

@@ -12,6 +12,7 @@ import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
 import HeaderShell from "@/shared/components/app-bar/components/header-shell";
 import LeftGroup from "@/shared/components/app-bar/components/left-group";
 import BackButton from "@/shared/components/app-bar/components/back-button";
+import ActionMenuModal from "@/shared/components/modal/action-menu-modal/action-menu-modal";
 
 const AppBar = (props: AppBarProps) => {
   const router = useRouter();
@@ -47,21 +48,45 @@ const AppBar = (props: AppBarProps) => {
 
     case "basicAction": {
       const onBack = props.onBack ?? backFallback;
-      const actionAriaLabel = props.actionAriaLabel ?? props.actionLabel;
+
+      const actionAriaLabel =
+        props.actionAriaLabel ?? props.actionLabel ?? "메뉴";
+
+      const hasAction = !!props.onActionClick;
 
       return renderShell(
         "basicAction",
         <>
           <LeftGroup title={props.title} onBack={onBack} />
-          {props.actionLabel && props.onActionClick && (
+
+          {hasAction && (
             <button
               type="button"
-              className={s.actionButton}
+              className={clsx(
+                props.actionIcon ? s.actionIconButton : s.actionButton
+              )}
               aria-label={actionAriaLabel}
               onClick={props.onActionClick}
             >
-              {props.actionLabel}
+              {props.actionIcon ? (
+                <Icon
+                  name={props.actionIcon}
+                  size={props.actionIconSize ?? 2.4}
+                  className={s.icon}
+                />
+              ) : (
+                props.actionLabel
+              )}
             </button>
+          )}
+
+          {props.actionMenu && (
+            <ActionMenuModal
+              isOpen={props.actionMenu.isOpen}
+              title={props.actionMenu.title}
+              items={props.actionMenu.items}
+              onClose={props.actionMenu.onClose}
+            />
           )}
         </>
       );
@@ -79,6 +104,7 @@ const AppBar = (props: AppBarProps) => {
           >
             <Icon name="logo-default" width={6.8} />
           </button>
+
           <div className={s.rightButtonGroup}>
             <button
               type="button"
@@ -94,6 +120,7 @@ const AppBar = (props: AppBarProps) => {
               />
               <p className={s.premiumButtonText}>PRO</p>
             </button>
+
             <button
               type="button"
               className={s.rightIconButton}

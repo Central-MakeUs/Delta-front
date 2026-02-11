@@ -1,4 +1,7 @@
-import React, { useEffect } from "react";
+"use client";
+
+import { useEffect, useId } from "react";
+import { createPortal } from "react-dom";
 import clsx from "clsx";
 import { Button } from "@/shared/components/button/button/button";
 import Icon from "@/shared/components/icon/icon";
@@ -21,6 +24,30 @@ export interface CompleteModalProps {
   actions?: "both" | "cancelOnly" | "confirmOnly";
 }
 
+const LOCK_KEY = "data-semo-modal-lock-count";
+
+const lockBodyScroll = () => {
+  const raw = document.body.getAttribute(LOCK_KEY) ?? "0";
+  const count = Number(raw);
+
+  if (count === 0) document.body.style.overflow = "hidden";
+  document.body.setAttribute(LOCK_KEY, String(count + 1));
+};
+
+const unlockBodyScroll = () => {
+  const raw = document.body.getAttribute(LOCK_KEY) ?? "0";
+  const count = Number(raw);
+
+  const next = Math.max(0, count - 1);
+  if (next === 0) {
+    document.body.style.overflow = "unset";
+    document.body.removeAttribute(LOCK_KEY);
+    return;
+  }
+
+  document.body.setAttribute(LOCK_KEY, String(next));
+};
+
 export const CompleteModal = ({
   isOpen,
   onClose,
@@ -37,25 +64,32 @@ export const CompleteModal = ({
   iconName = "modal-icon",
   actions = "both",
 }: CompleteModalProps) => {
+  const titleId = useId();
+  const descId = useId();
+
   useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "unset";
-    return () => {
-      document.body.style.overflow = "unset";
-    };
+    if (!isOpen) return;
+    lockBodyScroll();
+    return unlockBodyScroll;
   }, [isOpen]);
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) onClose();
+      if (e.key === "Escape") onClose();
     };
 
-    if (isOpen) window.addEventListener("keydown", handleEscape);
+    window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const showCancel = actions === "both" || actions === "cancelOnly";
+  const showConfirm = actions === "both" || actions === "confirmOnly";
+
+  const handleOverlayMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
   };
 
@@ -69,24 +103,33 @@ export const CompleteModal = ({
     onClose();
   };
 
-  const showCancel = actions === "both" || actions === "cancelOnly";
-  const showConfirm = actions === "both" || actions === "confirmOnly";
-
-  return (
+  return createPortal(
     <div
       className={clsx(styles.overlay, overlayClassName)}
-      onClick={handleOverlayClick}
+      onMouseDown={handleOverlayMouseDown}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      aria-describedby={description ? descId : undefined}
     >
-      <div className={clsx(styles.modal({ size }), className)}>
+      <div
+        className={clsx(styles.modal({ size }), className)}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
         <div className={styles.header}>
           <div className={styles.contentContainer}>
             <div className={styles.iconContainer}>
               <Icon name={iconName} size={6.427} className={styles.icon} />
             </div>
             <div className={styles.textContainer}>
-              <h2 className={styles.title}>{title}</h2>
+              <h2 id={titleId} className={styles.title}>
+                {title}
+              </h2>
               {description && (
-                <p className={clsx(styles.description, descriptionClassName)}>
+                <p
+                  id={descId}
+                  className={clsx(styles.description, descriptionClassName)}
+                >
                   {description}
                 </p>
               )}
@@ -122,7 +165,8 @@ export const CompleteModal = ({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

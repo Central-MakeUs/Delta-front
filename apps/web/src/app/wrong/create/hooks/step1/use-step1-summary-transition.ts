@@ -165,7 +165,7 @@ export const useStep1SummaryTransition = ({
 
     clearAllTimers();
 
-    toastError(getFailToastMessage(failReason ?? "UNKNOWN"), 6.5);
+    toastError(getFailToastMessage(failReason ?? "UNKNOWN"));
 
     defer(() => {
       if (!mountedRef.current) return;

@@ -3,6 +3,4 @@ export const problemScanQueryKeys = {
 
   summary: (scanId: number | string) =>
     [...problemScanQueryKeys.all, "summary", String(scanId)] as const,
-  summaryDisabled: () =>
-    [...problemScanQueryKeys.all, "summary", "disabled"] as const,
 } as const;

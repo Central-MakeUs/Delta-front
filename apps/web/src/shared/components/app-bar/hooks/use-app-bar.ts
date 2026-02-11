@@ -108,15 +108,12 @@ export const useAppBar = (): UseAppBarResult => {
     const isLoading = params.get("hideAppBar") === "1";
     if (isLoading) return { isHidden: true };
 
-    const from = parseFrom(params.get("from")) ?? ROUTES.WRONG.ROOT;
     const hasScan = hasValidScanId(params);
 
+    const from = parseFrom(params.get("from")) ?? ROUTES.WRONG.ROOT;
+
     const exitCreate = () => {
-      if (from) {
-        router.replace(from);
-        return;
-      }
-      router.back();
+      router.replace(from);
     };
 
     const replaceStep = (nextStep: number) => {

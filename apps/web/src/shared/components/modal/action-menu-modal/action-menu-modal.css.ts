@@ -43,8 +43,6 @@ export const list = style({
 export const itemButton = style([
   bgColor["grayscale-0"],
   {
-    appearance: "none",
-    border: "none",
     width: "100%",
     padding: "1.2rem 2rem",
     cursor: "pointer",

@@ -40,7 +40,7 @@ const WrongDetailContent = () => {
     if (!data) return;
     if (prevProblemIdRef.current !== data.problemId) {
       prevProblemIdRef.current = data.problemId;
-      queueMicrotask(() => setMemoText(data.memoText ?? data.memoText ?? ""));
+      queueMicrotask(() => setMemoText(data.memoText ?? ""));
     }
   }, [data]);
 

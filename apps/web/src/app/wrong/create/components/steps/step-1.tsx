@@ -51,10 +51,7 @@ const Step1 = ({ onNext, onSelectImage, disabled = false }: Step1Props) => {
           },
           onError: () => {
             minLoading.cancel();
-            toastError(
-              "문제 스캔 업로드에 실패했어요. 다시 시도해 주세요.",
-              6.5
-            );
+            toastError("문제 스캔 업로드에 실패했어요. 다시 시도해 주세요.");
           },
         }
       );

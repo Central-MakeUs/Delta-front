@@ -18,9 +18,10 @@ const SolutionSection = ({
       <TextField
         heightSize="lg"
         focusEffect={false}
+        border={false}
         fullWidth
-        prefix={<Chip size="md" shape="pill" label="풀이" />}
-        placeholder="풀이를 입력해주세요."
+        prefix={<Chip size="md" shape="pill" label="메모" />}
+        placeholder="메모를 입력해주세요."
         value={value}
         onChange={(e) => onChange(e.target.value)}
         size="body3"

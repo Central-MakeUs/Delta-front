@@ -69,7 +69,7 @@ export const useWrongCreateSubmit = ({
 
     const finalUnitId = normalize(unitId);
     const finalTypeIds = parseTypeIds(typeIds);
-    const solutionText = normalize(form.solutionText);
+    const memoText = normalize(form.memoText);
     if (!finalUnitId) return;
     if (finalTypeIds.length === 0) return;
 
@@ -98,7 +98,7 @@ export const useWrongCreateSubmit = ({
       answerFormat,
       answerChoiceNo,
       answerValue,
-      solutionText,
+      memoText,
     };
 
     try {

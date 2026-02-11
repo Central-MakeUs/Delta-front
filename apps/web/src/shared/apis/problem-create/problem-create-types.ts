@@ -9,7 +9,7 @@ export type ProblemCreateRequest = {
   answerFormat: AnswerFormat;
   answerChoiceNo?: number | null;
   answerValue?: string | null;
-  solutionText: string | null;
+  memoText: string | null;
 };
 
 export type ProblemCreateResponse = {

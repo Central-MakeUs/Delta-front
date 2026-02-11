@@ -88,7 +88,7 @@ const Step4 = ({ onNextEnabledChange, scanId, form, handlers }: Step4Props) => {
           <TextAreaField
             fullWidth
             placeholder="풀이를 입력해주세요."
-            value={form.solutionText}
+            value={form.memoText}
             onChange={(e) => handlers.handleSolutionChange(e.target.value)}
           />
         </div>

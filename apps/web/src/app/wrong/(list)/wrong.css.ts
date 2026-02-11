@@ -81,8 +81,29 @@ export const emptyStateText = style([
   },
 ]);
 
-/** 무한 스크롤 감지용: 높이 있어야 IntersectionObserver가 안정적으로 동작 */
 export const scrollSentinel = style({
   minHeight: 1,
   width: "100%",
+});
+
+export const scrollToTopWrap = style({
+  position: "fixed",
+  bottom: "9rem",
+  left: "50%",
+  zIndex: vars.zIndex.bottomSheet,
+  display: "flex",
+  justifyContent: "center",
+  boxShadow: vars.shadow.e400,
+  borderRadius: vars.radius.full,
+  opacity: 0,
+  transform: "translateX(-50%) translateY(1.2rem)",
+  pointerEvents: "none",
+  transition:
+    "opacity 0.25s ease-out, transform 0.25s ease-out, box-shadow 0.25s ease-out",
+});
+
+export const scrollToTopWrapVisible = style({
+  opacity: 1,
+  transform: "translateX(-50%) translateY(0)",
+  pointerEvents: "auto",
 });

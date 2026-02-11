@@ -7,8 +7,9 @@ import { APP_BAR_HEIGHT } from "@/shared/components/app-bar/constants/app-bar";
 export const overlay = style({
   position: "fixed",
   inset: 0,
+  height: "100vh",
   background: "transparent",
-  zIndex: vars.zIndex.modal,
+  zIndex: vars.zIndex.modalOverlay,
 });
 
 export const container = style({

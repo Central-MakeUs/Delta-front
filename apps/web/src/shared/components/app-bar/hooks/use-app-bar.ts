@@ -26,6 +26,27 @@ const buildUrl = (pathname: string, params: URLSearchParams) => {
 const isGraphTab = (v: string | null): v is GraphTab =>
   v === GRAPH_TABS.UNIT || v === GRAPH_TABS.WRONG;
 
+const isValidInternalPath = (path: string) => {
+  if (!path.startsWith("/")) return false;
+  if (path.startsWith("//")) return false;
+  return true;
+};
+
+const parseFrom = (raw: string | null) => {
+  if (!raw) return null;
+  try {
+    const decoded = decodeURIComponent(raw);
+    return isValidInternalPath(decoded) ? decoded : null;
+  } catch {
+    return null;
+  }
+};
+
+const hasValidScanId = (params: URLSearchParams) => {
+  const v = params.get("scanId");
+  return Boolean(v && v !== "null" && v !== "undefined");
+};
+
 export const useAppBar = (): UseAppBarResult => {
   const router = useRouter();
   const pathname = usePathname();
@@ -94,19 +115,31 @@ export const useAppBar = (): UseAppBarResult => {
     const isLoading = params.get("hideAppBar") === "1";
     if (isLoading) return { isHidden: true };
 
+    const hasScan = hasValidScanId(params);
+
+    const from = parseFrom(params.get("from")) ?? ROUTES.WRONG.ROOT;
+
+    const exitCreate = () => {
+      router.replace(from);
+    };
+
     const replaceStep = (nextStep: number) => {
       const safe = clamp(nextStep, 1, total);
       const nextParams = new URLSearchParams(sp.toString());
-      nextParams.set("step", String(safe));
-      router.replace(buildUrl(pathname, nextParams), { scroll: false });
-    };
 
-    const handleBack = () => {
-      if (currentStep > 1) {
-        replaceStep(currentStep - 1);
+      if (safe === 1) {
+        nextParams.set("step", "1");
+        nextParams.delete("scanId");
+        nextParams.delete("unitId");
+        nextParams.delete("typeIds");
+        router.replace(buildUrl(pathname, nextParams), { scroll: false });
         return;
       }
-      router.back();
+
+      if (!hasValidScanId(nextParams)) return;
+
+      nextParams.set("step", String(safe));
+      router.replace(buildUrl(pathname, nextParams), { scroll: false });
     };
 
     return {
@@ -114,9 +147,9 @@ export const useAppBar = (): UseAppBarResult => {
       props: {
         variant: "progress",
         total,
-        currentStep,
+        currentStep: hasScan ? currentStep : 1,
         onStepChange: replaceStep,
-        onBack: handleBack,
+        onBack: exitCreate,
       },
     };
   }

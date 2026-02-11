@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
 import TextField from "@/shared/components/text-field/text-field";
 import TextAreaField from "@/shared/components/text-area-field/text-area-field";
 import { Toggle } from "@/shared/components/toggle/toggle";
@@ -24,11 +23,7 @@ type Step4Props = StepProps & {
   handlers: Step4Handlers;
 };
 
-const Step4 = ({ onNextEnabledChange, scanId, form, handlers }: Step4Props) => {
-  useEffect(() => {
-    onNextEnabledChange?.(true);
-  }, [onNextEnabledChange]);
-
+const Step4 = ({ scanId, form, handlers }: Step4Props) => {
   const { data: summary } = useProblemScanSummaryQuery(scanId);
   const imageUrl = summary?.originalImage?.viewUrl ?? null;
 
@@ -84,10 +79,10 @@ const Step4 = ({ onNextEnabledChange, scanId, form, handlers }: Step4Props) => {
         </div>
 
         <div className={s.explanationContent}>
-          <span className={s.explanationTitle}>풀이</span>
+          <span className={s.explanationTitle}>메모</span>
           <TextAreaField
             fullWidth
-            placeholder="풀이를 입력해주세요."
+            placeholder="메모를 입력해주세요. (ex. 자이스토리 1회 4번)"
             value={form.memoText}
             onChange={(e) => handlers.handleSolutionChange(e.target.value)}
           />

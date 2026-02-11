@@ -6,6 +6,7 @@ import * as s from "@/shared/components/modal/action-menu-modal/action-menu-moda
 import CompleteModal from "@/shared/components/modal/complete-modal/complete-modal";
 import { useDeleteProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-delete-problem-detail-mutation";
 import { ROUTES } from "@/shared/constants/routes";
+import { toastSuccess } from "@/shared/components/toast/toast";
 
 type Item = {
   label: string;
@@ -66,7 +67,10 @@ const ActionMenuModal = ({ isOpen, title, items, onClose }: Props) => {
 
     if (item.label === "삭제하기" && problemId) {
       deleteMutation.mutate(problemId, {
-        onSuccess: () => router.replace(ROUTES.WRONG.ROOT),
+        onSuccess: () => {
+          toastSuccess("오답을 삭제했어요.", 6.5);
+          router.replace(ROUTES.WRONG.ROOT);
+        },
       });
       return;
     }

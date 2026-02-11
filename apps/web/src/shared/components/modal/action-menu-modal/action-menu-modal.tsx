@@ -1,34 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
 import * as s from "@/shared/components/modal/action-menu-modal/action-menu-modal.css";
 import CompleteModal from "@/shared/components/modal/complete-modal/complete-modal";
-import { useDeleteProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-delete-problem-detail-mutation";
-import { ROUTES } from "@/shared/constants/routes";
-import { toastSuccess } from "@/shared/components/toast/toast";
-
-type Item = {
-  label: string;
-  tone?: "default" | "danger";
-  onClick: () => void;
-};
+import type { ActionMenuItem } from "@/shared/components/app-bar/types/app-bar";
 
 type Props = {
   isOpen: boolean;
   title?: string;
-  items: readonly Item[];
+  items: readonly ActionMenuItem[];
   onClose: () => void;
 };
 
 const ActionMenuModal = ({ isOpen, title, items, onClose }: Props) => {
-  const router = useRouter();
-  const params = useParams();
-  const problemId = (params?.id as string | undefined) ?? undefined;
-
-  const deleteMutation = useDeleteProblemDetailMutation();
-
-  const [pendingDangerItem, setPendingDangerItem] = useState<Item | null>(null);
+  const [pendingDangerItem, setPendingDangerItem] =
+    useState<ActionMenuItem | null>(null);
   const isConfirmOpen = pendingDangerItem !== null;
 
   useEffect(() => {
@@ -46,7 +32,7 @@ const ActionMenuModal = ({ isOpen, title, items, onClose }: Props) => {
 
   if (!isOpen && !isConfirmOpen) return null;
 
-  const handleItemClick = (item: Item) => {
+  const handleItemClick = (item: ActionMenuItem) => {
     if (item.tone === "danger") {
       setPendingDangerItem(item);
       onClose();
@@ -62,20 +48,7 @@ const ActionMenuModal = ({ isOpen, title, items, onClose }: Props) => {
   const handleConfirm = () => {
     const item = pendingDangerItem;
     setPendingDangerItem(null);
-
-    if (!item) return;
-
-    if (item.label === "삭제하기" && problemId) {
-      deleteMutation.mutate(problemId, {
-        onSuccess: () => {
-          toastSuccess("오답을 삭제했어요.", 6.5);
-          router.replace(ROUTES.WRONG.ROOT);
-        },
-      });
-      return;
-    }
-
-    item.onClick();
+    item?.onClick();
   };
 
   return (
@@ -93,7 +66,7 @@ const ActionMenuModal = ({ isOpen, title, items, onClose }: Props) => {
               <div className={s.list}>
                 {items.map((item) => (
                   <button
-                    key={item.label}
+                    key={item.id}
                     type="button"
                     className={s.itemButton}
                     onClick={() => handleItemClick(item)}
@@ -110,11 +83,11 @@ const ActionMenuModal = ({ isOpen, title, items, onClose }: Props) => {
       <CompleteModal
         isOpen={isConfirmOpen}
         onClose={handleCloseConfirm}
-        title="오답을 삭제할까요?"
-        description="문제를 삭제하면 되돌릴 수 없어요."
-        cancelLabel="아니요"
-        confirmLabel="삭제"
-        iconName="trash-modal"
+        title={pendingDangerItem?.confirmTitle ?? "오답을 삭제할까요?"}
+        description={pendingDangerItem?.confirmDescription}
+        cancelLabel={pendingDangerItem?.cancelLabel ?? "취소"}
+        confirmLabel={pendingDangerItem?.confirmLabel ?? "확인"}
+        iconName={pendingDangerItem?.iconName ?? "trash-modal"}
         onConfirm={handleConfirm}
       />
     </>

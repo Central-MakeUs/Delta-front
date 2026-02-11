@@ -1,3 +1,4 @@
+import type React from "react";
 import type { IconProps } from "@/shared/components/icon/icon";
 
 export type AppBarSurface = "solid" | "transparent";
@@ -24,9 +25,17 @@ export type BasicProps = CommonProps & {
 export type NonEmptyArray<T> = readonly [T, ...T[]];
 
 export type ActionMenuItem = {
+  id: string;
   label: string;
   tone?: "default" | "danger";
   onClick: () => void;
+  confirmTitle?: string;
+  confirmDescription?: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  iconName?: React.ComponentProps<
+    typeof import("@/shared/components/icon/icon").default
+  >["name"];
 };
 
 export type ActionMenuProps = {

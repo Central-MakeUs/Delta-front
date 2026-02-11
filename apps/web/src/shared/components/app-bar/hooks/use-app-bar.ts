@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
 import { ROUTES, GRAPH_TABS, type GraphTab } from "@/shared/constants/routes";
@@ -7,6 +7,8 @@ import {
   parseProgress,
   shouldHideAppBar,
 } from "@/shared/components/app-bar/utils/app-bar-routing";
+import { useDeleteProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-delete-problem-detail-mutation";
+import { toastSuccess } from "@/shared/components/toast/toast";
 
 type UseAppBarResult =
   | { isHidden: true; props?: never }
@@ -28,17 +30,16 @@ export const useAppBar = (): UseAppBarResult => {
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
+  const deleteMutation = useDeleteProblemDetailMutation();
 
   const [isWrongDetailMenuOpen, setIsWrongDetailMenuOpen] = useState(false);
 
-  const closeWrongDetailMenu = useMemo(
-    () => () => setIsWrongDetailMenuOpen(false),
-    []
-  );
+  const closeWrongDetailMenu = useCallback(() => {
+    setIsWrongDetailMenuOpen(false);
+  }, []);
 
   if (shouldHideAppBar(pathname)) return { isHidden: true };
 
-  /* HOME */
   if (pathname === ROUTES.HOME) {
     return {
       isHidden: false,
@@ -51,7 +52,6 @@ export const useAppBar = (): UseAppBarResult => {
     };
   }
 
-  /* my */
   if (pathname.startsWith(ROUTES.MY.ROOT)) {
     return {
       isHidden: false,
@@ -85,7 +85,6 @@ export const useAppBar = (): UseAppBarResult => {
     };
   }
 
-  /* wrong */
   const wrongMatch = getWrongRouteMatch(pathname);
 
   if (wrongMatch.type === "create") {
@@ -136,16 +135,16 @@ export const useAppBar = (): UseAppBarResult => {
     const openMenu = () => setIsWrongDetailMenuOpen(true);
 
     const goEdit = () => {
-      closeWrongDetailMenu();
       router.push(ROUTES.WRONG.EDIT(wrongMatch.id));
     };
 
-    const openDeleteModal = () => {
-      closeWrongDetailMenu();
-
-      const nextParams = new URLSearchParams(sp.toString());
-      nextParams.set("delete", "1");
-      router.replace(buildUrl(pathname, nextParams), { scroll: false });
+    const deleteWrong = () => {
+      deleteMutation.mutate(wrongMatch.id, {
+        onSuccess: () => {
+          toastSuccess("오답을 삭제했어요.", 6.5);
+          router.replace(ROUTES.WRONG.ROOT);
+        },
+      });
     };
 
     return {
@@ -165,8 +164,18 @@ export const useAppBar = (): UseAppBarResult => {
           onClose: closeWrongDetailMenu,
           title: "옵션",
           items: [
-            { label: "수정하기", onClick: goEdit },
-            { label: "삭제하기", tone: "danger", onClick: openDeleteModal },
+            { id: "edit", label: "수정하기", onClick: goEdit },
+            {
+              id: "delete",
+              label: "삭제하기",
+              tone: "danger",
+              onClick: deleteWrong,
+              confirmTitle: "오답을 삭제할까요?",
+              confirmDescription: "문제를 삭제하면 되돌릴 수 없어요.",
+              cancelLabel: "아니요",
+              confirmLabel: "삭제",
+              iconName: "trash-modal",
+            },
           ],
         },
       },

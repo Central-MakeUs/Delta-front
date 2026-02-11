@@ -74,7 +74,7 @@ export const viewStack = style({
 });
 
 export const viewStackCalendar = style({
-  minHeight: "44.2rem",
+  minHeight: "55rem",
 });
 
 export const viewStackPicker = style({

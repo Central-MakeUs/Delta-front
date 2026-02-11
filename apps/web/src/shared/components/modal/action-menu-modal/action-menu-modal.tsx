@@ -36,29 +36,27 @@ const ActionMenuModal = ({ isOpen, title, items, onClose }: Props) => {
   };
 
   return (
-    <div
-      className={s.overlay}
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        className={s.menu}
-        role="dialog"
-        aria-modal="true"
-        aria-label={title ?? "메뉴"}
-      >
-        <div className={s.list}>
-          {items.map((item) => (
-            <button
-              key={item.label}
-              type="button"
-              className={s.itemButton}
-              onClick={() => handleItemClick(item.onClick)}
-            >
-              <span className={s.itemText}>{item.label}</span>
-            </button>
-          ))}
+    <div className={s.overlay} onMouseDown={onClose}>
+      <div className={s.container}>
+        <div
+          className={s.menu}
+          role="dialog"
+          aria-modal="true"
+          aria-label={title ?? "메뉴"}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          <div className={s.list}>
+            {items.map((item) => (
+              <button
+                key={item.label}
+                type="button"
+                className={s.itemButton}
+                onClick={() => handleItemClick(item.onClick)}
+              >
+                <span className={s.itemText}>{item.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

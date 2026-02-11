@@ -175,6 +175,7 @@ export const stickyTop = style({
 
 export const actionIconButton = style([
   color["grayscale-900"],
+  buttonReset,
   {
     display: "flex",
     alignItems: "center",

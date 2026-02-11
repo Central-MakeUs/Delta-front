@@ -174,10 +174,10 @@ export const stickyTop = style({
 });
 
 export const actionIconButton = style([
+  color["grayscale-900"],
   {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    flexShrink: 0,
   },
 ]);

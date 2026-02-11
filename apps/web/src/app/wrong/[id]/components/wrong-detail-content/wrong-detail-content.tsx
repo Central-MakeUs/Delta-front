@@ -40,26 +40,26 @@ const WrongDetailContent = () => {
     if (!data) return;
     if (prevProblemIdRef.current !== data.problemId) {
       prevProblemIdRef.current = data.problemId;
-      queueMicrotask(() =>
-        setMemoText(data.memoText ?? data.solutionText ?? "")
-      );
+      queueMicrotask(() => setMemoText(data.memoText ?? data.memoText ?? ""));
     }
   }, [data]);
 
   useEffect(() => {
     if (!data?.completed) return;
-    queueMicrotask(() => setMemoText(data.memoText ?? data.solutionText ?? ""));
-  }, [data?.completed, data?.memoText, data?.solutionText]);
+    queueMicrotask(() => setMemoText(data.memoText ?? data.memoText ?? ""));
+  }, [data?.completed, data?.memoText, data?.memoText]);
 
   if (isLoading) return null;
 
   if (isError || !data || !sectionData) {
     return (
-      <EmptyState
-        label="잠시 문제가 발생했어요. 다시 한번 시도해주세요."
-        iconName="error-500"
-        labelClassName={styles.emptyStateLabel}
-      />
+      <div className={styles.emptyWrap}>
+        <EmptyState
+          label="잠시 문제가 발생했어요. 다시 한번 시도해주세요."
+          iconName="error-500"
+          labelClassName={styles.emptyStateLabel}
+        />
+      </div>
     );
   }
 

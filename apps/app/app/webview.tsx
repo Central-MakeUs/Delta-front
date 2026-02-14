@@ -1,20 +1,9 @@
 import React, { useRef } from "react";
-import { Platform } from "react-native";
 import { WebView, WebViewMessageEvent } from "react-native-webview";
 import Constants from "expo-constants";
 
 const getWebBaseUrl = () => {
-  const base =
-    process.env.EXPO_PUBLIC_WEB_URL ??
-    (__DEV__
-      ? Platform.select({
-          android: "http://10.0.2.2:3000",
-          ios: "http://localhost:3000",
-          default: "http://localhost:3000",
-        })
-      : process.env.EXPO_PUBLIC_WEB_URL);
-
-  return base;
+  return "https://semo-xi.vercel.app";
 };
 
 type WebToNativeMessage =

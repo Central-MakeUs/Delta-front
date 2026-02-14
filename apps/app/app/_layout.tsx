@@ -24,10 +24,6 @@ export default function RootLayout() {
           name="modal"
           options={{ presentation: "modal", title: "Modal" }}
         />
-        <Stack.Screen
-          name="webview"
-          options={{ title: "세모", headerShown: true }}
-        />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

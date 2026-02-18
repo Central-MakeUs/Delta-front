@@ -4,7 +4,6 @@ import { useCallback, useState } from "react";
 
 export type LoginInfoFormData = {
   nickname: string;
-  birthDate: string;
   profileImage: File | null;
 };
 
@@ -16,7 +15,6 @@ export const useLoginInfoForm = ({
   initialNickname,
 }: UseLoginInfoFormParams = {}) => {
   const [nickname, setNickname] = useState("");
-  const [birthDate, setBirthDate] = useState("");
   const [profileImage, setProfileImage] = useState<File | null>(null);
 
   const [isNicknameTouched, setIsNicknameTouched] = useState(false);
@@ -32,7 +30,6 @@ export const useLoginInfoForm = ({
 
   const formData: LoginInfoFormData = {
     nickname: effectiveNickname,
-    birthDate,
     profileImage,
   };
 
@@ -46,8 +43,7 @@ export const useLoginInfoForm = ({
         setNickname(value as string);
         return;
       }
-      if (key === "birthDate") setBirthDate(value as string);
-      else setProfileImage(value as File | null);
+      setProfileImage(value as File | null);
     },
     [isNicknameTouched]
   );

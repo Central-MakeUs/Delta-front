@@ -3,25 +3,44 @@ import { useState } from "react";
 import Icon from "@/shared/components/icon/icon";
 import * as s from "@/app/my/components/profile-avatar/profile-avatar.css";
 
-const isPresignedUrl = (v: string) =>
-  v.includes("X-Amz-Algorithm=") || v.includes("X-Amz-Signature=");
+type ProfileAvatarProps = {
+  src?: string | null;
+  alt: string;
+};
 
-const ProfileAvatar = ({ src, alt }: { src?: string | null; alt: string }) => {
-  const imageSrc =
-    typeof src === "string" && src.trim().length > 0 ? src.trim() : null;
+type LoadState = {
+  src: string | null;
+  loaded: boolean;
+  failed: boolean;
+};
 
-  const [state, setState] = useState({
-    src: null as string | null,
+const isPresignedUrl = (v: string) => v.includes("X-Amz-");
+
+const normalizeSrc = (src?: string | null) => {
+  const v = typeof src === "string" ? src.trim() : "";
+  return v.length > 0 ? v : null;
+};
+
+const ProfileAvatar = ({ src, alt }: ProfileAvatarProps) => {
+  const imageSrc = normalizeSrc(src);
+
+  const [state, setState] = useState<LoadState>({
+    src: null,
     loaded: false,
     failed: false,
   });
 
-  const current =
+  const current: LoadState =
     state.src === imageSrc
       ? state
       : { src: imageSrc, loaded: false, failed: false };
 
   const showImage = imageSrc !== null && current.loaded && !current.failed;
+
+  const mark = (loaded: boolean) => {
+    if (!imageSrc) return;
+    setState({ src: imageSrc, loaded, failed: !loaded });
+  };
 
   return (
     <div className={s.avatar}>
@@ -36,12 +55,8 @@ const ProfileAvatar = ({ src, alt }: { src?: string | null; alt: string }) => {
           height={92}
           sizes="92px"
           unoptimized={isPresignedUrl(imageSrc)}
-          onLoadingComplete={() =>
-            setState({ src: imageSrc, loaded: true, failed: false })
-          }
-          onError={() =>
-            setState({ src: imageSrc, loaded: false, failed: true })
-          }
+          onLoadingComplete={() => mark(true)}
+          onError={() => mark(false)}
         />
       ) : null}
 

@@ -18,3 +18,4 @@ const useColorScheme = () => {
 };
 
 export default useColorScheme;
+export { useColorScheme };

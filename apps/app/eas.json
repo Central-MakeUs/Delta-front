@@ -14,5 +14,5 @@
       "credentialsSource": "local"
     }
   },
-  "submit": { "production": {} }
+  "submit": { "production": { "ios": {} } }
 }

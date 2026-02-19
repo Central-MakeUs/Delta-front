@@ -18,7 +18,6 @@
     },
     "android": {
       "versionCode": 1,
-      "buildNumber": "1",
       "package": "cloud.deltasemo.semo",
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false

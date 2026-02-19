@@ -10,13 +10,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "delta-semo-dev.s3.ap-northeast-2.amazonaws.com",
-        pathname: "/images/**",
-      },
-      {
-        protocol: "https",
-        hostname: "delta-semo-prod.s3.ap-northeast-2.amazonaws.com",
-        pathname: "/images/**",
+        hostname: "delta-semo.s3.ap-northeast-2.amazonaws.com",
+        pathname: "/**",
       },
     ],
   },

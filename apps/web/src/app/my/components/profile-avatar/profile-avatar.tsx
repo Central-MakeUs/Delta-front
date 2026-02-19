@@ -55,7 +55,7 @@ const ProfileAvatar = ({ src, alt }: ProfileAvatarProps) => {
           height={92}
           sizes="92px"
           unoptimized={isPresignedUrl(imageSrc)}
-          onLoadingComplete={() => mark(true)}
+          onLoad={() => mark(true)}
           onError={() => mark(false)}
         />
       ) : null}

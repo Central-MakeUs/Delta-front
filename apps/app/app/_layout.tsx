@@ -13,12 +13,13 @@ export const unstable_settings = {
   initialRouteName: "webview",
 };
 
-export default function RootLayout() {
+const RootLayout = () => {
   const colorScheme = useColorScheme();
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen
           name="webview"
           options={{ title: "세모", headerShown: false }}
@@ -27,4 +28,6 @@ export default function RootLayout() {
       <StatusBar style="auto" />
     </ThemeProvider>
   );
-}
+};
+
+export default RootLayout;

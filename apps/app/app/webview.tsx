@@ -5,7 +5,7 @@ const getWebBaseUrl = () => {
   return "https://semo-xi.vercel.app";
 };
 
-export default function WebViewScreen() {
+const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
 
   const webUrl = `${getWebBaseUrl()}/`;
@@ -20,4 +20,6 @@ export default function WebViewScreen() {
       originWhitelist={["*"]}
     />
   );
-}
+};
+
+export default WebViewScreen;

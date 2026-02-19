@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "0b9952cd-9ab1-4e65-b999-1d6f6ac1a0e2"
+      }
+    },
+    "android": {
+      "package": "cloud.deltasemo.semo"
+    }
+  }
+}

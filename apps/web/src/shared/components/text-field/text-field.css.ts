@@ -30,9 +30,16 @@ export const container = recipe({
       },
       false: {},
     },
+    border: {
+      true: {},
+      false: {
+        border: "none",
+      },
+    },
   },
   defaultVariants: {
     focusEffect: true,
+    border: true,
   },
 });
 

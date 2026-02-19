@@ -17,6 +17,8 @@ export interface TextFieldProps extends Omit<
   size?: TextFieldFontSize;
   heightSize?: TextFieldHeightSize;
   focusEffect?: boolean;
+  /** false면 테두리·모서리 제거 */
+  border?: boolean;
 }
 
 const MIN_TEXTAREA_HEIGHT = 24;
@@ -37,6 +39,7 @@ export const TextField = ({
   size = "body3",
   heightSize = "md",
   focusEffect = true,
+  border = true,
   value,
   onInput,
   ...rest
@@ -55,7 +58,7 @@ export const TextField = ({
   };
 
   return (
-    <div className={clsx(styles.container({ fullWidth, focusEffect }))}>
+    <div className={clsx(styles.container({ fullWidth, focusEffect, border }))}>
       <div
         className={clsx(
           styles.textareaWrapper({

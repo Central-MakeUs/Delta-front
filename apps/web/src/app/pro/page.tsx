@@ -8,30 +8,18 @@ import { ProHero } from "@/app/pro/components/pro-hero/pro-hero";
 import { ProFeatureCard } from "@/app/pro/components/pro-feature-card/pro-feature-card";
 import BottomCta from "@/app/pro/components/bottom-cta/bottom-cta";
 import CompleteModal from "@/shared/components/modal/complete-modal/complete-modal";
-import { useWebViewBridge } from "@/shared/hooks/use-webview-bridge";
+import { useTrackCheckoutClickMutation } from "@/shared/apis/pro/hooks/use-track-checkout-click-mutation";
 
 const ProPage = () => {
   const router = useRouter();
-  const { isInWebView, sendMessage } = useWebViewBridge({
-    onMessage: (msg) => {
-      if (msg.type === "INIT_DATA") {
-        console.log("[Pro] 네이티브에서 초기 데이터 수신:", msg.payload);
-      }
-    },
-  });
+
+  const trackCheckoutClickMutation = useTrackCheckoutClickMutation();
 
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
   const handleConfirm = () => {
-    if (isInWebView) {
-      sendMessage({
-        type: "CHECKOUT_CLICK",
-        payload: { screen: "pro", timestamp: Date.now() },
-      });
-      // 네이티브에서 결제 처리 (알림, 결제 모듈 등)
-    } else {
-      setIsCompleteModalOpen(true);
-    }
+    trackCheckoutClickMutation.mutate();
+    setIsCompleteModalOpen(true);
   };
 
   const handleCloseModal = () => {

@@ -172,3 +172,13 @@ export const stickyTop = style({
   backgroundColor: vars.color.bg,
   width: "100%",
 });
+
+export const actionIconButton = style([
+  color["grayscale-900"],
+  buttonReset,
+  {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+]);

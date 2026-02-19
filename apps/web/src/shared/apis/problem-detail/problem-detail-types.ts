@@ -19,7 +19,7 @@ export type ProblemDetailResponse = {
   answerFormat: AnswerFormat;
   answerChoiceNo: number | null;
   answerValue: string | null;
-  solutionText: string | null;
+  memoText: string | null;
   completed: boolean;
   completedAt: string | null;
   createdAt: string;
@@ -28,5 +28,5 @@ export type ProblemDetailResponse = {
 export type UpdateProblemRequest = {
   answerChoiceNo?: number;
   answerValue?: string;
-  solutionText?: string;
+  memoText?: string;
 };

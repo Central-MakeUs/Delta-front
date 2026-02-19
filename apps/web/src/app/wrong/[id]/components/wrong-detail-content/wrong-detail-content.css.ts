@@ -61,3 +61,11 @@ export const emptyStateLabel = style([
     textAlign: "center",
   },
 ]);
+
+export const emptyWrap = style({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: "80dvh",
+  height: "100%",
+});

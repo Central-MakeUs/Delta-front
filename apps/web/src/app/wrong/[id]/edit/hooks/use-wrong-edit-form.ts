@@ -26,18 +26,18 @@ export const useWrongEditForm = () => {
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
   useEffect(() => {
-    if (!sectionData && data?.solutionText == null) return;
+    if (!sectionData && data?.memoText == null) return;
     queueMicrotask(() => {
       if (sectionData) {
         setQuestionType(sectionData.questionType);
         setSelectedNumber(sectionData.answerChoice);
         setAnswerText(sectionData.answerText || "");
       }
-      if (data?.solutionText) {
-        setSolution(data.solutionText);
+      if (data?.memoText) {
+        setSolution(data.memoText);
       }
     });
-  }, [sectionData, data?.solutionText]);
+  }, [sectionData, data?.memoText]);
 
   const handleQuestionTypeChange = (value: QuestionType) => {
     setQuestionType(value);
@@ -79,7 +79,7 @@ export const useWrongEditForm = () => {
     }
 
     if (solution) {
-      updateBody.solutionText = solution;
+      updateBody.memoText = solution;
     }
 
     try {

@@ -31,14 +31,21 @@ export const problemDetailApi = {
 
   complete: async ({
     problemId,
-    solutionText,
+    memoText,
   }: {
     problemId: number | string;
-    solutionText: string;
+    memoText: string;
   }) => {
     const res = await instance.post<ApiResponse<null>>(
       API_PATHS.PROBLEM_DETAIL.COMPLETE(problemId),
-      { solutionText }
+      { memoText }
+    );
+    return unwrapApiResponse(res.data);
+  },
+
+  delete: async (problemId: number | string) => {
+    const res = await instance.delete<ApiResponse<null>>(
+      API_PATHS.PROBLEM_DETAIL.DETAIL(problemId)
     );
     return unwrapApiResponse(res.data);
   },

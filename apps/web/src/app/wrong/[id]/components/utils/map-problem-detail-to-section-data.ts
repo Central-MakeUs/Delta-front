@@ -20,6 +20,7 @@ export const mapProblemDetailToSectionData = (
       ...(unitName ? [{ label: unitName }] : []),
       ...(typeName ? [{ label: typeName }] : []),
     ],
+    memoText: data.memoText ?? null,
     isCompleted: data.completed,
   };
 };

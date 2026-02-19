@@ -8,12 +8,6 @@ import { userApi } from "@/shared/apis/user/user-api";
 import { useUploadMyProfileImageMutation } from "@/shared/apis/profile-image/hooks/use-upload-my-profile-image-mutation";
 import type { LoginInfoFormData } from "./use-login-info-form";
 
-/** 폼 birthDate (YYYY/MM/DD) → API birthDate (YYYY-MM-DD) */
-const toApiBirthDate = (value: string): string => {
-  if (!value.trim()) return "";
-  return value.trim().replace(/\//g, "-");
-};
-
 const getErrorMessage = (e: unknown): string => {
   if (e && typeof e === "object" && "message" in e) {
     return String((e as { message: unknown }).message);
@@ -32,9 +26,7 @@ export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const birthDateApi = toApiBirthDate(formData.birthDate);
-  const canSubmit =
-    Boolean(formData.nickname.trim()) && Boolean(birthDateApi) && isAgreed;
+  const canSubmit = Boolean(formData.nickname.trim()) && isAgreed;
 
   const handleComplete = useCallback(async () => {
     if (!canSubmit || isSubmitting) return;
@@ -45,12 +37,13 @@ export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
     try {
       await userApi.onboarding({
         nickname: formData.nickname.trim(),
-        birthDate: birthDateApi,
         termsAgreed: true,
-      });
+      } as Parameters<typeof userApi.onboarding>[0]);
+
       if (formData.profileImage) {
         await uploadProfileImage.mutateAsync(formData.profileImage);
       }
+
       setAuthFresh();
       router.replace(ROUTES.HOME);
     } catch (e: unknown) {
@@ -66,7 +59,6 @@ export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
     isSubmitting,
     formData.nickname,
     formData.profileImage,
-    birthDateApi,
     router,
     uploadProfileImage,
   ]);

@@ -52,9 +52,7 @@ const LoginInfoContent = () => {
 
         <FormSection
           name={formData.nickname}
-          birthDate={formData.birthDate}
           onNameChange={(value) => updateField("nickname", value)}
-          onBirthDateChange={(value) => updateField("birthDate", value)}
         />
 
         <AgreementSection

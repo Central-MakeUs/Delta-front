@@ -14,9 +14,15 @@ type LoadState = {
   failed: boolean;
 };
 
+const isPresignedUrl = (v: string) => v.includes("X-Amz-");
+
+const normalizeSrc = (src?: string | null) => {
+  const v = typeof src === "string" ? src.trim() : "";
+  return v.length > 0 ? v : null;
+};
+
 const ProfileAvatar = ({ src, alt }: ProfileAvatarProps) => {
-  const imageSrc =
-    typeof src === "string" && src.trim().length > 0 ? src.trim() : null;
+  const imageSrc = normalizeSrc(src);
 
   const [state, setState] = useState<LoadState>({
     src: null,
@@ -24,21 +30,16 @@ const ProfileAvatar = ({ src, alt }: ProfileAvatarProps) => {
     failed: false,
   });
 
-  const current =
+  const current: LoadState =
     state.src === imageSrc
       ? state
       : { src: imageSrc, loaded: false, failed: false };
 
   const showImage = imageSrc !== null && current.loaded && !current.failed;
 
-  const handleLoadComplete = () => {
+  const mark = (loaded: boolean) => {
     if (!imageSrc) return;
-    setState({ src: imageSrc, loaded: true, failed: false });
-  };
-
-  const handleError = () => {
-    if (!imageSrc) return;
-    setState({ src: imageSrc, loaded: false, failed: true });
+    setState({ src: imageSrc, loaded, failed: !loaded });
   };
 
   return (
@@ -53,8 +54,9 @@ const ProfileAvatar = ({ src, alt }: ProfileAvatarProps) => {
           width={92}
           height={92}
           sizes="92px"
-          onLoadingComplete={handleLoadComplete}
-          onError={handleError}
+          unoptimized={isPresignedUrl(imageSrc)}
+          onLoad={() => mark(true)}
+          onError={() => mark(false)}
         />
       ) : null}
 

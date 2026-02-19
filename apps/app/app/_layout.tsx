@@ -19,11 +19,7 @@ const RootLayout = () => {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="webview"
-          options={{ title: "세모", headerShown: false }}
-        />
+        <Stack.Screen name="(tabs)/index" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

@@ -11,11 +11,16 @@ export const isInWebView = (): boolean => {
 
 /** 웹 → 네이티브로 메시지 전송 */
 export const postToNative = <T = unknown>(message: WebToNativeMessage<T>): void => {
-  if (!isInWebView()) return;
+  if (!isInWebView()) {
+    console.log("ℹ️ [브릿지 확인] WebView 환경이 아니므로 메시지 전송 안 함");
+    return;
+  }
   try {
-    window.ReactNativeWebView?.postMessage(JSON.stringify(message));
+    const messageStr = JSON.stringify(message);
+    window.ReactNativeWebView?.postMessage(messageStr);
+    console.log("✅ [브릿지 확인] 웹에서 네이티브로 메시지 전송:", messageStr);
   } catch (e) {
-    console.warn("[WebView Bridge] postMessage 실패:", e);
+    console.warn("⚠️ [브릿지 확인] postMessage 실패:", e);
   }
 };
 
@@ -45,9 +50,10 @@ export const useWebViewBridge = (options?: UseWebViewBridgeOptions) => {
           event instanceof MessageEvent ? event.data : (event as { data?: string }).data;
         if (typeof dataStr !== "string") return;
         const data = JSON.parse(dataStr) as NativeToWebMessage;
+        console.log("✅ [브릿지 확인] 네이티브에서 웹으로 메시지 수신:", data);
         onMessage(data);
-      } catch {
-        // JSON 파싱 실패 시 무시
+      } catch (e) {
+        console.warn("⚠️ [브릿지 확인] JSON 파싱 실패:", e);
       }
     };
 
@@ -55,6 +61,22 @@ export const useWebViewBridge = (options?: UseWebViewBridgeOptions) => {
     document.addEventListener("message", handler as EventListener);
     return () => document.removeEventListener("message", handler as EventListener);
   }, [onMessage]);
+
+  // 브릿지 확인: 웹 로드 시 자동으로 테스트 메시지 전송
+  useEffect(() => {
+    if (!isInWebView()) {
+      console.log("ℹ️ [브릿지 확인] WebView 환경이 아닙니다 (일반 브라우저)");
+      return;
+    }
+
+    console.log("✅ [브릿지 확인] WebView 환경 감지됨, 테스트 메시지 전송");
+    const testMessage = {
+      type: "BRIDGE_TEST",
+      payload: { message: "웹에서 네이티브로 메시지 전송 테스트!", timestamp: Date.now() },
+    };
+    postToNative(testMessage);
+    console.log("✅ [브릿지 확인] 전송한 메시지:", testMessage);
+  }, []);  
 
   return {
     isInWebView: isInWebView(),

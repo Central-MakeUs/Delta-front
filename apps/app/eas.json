@@ -10,7 +10,8 @@
       "node": "22.12.0"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "credentialsSource": "local"
     }
   },
   "submit": { "production": {} }

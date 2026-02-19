@@ -6,7 +6,7 @@
       }
     },
     "android": {
-      "package": "com.delta.semo"
+      "package": "cloud.deltasemo.semo"
     }
   }
 }

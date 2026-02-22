@@ -22,13 +22,7 @@ const WebViewScreen = () => {
     const isHttp = url.startsWith("http://") || url.startsWith("https://");
     if (isHttp) return true;
 
-    if (
-      url.startsWith("kakao") ||
-      url.startsWith("intent:") ||
-      url.startsWith("market:") ||
-      url.startsWith("mailto:") ||
-      url.startsWith("tel:")
-    ) {
+    if (url.startsWith("kakao") || url.startsWith("intent:") || url.startsWith("market:")) {
       Linking.openURL(url).catch(() => {});
       return false;
     }
@@ -51,6 +45,7 @@ const WebViewScreen = () => {
         "https://kauth.kakao.com",
         "https://*.kakao.com",
         "https://appleid.apple.com",
+        "https://*.apple.com",
       ]}
       onShouldStartLoadWithRequest={handleShouldStart}
       onMessage={handleMessage}

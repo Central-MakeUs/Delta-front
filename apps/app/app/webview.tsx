@@ -8,6 +8,24 @@ const WEB_BASE_URL = "https://semo-xi.vercel.app";
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
 
+  const isAllowedAuthUrl = useCallback((url: string) => {
+    try {
+      const u = new URL(url);
+      const host = u.hostname;
+
+      return (
+        host === "semo-xi.vercel.app" ||
+        host.endsWith(".vercel.app") ||
+        host === "kauth.kakao.com" ||
+        host.endsWith(".kakao.com") ||
+        host === "appleid.apple.com" ||
+        host.endsWith(".apple.com")
+      );
+    } catch {
+      return false;
+    }
+  }, []);
+
   const handleMessage = useCallback((event: { nativeEvent: { data: string } }) => {
     try {
       const data = JSON.parse(event.nativeEvent.data) as { type: string; payload?: unknown };
@@ -39,6 +57,25 @@ const WebViewScreen = () => {
     return false;
   }, []);
 
+  const handleOpenWindow = useCallback(
+    (e: any) => {
+      const targetUrl = String(e?.nativeEvent?.targetUrl ?? "");
+      if (!targetUrl) return;
+
+      const isHttp = targetUrl.startsWith("http://") || targetUrl.startsWith("https://");
+
+      if (isHttp && isAllowedAuthUrl(targetUrl)) {
+        webViewRef.current?.injectJavaScript(
+          `window.location.href = ${JSON.stringify(targetUrl)}; true;`,
+        );
+        return;
+      }
+
+      Linking.openURL(targetUrl).catch(() => {});
+    },
+    [isAllowedAuthUrl],
+  );
+
   return (
     <WebView
       ref={webViewRef}
@@ -47,7 +84,7 @@ const WebViewScreen = () => {
       domStorageEnabled
       sharedCookiesEnabled
       thirdPartyCookiesEnabled
-      setSupportMultipleWindows={false}
+      javaScriptCanOpenWindowsAutomatically
       originWhitelist={[
         "https://semo-xi.vercel.app",
         "https://*.vercel.app",
@@ -57,6 +94,7 @@ const WebViewScreen = () => {
         "https://*.apple.com",
       ]}
       onShouldStartLoadWithRequest={handleShouldStart}
+      onOpenWindow={handleOpenWindow}
       onMessage={handleMessage}
     />
   );

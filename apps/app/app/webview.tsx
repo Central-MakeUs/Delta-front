@@ -1,4 +1,5 @@
 import React, { useCallback, useRef } from "react";
+import { Platform } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
 
@@ -22,12 +23,20 @@ const WebViewScreen = () => {
     const isHttp = url.startsWith("http://") || url.startsWith("https://");
     if (isHttp) return true;
 
-    if (url.startsWith("kakao") || url.startsWith("intent:") || url.startsWith("market:")) {
+    if (url.startsWith("kakao")) {
       Linking.openURL(url).catch(() => {});
       return false;
     }
 
-    return true;
+    if (url.startsWith("intent:") || url.startsWith("market:")) {
+      if (Platform.OS === "android") {
+        Linking.openURL(url).catch(() => {});
+      }
+      return false;
+    }
+
+    Linking.openURL(url).catch(() => {});
+    return false;
   }, []);
 
   return (

@@ -97,6 +97,8 @@ const WebViewScreen = () => {
       sharedCookiesEnabled
       thirdPartyCookiesEnabled
       javaScriptCanOpenWindowsAutomatically
+      allowsInlineMediaPlayback
+      mediaCapturePermissionGrantType="grant"
       originWhitelist={[
         "https://semo-xi.vercel.app",
         "https://*.vercel.app",

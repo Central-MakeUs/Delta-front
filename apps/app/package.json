@@ -3,6 +3,7 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
+    "eas-build-pre-install": "corepack enable",
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
@@ -44,5 +45,6 @@
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0"
   },
+  "packageManager": "pnpm@9.0.0",
   "private": true
 }

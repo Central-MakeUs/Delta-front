@@ -45,8 +45,13 @@ const WebViewScreen = () => {
   const handleShouldStart = useCallback(
     (req: ShouldStartLoadRequest) => {
       const url = String(req?.url ?? "");
+      if (!url) return false;
       const isHttp = url.startsWith("http://") || url.startsWith("https://");
       if (isHttp) return true;
+
+      const isInternalScheme =
+        url.startsWith("about:") || url.startsWith("blob:") || url.startsWith("data:");
+      if (isInternalScheme) return true;
 
       if (url.startsWith("kakao")) {
         openExternalUrl(url);

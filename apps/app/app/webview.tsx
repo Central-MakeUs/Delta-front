@@ -2,11 +2,18 @@ import React, { useCallback, useRef } from "react";
 import { Platform } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
+import type { ShouldStartLoadRequest } from "react-native-webview/lib/WebViewTypes";
 
 const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
+
+  const openExternalUrl = useCallback((url: string) => {
+    Linking.openURL(url).catch((err) => {
+      if (__DEV__) console.warn("[Linking] Failed to open URL:", url, err?.message);
+    });
+  }, []);
 
   const isAllowedAuthUrl = useCallback((url: string) => {
     try {
@@ -15,7 +22,6 @@ const WebViewScreen = () => {
 
       return (
         host === "semo-xi.vercel.app" ||
-        host.endsWith(".vercel.app") ||
         host === "kauth.kakao.com" ||
         host.endsWith(".kakao.com") ||
         host === "appleid.apple.com" ||
@@ -36,26 +42,27 @@ const WebViewScreen = () => {
     } catch {}
   }, []);
 
-  const handleShouldStart = useCallback((req: any) => {
-    const url = String(req?.url ?? "");
-    const isHttp = url.startsWith("http://") || url.startsWith("https://");
-    if (isHttp) return true;
+  const handleShouldStart = useCallback(
+    (req: ShouldStartLoadRequest) => {
+      const url = String(req?.url ?? "");
+      const isHttp = url.startsWith("http://") || url.startsWith("https://");
+      if (isHttp) return true;
 
-    if (url.startsWith("kakao")) {
-      Linking.openURL(url).catch(() => {});
-      return false;
-    }
-
-    if (url.startsWith("intent:") || url.startsWith("market:")) {
-      if (Platform.OS === "android") {
-        Linking.openURL(url).catch(() => {});
+      if (url.startsWith("kakao")) {
+        openExternalUrl(url);
+        return false;
       }
-      return false;
-    }
 
-    Linking.openURL(url).catch(() => {});
-    return false;
-  }, []);
+      if (url.startsWith("intent:") || url.startsWith("market:")) {
+        if (Platform.OS === "android") openExternalUrl(url);
+        return false;
+      }
+
+      openExternalUrl(url);
+      return false;
+    },
+    [openExternalUrl],
+  );
 
   const handleOpenWindow = useCallback(
     (e: any) => {
@@ -71,9 +78,9 @@ const WebViewScreen = () => {
         return;
       }
 
-      Linking.openURL(targetUrl).catch(() => {});
+      openExternalUrl(targetUrl);
     },
-    [isAllowedAuthUrl],
+    [isAllowedAuthUrl, openExternalUrl],
   );
 
   return (

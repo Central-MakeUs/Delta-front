@@ -1,5 +1,6 @@
 import React, { useCallback, useRef } from "react";
-import { Platform } from "react-native";
+import { Platform, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
 import type {
@@ -20,21 +21,21 @@ const WebViewScreen = () => {
     });
   }, []);
 
-  const handleMessage = useCallback(
-    (event: { nativeEvent: { data: string } }) => {
-      try {
-        const data = JSON.parse(event.nativeEvent.data) as {
-          type: string;
-          payload?: unknown;
-        };
+  const handleMessage = useCallback((event: { nativeEvent: { data: string } }) => {
+    const rawData = event.nativeEvent.data;
 
-        if (data.type === "NAVIGATION_BACK") {
-          webViewRef.current?.goBack();
-        }
-      } catch { }
-    },
-    [],
-  );
+    if (!rawData || typeof rawData !== 'string' || rawData.length > 500000) {
+      return;
+    }
+
+    try {
+      const data = JSON.parse(rawData);
+      if (data?.type === "NAVIGATION_BACK") {
+        webViewRef.current?.goBack();
+      }
+    } catch (err) {
+    }
+  }, []);
 
   const handleShouldStart = useCallback(
     (req: ShouldStartLoadRequest) => {
@@ -81,22 +82,30 @@ const WebViewScreen = () => {
   }, []);
 
   return (
-    <WebView
-      ref={webViewRef}
-      source={{ uri: `${WEB_BASE_URL}/` }}
-      javaScriptEnabled
-      domStorageEnabled
-      sharedCookiesEnabled
-      thirdPartyCookiesEnabled
-      allowsInlineMediaPlayback
-      mediaCapturePermissionGrantType="prompt"
-      originWhitelist={["*"]}
-      onShouldStartLoadWithRequest={handleShouldStart}
-      onMessage={handleMessage}
-      onError={handleError}
-      onHttpError={handleHttpError}
-    />
+    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
+      <WebView
+        ref={webViewRef}
+        source={{ uri: `${WEB_BASE_URL}/` }}
+        javaScriptEnabled
+        domStorageEnabled
+        sharedCookiesEnabled
+        thirdPartyCookiesEnabled
+        allowsInlineMediaPlayback
+        mediaCapturePermissionGrantType="prompt"
+        originWhitelist={["*"]}
+        onShouldStartLoadWithRequest={handleShouldStart}
+        onMessage={handleMessage}
+        onError={handleError}
+        onHttpError={handleHttpError}
+      />
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default WebViewScreen;

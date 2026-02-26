@@ -12,6 +12,11 @@
       "supportsTablet": true,
       "buildNumber": "1",
       "bundleIdentifier": "cloud.deltasemo.semo",
+      "entitlements": {
+        "com.apple.developer.applesignin": [
+          "Default"
+        ]
+      },
       "infoPlist": {
         "LSApplicationQueriesSchemes": [
           "kakaokompassauth",

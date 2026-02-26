@@ -1,5 +1,8 @@
 {
-  "cli": { "version": ">= 18.0.1", "appVersionSource": "remote" },
+  "cli": {
+    "version": ">= 18.0.1",
+    "appVersionSource": "remote"
+  },
   "build": {
     "development": {
       "developmentClient": true,
@@ -14,5 +17,9 @@
       "credentialsSource": "remote"
     }
   },
-  "submit": { "production": { "ios": {} } }
+  "submit": {
+    "production": {
+      "ios": {}
+    }
+  }
 }

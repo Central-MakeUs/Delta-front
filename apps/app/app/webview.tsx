@@ -2,7 +2,11 @@ import React, { useCallback, useRef } from "react";
 import { Platform } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
-import type { ShouldStartLoadRequest } from "react-native-webview/lib/WebViewTypes";
+import type {
+  ShouldStartLoadRequest,
+  WebViewErrorEvent,
+  WebViewHttpErrorEvent,
+} from "react-native-webview/lib/WebViewTypes";
 
 const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
@@ -11,46 +15,39 @@ const WebViewScreen = () => {
 
   const openExternalUrl = useCallback((url: string) => {
     Linking.openURL(url).catch((err) => {
-      if (__DEV__) console.warn("[Linking] Failed to open URL:", url, err?.message);
+      if (__DEV__)
+        console.warn("[Linking] Failed to open URL:", url, err?.message);
     });
   }, []);
 
-  const isAllowedAuthUrl = useCallback((url: string) => {
-    try {
-      const u = new URL(url);
-      const host = u.hostname;
+  const handleMessage = useCallback(
+    (event: { nativeEvent: { data: string } }) => {
+      try {
+        const data = JSON.parse(event.nativeEvent.data) as {
+          type: string;
+          payload?: unknown;
+        };
 
-      return (
-        host === "semo-xi.vercel.app" ||
-        host === "kauth.kakao.com" ||
-        host.endsWith(".kakao.com") ||
-        host === "appleid.apple.com" ||
-        host.endsWith(".apple.com")
-      );
-    } catch {
-      return false;
-    }
-  }, []);
-
-  const handleMessage = useCallback((event: { nativeEvent: { data: string } }) => {
-    try {
-      const data = JSON.parse(event.nativeEvent.data) as { type: string; payload?: unknown };
-
-      if (data.type === "NAVIGATION_BACK") {
-        webViewRef.current?.goBack();
-      }
-    } catch {}
-  }, []);
+        if (data.type === "NAVIGATION_BACK") {
+          webViewRef.current?.goBack();
+        }
+      } catch { }
+    },
+    [],
+  );
 
   const handleShouldStart = useCallback(
     (req: ShouldStartLoadRequest) => {
       const url = String(req?.url ?? "");
       if (!url) return false;
+
       const isHttp = url.startsWith("http://") || url.startsWith("https://");
       if (isHttp) return true;
 
       const isInternalScheme =
-        url.startsWith("about:") || url.startsWith("blob:") || url.startsWith("data:");
+        url.startsWith("about:") ||
+        url.startsWith("blob:") ||
+        url.startsWith("data:");
       if (isInternalScheme) return true;
 
       if (url.startsWith("kakao")) {
@@ -69,24 +66,19 @@ const WebViewScreen = () => {
     [openExternalUrl],
   );
 
-  const handleOpenWindow = useCallback(
-    (e: any) => {
-      const targetUrl = String(e?.nativeEvent?.targetUrl ?? "");
-      if (!targetUrl) return;
+  const handleError = useCallback((e: WebViewErrorEvent) => {
+    if (__DEV__)
+      console.warn(
+        "[WebView] Load error:",
+        e.nativeEvent?.description,
+        e.nativeEvent?.code,
+      );
+  }, []);
 
-      const isHttp = targetUrl.startsWith("http://") || targetUrl.startsWith("https://");
-
-      if (isHttp && isAllowedAuthUrl(targetUrl)) {
-        webViewRef.current?.injectJavaScript(
-          `window.location.href = ${JSON.stringify(targetUrl)}; true;`,
-        );
-        return;
-      }
-
-      openExternalUrl(targetUrl);
-    },
-    [isAllowedAuthUrl, openExternalUrl],
-  );
+  const handleHttpError = useCallback((e: WebViewHttpErrorEvent) => {
+    if (__DEV__)
+      console.warn("[WebView] HTTP error:", e.nativeEvent?.statusCode);
+  }, []);
 
   return (
     <WebView
@@ -96,20 +88,13 @@ const WebViewScreen = () => {
       domStorageEnabled
       sharedCookiesEnabled
       thirdPartyCookiesEnabled
-      javaScriptCanOpenWindowsAutomatically
       allowsInlineMediaPlayback
-      mediaCapturePermissionGrantType="grant"
-      originWhitelist={[
-        "https://semo-xi.vercel.app",
-        "https://*.vercel.app",
-        "https://kauth.kakao.com",
-        "https://*.kakao.com",
-        "https://appleid.apple.com",
-        "https://*.apple.com",
-      ]}
+      mediaCapturePermissionGrantType="prompt"
+      originWhitelist={["*"]}
       onShouldStartLoadWithRequest={handleShouldStart}
-      onOpenWindow={handleOpenWindow}
       onMessage={handleMessage}
+      onError={handleError}
+      onHttpError={handleHttpError}
     />
   );
 };

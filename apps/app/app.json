@@ -25,10 +25,10 @@
           "itms-apps"
         ],
         "ITSAppUsesNonExemptEncryption": false,
-        "NSCameraUsageDescription": "사진 촬영을 위해 카메라 접근 권한이 필요합니다.",
-        "NSPhotoLibraryUsageDescription": "사진 선택을 위해 앨범 접근 권한이 필요합니다.",
-        "NSPhotoLibraryAddUsageDescription": "촬영한 사진을 앨범에 저장하기 위해 접근 권한이 필요합니다.",
-        "NSMicrophoneUsageDescription": "동영상 촬영을 위해 마이크 접근 권한이 필요합니다."
+        "NSCameraUsageDescription": "세모는 오답 등록을 위해 문제지를 촬영할 때, 프로필 사진을 촬영해 계정에 설정하기 위해 카메라 접근이 필요합니다. 촬영한 이미지는 문제 인식(OCR/AI) 및 오답카드 생성을 위해 사용되며, 예를 들어 ‘오답 등록’에서 문제를 촬영하면 단원/유형 자동 분류와 카드 생성에 활용됩니다.",
+        "NSPhotoLibraryUsageDescription": "세모는 오답 등록을 위해 앨범에 저장된 문제 사진을 선택할 때, 프로필 사진을 등록할 때 사진 접근이 필요합니다. 선택한 이미지는 문제 인식(OCR/AI) 및 오답카드 생성을 위해 사용되며, 예를 들어 앨범에서 문제 사진을 선택하면 단원/유형 분류 및 카드 생성에 활용됩니다.",
+        "NSPhotoLibraryAddUsageDescription": "세모는 사용자가 원할 때 촬영한 문제 사진을 기기 앨범에 저장할 수 있도록 사진 추가 권한이 필요합니다. 예: 촬영 후 ‘사진 저장’을 선택하면 해당 이미지를 사진 앱에 저장합니다.",
+        "NSMicrophoneUsageDescription": "세모는 (해당 기능을 사용하는 경우에만) 동영상 촬영 시 음성을 함께 녹음하기 위해 마이크 접근이 필요합니다. 예: 풀이 과정을 동영상으로 촬영할 때 설명 음성을 녹음합니다."
       }
     },
     "android": {

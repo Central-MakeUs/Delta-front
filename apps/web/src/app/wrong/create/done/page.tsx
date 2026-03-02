@@ -1,6 +1,7 @@
 "use client";
 
 import clsx from "clsx";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
@@ -9,8 +10,29 @@ import * as s from "./done.css";
 import { ROUTES } from "@/shared/constants/routes";
 import { Button } from "@/shared/components/button/button/button";
 
+const postSafeAreaEdges = (
+  edges: Array<"top" | "bottom" | "left" | "right">
+) => {
+  if (typeof window === "undefined") return;
+
+  const rn = (
+    window as unknown as {
+      ReactNativeWebView?: { postMessage: (v: string) => void };
+    }
+  ).ReactNativeWebView;
+
+  rn?.postMessage(JSON.stringify({ type: "SAFE_AREA_EDGES", edges }));
+};
+
 const WrongCreateDonePage = () => {
   const router = useRouter();
+
+  useEffect(() => {
+    postSafeAreaEdges([]);
+    return () => {
+      postSafeAreaEdges(["top", "bottom"]);
+    };
+  }, []);
 
   const handleGoCreate = () => {
     router.push(ROUTES.WRONG.CREATE);

@@ -6,7 +6,6 @@ export const page = style({
   display: "flex",
   flexDirection: "column",
   gap: "2.4rem",
-  paddingTop: "env(safe-area-inset-top)",
   paddingBottom: "env(safe-area-inset-bottom)",
 });
 

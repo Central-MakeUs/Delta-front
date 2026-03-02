@@ -26,7 +26,3 @@ export const top = style([
     gap: 3,
   }),
 ]);
-
-export const description = style({
-  wordBreak: "keep-all",
-});

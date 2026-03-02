@@ -1,4 +1,5 @@
 import type { ComponentPropsWithoutRef } from "react";
+import clsx from "clsx";
 import Icon from "@/shared/components/icon/icon";
 import { color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
@@ -15,24 +16,14 @@ const AiSolutionField = ({
   className,
   ...rest
 }: Props) => {
-  const rootClassName = [s.root, className].filter(Boolean).join(" ");
-
   return (
-    <section className={rootClassName} {...rest}>
+    <section className={clsx(s.root, className)} {...rest}>
       <div className={s.top}>
         <Icon name="ai-pencil" size={2.4} />
-        <p className={[typo.body2.semibold, color["main-500"]].join(" ")}>
-          {title}
-        </p>
+        <p className={clsx(typo.body2.semibold, color["main-500"])}>{title}</p>
       </div>
 
-      <p
-        className={[
-          typo.body3.regular,
-          color["grayscale-900"],
-          s.description,
-        ].join(" ")}
-      >
+      <p className={clsx(typo.body3.regular, color["grayscale-900"])}>
         {description}
       </p>
     </section>

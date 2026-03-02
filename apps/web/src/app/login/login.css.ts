@@ -9,6 +9,13 @@ export const page = style({
   overflow: "hidden",
   display: "flex",
   flexDirection: "column",
+  paddingTop: 0,
+
+  "@supports": {
+    "(padding-top: env(safe-area-inset-top))": {
+      paddingTop: "env(safe-area-inset-top)",
+    },
+  },
 
   selectors: {
     "&::before": {

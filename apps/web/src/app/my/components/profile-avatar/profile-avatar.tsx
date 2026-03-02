@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { useState } from "react";
 import Icon from "@/shared/components/icon/icon";
@@ -45,19 +47,21 @@ const ProfileAvatar = ({ src, alt }: ProfileAvatarProps) => {
   return (
     <div className={s.avatar}>
       {imageSrc ? (
-        <Image
-          key={imageSrc}
-          className={showImage ? s.image : s.imageHidden}
-          src={imageSrc}
-          alt={showImage ? alt : ""}
-          aria-hidden={!showImage}
-          width={92}
-          height={92}
-          sizes="92px"
-          unoptimized={isPresignedUrl(imageSrc)}
-          onLoad={() => mark(true)}
-          onError={() => mark(false)}
-        />
+        <div className={showImage ? s.imageWrap : s.imageWrapHidden}>
+          <Image
+            key={imageSrc}
+            className={s.image}
+            src={imageSrc}
+            alt={showImage ? alt : ""}
+            aria-hidden={!showImage}
+            width={92}
+            height={92}
+            sizes="92px"
+            unoptimized={isPresignedUrl(imageSrc)}
+            onLoad={() => mark(true)}
+            onError={() => mark(false)}
+          />
+        </div>
       ) : null}
 
       {!showImage ? (

@@ -4,6 +4,7 @@ import clsx from "clsx";
 import BackButton from "@/shared/components/app-bar/components/back-button";
 import Icon from "@/shared/components/icon/icon";
 import * as s from "@/shared/components/loading/loading.css";
+import { useWebViewSafeAreaEdges } from "@/shared/utils/use-webview-safe-area-edges";
 
 export type LoadingVariant = "inline" | "overlay";
 
@@ -25,6 +26,8 @@ const Loading = ({
   unstyled = false,
   ...rest
 }: LoadingProps) => {
+  useWebViewSafeAreaEdges([], { enabled: variant === "overlay" });
+
   const rootClass = clsx(
     !unstyled && (variant === "overlay" ? s.overlay : s.inline),
     className

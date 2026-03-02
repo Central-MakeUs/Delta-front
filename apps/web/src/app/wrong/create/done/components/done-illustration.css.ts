@@ -14,6 +14,11 @@ export const frame = style({
 });
 
 export const iconWrap = style({
+  "@supports": {
+    "(padding-top: env(safe-area-inset-top))": {
+      paddingTop: "env(safe-area-inset-top)",
+    },
+  },
   display: "flex",
   position: "absolute",
   alignItems: "flex-end",

@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import TextField from "@/shared/components/text-field/text-field";
-import TextAreaField from "@/shared/components/text-area-field/text-area-field";
 import { Toggle } from "@/shared/components/toggle/toggle";
 import { NumberChoice } from "@/shared/components/number-choice/number-choice";
 import type { StepProps } from "@/app/wrong/create/page";
@@ -76,16 +75,6 @@ const Step4 = ({ scanId, form, handlers }: Step4Props) => {
               onChange={(e) => handlers.handleAnswerTextChange(e.target.value)}
             />
           )}
-        </div>
-
-        <div className={s.explanationContent}>
-          <span className={s.explanationTitle}>메모</span>
-          <TextAreaField
-            fullWidth
-            placeholder="메모를 입력해주세요. (ex. 자이스토리 1회 4번)"
-            value={form.memoText}
-            onChange={(e) => handlers.handleSolutionChange(e.target.value)}
-          />
         </div>
       </div>
     </div>

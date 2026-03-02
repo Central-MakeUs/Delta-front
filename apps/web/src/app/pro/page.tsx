@@ -44,7 +44,7 @@ const ProPage = () => {
         </section>
       </main>
 
-      <BottomCta label="결제하러 가기" onClick={handleConfirm} />
+      <BottomCta label="월 9,800원 ~" onClick={handleConfirm} />
 
       <CompleteModal
         isOpen={isCompleteModalOpen}

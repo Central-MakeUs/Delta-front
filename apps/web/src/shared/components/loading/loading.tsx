@@ -1,10 +1,10 @@
 "use client";
 
 import clsx from "clsx";
-import { useEffect } from "react";
 import BackButton from "@/shared/components/app-bar/components/back-button";
 import Icon from "@/shared/components/icon/icon";
 import * as s from "@/shared/components/loading/loading.css";
+import { useWebViewSafeAreaEdges } from "@/shared/utils/use-webview-safe-area-edges";
 
 export type LoadingVariant = "inline" | "overlay";
 
@@ -17,26 +17,6 @@ export type LoadingProps = {
   unstyled?: boolean;
 };
 
-const postSafeAreaEdges = (
-  edges: Array<"top" | "bottom" | "left" | "right">
-) => {
-  if (typeof window === "undefined") return;
-  const rn = (
-    window as unknown as {
-      ReactNativeWebView?: { postMessage: (v: string) => void };
-    }
-  ).ReactNativeWebView;
-
-  rn?.postMessage(JSON.stringify({ type: "SAFE_AREA_EDGES", edges }));
-};
-
-const isWebView = () => {
-  if (typeof window === "undefined") return false;
-  return Boolean(
-    (window as unknown as { ReactNativeWebView?: unknown }).ReactNativeWebView
-  );
-};
-
 const Loading = ({
   variant = "inline",
   message = "문제의 단원과 유형을 분석 중이에요..",
@@ -46,15 +26,7 @@ const Loading = ({
   unstyled = false,
   ...rest
 }: LoadingProps) => {
-  useEffect(() => {
-    if (!isWebView()) return;
-    if (variant !== "overlay") return;
-
-    postSafeAreaEdges([]);
-    return () => {
-      postSafeAreaEdges(["top", "bottom"]);
-    };
-  }, [variant]);
+  useWebViewSafeAreaEdges([], { enabled: variant === "overlay" });
 
   const rootClass = clsx(
     !unstyled && (variant === "overlay" ? s.overlay : s.inline),

@@ -1,33 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
 import Icon from "@/shared/components/icon/icon";
 import { Button } from "@/shared/components/button/button/button";
-import LoginDecorations from "./login-decorations";
+import { useWebViewSafeAreaEdges } from "@/shared/utils/use-webview-safe-area-edges";
+import LoginDecorations from "@/app/login/login-decorations";
 import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
-import * as s from "./login.css";
-
-const postSafeAreaEdges = (
-  edges: Array<"top" | "bottom" | "left" | "right">
-) => {
-  if (typeof window === "undefined") return;
-  const rn = (
-    window as unknown as {
-      ReactNativeWebView?: { postMessage: (v: string) => void };
-    }
-  ).ReactNativeWebView;
-
-  rn?.postMessage(JSON.stringify({ type: "SAFE_AREA_EDGES", edges }));
-};
+import * as s from "@/app/login/login.css";
 
 const LoginPage = () => {
-  useEffect(() => {
-    postSafeAreaEdges([]);
-    return () => {
-      postSafeAreaEdges(["top", "bottom"]);
-    };
-  }, []);
+  useWebViewSafeAreaEdges([]);
 
   const onKakaoStart = () => {
     const url = kakaoOAuth.buildAuthorizeUrl();

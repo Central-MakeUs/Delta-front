@@ -9,7 +9,7 @@ type Props = {
   description?: string;
 } & ComponentPropsWithoutRef<"section">;
 
-export const AiSolutionField = ({
+const AiSolutionField = ({
   title = "세모 AI와 함께 문제를 풀어요",
   description = "문제를 풀 때 AI 풀이로 함께 문제를 풀거나 풀이를 직접 입력하면서 공부해요.",
   className,
@@ -38,3 +38,5 @@ export const AiSolutionField = ({
     </section>
   );
 };
+
+export default AiSolutionField;

@@ -8,6 +8,7 @@ import type { StepProps } from "@/app/wrong/create/page";
 import { TOGGLE_OPTIONS } from "@/app/wrong/create/constants/option-labels";
 import SampleImg from "@/shared/assets/images/wrong-sample.png";
 import * as s from "@/app/wrong/create/components/steps/step.css";
+import AiSolutionField from "@/app/wrong/create/components/ai-solution-field/ai-solution-field";
 import { useProblemScanSummaryQuery } from "@/shared/apis/problem-scan/hooks/use-problem-scan-summary-query";
 
 import type {
@@ -76,6 +77,7 @@ const Step4 = ({ scanId, form, handlers }: Step4Props) => {
             />
           )}
         </div>
+        <AiSolutionField />
       </div>
     </div>
   );

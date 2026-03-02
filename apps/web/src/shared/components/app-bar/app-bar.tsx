@@ -106,7 +106,6 @@ const AppBar = (props: AppBarProps) => {
           </button>
 
           <div className={s.rightButtonGroup}>
-            {/*
             <button
               type="button"
               className={s.premiumButton}
@@ -121,7 +120,6 @@ const AppBar = (props: AppBarProps) => {
               />
               <p className={s.premiumButtonText}>PRO</p>
             </button>
-            */}
             <button
               type="button"
               className={s.rightIconButton}

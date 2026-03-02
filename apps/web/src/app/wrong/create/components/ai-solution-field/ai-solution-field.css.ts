@@ -21,7 +21,6 @@ export const root = style([
 export const top = style([
   sprinkles({
     display: "flex",
-    flexDirection: "row",
     alignItems: "center",
     gap: 3,
   }),

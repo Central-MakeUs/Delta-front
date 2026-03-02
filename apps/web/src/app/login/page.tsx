@@ -2,12 +2,15 @@
 
 import Icon from "@/shared/components/icon/icon";
 import { Button } from "@/shared/components/button/button/button";
-import LoginDecorations from "./login-decorations";
+import { useWebViewSafeAreaEdges } from "@/shared/utils/use-webview-safe-area-edges";
+import LoginDecorations from "@/app/login/login-decorations";
 import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
-import * as s from "./login.css";
+import * as s from "@/app/login/login.css";
 
 const LoginPage = () => {
+  useWebViewSafeAreaEdges([]);
+
   const onKakaoStart = () => {
     const url = kakaoOAuth.buildAuthorizeUrl();
     window.location.assign(url);

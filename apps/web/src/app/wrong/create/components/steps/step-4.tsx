@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import TextField from "@/shared/components/text-field/text-field";
-import TextAreaField from "@/shared/components/text-area-field/text-area-field";
 import { Toggle } from "@/shared/components/toggle/toggle";
 import { NumberChoice } from "@/shared/components/number-choice/number-choice";
 import type { StepProps } from "@/app/wrong/create/page";
 import { TOGGLE_OPTIONS } from "@/app/wrong/create/constants/option-labels";
 import SampleImg from "@/shared/assets/images/wrong-sample.png";
 import * as s from "@/app/wrong/create/components/steps/step.css";
+import AiSolutionText from "@/app/wrong/create/components/ai-solution-text/ai-solution-text";
 import { useProblemScanSummaryQuery } from "@/shared/apis/problem-scan/hooks/use-problem-scan-summary-query";
 
 import type {
@@ -77,16 +77,7 @@ const Step4 = ({ scanId, form, handlers }: Step4Props) => {
             />
           )}
         </div>
-
-        <div className={s.explanationContent}>
-          <span className={s.explanationTitle}>메모</span>
-          <TextAreaField
-            fullWidth
-            placeholder="메모를 입력해주세요. (ex. 자이스토리 1회 4번)"
-            value={form.memoText}
-            onChange={(e) => handlers.handleSolutionChange(e.target.value)}
-          />
-        </div>
+        <AiSolutionText />
       </div>
     </div>
   );

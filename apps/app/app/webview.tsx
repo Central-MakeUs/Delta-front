@@ -13,6 +13,8 @@ const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
 type SafeEdge = "top" | "bottom" | "left" | "right";
 
+const SAFE_EDGE_SET: ReadonlySet<SafeEdge> = new Set(["top", "bottom", "left", "right"]);
+
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
   const [safeEdges, setSafeEdges] = useState<SafeEdge[]>(["top", "bottom"]);
@@ -37,8 +39,16 @@ const WebViewScreen = () => {
       }
 
       if (data?.type === "SAFE_AREA_EDGES") {
-        const edges = Array.isArray(data?.edges) ? (data.edges as SafeEdge[]) : null;
-        if (edges) setSafeEdges(edges);
+        if (!Array.isArray(data?.edges)) return;
+
+        const nextEdges = data.edges.filter(
+          (edge: unknown): edge is SafeEdge =>
+            typeof edge === "string" && SAFE_EDGE_SET.has(edge as SafeEdge),
+        );
+
+        if (nextEdges.length === data.edges.length) {
+          setSafeEdges(nextEdges);
+        }
       }
     } catch {}
   }, []);

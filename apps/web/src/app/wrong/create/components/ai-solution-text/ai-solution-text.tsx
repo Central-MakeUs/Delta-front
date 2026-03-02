@@ -3,19 +3,19 @@ import clsx from "clsx";
 import Icon from "@/shared/components/icon/icon";
 import { color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
-import * as s from "@/app/wrong/create/components/ai-solution-field/ai-solution-field.css";
+import * as s from "@/app/wrong/create/components/ai-solution-text/ai-solution-text.css";
 
-type Props = {
+type AiSolutionTextProps = {
   title?: string;
   description?: string;
 } & ComponentPropsWithoutRef<"section">;
 
-const AiSolutionField = ({
+const AiSolutionText = ({
   title = "세모 AI와 함께 문제를 풀어요",
   description = "문제를 풀 때 AI 풀이로 함께 문제를 풀거나 풀이를 직접 입력하면서 공부해요.",
   className,
   ...rest
-}: Props) => {
+}: AiSolutionTextProps) => {
   return (
     <section className={clsx(s.root, className)} {...rest}>
       <div className={s.top}>
@@ -30,4 +30,4 @@ const AiSolutionField = ({
   );
 };
 
-export default AiSolutionField;
+export default AiSolutionText;

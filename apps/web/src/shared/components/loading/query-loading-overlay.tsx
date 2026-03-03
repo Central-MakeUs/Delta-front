@@ -6,7 +6,6 @@ import { usePathname, useSearchParams } from "next/navigation";
 import Loading from "@/shared/components/loading/loading";
 import * as s from "@/shared/components/loading/loading.css";
 import { COMPLETE_PROBLEM_DETAIL_MUTATION_KEY } from "@/shared/apis/problem-detail/hooks/use-complete-problem-detail-mutation";
-import { AI_SOLUTION_MUTATION_KEY } from "@/shared/apis/problem-detail/hooks/use-ai-solution-request";
 
 const SHOW_DELAY_MS = 300;
 const HIDE_DELAY_MS = 150;
@@ -19,23 +18,17 @@ const QueryLoadingOverlay = () => {
   const ignore =
     pathname === "/wrong" ||
     pathname === "/pro" ||
+    (pathname.startsWith("/wrong/") && !pathname.startsWith("/wrong/create")) ||
     (pathname === "/wrong/create" && (step === "2" || step === "3"));
 
-  const fetchingAll = useIsFetching();
-  const fetchingSolution = useIsFetching({
-    queryKey: AI_SOLUTION_MUTATION_KEY,
-  });
-  const fetchingCount = Math.max(0, fetchingAll - fetchingSolution);
+  const fetchingCount = useIsFetching();
 
   const mutatingAll = useIsMutating();
   const mutatingIgnored = useIsMutating({
     mutationKey: COMPLETE_PROBLEM_DETAIL_MUTATION_KEY,
   });
-  const mutatingAiSolution = useIsMutating({
-    mutationKey: AI_SOLUTION_MUTATION_KEY,
-  });
 
-  const mutatingCount = Math.max(0, mutatingAll - mutatingIgnored - mutatingAiSolution);
+  const mutatingCount = Math.max(0, mutatingAll - mutatingIgnored);
   const active = fetchingCount + mutatingCount > 0;
 
   const [open, setOpen] = useState(false);

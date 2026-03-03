@@ -78,7 +78,7 @@ export const useAppBar = (): UseAppBarResult => {
       isHidden: false,
       props: {
         variant: "basic",
-        title: "이용약관",
+        title: "서비스 이용약관",
         onBack: () => router.back(),
       },
     };

@@ -7,7 +7,6 @@ import * as styles from "./solution-section.css";
 import Icon from "@/shared/components/icon/icon";
 import MathText from "./math-text";
 
-// "" → "." → ".." → "..." → ".." → "." → "" → ...
 const DOTS_SEQUENCE = ["", ".", "..", "...", "..", "."] as const;
 
 interface SolutionSectionProps {
@@ -59,7 +58,11 @@ const SolutionSection = ({
         )}
         {isPending && (
           <div className={styles.loadingOverlay}>
-            <Icon name="ai-loading" size={4.0} className={styles.rotatingIcon} />
+            <Icon
+              name="ai-loading"
+              size={4.0}
+              className={styles.rotatingIcon}
+            />
             <span className={styles.loadingText}>
               세모가 문제를 푸는 중이에요{DOTS_SEQUENCE[dotIndex]}
             </span>

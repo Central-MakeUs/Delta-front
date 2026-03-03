@@ -35,7 +35,7 @@ const SolutionSection = ({
     <div className={styles.solutionInputWrapper}>
       <div className={styles.container}>
         {solutionText ? (
-          <MathText text={solutionText} />
+          <MathText text={solutionText} className={styles.solutionPlainText} />
         ) : (
           <div
             className={clsx(

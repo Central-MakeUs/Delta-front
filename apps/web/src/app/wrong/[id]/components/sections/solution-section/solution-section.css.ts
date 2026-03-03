@@ -72,7 +72,7 @@ export const loadingText = style([
 export const solutionPlainText = style([
   typo.body2.regular,
   {
-    color: vars.color.grayscale[700],
+    color: vars.color.grayscale[900],
     width: "100%",
     whiteSpace: "pre-wrap",
     wordBreak: "keep-all",

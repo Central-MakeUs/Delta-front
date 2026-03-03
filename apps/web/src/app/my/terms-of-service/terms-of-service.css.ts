@@ -30,6 +30,26 @@ export const content = style([
     width: "100%",
     borderRadius: vars.radius.r12,
     display: "flex",
+    flexDirection: "column",
     padding: "1.6rem",
+    gap: "0.8rem",
   },
 ]);
+
+export const paragraph = style({
+  margin: 0,
+});
+
+export const bulletItem = style({
+  margin: 0,
+  position: "relative",
+  paddingLeft: "1.2rem",
+  selectors: {
+    "&::before": {
+      content: '"-"',
+      position: "absolute",
+      left: 0,
+      top: 0,
+    },
+  },
+});

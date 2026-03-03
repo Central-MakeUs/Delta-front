@@ -1,32 +1,33 @@
 import * as s from "@/app/my/terms-of-service/terms-of-service.css";
+import { TERMS_SECTIONS } from "@/app/my/terms-of-service/terms-sections-data";
+
+const isBulletLine = (text: string) => text.trimStart().startsWith("-");
+const stripBullet = (text: string) => text.trimStart().replace(/^-+\s*/, "");
 
 const TermsOfService = () => {
   return (
     <div className={s.page}>
-      <div className={s.contentWrapper}>
-        <span className={s.title}>제 1조</span>
-        <div className={s.content}>
-          제 1장에 관한 내용입니다. 제 1장에 관한 내용입니다.제 1장에 관한
-          내용입니다.제 1장에 관한 내용입니다.제 1장에 관한 내용입니다.제 1장에
-          관한 내용입니다.제 1장에 관한 내용입니다.제 1장에 관한 내용입니다.제
-          1장에 관한 내용입니다.제 1장에 관한 내용입니다.제 1장에 관한
-          내용입니다.제 1장에 관한 내용입니다.제 1장에 관한 내용입니다.제 1장에
-          관한 내용입니다.제 1장에 관한 내용입니다.제 1장에 관한 내용입니다.제
-          1장에 관한 내용입니다.
+      {TERMS_SECTIONS.map(({ title, content }) => (
+        <div key={title} className={s.contentWrapper}>
+          <span className={s.title}>{title}</span>
+
+          <div className={s.content}>
+            {content.map((raw, i) => {
+              const bullet = isBulletLine(raw);
+              const text = bullet ? stripBullet(raw) : raw;
+
+              return (
+                <p
+                  key={`${title}-${i}`}
+                  className={bullet ? s.bulletItem : s.paragraph}
+                >
+                  {text}
+                </p>
+              );
+            })}
+          </div>
         </div>
-      </div>
-      <div className={s.contentWrapper}>
-        <span className={s.title}>제 2조</span>
-        <div className={s.content}>
-          제 2장에 관한 내용입니다. 제 2장에 관한 내용입니다.제 2장에 관한
-          내용입니다.제 2장에 관한 내용입니다.제 2장에 관한 내용입니다.제 2장에
-          관한 내용입니다.제 2장에 관한 내용입니다.제 2장에 관한 내용입니다.제
-          2장에 관한 내용입니다.제 2장에 관한 내용입니다.제 2장에 관한
-          내용입니다.제 2장에 관한 내용입니다.제 2장에 관한 내용입니다.제 2장에
-          관한 내용입니다.제 2장에 관한 내용입니다.제 2장에 관한 내용입니다.제
-          2장에 관한 내용입니다.
-        </div>
-      </div>
+      ))}
     </div>
   );
 };

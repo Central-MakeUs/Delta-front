@@ -116,7 +116,7 @@ const MyPageView = ({
                 <MenuItem
                   iconName="file-text"
                   label="서비스 이용약관"
-                  onClick={() => router.replace(ROUTES.MY.TERMS_OR_SERVICE)}
+                  onClick={() => router.push(ROUTES.MY.TERMS_OR_SERVICE)}
                 />
 
                 <MenuItem

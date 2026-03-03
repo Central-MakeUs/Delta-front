@@ -12,13 +12,13 @@ const TermsOfService = () => {
           <span className={s.title}>{title}</span>
 
           <div className={s.content}>
-            {content.map((raw, i) => {
+            {content.map((raw) => {
               const bullet = isBulletLine(raw);
               const text = bullet ? stripBullet(raw) : raw;
 
               return (
                 <p
-                  key={`${title}-${i}`}
+                  key={`${title}-${raw}`}
                   className={bullet ? s.bulletItem : s.paragraph}
                 >
                   {text}

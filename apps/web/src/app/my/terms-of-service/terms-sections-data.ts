@@ -54,7 +54,7 @@ export const TERMS_SECTIONS: readonly TermsSection[] = [
       "- 성명: 유용준",
       "- 직책: 대표",
       "- 전화번호: +82-10-7120-6289",
-      "- 이메일: dkfdirvkdnj@gmil.com",
+      "- 이메일: dkfdirvkdnj@gmail.com",
     ],
   },
   {

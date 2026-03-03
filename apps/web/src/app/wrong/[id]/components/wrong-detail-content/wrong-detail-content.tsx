@@ -27,7 +27,7 @@ const WrongDetailContent = () => {
   const { data, isLoading, isError } = useGetProblemDetailQuery(id);
   const completeMutation = useCompleteProblemDetailMutation();
   const aiSolutionMutation = useAiSolutionRequest();
-  const { data: solutionData, refetch: refetchSolution } = useGetSolutionQuery(id);
+  const { data: solutionData } = useGetSolutionQuery(id);
 
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const [isConfettiOpen, setIsConfettiOpen] = useState(false);
@@ -109,12 +109,7 @@ const WrongDetailContent = () => {
             <div className={styles.inputContent}>
               <AnswerSection {...sectionData} />
               <SolutionSection
-                onAiSolution={() =>
-                  aiSolutionMutation.mutate(
-                    { problemId: id },
-                    { onSuccess: () => refetchSolution() }
-                  )
-                }
+                onAiSolution={() => aiSolutionMutation.mutate({ problemId: id })}
                 isPending={aiSolutionMutation.isPending}
                 solutionText={solutionData?.solution?.plainText}
               />

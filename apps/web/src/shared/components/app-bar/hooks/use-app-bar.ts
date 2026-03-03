@@ -73,7 +73,18 @@ export const useAppBar = (): UseAppBarResult => {
     };
   }
 
-  if (pathname.startsWith(ROUTES.MY.ROOT)) {
+  if (pathname === ROUTES.MY.TERMS_OR_SERVICE) {
+    return {
+      isHidden: false,
+      props: {
+        variant: "basic",
+        title: "이용약관",
+        onBack: () => router.back(),
+      },
+    };
+  }
+
+  if (pathname === ROUTES.MY.ROOT) {
     return {
       isHidden: false,
       props: {

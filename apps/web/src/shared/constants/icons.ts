@@ -1,6 +1,7 @@
 export const ICONS = [
   "01",
   "ai",
+  "ai-loading",
   "ai-pencil",
   "alarm",
   "apple",

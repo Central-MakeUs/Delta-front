@@ -4,6 +4,7 @@ import { unwrapApiResponse } from "@/shared/apis/api-types";
 import { API_PATHS } from "@/shared/apis/constants/api-paths";
 import type {
   ProblemDetailResponse,
+  SolutionResponse,
   UpdateProblemRequest,
 } from "@/shared/apis/problem-detail/problem-detail-types";
 
@@ -39,6 +40,20 @@ export const problemDetailApi = {
     const res = await instance.post<ApiResponse<null>>(
       API_PATHS.PROBLEM_DETAIL.COMPLETE(problemId),
       { memoText }
+    );
+    return unwrapApiResponse(res.data);
+  },
+
+  solution: async ({ problemId }: { problemId: number | string }) => {
+    const res = await instance.post<ApiResponse<string>>(
+      API_PATHS.PROBLEM_DETAIL.SOLUTION(problemId)
+    );
+    return unwrapApiResponse(res.data);
+  },
+
+  getSolution: async ({ problemId }: { problemId: number | string }) => {
+    const res = await instance.get<ApiResponse<SolutionResponse>>(
+      API_PATHS.PROBLEM_DETAIL.GET_SOLUTION(problemId)
     );
     return unwrapApiResponse(res.data);
   },

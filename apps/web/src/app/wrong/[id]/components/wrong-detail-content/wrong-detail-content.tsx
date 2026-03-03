@@ -13,6 +13,8 @@ import { BottomButton } from "@/app/wrong/[id]/components/actions";
 import CompleteModal from "@/shared/components/modal/complete-modal/complete-modal";
 import { useGetProblemDetailQuery } from "@/shared/apis/problem-detail/hooks/use-get-problem-detail-query";
 import { useCompleteProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-complete-problem-detail-mutation";
+import { useAiSolutionRequest } from "@/shared/apis/problem-detail/hooks/use-ai-solution-request";
+import { useGetSolutionQuery } from "@/shared/apis/problem-detail/hooks/use-get-solution-query";
 import { mapProblemDetailToSectionData } from "../utils/map-problem-detail-to-section-data";
 import type { WrongDetailSectionData } from "../types";
 import EmptyState from "@/shared/components/empty-state/empty-state";
@@ -24,6 +26,8 @@ const WrongDetailContent = () => {
 
   const { data, isLoading, isError } = useGetProblemDetailQuery(id);
   const completeMutation = useCompleteProblemDetailMutation();
+  const aiSolutionMutation = useAiSolutionRequest();
+  const { data: solutionData, refetch: refetchSolution } = useGetSolutionQuery(id);
 
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const [isConfettiOpen, setIsConfettiOpen] = useState(false);
@@ -104,7 +108,16 @@ const WrongDetailContent = () => {
           <div className={styles.inputSection}>
             <div className={styles.inputContent}>
               <AnswerSection {...sectionData} />
-              <SolutionSection />
+              <SolutionSection
+                onAiSolution={() =>
+                  aiSolutionMutation.mutate(
+                    { problemId: id },
+                    { onSuccess: () => refetchSolution() }
+                  )
+                }
+                isPending={aiSolutionMutation.isPending}
+                solutionText={solutionData?.solution?.plainText}
+              />
             </div>
           </div>
         </div>

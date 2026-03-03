@@ -104,11 +104,7 @@ const WrongDetailContent = () => {
           <div className={styles.inputSection}>
             <div className={styles.inputContent}>
               <AnswerSection {...sectionData} />
-              <SolutionSection
-                value={memoText}
-                onChange={setMemoText}
-                disabled={data.completed}
-              />
+              <SolutionSection />
             </div>
           </div>
         </div>

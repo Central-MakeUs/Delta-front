@@ -48,6 +48,7 @@ export const ICONS = [
   "target",
   "toast-error",
   "toast-success",
+  "trash-chip",
   "trash-modal",
   "triangle",
   "unlock",

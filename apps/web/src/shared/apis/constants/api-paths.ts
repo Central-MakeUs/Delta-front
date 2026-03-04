@@ -48,6 +48,8 @@ export const API_PATHS = {
       `${API_V1}/problems/${problemId}/ai-solution-requests`,
     GET_SOLUTION: (problemId: number | string) =>
       `${API_V1}/problems/${problemId}/ai-solution`,
+    DELETE_SOLUTION: (problemId: number | string) =>
+      `${API_V1}/problems/${problemId}/ai-solution`,
   },
   PRO: {
     CHECKOUT_CLICK: `${API_V1}/pro/checkout-click`,

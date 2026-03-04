@@ -82,6 +82,7 @@ export const chip = recipe({
       white: [bgColor["grayscale-0"], color["grayscale-900"]],
       "white-accent": [bgColor["grayscale-0"], color["main-500"]],
       "white-surface": [bgColor["grayscale-0"], color["grayscale-700"]],
+      "white-gray": [bgColor["grayscale-0"], color["grayscale-500"]],
     },
   },
 
@@ -105,6 +106,10 @@ export const chip = recipe({
     {
       variants: { size: "md", shape: "pill" },
       style: { padding: "0.4rem 1.2rem", borderRadius: vars.radius.r24 },
+    },
+    {
+      variants: { size: "md", shape: "pill", state: "active" },
+      style: { padding: "0.4rem 0.8rem", borderRadius: vars.radius.r24 },
     },
     {
       variants: { size: "md", shape: "square" },

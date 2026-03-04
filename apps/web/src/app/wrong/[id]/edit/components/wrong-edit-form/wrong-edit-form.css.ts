@@ -29,6 +29,15 @@ export const bottomButtonContainer = style({
   margin: "0 auto",
   background: vars.color.grayscale[0],
   zIndex: vars.zIndex.bottomNav,
+
+  "@supports": {
+    "(padding-bottom: env(safe-area-inset-bottom))": {
+      paddingBottom: "env(safe-area-inset-bottom)",
+    },
+    "(padding-bottom: constant(safe-area-inset-bottom))": {
+      paddingBottom: "constant(safe-area-inset-bottom)",
+    },
+  },
 });
 
 export const bottomButtonWrapper = style({

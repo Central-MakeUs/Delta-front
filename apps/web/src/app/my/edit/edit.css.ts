@@ -39,5 +39,14 @@ export const buttonWrapper = style([
     padding: "1.6rem",
     width: "100%",
     zIndex: vars.zIndex.bottomButton,
+
+    "@supports": {
+      "(padding-bottom: env(safe-area-inset-bottom))": {
+        paddingBottom: "calc(1.6rem + env(safe-area-inset-bottom))",
+      },
+      "(padding-bottom: constant(safe-area-inset-bottom))": {
+        paddingBottom: "calc(1.6rem + constant(safe-area-inset-bottom))",
+      },
+    },
   },
 ]);

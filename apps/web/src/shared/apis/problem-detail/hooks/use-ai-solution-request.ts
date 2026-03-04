@@ -11,7 +11,10 @@ export const useAiSolutionRequest = () => {
     mutationKey: AI_SOLUTION_MUTATION_KEY,
     mutationFn: ({ problemId }: { problemId: number | string }) =>
       problemDetailApi.solution({ problemId }),
-    onSuccess: (_, { problemId }) => {
+    onSuccess: (data, { problemId }) => {
+      queryClient.setQueryData(problemDetailQueryKeys.solution(problemId), {
+        solution: { plainText: data },
+      });
       queryClient.invalidateQueries({
         queryKey: problemDetailQueryKeys.solution(problemId),
       });

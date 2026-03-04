@@ -11,7 +11,7 @@ export const AppBarGate = () => {
   const pathname = usePathname();
   const result = useAppBar();
   if (result.isHidden) return null;
-  const isMy = pathname.startsWith(ROUTES.MY.ROOT);
+  const isMy = pathname === ROUTES.MY.ROOT;
 
   return (
     <AppBar

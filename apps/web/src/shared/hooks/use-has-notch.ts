@@ -16,6 +16,9 @@ const readInsetPx = (value: string) => {
 };
 
 const getSafeAreaInsetTopPx = () => {
+  if (typeof window === "undefined") return 0;
+  if (!document?.body) return 0;
+
   const envTop = readInsetPx("env(safe-area-inset-top)");
   const constantTop = readInsetPx("constant(safe-area-inset-top)");
   return Math.max(envTop, constantTop);
@@ -23,25 +26,34 @@ const getSafeAreaInsetTopPx = () => {
 
 const NOTCH_INSET_TOP_THRESHOLD_PX = 40;
 
+const computeHasNotch = () =>
+  getSafeAreaInsetTopPx() >= NOTCH_INSET_TOP_THRESHOLD_PX;
+
 export const useHasNotch = () => {
-  const [hasNotch, setHasNotch] = useState(false);
+  const [hasNotch, setHasNotch] = useState(computeHasNotch);
 
   useEffect(() => {
     let raf = 0;
+
     const update = () => {
-      const insetTop = getSafeAreaInsetTopPx();
-      setHasNotch(insetTop >= NOTCH_INSET_TOP_THRESHOLD_PX);
+      const next = computeHasNotch();
+      setHasNotch((prev) => (prev === next ? prev : next));
     };
 
-    raf = window.requestAnimationFrame(update);
+    const handleViewportChange = () => {
+      if (raf) window.cancelAnimationFrame(raf);
+      raf = window.requestAnimationFrame(update);
+    };
 
-    window.addEventListener("resize", update);
-    window.addEventListener("orientationchange", update);
+    handleViewportChange();
+
+    window.addEventListener("resize", handleViewportChange);
+    window.addEventListener("orientationchange", handleViewportChange);
 
     return () => {
       if (raf) window.cancelAnimationFrame(raf);
-      window.removeEventListener("resize", update);
-      window.removeEventListener("orientationchange", update);
+      window.removeEventListener("resize", handleViewportChange);
+      window.removeEventListener("orientationchange", handleViewportChange);
     };
   }, []);
 

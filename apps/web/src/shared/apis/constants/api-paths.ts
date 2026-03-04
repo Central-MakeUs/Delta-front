@@ -44,6 +44,10 @@ export const API_PATHS = {
     DETAIL: (problemId: number | string) => `${API_V1}/problems/${problemId}`,
     COMPLETE: (problemId: number | string) =>
       `${API_V1}/problems/${problemId}/complete`,
+    SOLUTION: (problemId: number | string) =>
+      `${API_V1}/problems/${problemId}/ai-solution-requests`,
+    GET_SOLUTION: (problemId: number | string) =>
+      `${API_V1}/problems/${problemId}/ai-solution`,
   },
   PRO: {
     CHECKOUT_CLICK: `${API_V1}/pro/checkout-click`,

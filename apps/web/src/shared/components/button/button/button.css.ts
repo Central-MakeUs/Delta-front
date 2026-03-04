@@ -16,6 +16,7 @@ export const tone = styleVariants({
   dark: [bgColor["grayscale-900"], color["grayscale-0"]],
   kakao: [bgColor["login-kakao"], color["grayscale-900"]],
   complete: [bgColor["main-500"], color["grayscale-0"]],
+  ai: [bgColor["main-100"], color["main-500"]],
   disabled: [bgColor["grayscale-100"], color["grayscale-500"]],
 });
 
@@ -52,6 +53,12 @@ export const button = recipe({
         minHeight: "4.0rem",
         padding: "0.8rem 1.2rem",
         borderRadius: vars.radius.r8,
+        gap: "0.8rem",
+      },
+      "40-ai": {
+        minHeight: "4.0rem",
+        padding: "0.8rem 1.2rem",
+        borderRadius: vars.radius.r32,
         gap: "0.8rem",
       },
       "48": {
@@ -96,6 +103,7 @@ export const labelSizeTypo = recipe({
     size: {
       "32": typo.caption.semibold,
       "40": typo.body3.semibold,
+      "40-ai": typo.body3.semibold,
       "48": typo.body2.semibold,
       "56": typo.body2.medium,
       "60": typo.body1.bold,

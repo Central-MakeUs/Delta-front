@@ -30,3 +30,9 @@ export type UpdateProblemRequest = {
   answerValue?: string;
   memoText?: string;
 };
+
+export type SolutionResponse = {
+  solution: {
+    plainText: string;
+  };
+};

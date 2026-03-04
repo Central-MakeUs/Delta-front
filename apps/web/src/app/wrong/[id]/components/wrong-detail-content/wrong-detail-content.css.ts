@@ -50,7 +50,7 @@ export const inputContent = style({
   flexDirection: "column",
   alignItems: "flex-start",
   cursor: "default",
-  gap: "1.2rem",
+  gap: "1.6rem",
   width: "100%",
 });
 

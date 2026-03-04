@@ -28,6 +28,12 @@ export const diagonal1 = style({
   },
 });
 
+export const diagonal1Notch = style({
+  width: "36rem",
+  height: "36rem",
+  top: "-2.7rem",
+});
+
 export const pinwheel = style({
   position: "absolute",
   left: "-0.8rem",
@@ -46,4 +52,8 @@ export const diagonal2 = style({
   top: "20.0rem",
   width: "25.0rem",
   height: "8.0rem",
+});
+
+export const diagonal2Notch = style({
+  top: "23rem",
 });

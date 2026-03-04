@@ -18,6 +18,7 @@ const QueryLoadingOverlay = () => {
   const ignore =
     pathname === "/wrong" ||
     pathname === "/pro" ||
+    (pathname.startsWith("/wrong/") && !pathname.startsWith("/wrong/create")) ||
     (pathname === "/wrong/create" && (step === "2" || step === "3"));
 
   const fetchingCount = useIsFetching();

@@ -1,5 +1,6 @@
 import "@/shared/styles/index.css";
 import "@/shared/styles/global.css";
+import "katex/dist/katex.min.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Suspense } from "react";

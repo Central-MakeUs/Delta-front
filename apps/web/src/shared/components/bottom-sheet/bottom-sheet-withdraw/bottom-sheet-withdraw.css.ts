@@ -50,6 +50,14 @@ export const bottomSheet = style([
         animation: `${slideDown} 0.3s ease-in both`,
       },
     },
+    "@supports": {
+      "(padding-bottom: env(safe-area-inset-bottom))": {
+        paddingBottom: "calc(env(safe-area-inset-bottom))",
+      },
+      "(padding-bottom: constant(safe-area-inset-bottom))": {
+        paddingBottom: "calc(constant(safe-area-inset-bottom))",
+      },
+    },
   },
 ]);
 

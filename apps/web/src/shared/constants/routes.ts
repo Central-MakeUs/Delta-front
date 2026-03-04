@@ -34,6 +34,7 @@ export const ROUTES = {
   MY: {
     ROOT: `/${MY_PREFIX}`,
     EDIT: `/${MY_PREFIX}/edit`,
+    TERMS_OR_SERVICE: `/${MY_PREFIX}/terms-of-service`,
   },
   GRAPH: {
     ROOT: `/${GRAPH_PREFIX}`,
@@ -58,5 +59,6 @@ export type RouteValue =
   | typeof ROUTES.WRONG.CREATE_DONE
   | typeof ROUTES.MY.ROOT
   | typeof ROUTES.MY.EDIT
+  | typeof ROUTES.MY.TERMS_OR_SERVICE
   | typeof ROUTES.GRAPH.ROOT
   | typeof ROUTES.PRO.ROOT;

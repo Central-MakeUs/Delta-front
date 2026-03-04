@@ -114,6 +114,12 @@ const MyPageView = ({
             <MyPageCard>
               <div className={s.menuList}>
                 <MenuItem
+                  iconName="file-text"
+                  label="서비스 이용약관"
+                  onClick={() => router.push(ROUTES.MY.TERMS_OR_SERVICE)}
+                />
+
+                <MenuItem
                   iconName="log-out"
                   label="로그아웃"
                   onClick={handleLogoutClick}

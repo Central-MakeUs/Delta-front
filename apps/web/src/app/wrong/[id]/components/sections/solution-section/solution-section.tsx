@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import clsx from "clsx";
+import Lottie from "lottie-react";
 import { Button } from "@/shared/components/button/button/button";
 import * as styles from "./solution-section.css";
-import Icon from "@/shared/components/icon/icon";
 import MathText from "./math-text";
+import loadingAiLottie from "@/shared/assets/lottie/loading_ai.json";
 
 const DOTS_SEQUENCE = ["", ".", "..", "...", "..", "."] as const;
 
@@ -32,6 +33,7 @@ const SolutionSection = ({
 
   return (
     <div className={styles.solutionInputWrapper}>
+      <h2 className={styles.sectionTitle}>풀이</h2>
       <div className={styles.container}>
         {solutionText ? (
           <MathText text={solutionText} className={styles.solutionPlainText} />
@@ -58,11 +60,7 @@ const SolutionSection = ({
         )}
         {isPending && (
           <div className={styles.loadingOverlay}>
-            <Icon
-              name="ai-loading"
-              size={4.0}
-              className={styles.rotatingIcon}
-            />
+            <Lottie autoplay loop animationData={loadingAiLottie} />
             <span className={styles.loadingText}>
               세모가 문제를 푸는 중이에요{DOTS_SEQUENCE[dotIndex]}
             </span>

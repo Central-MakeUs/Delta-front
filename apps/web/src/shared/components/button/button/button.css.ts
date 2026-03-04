@@ -57,7 +57,7 @@ export const button = recipe({
       },
       "40-ai": {
         minHeight: "4.0rem",
-        padding: "0.6rem 1.2rem",
+        padding: "0.8rem 1.2rem",
         borderRadius: vars.radius.r32,
         gap: "0.8rem",
       },

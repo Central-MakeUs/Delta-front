@@ -11,6 +11,15 @@ export const page = style({
   flexDirection: "column",
   padding: "1.6rem 2.0rem",
   gap: "2rem",
+
+  "@supports": {
+    "(padding-bottom: env(safe-area-inset-bottom))": {
+      paddingBottom: "calc(1.6rem + env(safe-area-inset-bottom))",
+    },
+    "(padding-bottom: constant(safe-area-inset-bottom))": {
+      paddingBottom: "calc(1.6rem + constant(safe-area-inset-bottom))",
+    },
+  },
 });
 
 export const contentWrapper = style({

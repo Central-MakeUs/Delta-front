@@ -39,6 +39,13 @@ export const root = recipe({
       position: "sticky",
       top: 0,
       zIndex: vars.zIndex.header,
+
+      "@supports": {
+        "(padding-top: env(safe-area-inset-top))": {
+          paddingTop: "env(safe-area-inset-top)",
+          height: `calc(${APP_BAR_HEIGHT} + env(safe-area-inset-top))`,
+        },
+      },
     },
   ],
   variants: {

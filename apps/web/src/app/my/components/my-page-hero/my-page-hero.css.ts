@@ -6,10 +6,10 @@ const APP_BAR_HEIGHT = "5.4rem";
 
 export const hero = style({
   position: "relative",
-  height: "25.8rem",
+  minHeight: "25.8rem",
   overflow: "hidden",
   background: myGradient["my-bg"],
-  paddingTop: `calc(${APP_BAR_HEIGHT} + env(safe-area-inset-top))`,
+  paddingTop: APP_BAR_HEIGHT,
   paddingBottom: "2.0rem",
   display: "flex",
   zIndex: vars.zIndex.base,
@@ -17,6 +17,18 @@ export const hero = style({
   alignItems: "center",
   justifyContent: "center",
   boxSizing: "border-box",
+});
+
+export const heroNotchSafeArea = style({
+  maxHeight: "30rem",
+  minHeight: "30rem",
+
+  "@supports": {
+    "(padding-top: env(safe-area-inset-top))": {
+      paddingTop: `calc(env(safe-area-inset-top) + ${APP_BAR_HEIGHT})`,
+      paddingBottom: `calc(2.0rem + env(safe-area-inset-bottom))`,
+    },
+  },
 });
 
 export const profileBlock = style({

@@ -4,6 +4,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 import * as s from "@/app/my/components/hero-background/hero-background.css";
+import { useHasNotch } from "@/shared/hooks/use-has-notch";
 
 const useViewportMaxWidth = (maxWidthPx: number, defaultMatched = false) => {
   const query = useMemo(() => `(max-width: ${maxWidthPx}px)`, [maxWidthPx]);
@@ -34,16 +35,23 @@ const useViewportMaxWidth = (maxWidthPx: number, defaultMatched = false) => {
 
 const HeroBackground = () => {
   const isNarrow = useViewportMaxWidth(390);
+  const hasNotch = useHasNotch();
 
   return (
     <div className={s.wrap} aria-hidden>
       <div className={s.pinwheel}>
         <Image src="/my-page/hero-pinwheel.svg" alt="" fill sizes="8rem" />
       </div>
-      <div className={clsx(s.diagonal1, isNarrow && s.diagonal1Narrow)}>
+      <div
+        className={clsx(
+          s.diagonal1,
+          isNarrow && s.diagonal1Narrow,
+          hasNotch && s.diagonal1Notch
+        )}
+      >
         <Image src="/my-page/hero-diagonal-1.svg" alt="" fill sizes="33.8rem" />
       </div>
-      <div className={s.diagonal2}>
+      <div className={clsx(s.diagonal2, hasNotch && s.diagonal2Notch)}>
         <Image src="/my-page/hero-diagonal-2.svg" alt="" fill sizes="25.0rem" />
       </div>
     </div>

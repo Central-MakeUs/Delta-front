@@ -67,6 +67,11 @@ export const backButton = style({
   top: "1.2rem",
   left: "1.6rem",
   zIndex: vars.zIndex.modal,
+  "@supports": {
+    "(padding-top: env(safe-area-inset-top))": {
+      paddingTop: "env(safe-area-inset-top)",
+    },
+  },
 });
 
 export const center = style({

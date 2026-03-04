@@ -5,15 +5,12 @@ import { useRouter } from "next/navigation";
 import { color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
 import DoneIllustration from "@/app/wrong/create/done/components/done-illustration";
-import { useWebViewSafeAreaEdges } from "@/shared/utils/use-webview-safe-area-edges";
 import * as s from "@/app/wrong/create/done/done.css";
 import { ROUTES } from "@/shared/constants/routes";
 import { Button } from "@/shared/components/button/button/button";
 
 const WrongCreateDonePage = () => {
   const router = useRouter();
-
-  useWebViewSafeAreaEdges([]);
 
   const handleGoCreate = () => {
     router.push(ROUTES.WRONG.CREATE);

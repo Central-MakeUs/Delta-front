@@ -28,6 +28,7 @@ export type ProblemDetailResponse = {
 export type UpdateProblemRequest = {
   answerChoiceNo?: number;
   answerValue?: string;
+  answerFormat?: AnswerFormat;
   memoText?: string;
 };
 

@@ -4,7 +4,7 @@ import { useGetProblemDetailQuery } from "@/shared/apis/problem-detail/hooks/use
 import { toastError } from "@/shared/components/toast/toast";
 import { useUpdateProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-update-problem-detail-mutation";
 import { mapProblemDetailToSectionData } from "../../components/utils/map-problem-detail-to-section-data";
-import type { UpdateProblemRequest } from "@/shared/apis/problem-detail/problem-detail-types";
+import type { UpdateProblemRequest, AnswerFormat } from "@/shared/apis/problem-detail/problem-detail-types";
 import type { QuestionType } from "../components/answer-section/answer-section";
 import type { WrongDetailSectionData } from "../../components/types";
 
@@ -68,13 +68,20 @@ export const useWrongEditForm = () => {
   const handleComplete = async () => {
     if (!data || updateMutation.isPending) return;
 
-    const updateBody: UpdateProblemRequest = {};
+    const answerFormat: AnswerFormat =
+      questionType === "objective"
+        ? "CHOICE"
+        : data.answerFormat !== "CHOICE"
+          ? data.answerFormat
+          : "TEXT";
 
-    if (data.answerFormat === "CHOICE" && selectedNumber !== null) {
+    const updateBody: UpdateProblemRequest = { answerFormat };
+
+    if (answerFormat === "CHOICE" && selectedNumber !== null) {
       updateBody.answerChoiceNo = Number(selectedNumber);
     }
 
-    if (data.answerFormat !== "CHOICE" && answerText) {
+    if (answerFormat !== "CHOICE" && answerText) {
       updateBody.answerValue = answerText;
     }
 

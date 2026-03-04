@@ -21,15 +21,16 @@ const getSafeAreaInsetTopPx = () => {
   return Math.max(envTop, constantTop);
 };
 
+const NOTCH_INSET_TOP_THRESHOLD_PX = 40;
+
 export const useHasNotch = () => {
   const [hasNotch, setHasNotch] = useState(false);
 
   useEffect(() => {
     let raf = 0;
-
     const update = () => {
       const insetTop = getSafeAreaInsetTopPx();
-      setHasNotch(insetTop >= 40);
+      setHasNotch(insetTop >= NOTCH_INSET_TOP_THRESHOLD_PX);
     };
 
     raf = window.requestAnimationFrame(update);

@@ -10,6 +10,7 @@ import * as s from "@/app/my/components/my-page-hero/my-page-hero.css";
 import HeroBackground from "@/app/my/components/hero-background/hero-background";
 import ProfileAvatar from "@/app/my/components/profile-avatar/profile-avatar";
 import Icon from "@/shared/components/icon/icon";
+import { useHasNotch } from "@/shared/hooks/use-has-notch";
 
 type MyPageHeroProps = {
   userName: string;
@@ -18,13 +19,13 @@ type MyPageHeroProps = {
 
 const MyPageHero = ({ userName, profileImageUrl = null }: MyPageHeroProps) => {
   const router = useRouter();
-
+  const hasNotch = useHasNotch();
   const goEditProfile = useCallback(() => {
     router.push(ROUTES.MY.EDIT);
   }, [router]);
 
   return (
-    <header className={s.hero}>
+    <header className={clsx(s.hero, hasNotch && s.heroNotchSafeArea)}>
       <HeroBackground />
       <div className={s.profileBlock}>
         <ProfileAvatar src={profileImageUrl} alt={`${userName} 프로필`} />

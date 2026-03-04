@@ -1,6 +1,5 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef } from "react";
 import { Platform, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
 import type {
@@ -11,13 +10,8 @@ import type {
 
 const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
-type SafeEdge = "top" | "bottom" | "left" | "right";
-
-const SAFE_EDGE_SET: ReadonlySet<SafeEdge> = new Set(["top", "bottom", "left", "right"]);
-
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
-  const [safeEdges, setSafeEdges] = useState<SafeEdge[]>(["top", "bottom"]);
 
   const openExternalUrl = useCallback((url: string) => {
     Linking.openURL(url).catch((err) => {
@@ -36,19 +30,6 @@ const WebViewScreen = () => {
       if (data?.type === "NAVIGATION_BACK") {
         webViewRef.current?.goBack();
         return;
-      }
-
-      if (data?.type === "SAFE_AREA_EDGES") {
-        if (!Array.isArray(data?.edges)) return;
-
-        const nextEdges = data.edges.filter(
-          (edge: unknown): edge is SafeEdge =>
-            typeof edge === "string" && SAFE_EDGE_SET.has(edge as SafeEdge),
-        );
-
-        if (nextEdges.length === data.edges.length) {
-          setSafeEdges(nextEdges);
-        }
       }
     } catch {}
   }, []);
@@ -91,29 +72,26 @@ const WebViewScreen = () => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container} edges={safeEdges}>
-      <WebView
-        ref={webViewRef}
-        style={styles.webview}
-        source={{ uri: `${WEB_BASE_URL}/` }}
-        javaScriptEnabled
-        domStorageEnabled
-        sharedCookiesEnabled
-        thirdPartyCookiesEnabled
-        allowsInlineMediaPlayback
-        mediaCapturePermissionGrantType="prompt"
-        originWhitelist={["*"]}
-        onShouldStartLoadWithRequest={handleShouldStart}
-        onMessage={handleMessage}
-        onError={handleError}
-        onHttpError={handleHttpError}
-      />
-    </SafeAreaView>
+    <WebView
+      ref={webViewRef}
+      style={styles.webview}
+      source={{ uri: `${WEB_BASE_URL}/` }}
+      javaScriptEnabled
+      domStorageEnabled
+      sharedCookiesEnabled
+      thirdPartyCookiesEnabled
+      allowsInlineMediaPlayback
+      mediaCapturePermissionGrantType="prompt"
+      originWhitelist={["*"]}
+      onShouldStartLoadWithRequest={handleShouldStart}
+      onMessage={handleMessage}
+      onError={handleError}
+      onHttpError={handleHttpError}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FFFFFF" },
   webview: { flex: 1, backgroundColor: "#FFFFFF" },
 });
 

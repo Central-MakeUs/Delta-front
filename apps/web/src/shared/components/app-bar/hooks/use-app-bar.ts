@@ -96,6 +96,18 @@ export const useAppBar = (): UseAppBarResult => {
     };
   }
 
+  if (pathname === ROUTES.MY.EDIT) {
+    return {
+      isHidden: false,
+      props: {
+        variant: "basic",
+        title: "수정하기",
+        surface: "transparent",
+        onBack: () => router.back(),
+      },
+    };
+  }
+
   if (pathname.startsWith(ROUTES.GRAPH.ROOT)) {
     const urlTab = sp.get("tab");
     const tab: GraphTab = isGraphTab(urlTab) ? urlTab : GRAPH_TABS.UNIT;

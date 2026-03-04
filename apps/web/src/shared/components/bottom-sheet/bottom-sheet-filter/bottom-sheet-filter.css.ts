@@ -148,6 +148,15 @@ export const buttonContainer = style([
     padding: "2rem 1.6rem",
     gap: "1rem",
     flex: "0 0 auto",
+
+    "@supports": {
+      "(padding-bottom: env(safe-area-inset-bottom))": {
+        paddingBottom: "calc(env(safe-area-inset-bottom))",
+      },
+      "(padding-bottom: constant(safe-area-inset-bottom))": {
+        paddingBottom: "calc(constant(safe-area-inset-bottom))",
+      },
+    },
   },
 ]);
 

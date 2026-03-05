@@ -3,12 +3,15 @@
 import { InlineMath } from "react-katex";
 
 interface MathTextProps {
-  text: string;
+  text?: string | null;
   className?: string;
 }
 
 const MathText = ({ text, className }: MathTextProps) => {
-  const normalized = text.replace(/\\n/g, "\n").replace(/<br\s*\/?>/gi, "\n");
+  const safeText = typeof text === "string" ? text : "";
+  if (!safeText) return null;
+
+  const normalized = safeText.replace(/\\n/g, "\n").replace(/<br\s*\/?>/gi, "\n");
   const lines = normalized.split("\n");
 
   return (

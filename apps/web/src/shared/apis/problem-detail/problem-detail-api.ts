@@ -58,6 +58,13 @@ export const problemDetailApi = {
     return unwrapApiResponse(res.data);
   },
 
+  deleteSolution: async (problemId: number | string) => {
+    const res = await instance.delete<ApiResponse<null>>(
+      API_PATHS.PROBLEM_DETAIL.DELETE_SOLUTION(problemId)
+    );
+    return unwrapApiResponse(res.data);
+  },
+
   delete: async (problemId: number | string) => {
     const res = await instance.delete<ApiResponse<null>>(
       API_PATHS.PROBLEM_DETAIL.DETAIL(problemId)

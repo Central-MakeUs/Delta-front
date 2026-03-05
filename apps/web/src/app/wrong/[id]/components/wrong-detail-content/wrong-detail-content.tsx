@@ -15,6 +15,7 @@ import { useGetProblemDetailQuery } from "@/shared/apis/problem-detail/hooks/use
 import { useCompleteProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-complete-problem-detail-mutation";
 import { useAiSolutionRequest } from "@/shared/apis/problem-detail/hooks/use-ai-solution-request";
 import { useGetSolutionQuery } from "@/shared/apis/problem-detail/hooks/use-get-solution-query";
+import { useDeleteSolutionMutation } from "@/shared/apis/problem-detail/hooks/use-delete-solution-mutation";
 import { mapProblemDetailToSectionData } from "../utils/map-problem-detail-to-section-data";
 import type { WrongDetailSectionData } from "../types";
 import EmptyState from "@/shared/components/empty-state/empty-state";
@@ -27,6 +28,7 @@ const WrongDetailContent = () => {
   const { data, isLoading, isError } = useGetProblemDetailQuery(id);
   const completeMutation = useCompleteProblemDetailMutation();
   const aiSolutionMutation = useAiSolutionRequest();
+  const deleteSolutionMutation = useDeleteSolutionMutation();
   const { data: solutionData } = useGetSolutionQuery(id);
 
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
@@ -109,8 +111,12 @@ const WrongDetailContent = () => {
             <div className={styles.inputContent}>
               <AnswerSection {...sectionData} />
               <SolutionSection
-                onAiSolution={() => aiSolutionMutation.mutate({ problemId: id })}
+                onAiSolution={() =>
+                  aiSolutionMutation.mutate({ problemId: id })
+                }
+                onDeleteSolution={() => deleteSolutionMutation.mutate(id)}
                 isPending={aiSolutionMutation.isPending}
+                isCompleted={data.completed}
                 solutionText={solutionData?.solution?.plainText}
               />
             </div>

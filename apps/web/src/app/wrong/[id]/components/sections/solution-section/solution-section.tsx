@@ -43,8 +43,15 @@ const SolutionSection = ({
     setIsDeleteModalOpen(false);
   };
 
+  const hasSolution = Boolean(solutionText?.trim());
+
   return (
-    <div className={styles.solutionInputWrapper}>
+    <div
+      className={clsx(
+        styles.solutionInputWrapper,
+        hasSolution && styles.solutionInputWrapperAuto
+      )}
+    >
       <div className={styles.sectionHeader}>
         <span className={styles.sectionTitle}>풀이</span>
         {solutionText && (
@@ -64,9 +71,20 @@ const SolutionSection = ({
           </div>
         )}
       </div>
-      <div className={styles.container}>
-        {solutionText ? (
-          <MathText text={solutionText} className={styles.solutionPlainText} />
+      <div
+        className={clsx(
+          styles.container,
+          hasSolution && styles.containerWithSolution
+        )}
+      >
+        {hasSolution ? (
+          <MathText
+            text={solutionText}
+            className={clsx(
+              styles.solutionPlainText,
+              styles.solutionPlainTextAuto
+            )}
+          />
         ) : (
           <div
             className={clsx(

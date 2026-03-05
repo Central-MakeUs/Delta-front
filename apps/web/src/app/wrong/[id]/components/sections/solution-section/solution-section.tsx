@@ -48,9 +48,7 @@ const SolutionSection = ({
       <div className={styles.sectionHeader}>
         <span className={styles.sectionTitle}>풀이</span>
         {solutionText && (
-          <div
-            className={clsx(isCompleted && styles.deleteChipDisabled)}
-          >
+          <div className={clsx(isCompleted && styles.deleteChipDisabled)}>
             <Chip
               icon="trash-chip"
               iconSize={1.6}

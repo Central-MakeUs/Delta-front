@@ -4,6 +4,8 @@ import * as s from "@/shared/components/chip/chip.css";
 import Icon from "@/shared/components/icon/icon";
 import type { IconName } from "@/shared/constants/icons";
 
+export type IconSize = number;
+
 export type ChipSize = "xs" | "md" | "lg";
 export type ChipShape = "pill" | "square";
 export type ChipState = "default" | "active";
@@ -14,11 +16,13 @@ export type ChipTone =
   | "solid"
   | "white"
   | "white-accent"
-  | "white-surface";
+  | "white-surface"
+  | "white-gray";
 
 type ChipProps = {
   label: string;
   icon?: IconName;
+  iconSize?: IconSize;
   iconRotate?: 0 | 90 | 180 | 270;
   size?: ChipSize;
   shape?: ChipShape;
@@ -39,6 +43,7 @@ export const Chip = ({
   icon,
   iconRotate = 270,
   size = "lg",
+  iconSize = 2.4,
   shape = "pill",
   state = "default",
   tone = "auto",
@@ -65,7 +70,7 @@ export const Chip = ({
     >
       {icon ? (
         <span className={s.iconWrap} aria-hidden>
-          <Icon name={icon} size={2.4} rotate={iconRotate} />
+          <Icon name={icon} size={iconSize} rotate={iconRotate} />
         </span>
       ) : null}
       <span className={s.label}>{label}</span>

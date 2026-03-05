@@ -80,6 +80,18 @@ export const solutionPlainText = style([
   },
 ]);
 
+export const sectionHeader = style({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  width: "100%",
+});
+
+export const deleteChipDisabled = style({
+  opacity: 0.5,
+  pointerEvents: "none",
+});
+
 export const titleRow = style({
   display: "flex",
   alignItems: "center",

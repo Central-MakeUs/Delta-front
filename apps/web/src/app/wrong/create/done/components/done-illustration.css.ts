@@ -1,11 +1,14 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 
-const LEFT_GAP = "3.2rem";
-
 export const frame = style({
   width: "100%",
   height: "56rem",
+  "@supports": {
+    "(padding-top: env(safe-area-inset-top))": {
+      paddingTop: "env(safe-area-inset-top)",
+    },
+  },
   borderBottomLeftRadius: vars.radius.r32,
   overflow: "hidden",
   position: "relative",
@@ -24,7 +27,6 @@ export const iconWrap = style({
   alignItems: "flex-end",
   zIndex: vars.zIndex.contentOverlay,
   top: "2.8rem",
-  left: LEFT_GAP,
   gap: "2rem",
 });
 
@@ -39,7 +41,7 @@ export const checkBadge = style({
 
 export const imageWrap = style({
   position: "absolute",
-  left: LEFT_GAP,
+  left: "0rem",
   right: 0,
   bottom: 0,
   pointerEvents: "none",
@@ -47,7 +49,7 @@ export const imageWrap = style({
 
 export const image = style({
   width: "100%",
-  minWidth: "35rem",
+  minWidth: "37.6rem",
   height: "auto",
   maxWidth: "none",
   display: "block",

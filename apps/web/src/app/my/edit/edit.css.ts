@@ -15,7 +15,7 @@ export const contentWrapper = style({
   width: "100%",
   display: "flex",
   flexDirection: "column",
-  padding: "7.4rem 1.6rem 1.6rem",
+  padding: "2rem 1.6rem",
 });
 
 export const fieldGroup = style({

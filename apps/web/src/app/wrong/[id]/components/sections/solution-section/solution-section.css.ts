@@ -104,3 +104,21 @@ export const titleText = style([
     color: vars.color.grayscale[400],
   },
 ]);
+
+export const solutionInputWrapperAuto = style({
+  height: "auto",
+  flex: "none",
+  minHeight: "auto",
+});
+
+export const containerWithSolution = style({
+  alignItems: "stretch",
+  justifyContent: "flex-start",
+  minHeight: "auto",
+  flex: "none",
+});
+
+export const solutionPlainTextAuto = style({
+  overflowY: "visible",
+  flex: "none",
+});

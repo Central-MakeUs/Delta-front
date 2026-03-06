@@ -7,6 +7,7 @@ import type {
   SolutionResponse,
   UpdateProblemRequest,
 } from "@/shared/apis/problem-detail/problem-detail-types";
+import type { AiSolutionTaskResponse } from "@/shared/apis/problem-detail/problem-detail-types";
 
 export const problemDetailApi = {
   getDetail: async (problemId: number | string) => {
@@ -45,7 +46,7 @@ export const problemDetailApi = {
   },
 
   solution: async ({ problemId }: { problemId: number | string }) => {
-    const res = await instance.post<ApiResponse<string>>(
+    const res = await instance.post<ApiResponse<AiSolutionTaskResponse>>(
       API_PATHS.PROBLEM_DETAIL.SOLUTION(problemId)
     );
     return unwrapApiResponse(res.data);

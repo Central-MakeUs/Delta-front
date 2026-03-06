@@ -14,6 +14,14 @@ export const wrap = style([
     maxWidth: "43rem",
     zIndex: vars.zIndex?.bottomButton,
     padding: "1.6rem",
+    "@supports": {
+      "(padding-bottom: env(safe-area-inset-bottom))": {
+        paddingBottom: "calc(env(safe-area-inset-bottom))",
+      },
+      "(padding-bottom: constant(safe-area-inset-bottom))": {
+        paddingBottom: "calc(constant(safe-area-inset-bottom))",
+      },
+    },
   },
 ]);
 

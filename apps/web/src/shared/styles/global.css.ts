@@ -9,6 +9,11 @@ globalStyle("html, body", {
 
 globalStyle("body", {
   background: "#eeeeee",
+  WebkitUserSelect: "none",
+  MozUserSelect: "none",
+  msUserSelect: "none",
+  userSelect: "none",
+  WebkitTouchCallout: "none",
 });
 
 export const rootStyle = style({
@@ -24,4 +29,11 @@ export const rootStyle = style({
       boxShadow: "0 0 16px rgba(0,0,0,0.2)",
     },
   },
+});
+
+globalStyle("img", {
+  userSelect: "none",
+  WebkitUserSelect: "none",
+  WebkitTouchCallout: "none",
+  ...{ WebkitUserDrag: "none" },
 });

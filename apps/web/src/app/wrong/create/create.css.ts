@@ -55,6 +55,14 @@ export const nextSection = style([
     bottom: 0,
     zIndex: vars.zIndex.bottomNav,
     padding: "1.6rem",
+    "@supports": {
+      "(padding-bottom: env(safe-area-inset-bottom))": {
+        paddingBottom: "calc(env(safe-area-inset-bottom))",
+      },
+      "(padding-bottom: constant(safe-area-inset-bottom))": {
+        paddingBottom: "calc(constant(safe-area-inset-bottom))",
+      },
+    },
   },
 ]);
 

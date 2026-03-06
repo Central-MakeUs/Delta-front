@@ -37,3 +37,30 @@ export type SolutionResponse = {
     plainText: string;
   };
 };
+
+export type AiSolutionTaskStatus = "PENDING" | "RUNNING" | "READY" | "FAILED";
+
+export type AiSolutionTaskResponse = {
+  taskId: number;
+  status: AiSolutionTaskStatus;
+  failureReason: string | null;
+  requestedAt: string;
+  startedAt: string | null;
+  completedAt: string | null;
+  solution: unknown | null;
+};
+
+type AiSolutionTask = {
+  taskId: number;
+  status: AiSolutionTaskStatus;
+  failureReason: string | null;
+  requestedAt: string;
+  startedAt: string | null;
+  completedAt: string | null;
+  solution: unknown | null;
+};
+
+export type SolutionQueryData = {
+  solution?: { plainText: string };
+  aiSolutionTask?: AiSolutionTask;
+};

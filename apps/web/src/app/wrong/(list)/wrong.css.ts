@@ -50,7 +50,7 @@ export const cardSection = style({
   display: "flex",
   flexDirection: "column",
   gap: "1.6rem",
-  marginBottom: "2.4rem",
+  marginBottom: "3.4rem",
 });
 
 export const emptyStateWrap = style({

@@ -8,7 +8,7 @@ import type {
   WebViewHttpErrorEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-const WEB_BASE_URL = "http://192.168.150.26:3000";
+const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);

@@ -15,24 +15,29 @@ const WebViewScreen = () => {
 
   const openExternalUrl = useCallback((url: string) => {
     Linking.openURL(url).catch((err) => {
-      if (__DEV__) console.warn("[Linking] Failed to open URL:", url, err?.message);
+      if (__DEV__)
+        console.warn("[Linking] Failed to open URL:", url, err?.message);
     });
   }, []);
 
-  const handleMessage = useCallback((event: { nativeEvent: { data: string } }) => {
-    const rawData = event.nativeEvent.data;
+  const handleMessage = useCallback(
+    (event: { nativeEvent: { data: string } }) => {
+      const rawData = event.nativeEvent.data;
 
-    if (!rawData || typeof rawData !== "string" || rawData.length > 500000) return;
-
-    try {
-      const data = JSON.parse(rawData);
-
-      if (data?.type === "NAVIGATION_BACK") {
-        webViewRef.current?.goBack();
+      if (!rawData || typeof rawData !== "string" || rawData.length > 500000)
         return;
-      }
-    } catch {}
-  }, []);
+
+      try {
+        const data = JSON.parse(rawData);
+
+        if (data?.type === "NAVIGATION_BACK") {
+          webViewRef.current?.goBack();
+          return;
+        }
+      } catch {}
+    },
+    [],
+  );
 
   const handleShouldStart = useCallback(
     (req: ShouldStartLoadRequest) => {
@@ -43,7 +48,9 @@ const WebViewScreen = () => {
       if (isHttp) return true;
 
       const isInternalScheme =
-        url.startsWith("about:") || url.startsWith("blob:") || url.startsWith("data:");
+        url.startsWith("about:") ||
+        url.startsWith("blob:") ||
+        url.startsWith("data:");
       if (isInternalScheme) return true;
 
       if (url.startsWith("kakao")) {
@@ -64,11 +71,16 @@ const WebViewScreen = () => {
 
   const handleError = useCallback((e: WebViewErrorEvent) => {
     if (__DEV__)
-      console.warn("[WebView] Load error:", e.nativeEvent?.description, e.nativeEvent?.code);
+      console.warn(
+        "[WebView] Load error:",
+        e.nativeEvent?.description,
+        e.nativeEvent?.code,
+      );
   }, []);
 
   const handleHttpError = useCallback((e: WebViewHttpErrorEvent) => {
-    if (__DEV__) console.warn("[WebView] HTTP error:", e.nativeEvent?.statusCode);
+    if (__DEV__)
+      console.warn("[WebView] HTTP error:", e.nativeEvent?.statusCode);
   }, []);
 
   return (

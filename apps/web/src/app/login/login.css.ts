@@ -4,6 +4,7 @@ import { typo } from "@/shared/styles/typography.css";
 import { vars } from "@/shared/styles/theme.css";
 
 export const page = style({
+  width: "100%",
   minHeight: "100dvh",
   position: "relative",
   overflow: "hidden",

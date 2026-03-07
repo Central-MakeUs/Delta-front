@@ -6,7 +6,7 @@ import { vars } from "@/shared/styles/theme.css";
 export const page = style({
   width: "100%",
   minHeight: "100dvh",
-  position: "fixed",
+  position: "relative",
   overflow: "hidden",
   display: "flex",
   flexDirection: "column",

@@ -38,6 +38,7 @@ export const CardGraph01 = ({
   const safePercent = clamp(graphPercent, 0, 100);
   const percentLabel = `${Math.round(safePercent)}%`;
   const resolvedReplayKey = replayKey ?? pathname;
+  const isComplete = safePercent === 100;
 
   const isEmpty = registeredCount === 0;
   const isSolvedZero = solvedCount === 0;
@@ -80,10 +81,10 @@ export const CardGraph01 = ({
 
           <BarGraph01
             percent={safePercent}
-            label={resolvedGraphLabel}
+            label={isComplete ? undefined : resolvedGraphLabel}
             replayKey={resolvedReplayKey}
             showMinFillOnZero={isSolvedZero}
-            showTip={!isSolvedZero}
+            showTip={!isSolvedZero && !isComplete}
           />
         </div>
       </div>

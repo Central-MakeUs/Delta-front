@@ -33,5 +33,6 @@ export const computeVisualPercent = (params: {
   const hi = Math.max(min, max);
 
   if (rawPercent === 0) return 0;
+  if (rawPercent === 100) return 100;
   return lo + (rawPercent / 100) * (hi - lo);
 };

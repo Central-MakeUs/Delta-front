@@ -2,7 +2,7 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 declare global {
   interface Window {
@@ -35,8 +35,14 @@ type GoogleAnalyticsProps = {
 const GoogleAnalyticsPageView = ({ gaId }: GoogleAnalyticsProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const isMounted = useRef(false);
 
   useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      return;
+    }
+
     if (!gaId || typeof window.gtag !== "function") return;
 
     const url = searchParams.toString()
@@ -58,6 +64,7 @@ const GoogleAnalytics = ({ gaId }: GoogleAnalyticsProps) => {
   return (
     <>
       <Script
+        async
         src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
         strategy="afterInteractive"
       />
@@ -66,7 +73,7 @@ const GoogleAnalytics = ({ gaId }: GoogleAnalyticsProps) => {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${gaId}', { send_page_view: false });
+          gtag('config', '${gaId}');
         `}
       </Script>
       <GoogleAnalyticsPageView gaId={gaId} />

@@ -60,3 +60,6 @@ next-env.d.ts
 # pnpm
 .pnpm-store/
 
+# npm (not used in this project)
+package-lock.json
+

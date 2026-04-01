@@ -11,6 +11,7 @@ import ClientShell from "@/app/client-shell";
 import { ToastProvider } from "@/shared/components/toast/toast-provider/toast-provider";
 import type { Viewport } from "next";
 import NavigationListener from "@/shared/navigation/navigation-listener";
+import GoogleAnalytics from "@/shared/components/google-analytics/google-analytics";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -47,6 +48,9 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
     <html lang="ko" className={lightTheme}>
       <body>
+        <Suspense fallback={null}>
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID ?? ""} />
+        </Suspense>
         <NavigationListener />
         <SvgSpriteInjector />
         <ToastProvider />

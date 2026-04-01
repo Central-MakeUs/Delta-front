@@ -1,3 +1,15 @@
+type Platform = "ios" | "android" | "web";
+
+export const getPlatform = (): Platform => {
+  if (typeof window === "undefined") return "web";
+  if (!window.ReactNativeWebView) return "web";
+
+  const ua = navigator.userAgent;
+  if (/iPhone|iPad|iPod/.test(ua)) return "ios";
+  if (/Android/.test(ua)) return "android";
+  return "web";
+};
+
 type GaEventParams = {
   action: string;
   category?: string;
@@ -13,6 +25,7 @@ export const sendGaEvent = ({ action, category, label, value, ...rest }: GaEvent
     event_category: category,
     event_label: label,
     value,
+    platform: getPlatform(),
     ...rest,
   });
 };

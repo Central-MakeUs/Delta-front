@@ -2,7 +2,8 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
+import { getPlatform } from "@/shared/utils/ga";
 
 declare global {
   interface Window {
@@ -16,18 +17,6 @@ declare global {
   }
 }
 
-type Platform = "ios" | "android" | "web";
-
-const getPlatform = (): Platform => {
-  if (typeof window === "undefined") return "web";
-  if (!window.ReactNativeWebView) return "web";
-
-  const ua = navigator.userAgent;
-  if (/iPhone|iPad|iPod/.test(ua)) return "ios";
-  if (/Android/.test(ua)) return "android";
-  return "web";
-};
-
 type GoogleAnalyticsProps = {
   gaId: string;
 };
@@ -35,21 +24,15 @@ type GoogleAnalyticsProps = {
 const GoogleAnalyticsPageView = ({ gaId }: GoogleAnalyticsProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const isMounted = useRef(false);
 
   useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
-      return;
-    }
-
     if (!gaId || typeof window.gtag !== "function") return;
 
     const url = searchParams.toString()
       ? `${pathname}?${searchParams.toString()}`
       : pathname;
 
-    window.gtag("config", gaId, {
+    window.gtag("event", "page_view", {
       page_path: url,
       platform: getPlatform(),
     });
@@ -73,7 +56,7 @@ const GoogleAnalytics = ({ gaId }: GoogleAnalyticsProps) => {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${gaId}');
+          gtag('config', '${gaId}', { send_page_view: false });
         `}
       </Script>
       <GoogleAnalyticsPageView gaId={gaId} />

@@ -6,14 +6,8 @@ import LoginDecorations from "@/app/login/login-decorations";
 import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
 import * as s from "@/app/login/login.css";
-import { googleOAuth } from "@/shared/apis/auth/google-oauth";
 
-const LoginPage = () => {
-  const onGoogleStart = () => {
-    const url = googleOAuth.buildAuthorizeUrl();
-    window.location.assign(url);
-  };
-
+const IosLoginPage = () => {
   const onKakaoStart = () => {
     const url = kakaoOAuth.buildAuthorizeUrl();
     window.location.assign(url);
@@ -36,12 +30,6 @@ const LoginPage = () => {
 
         <section className={s.actions} aria-label="소셜 로그인">
           <Button
-            icon="google"
-            label="Google로 시작하기"
-            tone="surface"
-            onClick={onGoogleStart}
-          />
-          <Button
             icon="kakao"
             label="Kakao로 시작하기"
             tone="kakao"
@@ -59,4 +47,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default IosLoginPage;

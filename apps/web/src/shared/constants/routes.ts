@@ -18,6 +18,9 @@ export const ROUTES = {
     SIGNUP_INFO: "/login/info",
     KAKAO_CALLBACK: "/oauth/kakao/callback",
     APPLE_CALLBACK: "/oauth/apple/callback",
+    GOOGLE_CALLBACK: "/oauth/google/callback",
+    LOGIN_ANDROID: "/login/android",
+    LOGIN_IOS: "/login/ios",
   },
   ERROR: {
     ROOT: "/error",

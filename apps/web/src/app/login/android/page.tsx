@@ -3,12 +3,11 @@
 import Icon from "@/shared/components/icon/icon";
 import { Button } from "@/shared/components/button/button/button";
 import LoginDecorations from "@/app/login/login-decorations";
-import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
-import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
-import * as s from "@/app/login/login.css";
 import { googleOAuth } from "@/shared/apis/auth/google-oauth";
+import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
+import * as s from "@/app/login/login.css";
 
-const LoginPage = () => {
+const AndroidLoginPage = () => {
   const onGoogleStart = () => {
     const url = googleOAuth.buildAuthorizeUrl();
     window.location.assign(url);
@@ -17,11 +16,6 @@ const LoginPage = () => {
   const onKakaoStart = () => {
     const url = kakaoOAuth.buildAuthorizeUrl();
     window.location.assign(url);
-  };
-
-  const onAppleStart = () => {
-    const url = appleOAuth.buildAuthorizeUrl();
-    if (url) window.location.assign(url);
   };
 
   return (
@@ -47,16 +41,10 @@ const LoginPage = () => {
             tone="kakao"
             onClick={onKakaoStart}
           />
-          <Button
-            icon="apple"
-            label="Apple로 시작하기"
-            tone="dark"
-            onClick={onAppleStart}
-          />
         </section>
       </div>
     </main>
   );
 };
 
-export default LoginPage;
+export default AndroidLoginPage;

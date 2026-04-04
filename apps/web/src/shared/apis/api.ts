@@ -87,7 +87,21 @@ const runReissueOnce = async () => {
   return reissuePromise;
 };
 
-instance.interceptors.request.use((config) => {
+instance.interceptors.request.use(async (config) => {
+  const retryConfig = config as RetryConfig;
+
+  if (!retryConfig._skipAuthRefresh) {
+    const { accessToken, refreshToken } = tokenStorage.getTokens();
+
+    if (!accessToken && refreshToken) {
+      try {
+        await runReissueOnce();
+      } catch {
+        // runReissueOnce 내부에서 handleAuthDead 처리됨
+      }
+    }
+  }
+
   const { accessToken } = tokenStorage.getTokens();
 
   if (accessToken) {
@@ -148,6 +162,17 @@ instance.interceptors.response.use(
       apiError.status === 401 &&
       apiError.code === ERROR_CODES.AUTH.TOKEN_REQUIRED
     ) {
+      const { refreshToken } = tokenStorage.getTokens();
+      if (refreshToken && !config._retry) {
+        config._retry = true;
+        try {
+          await runReissueOnce();
+          clearAuthHeader(config.headers);
+          return await instance(config);
+        } catch {
+          throw apiError;
+        }
+      }
       if (shouldEmitAuthLogout(apiError.status, apiError.code))
         handleAuthDead();
       throw apiError;

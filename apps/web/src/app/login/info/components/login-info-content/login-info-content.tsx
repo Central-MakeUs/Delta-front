@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import * as styles from "./login-info-content.css";
 import BottomSheetTerms from "@/shared/components/bottom-sheet/bottom-sheet-terms/bottom-sheet-terms";
 import {
@@ -11,6 +13,8 @@ import {
 import { useLoginInfoForm } from "../../hooks/use-login-info-form";
 import { useOnboardingSubmit } from "../../hooks/use-onboarding-submit";
 import { useMyProfileQuery } from "@/shared/apis/user/hooks/use-my-profile-query";
+import { tokenStorage } from "@/shared/apis/token-storage";
+import { ROUTES } from "@/shared/constants/routes";
 
 const TERMS_CONTENT = [
   "■ 개인정보 처리방침 (세모 / SEMO)",
@@ -55,6 +59,15 @@ const TERMS_CONTENT = [
 ];
 
 const LoginInfoContent = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const { accessToken, refreshToken } = tokenStorage.getTokens();
+    if (!accessToken && !refreshToken) {
+      router.replace(ROUTES.AUTH.LOGIN);
+    }
+  }, [router]);
+
   const { data: profile } = useMyProfileQuery();
 
   const initialNickname = profile?.nickname ?? "";

@@ -10,6 +10,7 @@ export type ButtonTone =
   | "default"
   | "dark"
   | "kakao"
+  | "google"
   | "complete"
   | "ai"
   | "none";

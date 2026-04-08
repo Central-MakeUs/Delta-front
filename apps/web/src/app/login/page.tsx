@@ -38,7 +38,7 @@ const LoginPage = () => {
           <Button
             icon="google"
             label="Google로 시작하기"
-            tone="surface"
+            tone="google"
             onClick={onGoogleStart}
           />
           <Button

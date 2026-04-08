@@ -15,6 +15,7 @@ export const tone = styleVariants({
   default: [bgColor["grayscale-100"], color["grayscale-800"]],
   dark: [bgColor["grayscale-900"], color["grayscale-0"]],
   kakao: [bgColor["login-kakao"], color["grayscale-900"]],
+  google: [bgColor["login-google"], color["grayscale-900"]],
   complete: [bgColor["main-500"], color["grayscale-0"]],
   ai: [bgColor["main-100"], color["main-500"]],
   disabled: [bgColor["grayscale-100"], color["grayscale-500"]],

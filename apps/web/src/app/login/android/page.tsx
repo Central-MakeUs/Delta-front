@@ -7,15 +7,35 @@ import { googleOAuth } from "@/shared/apis/auth/google-oauth";
 import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import * as s from "@/app/login/login.css";
 
+declare global {
+  interface Window {
+    ReactNativeWebView?: { postMessage: (msg: string) => void };
+  }
+}
+
+const postOAuthMessage = (url: string, callbackPrefix: string) => {
+  window.ReactNativeWebView?.postMessage(
+    JSON.stringify({ type: "OAUTH_START", url, callbackPrefix })
+  );
+};
+
 const AndroidLoginPage = () => {
   const onGoogleStart = () => {
     const url = googleOAuth.buildAuthorizeUrl();
-    window.location.assign(url);
+    if (window.ReactNativeWebView) {
+      postOAuthMessage(url, googleOAuth.buildRedirectUri());
+    } else {
+      window.location.assign(url);
+    }
   };
 
   const onKakaoStart = () => {
     const url = kakaoOAuth.buildAuthorizeUrl();
-    window.location.assign(url);
+    if (window.ReactNativeWebView) {
+      postOAuthMessage(url, kakaoOAuth.buildRedirectUri());
+    } else {
+      window.location.assign(url);
+    }
   };
 
   return (

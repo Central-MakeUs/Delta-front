@@ -2,13 +2,14 @@ import React, { useCallback, useRef } from "react";
 import { Platform, StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
+import * as WebBrowser from "expo-web-browser";
 import type {
   ShouldStartLoadRequest,
   WebViewErrorEvent,
   WebViewHttpErrorEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-const WEB_BASE_URL = "http://localhost:3000/login/ios";
+const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
@@ -32,6 +33,21 @@ const WebViewScreen = () => {
 
         if (data?.type === "NAVIGATION_BACK") {
           webViewRef.current?.goBack();
+          return;
+        }
+
+        if (data?.type === "OAUTH_START" && data.url && data.callbackPrefix) {
+          void (async () => {
+            const result = await WebBrowser.openAuthSessionAsync(
+              data.url,
+              data.callbackPrefix,
+            );
+            if (result.type === "success" && result.url) {
+              webViewRef.current?.injectJavaScript(
+                `window.location.replace(${JSON.stringify(result.url)});true;`,
+              );
+            }
+          })();
           return;
         }
       } catch {}

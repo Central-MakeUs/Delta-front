@@ -8,20 +8,45 @@ import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
 import * as s from "@/app/login/login.css";
 import { googleOAuth } from "@/shared/apis/auth/google-oauth";
 
+declare global {
+  interface Window {
+    ReactNativeWebView?: { postMessage: (msg: string) => void };
+  }
+}
+
+const postOAuthMessage = (url: string, callbackPrefix: string) => {
+  window.ReactNativeWebView?.postMessage(
+    JSON.stringify({ type: "OAUTH_START", url, callbackPrefix })
+  );
+};
+
 const LoginPage = () => {
   const onGoogleStart = () => {
     const url = googleOAuth.buildAuthorizeUrl();
-    window.location.assign(url);
+    if (window.ReactNativeWebView) {
+      postOAuthMessage(url, googleOAuth.buildRedirectUri());
+    } else {
+      window.location.assign(url);
+    }
   };
 
   const onKakaoStart = () => {
     const url = kakaoOAuth.buildAuthorizeUrl();
-    window.location.assign(url);
+    if (window.ReactNativeWebView) {
+      postOAuthMessage(url, kakaoOAuth.buildRedirectUri());
+    } else {
+      window.location.assign(url);
+    }
   };
 
   const onAppleStart = () => {
     const url = appleOAuth.buildAuthorizeUrl();
-    if (url) window.location.assign(url);
+    if (!url) return;
+    if (window.ReactNativeWebView) {
+      postOAuthMessage(url, `${window.location.origin}/oauth/apple/callback`);
+    } else {
+      window.location.assign(url);
+    }
   };
 
   return (

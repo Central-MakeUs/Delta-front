@@ -68,6 +68,26 @@ export const actions = style({
   gap: "1.2rem",
 });
 
+export const iosactions = style({
+  marginTop: "auto",
+  paddingLeft: "1.6rem",
+  paddingRight: "1.6rem",
+  paddingBottom: "calc(env(safe-area-inset-bottom) + 10.8rem)",
+  display: "flex",
+  flexDirection: "column",
+  gap: "1.2rem",
+});
+
+export const androidactions = style({
+  marginTop: "auto",
+  paddingLeft: "1.6rem",
+  paddingRight: "1.6rem",
+  paddingBottom: "calc(env(safe-area-inset-bottom) + 10.8rem)",
+  display: "flex",
+  flexDirection: "column",
+  gap: "1.2rem",
+});
+
 export const decorations = style({
   position: "absolute",
   inset: 0,

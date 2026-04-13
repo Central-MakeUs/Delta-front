@@ -5,6 +5,7 @@ export const API_PATHS = {
     KAKAO_LOGIN: `${API_V1}/auth/kakao`,
     APPLE_LOGIN: `${API_V1}/auth/apple`,
     APPLE_EXCHANGE: `${API_V1}/auth/apple/exchange`,
+    GOOGLE_LOGIN: `${API_V1}/auth/google`,
     REISSUE: `${API_V1}/auth/reissue`,
     LOGOUT: `${API_V1}/auth/logout`,
   },

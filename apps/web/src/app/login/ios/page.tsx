@@ -28,7 +28,7 @@ const IosLoginPage = () => {
           <p className={s.tagline}>나만의 수학 오답노트</p>
         </header>
 
-        <section className={s.actions} aria-label="소셜 로그인">
+        <section className={s.iosactions} aria-label="소셜 로그인">
           <Button
             icon="kakao"
             label="Kakao로 시작하기"

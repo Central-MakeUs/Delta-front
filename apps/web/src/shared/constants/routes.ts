@@ -28,6 +28,8 @@ export const ROUTES = {
     ROOT: `/${WRONG_PREFIX}`,
     CREATE: `/${WRONG_PREFIX}/create`,
     CREATE_DONE: `/${WRONG_PREFIX}/create/done`,
+    CREATE_SCANS: `/${WRONG_PREFIX}/create/scans`,
+    SCAN_DETAIL: (id: string | number) => `/${WRONG_PREFIX}/scans/${id}`,
     DETAIL: (id: string | number) => `/${WRONG_PREFIX}/${id}`,
     EDIT: (id: string | number) => `/${WRONG_PREFIX}/${id}/edit`,
   },

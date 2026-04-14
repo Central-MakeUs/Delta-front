@@ -1,22 +1,30 @@
-"use client";
+﻿"use client";
 
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { ROUTES } from "@/shared/constants/routes";
-import { useCreateWrongAnswerCardMutation } from "@/shared/apis/problem-create/hooks/use-create-wrong-answer-card-mutation";
+import { useCreateBulkWrongAnswerCardsMutation } from "@/shared/apis/problem-create/hooks/use-create-bulk-wrong-answer-cards-mutation";
 import { ApiError } from "@/shared/apis/problem-create/problem-create-api";
+import { problemScanApi } from "@/shared/apis/problem-scan/problem-scan-api";
+import { useProblemTypesQuery } from "@/shared/apis/problem-type/hooks/use-problem-types-query";
 import type {
   AnswerFormat,
   ProblemCreateRequest,
 } from "@/shared/apis/problem-create/problem-create-types";
-
+import {
+  createWrongCreateGroupId,
+  saveWrongCreateGroupContext,
+  type WrongCreateGroupItem,
+} from "@/app/wrong/create/utils/group-context";
 import {
   inferSubjectiveFormat,
   normalize,
 } from "@/app/wrong/create/utils/answer-format";
 import type { Step4FormState } from "@/app/wrong/create/hooks/step4/use-step4-form";
+import { SUBJECT_NAME_BY_ID, UNIT_BY_ID } from "@/shared/constants/math-curriculum";
 
 type Params = {
   currentStep: number;
+  scanIds: number[];
   scanId: number | null;
   unitId: string | null;
   typeIds: string | null;
@@ -34,9 +42,12 @@ const parseTypeIds = (raw: string | null) => {
 };
 
 const DEFAULT_SUBJECTIVE_FORMAT: AnswerFormat = "TEXT";
+const FALLBACK_SUBJECT = "미분류";
+const FALLBACK_UNIT = "등록한 문제";
 
 export const useWrongCreateSubmit = ({
   currentStep,
+  scanIds,
   scanId,
   unitId,
   typeIds,
@@ -45,7 +56,8 @@ export const useWrongCreateSubmit = ({
   goStep,
   router,
 }: Params) => {
-  const createMutation = useCreateWrongAnswerCardMutation();
+  const createMutation = useCreateBulkWrongAnswerCardsMutation();
+  const { data: problemTypes = [] } = useProblemTypesQuery();
 
   const canNext = currentStep === 4 ? true : stepNextEnabled;
 
@@ -63,9 +75,10 @@ export const useWrongCreateSubmit = ({
     }
 
     if (currentStep !== 4) return;
-
     if (createMutation.isPending) return;
-    if (!scanId) return;
+
+    const targetScanIds = scanIds.length > 0 ? scanIds : scanId ? [scanId] : [];
+    if (targetScanIds.length === 0) return;
 
     const finalUnitId = normalize(unitId);
     const finalTypeIds = parseTypeIds(typeIds);
@@ -73,7 +86,6 @@ export const useWrongCreateSubmit = ({
     if (finalTypeIds.length === 0) return;
 
     const memoText = normalize(form.memoText);
-
     const normalizedAnswerText = normalize(form.answerText);
 
     const answerFormat: AnswerFormat =
@@ -83,35 +95,85 @@ export const useWrongCreateSubmit = ({
           ? inferSubjectiveFormat(normalizedAnswerText)
           : DEFAULT_SUBJECTIVE_FORMAT;
 
-    const payload: ProblemCreateRequest = {
-      scanId,
+    const basePayload = {
       finalUnitId,
       finalTypeIds,
       answerFormat,
-
       ...(form.type === "objective" &&
       form.answerChoice !== null &&
       form.answerChoice >= 1
         ? { answerChoiceNo: form.answerChoice }
         : {}),
-
       ...(form.type === "subjective" && normalizedAnswerText
         ? { answerValue: normalizedAnswerText }
         : {}),
-
       ...(memoText ? { memoText } : {}),
     };
 
+    const finalUnit = UNIT_BY_ID[finalUnitId];
+    const subjectName =
+      (finalUnit?.subjectId && SUBJECT_NAME_BY_ID[finalUnit.subjectId]) ??
+      FALLBACK_SUBJECT;
+    const unitName = finalUnit?.name ?? FALLBACK_UNIT;
+    const selectedTypeNames = finalTypeIds
+      .map(
+        (typeId) =>
+          problemTypes.find((type) => type.id === typeId)?.name ?? typeId
+      )
+      .filter(Boolean);
+
+    const summaries = await Promise.all(
+      targetScanIds.map((currentScanId) =>
+        problemScanApi
+          .getSummary({ scanId: currentScanId })
+          .catch(() => null)
+      )
+    );
+
+    const payload: ProblemCreateRequest[] = targetScanIds.map((currentScanId) => ({
+      scanId: currentScanId,
+      ...basePayload,
+    }));
+
     try {
-      await createMutation.mutateAsync(payload);
-      router.push(ROUTES.WRONG.CREATE_DONE);
+      const response = await createMutation.mutateAsync(payload);
+      const problems = response.problems;
+
+      const summaryByScanId = new Map(
+        summaries
+          .filter((summary): summary is NonNullable<typeof summary> => Boolean(summary))
+          .map((summary) => [summary.scanId, summary])
+      );
+
+      const items: WrongCreateGroupItem[] = problems.map((problem) => {
+        const summary = summaryByScanId.get(problem.scanId);
+        return {
+          scanId: problem.scanId,
+          finalUnitId,
+          finalTypeIds,
+          answerFormat,
+          title: `${unitName} 문제`,
+          imageUrl: summary?.originalImage.viewUrl ?? "",
+          subjectName,
+          unitName,
+          typeNames: selectedTypeNames,
+          needsReview: summary?.classification.needsReview ?? false,
+        };
+      });
+
+      const groupId = createWrongCreateGroupId();
+      saveWrongCreateGroupContext({
+        id: groupId,
+        createdAt: Date.now(),
+        items,
+      });
+
+      router.push(`${ROUTES.WRONG.CREATE_DONE}?group=${encodeURIComponent(groupId)}`);
     } catch (e) {
       const err = e as unknown;
       if (err instanceof ApiError && err.status === 409) {
         router.push(ROUTES.WRONG.CREATE_DONE);
-        return;
       }
-      return;
     }
   };
 
@@ -123,3 +185,6 @@ export const useWrongCreateSubmit = ({
 };
 
 export default useWrongCreateSubmit;
+
+
+

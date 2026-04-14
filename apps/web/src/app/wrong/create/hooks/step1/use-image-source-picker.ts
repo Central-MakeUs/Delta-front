@@ -6,7 +6,7 @@ export type ImagePickSource = "camera" | "album";
 
 type Params = {
   disabled?: boolean;
-  onSelect?: (file: File, source: ImagePickSource) => void;
+  onSelect?: (files: File[], source: ImagePickSource) => void;
 };
 
 const resetAndClick = (ref: RefObject<HTMLInputElement | null>) => {
@@ -36,10 +36,10 @@ export const useImageSourcePicker = ({
 
   const handlePick =
     (source: ImagePickSource) => (e: ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
+      const files = Array.from(e.target.files ?? []);
+      if (files.length === 0) return;
 
-      onSelect?.(file, source);
+      onSelect?.(files, source);
       e.target.value = "";
     };
 

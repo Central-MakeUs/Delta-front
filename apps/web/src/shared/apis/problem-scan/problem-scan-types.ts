@@ -6,6 +6,19 @@ export type ProblemScanCreateResponse = {
   status: ProblemScanStatus | string;
 };
 
+export type ProblemScanGroupCreateResponse = {
+  groupId?: number | string | null;
+  scanIds: number[];
+};
+
+export type ProblemScanGroupSummaryResponse = {
+  groupId?: number | string | null;
+  status?: string;
+  completedScanCount?: number;
+  totalScanCount?: number;
+  summaries: ProblemScanSummaryResponse[];
+};
+
 export type CurriculumItem = {
   id: string;
   name: string;

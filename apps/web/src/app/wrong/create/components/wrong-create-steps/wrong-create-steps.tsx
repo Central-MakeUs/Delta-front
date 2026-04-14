@@ -4,7 +4,7 @@ import Step1 from "@/app/wrong/create/components/steps/step-1";
 import Step2 from "@/app/wrong/create/components/steps/step-2";
 import Step3 from "@/app/wrong/create/components/steps/step-3";
 import Step4 from "@/app/wrong/create/components/steps/step-4";
-import type { ProblemScanCreateResponse } from "@/shared/apis/problem-scan/problem-scan-types";
+import type { ProblemScanGroupCreateResponse } from "@/shared/apis/problem-scan/problem-scan-types";
 import type { StepProps } from "@/app/wrong/create/page";
 import type {
   Step4FormState,
@@ -13,9 +13,10 @@ import type {
 
 type WrongCreateStepsProps = {
   currentStep: number;
+  scanIds: number[];
   scanId: number | null;
   isStep1Blocked: boolean;
-  onUploaded: (res: ProblemScanCreateResponse) => void;
+  onUploaded: (res: ProblemScanGroupCreateResponse) => void;
   onNextEnabledChange: NonNullable<StepProps["onNextEnabledChange"]>;
   form: Step4FormState;
   handlers: Step4Handlers;
@@ -23,6 +24,7 @@ type WrongCreateStepsProps = {
 
 const WrongCreateSteps = ({
   currentStep,
+  scanIds,
   scanId,
   isStep1Blocked,
   onUploaded,
@@ -55,6 +57,7 @@ const WrongCreateSteps = ({
       {currentStep === 4 ? (
         <Step4
           scanId={scanId}
+          key={scanIds.join(",") || String(scanId ?? "none")}
           onNextEnabledChange={onNextEnabledChange}
           form={form}
           handlers={handlers}

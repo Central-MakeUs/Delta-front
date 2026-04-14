@@ -4,6 +4,8 @@ import { unwrapApiResponse } from "@/shared/apis/api-types";
 import { API_PATHS } from "@/shared/apis/constants/api-paths";
 import type {
   ProblemScanCreateResponse,
+  ProblemScanGroupCreateResponse,
+  ProblemScanGroupSummaryResponse,
   ProblemScanSummaryResponse,
 } from "@/shared/apis/problem-scan/problem-scan-types";
 
@@ -11,6 +13,19 @@ type RawProblemScanCreateResponse = {
   scanId?: number;
   assetId?: number;
   status?: string;
+};
+
+type RawProblemScanGroupCreateResponse = {
+  groupId?: number | string | null;
+  scanGroupId?: number | string | null;
+  scanIds?: unknown;
+  scans?:
+    | Array<{
+        scanId?: number | null;
+        assetId?: number | null;
+        status?: string | null;
+      } | null>
+    | null;
 };
 
 type RawCurriculumItem = {
@@ -48,6 +63,43 @@ const normalizeCreate = (
     scanId: requireNumber(raw.scanId, "scanId"),
     assetId: requireNumber(raw.assetId, "assetId"),
     status: raw.status ?? "UPLOADED",
+  };
+};
+
+type RawProblemScanGroupSummaryResponse = {
+  groupId?: number | string | null;
+  scanGroupId?: number | string | null;
+  status?: string;
+  completedScanCount?: number | null;
+  completed_scan_count?: number | null;
+  totalScanCount?: number | null;
+  total_scan_count?: number | null;
+  summaries?: RawProblemScanSummaryResponse[] | null;
+  scans?: RawProblemScanSummaryResponse[] | null;
+};
+
+const toScanIdList = (raw: RawProblemScanGroupCreateResponse) => {
+  if (Array.isArray(raw.scanIds)) {
+    return raw.scanIds
+      .map((value) => (typeof value === "number" ? value : Number(value)))
+      .filter((value) => Number.isFinite(value));
+  }
+
+  if (Array.isArray(raw.scans)) {
+    return raw.scans
+      .map((item) => item?.scanId)
+      .filter((value): value is number => typeof value === "number");
+  }
+
+  return [];
+};
+
+const normalizeGroupCreate = (
+  raw: RawProblemScanGroupCreateResponse
+): ProblemScanGroupCreateResponse => {
+  return {
+    groupId: raw.groupId ?? raw.scanGroupId ?? null,
+    scanIds: toScanIdList(raw),
   };
 };
 const ALLOWED_STATUS = ["UPLOADED", "OCR_DONE", "AI_DONE", "FAILED"] as const;
@@ -96,6 +148,21 @@ const normalizeSummary = (
   };
 };
 
+const normalizeGroupSummary = (
+  raw: RawProblemScanGroupSummaryResponse
+): ProblemScanGroupSummaryResponse => {
+  const rawSummaries = raw.summaries ?? raw.scans ?? [];
+
+  return {
+    groupId: raw.groupId ?? raw.scanGroupId ?? null,
+    status: raw.status,
+    completedScanCount:
+      raw.completedScanCount ?? raw.completed_scan_count ?? undefined,
+    totalScanCount: raw.totalScanCount ?? raw.total_scan_count ?? undefined,
+    summaries: rawSummaries.map(normalizeSummary),
+  };
+};
+
 export const problemScanApi = {
   create: async (params: { file: File }) => {
     const form = new FormData();
@@ -109,11 +176,33 @@ export const problemScanApi = {
     return normalizeCreate(unwrapApiResponse(res.data));
   },
 
+  createGroup: async (params: { files: File[] }) => {
+    const form = new FormData();
+    params.files.forEach((file) => {
+      form.append("files", file);
+    });
+
+    const res = await instance.post<ApiResponse<RawProblemScanGroupCreateResponse>>(
+      API_PATHS.PROBLEM_SCANS.GROUPS,
+      form
+    );
+
+    return normalizeGroupCreate(unwrapApiResponse(res.data));
+  },
+
   getSummary: async (params: { scanId: number | string }) => {
     const res = await instance.get<ApiResponse<RawProblemScanSummaryResponse>>(
       API_PATHS.PROBLEM_SCANS.SUMMARY(params.scanId)
     );
 
     return normalizeSummary(unwrapApiResponse(res.data));
+  },
+
+  getGroupSummary: async (params: { groupId: number | string }) => {
+    const res = await instance.get<ApiResponse<RawProblemScanGroupSummaryResponse>>(
+      API_PATHS.PROBLEM_SCANS.GROUP_SUMMARY(params.groupId)
+    );
+
+    return normalizeGroupSummary(unwrapApiResponse(res.data));
   },
 };

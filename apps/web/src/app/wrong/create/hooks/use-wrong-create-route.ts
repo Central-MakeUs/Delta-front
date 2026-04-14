@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { parseProgress } from "@/shared/components/app-bar/utils/app-bar-routing";
 import {
   clamp,
+  readScanIds,
   readScanId,
   readStr,
 } from "@/app/wrong/create/utils/search-params";
@@ -24,7 +25,9 @@ export const useWrongCreateRoute = () => {
 
   const { total, currentStep } = parseProgress(new URLSearchParams(spString));
 
+  const scanIds = useMemo(() => readScanIds(params), [params]);
   const scanId = useMemo(() => readScanId(params), [params]);
+  const groupId = useMemo(() => readStr(params, "groupId"), [params]);
   const unitId = useMemo(() => readStr(params, "unitId"), [params]);
   const typeIds = useMemo(() => readTypeIds(params), [params]);
 
@@ -46,8 +49,9 @@ export const useWrongCreateRoute = () => {
       nextParams.delete("typeIds");
     }
 
+    const nextScanIds = readScanIds(nextParams);
     const nextScanId = readScanId(nextParams);
-    if (!nextScanId && safe > 1) return;
+    if (!nextScanId && nextScanIds.length === 0 && safe > 1) return;
 
     const nextQuery = nextParams.toString();
     if (nextQuery === spString) return;
@@ -62,7 +66,9 @@ export const useWrongCreateRoute = () => {
     params,
     total,
     currentStep,
+    scanIds,
     scanId,
+    groupId,
     unitId,
     typeIds,
     goStep,

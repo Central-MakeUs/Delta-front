@@ -4,7 +4,6 @@ import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
 import { ROUTES, GRAPH_TABS, type GraphTab } from "@/shared/constants/routes";
 import {
   getWrongRouteMatch,
-  parseProgress,
   shouldHideAppBar,
 } from "@/shared/components/app-bar/utils/app-bar-routing";
 import { useDeleteProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-delete-problem-detail-mutation";
@@ -13,15 +12,6 @@ import { toastSuccess } from "@/shared/components/toast/toast";
 type UseAppBarResult =
   | { isHidden: true; props?: never }
   | { isHidden: false; props: AppBarProps };
-
-const clamp = (value: number, min: number, max: number) => {
-  return Math.min(Math.max(value, min), max);
-};
-
-const buildUrl = (pathname: string, params: URLSearchParams) => {
-  const qs = params.toString();
-  return qs ? `${pathname}?${qs}` : pathname;
-};
 
 const isGraphTab = (v: string | null): v is GraphTab =>
   v === GRAPH_TABS.UNIT || v === GRAPH_TABS.WRONG;
@@ -40,11 +30,6 @@ const parseFrom = (raw: string | null) => {
   } catch {
     return null;
   }
-};
-
-const hasValidScanId = (params: URLSearchParams) => {
-  const v = params.get("scanId");
-  return Boolean(v && v !== "null" && v !== "undefined");
 };
 
 export const useAppBar = (): UseAppBarResult => {
@@ -133,12 +118,9 @@ export const useAppBar = (): UseAppBarResult => {
 
   if (wrongMatch.type === "create") {
     const params = new URLSearchParams(sp.toString());
-    const { total, currentStep } = parseProgress(params);
 
     const isLoading = params.get("hideAppBar") === "1";
     if (isLoading) return { isHidden: true };
-
-    const hasScan = hasValidScanId(params);
 
     const from = parseFrom(params.get("from")) ?? ROUTES.WRONG.ROOT;
 
@@ -146,32 +128,11 @@ export const useAppBar = (): UseAppBarResult => {
       router.replace(from);
     };
 
-    const replaceStep = (nextStep: number) => {
-      const safe = clamp(nextStep, 1, total);
-      const nextParams = new URLSearchParams(sp.toString());
-
-      if (safe === 1) {
-        nextParams.set("step", "1");
-        nextParams.delete("scanId");
-        nextParams.delete("unitId");
-        nextParams.delete("typeIds");
-        router.replace(buildUrl(pathname, nextParams), { scroll: false });
-        return;
-      }
-
-      if (!hasValidScanId(nextParams)) return;
-
-      nextParams.set("step", String(safe));
-      router.replace(buildUrl(pathname, nextParams), { scroll: false });
-    };
-
     return {
       isHidden: false,
       props: {
-        variant: "progress",
-        total,
-        currentStep: hasScan ? currentStep : 1,
-        onStepChange: replaceStep,
+        variant: "basic",
+        title: "",
         onBack: exitCreate,
       },
     };

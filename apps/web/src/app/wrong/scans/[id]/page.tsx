@@ -18,7 +18,7 @@ import ScanAnswerSection, {
 } from "@/app/wrong/scans/[id]/components/scan-answer-section";
 import ScanBottomNav from "@/app/wrong/scans/[id]/components/scan-bottom-nav";
 import ScanDetailHero from "@/app/wrong/scans/[id]/components/scan-detail-hero";
-import ScanEditSheet from "@/app/wrong/scans/[id]/components/scan-edit-sheet";
+import ScanEditModal from "@/app/wrong/scans/[id]/components/scan-edit-modal";
 import * as s from "@/app/wrong/scans/[id]/page.css";
 
 const isMathSubjectLabel = (
@@ -58,7 +58,7 @@ const WrongScanDetailPage = () => {
     ? (groupItem?.unitName as (typeof initialUnits)[number])
     : initialUnits[0];
 
-  const [isEditSheetOpen, setIsEditSheetOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedSubject, setSelectedSubject] =
     useState<MathSubjectLabel>(initialSubject);
   const [selectedUnit, setSelectedUnit] = useState<string>(initialUnit);
@@ -121,7 +121,7 @@ const WrongScanDetailPage = () => {
       <div className={s.body}>
         <ScanDetailHero
           item={groupItem}
-          onEditClick={() => setIsEditSheetOpen(true)}
+          onEditClick={() => setIsEditModalOpen(true)}
         />
 
         <ScanAnswerSection
@@ -149,15 +149,15 @@ const WrongScanDetailPage = () => {
         />
       </div>
 
-      <ScanEditSheet
-        isOpen={isEditSheetOpen}
+      <ScanEditModal
+        isOpen={isEditModalOpen}
         selectedSubject={selectedSubject}
         availableUnits={availableUnits}
         selectedUnit={resolvedSelectedUnit}
         selectedTypes={selectedTypes}
         customSelectedTypes={customSelectedTypes}
         problemTypes={problemTypes}
-        onClose={() => setIsEditSheetOpen(false)}
+        onClose={() => setIsEditModalOpen(false)}
         onSubjectChange={setSelectedSubject}
         onUnitChange={setSelectedUnit}
         onTypeToggle={handleTypeToggle}

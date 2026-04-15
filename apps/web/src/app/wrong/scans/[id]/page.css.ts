@@ -173,23 +173,25 @@ export const overlay = style({
   zIndex: vars.zIndex.bottomSheetOverlay,
 });
 
-export const sheet = style({
-  width: "min(100%, 39rem)",
-  maxWidth: "39rem",
-  height: "54rem",
-  background: vars.color.grayscale[0],
-  borderRadius: vars.radius.r24,
-  display: "grid",
-  gridTemplateRows: "auto 1fr auto",
-  overflow: "hidden",
-});
+export const sheet = style([
+  bgColor["grayscale-0"],
+  {
+    width: "min(100%, 39rem)",
+    maxWidth: "39rem",
+    height: "54rem",
+    borderRadius: vars.radius.r24,
+    display: "grid",
+    gridTemplateRows: "auto 1fr auto",
+    overflow: "hidden",
+  },
+]);
 
 export const sheetHeader = style([
+  bgColor["grayscale-0"],
+  color["grayscale-900"],
   typo.body1.bold,
   {
     padding: "2rem 1.6rem",
-    background: vars.color.grayscale[0],
-    color: vars.color.grayscale[900],
   },
 ]);
 
@@ -198,7 +200,7 @@ export const sheetBody = style({
   display: "flex",
   flexDirection: "column",
   gap: "2rem",
-  padding: "2rem 1.6rem",
+  padding: "0 1.6rem",
 });
 
 export const sheetSection = style({
@@ -209,9 +211,7 @@ export const sheetSection = style({
 
 export const sheetSectionTitle = style([
   typo.body2.semibold,
-  {
-    color: vars.color.grayscale[800],
-  },
+  color["grayscale-800"],
 ]);
 
 export const chipGroup = style({

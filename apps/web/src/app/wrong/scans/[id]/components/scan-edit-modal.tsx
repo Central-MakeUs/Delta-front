@@ -11,7 +11,7 @@ import {
 } from "@/app/wrong/create/constants/option-labels";
 import * as s from "@/app/wrong/scans/[id]/page.css";
 
-type ScanEditSheetProps = {
+type ScanEditModalProps = {
   isOpen: boolean;
   selectedSubject: MathSubjectLabel;
   availableUnits: readonly string[];
@@ -26,7 +26,7 @@ type ScanEditSheetProps = {
   onCustomTypeRemove: (typeName: string) => void;
 };
 
-const ScanEditSheet = ({
+const ScanEditModal = ({
   isOpen,
   selectedSubject,
   availableUnits,
@@ -39,7 +39,7 @@ const ScanEditSheet = ({
   onUnitChange,
   onTypeToggle,
   onCustomTypeRemove,
-}: ScanEditSheetProps) => {
+}: ScanEditModalProps) => {
   if (!isOpen) return null;
 
   return (
@@ -162,4 +162,4 @@ const ScanEditSheet = ({
   );
 };
 
-export default ScanEditSheet;
+export default ScanEditModal;

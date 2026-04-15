@@ -3,16 +3,27 @@
 import { useMemo, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/shared/components/button/button/button";
-import { useCreateWrongAnswerCardMutation } from "@/shared/apis/problem-create/hooks/use-create-wrong-answer-card-mutation";
+import { useCreateBulkWrongAnswerCardsMutation } from "@/shared/apis/problem-create/hooks/use-create-bulk-wrong-answer-cards-mutation";
+import { useCreateCustomTypeMutation } from "@/shared/apis/problem-type/hooks/use-create-custom-type-mutation";
 import { useProblemTypesQuery } from "@/shared/apis/problem-type/hooks/use-problem-types-query";
-import { readWrongCreateGroupContext } from "@/app/wrong/create/utils/group-context";
+import type { ProblemCreateRequest } from "@/shared/apis/problem-create/problem-create-types";
+import {
+  readWrongCreateGroupContext,
+  saveWrongCreateGroupContext,
+  type WrongCreateGroupItem,
+} from "@/app/wrong/create/utils/group-context";
 import AiSolutionText from "@/app/wrong/create/components/ai-solution-text/ai-solution-text";
 import {
   MATH_SUBJECT_LABELS,
   MATH_SUBJECT_TYPE_LABELS,
   type MathSubjectLabel,
 } from "@/app/wrong/create/constants/option-labels";
+import { matchByLabel, normalize } from "@/app/wrong/create/utils/label-match";
 import { ROUTES } from "@/shared/constants/routes";
+import {
+  CHAPTER_DROPDOWN_OPTIONS,
+  CHAPTER_FILTERS,
+} from "@/app/wrong/(list)/constants/wrong-filters";
 import ScanAnswerSection, {
   type AnswerMode,
 } from "@/app/wrong/scans/[id]/components/scan-answer-section";
@@ -21,6 +32,8 @@ import ScanDetailHero from "@/app/wrong/scans/[id]/components/scan-detail-hero";
 import ScanEditModal from "@/app/wrong/scans/[id]/components/scan-edit-modal";
 import * as s from "@/app/wrong/scans/[id]/page.css";
 
+const dedupe = (values: string[]) => Array.from(new Set(values.filter(Boolean)));
+
 const isMathSubjectLabel = (
   value: string | null | undefined
 ): value is MathSubjectLabel => {
@@ -28,6 +41,31 @@ const isMathSubjectLabel = (
     value && MATH_SUBJECT_LABELS.includes(value as MathSubjectLabel)
   );
 };
+
+const resolveUnitId = (subjectName: string, unitName: string) => {
+  const chapter = matchByLabel(CHAPTER_FILTERS, subjectName);
+  if (!chapter) return null;
+
+  const unit = matchByLabel(
+    CHAPTER_DROPDOWN_OPTIONS[chapter.id] ?? [],
+    unitName
+  );
+  return unit?.id ?? null;
+};
+
+const resolveKnownTypeIds = (
+  typeNames: string[],
+  problemTypes: { id: string; name: string }[]
+) =>
+  dedupe(
+    typeNames
+      .map(
+        (typeName) =>
+          problemTypes.find((type) => normalize(type.name) === normalize(typeName))
+            ?.id ?? null
+      )
+      .filter((typeId): typeId is string => Boolean(typeId))
+  );
 
 const WrongScanDetailPage = () => {
   const params = useParams();
@@ -45,7 +83,8 @@ const WrongScanDetailPage = () => {
       ? groupItems[groupIndex + 1]
       : null;
 
-  const createProblemMutation = useCreateWrongAnswerCardMutation();
+  const createProblemMutation = useCreateBulkWrongAnswerCardsMutation();
+  const createCustomTypeMutation = useCreateCustomTypeMutation();
   const { data: problemTypes = [] } = useProblemTypesQuery();
 
   const initialSubject = isMathSubjectLabel(groupItem?.subjectName)
@@ -65,6 +104,14 @@ const WrongScanDetailPage = () => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>(
     groupItem?.typeNames ?? []
   );
+  const [appliedSubject, setAppliedSubject] =
+    useState<MathSubjectLabel>(initialSubject);
+  const [appliedUnit, setAppliedUnit] = useState<string>(initialUnit);
+  const [appliedTypes, setAppliedTypes] = useState<string[]>(
+    groupItem?.typeNames ?? []
+  );
+  const [customTypeDraft, setCustomTypeDraft] = useState("");
+  const [isDirectAddOpen, setIsDirectAddOpen] = useState(false);
   const [answerMode, setAnswerMode] = useState<AnswerMode>("objective");
   const [answerChoice, setAnswerChoice] = useState<number | null>(null);
   const [answerText, setAnswerText] = useState("");
@@ -79,6 +126,24 @@ const WrongScanDetailPage = () => {
 
   if (!groupItem || !Number.isFinite(scanId)) return null;
 
+  const resolvedTypeIdsFromSelection = resolveKnownTypeIds(
+    appliedTypes,
+    problemTypes
+  );
+
+  const displayItem: WrongCreateGroupItem = {
+    ...groupItem,
+    finalUnitId: resolveUnitId(appliedSubject, appliedUnit) ?? groupItem.finalUnitId,
+    finalTypeIds:
+      resolvedTypeIdsFromSelection.length > 0
+        ? resolvedTypeIdsFromSelection
+        : groupItem.finalTypeIds,
+    subjectName: appliedSubject,
+    unitName: appliedUnit,
+    typeNames: appliedTypes,
+    title: `${appliedUnit} 문제`,
+  };
+
   const moveTo = (nextScanId: number) => {
     if (!groupId) return;
     router.push(
@@ -86,21 +151,136 @@ const WrongScanDetailPage = () => {
     );
   };
 
-  const handleComplete = () => {
+  const persistGroupItem = (nextItem: WrongCreateGroupItem) => {
+    if (!groupId) return;
+
+    const latestGroup = readWrongCreateGroupContext(groupId);
+    if (!latestGroup) return;
+
+    saveWrongCreateGroupContext({
+      ...latestGroup,
+      items: latestGroup.items.map((item) =>
+        item.scanId === nextItem.scanId ? nextItem : item
+      ),
+    });
+  };
+
+  const buildCurrentProblemPayload = (
+    item: WrongCreateGroupItem,
+    finalUnitId: string,
+    finalTypeIds: string[]
+  ): ProblemCreateRequest => ({
+    scanId: item.scanId,
+    finalUnitId,
+    finalTypeIds,
+    answerFormat: answerMode === "objective" ? "CHOICE" : "TEXT",
+    answerChoiceNo: answerMode === "objective" ? answerChoice : null,
+    answerValue: answerMode === "subjective" ? answerText : null,
+  });
+
+  const handleComplete = async () => {
+    const finalUnitId = resolveUnitId(selectedSubject, resolvedSelectedUnit);
+    if (!finalUnitId) return;
+
+    const finalTypeIds = dedupe(
+      await Promise.all(
+        selectedTypes.map(async (typeName) => {
+          const existing = problemTypes.find(
+            (type) => normalize(type.name) === normalize(typeName)
+          );
+
+          if (existing?.id) return existing.id;
+
+          const created = await createCustomTypeMutation.mutateAsync({
+            name: typeName.trim(),
+          });
+          return created.id;
+        })
+      )
+    );
+
+    if (finalTypeIds.length === 0) return;
+
+    const nextItem: WrongCreateGroupItem = {
+      ...displayItem,
+      finalUnitId,
+      finalTypeIds,
+      typeNames: selectedTypes,
+    };
+
+    persistGroupItem(nextItem);
+
+    const latestGroup = readWrongCreateGroupContext(groupId);
+    const payloadItems = (latestGroup?.items ?? [nextItem]).map((item) => {
+      if (item.scanId === nextItem.scanId) {
+        return buildCurrentProblemPayload(nextItem, finalUnitId, finalTypeIds);
+      }
+
+      return {
+        scanId: item.scanId,
+        finalUnitId: item.finalUnitId,
+        finalTypeIds: item.finalTypeIds,
+        answerFormat: item.answerFormat,
+      } satisfies ProblemCreateRequest;
+    });
+
     createProblemMutation.mutate(
-      {
-        scanId: groupItem.scanId,
-        finalUnitId: groupItem.finalUnitId,
-        finalTypeIds: groupItem.finalTypeIds,
-        answerFormat: answerMode === "objective" ? "CHOICE" : "TEXT",
-        answerChoiceNo: answerMode === "objective" ? answerChoice : null,
-        answerValue: answerMode === "subjective" ? answerText : null,
-      },
+      payloadItems,
       {
         onSuccess: () => {
-          router.push(ROUTES.WRONG.CREATE_DONE);
+          router.push(
+            groupId
+              ? `${ROUTES.WRONG.CREATE_DONE}?group=${encodeURIComponent(groupId)}`
+              : ROUTES.WRONG.CREATE_DONE
+          );
         },
       }
+    );
+  };
+
+  const handleEditModalClose = () => {
+    setSelectedSubject(appliedSubject);
+    setSelectedUnit(appliedUnit);
+    setSelectedTypes(appliedTypes);
+    setIsDirectAddOpen(false);
+    setCustomTypeDraft("");
+    setIsEditModalOpen(false);
+  };
+
+  const handleEditApply = () => {
+    const nextAppliedSubject = selectedSubject;
+    const nextAppliedUnit = resolvedSelectedUnit;
+    const nextAppliedTypes = [...selectedTypes];
+    const nextResolvedTypeIds = resolveKnownTypeIds(nextAppliedTypes, problemTypes);
+
+    setAppliedSubject(nextAppliedSubject);
+    setAppliedUnit(nextAppliedUnit);
+    setAppliedTypes(nextAppliedTypes);
+
+    persistGroupItem({
+      ...groupItem,
+      finalUnitId:
+        resolveUnitId(nextAppliedSubject, nextAppliedUnit) ?? groupItem.finalUnitId,
+      finalTypeIds:
+        nextResolvedTypeIds.length > 0
+          ? nextResolvedTypeIds
+          : groupItem.finalTypeIds,
+      subjectName: nextAppliedSubject,
+      unitName: nextAppliedUnit,
+      typeNames: nextAppliedTypes,
+      title: `${nextAppliedUnit} 문제`,
+    });
+
+    setIsDirectAddOpen(false);
+    setCustomTypeDraft("");
+    setIsEditModalOpen(false);
+  };
+
+  const handleSubjectChange = (subject: MathSubjectLabel) => {
+    const nextUnits = MATH_SUBJECT_TYPE_LABELS[subject];
+    setSelectedSubject(subject);
+    setSelectedUnit((prev) =>
+      nextUnits.includes(prev as never) ? prev : nextUnits[0]
     );
   };
 
@@ -116,11 +296,26 @@ const WrongScanDetailPage = () => {
     setSelectedTypes((prev) => prev.filter((name) => name !== typeName));
   };
 
+  const handleDirectAddSubmit = () => {
+    const nextTypeName = customTypeDraft.trim();
+    if (!nextTypeName) {
+      setIsDirectAddOpen(false);
+      setCustomTypeDraft("");
+      return;
+    }
+
+    setSelectedTypes((prev) =>
+      prev.includes(nextTypeName) ? prev : [...prev, nextTypeName]
+    );
+    setCustomTypeDraft("");
+    setIsDirectAddOpen(false);
+  };
+
   return (
     <div className={s.page}>
       <div className={s.body}>
         <ScanDetailHero
-          item={groupItem}
+          item={displayItem}
           onEditClick={() => setIsEditModalOpen(true)}
         />
 
@@ -145,7 +340,9 @@ const WrongScanDetailPage = () => {
           tone="dark"
           label="완료"
           onClick={handleComplete}
-          disabled={createProblemMutation.isPending}
+          disabled={
+            createProblemMutation.isPending || createCustomTypeMutation.isPending
+          }
         />
       </div>
 
@@ -157,11 +354,21 @@ const WrongScanDetailPage = () => {
         selectedTypes={selectedTypes}
         customSelectedTypes={customSelectedTypes}
         problemTypes={problemTypes}
-        onClose={() => setIsEditModalOpen(false)}
-        onSubjectChange={setSelectedSubject}
+        customTypeDraft={customTypeDraft}
+        isDirectAddOpen={isDirectAddOpen}
+        onClose={handleEditModalClose}
+        onApply={handleEditApply}
+        onSubjectChange={handleSubjectChange}
         onUnitChange={setSelectedUnit}
         onTypeToggle={handleTypeToggle}
         onCustomTypeRemove={handleCustomTypeRemove}
+        onCustomTypeDraftChange={setCustomTypeDraft}
+        onDirectAddOpen={() => setIsDirectAddOpen(true)}
+        onDirectAddClose={() => {
+          setIsDirectAddOpen(false);
+          setCustomTypeDraft("");
+        }}
+        onDirectAddSubmit={handleDirectAddSubmit}
       />
     </div>
   );

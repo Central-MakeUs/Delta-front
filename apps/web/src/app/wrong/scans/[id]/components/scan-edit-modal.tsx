@@ -2,6 +2,7 @@
 
 import clsx from "clsx";
 import { Button } from "@/shared/components/button/button/button";
+import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";
 import Divider from "@/shared/components/divider/divider";
 import Icon from "@/shared/components/icon/icon";
 import type { ProblemTypeItem } from "@/shared/apis/problem-type/problem-type-types";
@@ -19,11 +20,18 @@ type ScanEditModalProps = {
   selectedTypes: string[];
   customSelectedTypes: string[];
   problemTypes: ProblemTypeItem[];
+  customTypeDraft: string;
+  isDirectAddOpen: boolean;
   onClose: () => void;
+  onApply: () => void;
   onSubjectChange: (subject: MathSubjectLabel) => void;
   onUnitChange: (unit: string) => void;
   onTypeToggle: (typeName: string) => void;
   onCustomTypeRemove: (typeName: string) => void;
+  onCustomTypeDraftChange: (value: string) => void;
+  onDirectAddOpen: () => void;
+  onDirectAddClose: () => void;
+  onDirectAddSubmit: () => void;
 };
 
 const ScanEditModal = ({
@@ -34,11 +42,18 @@ const ScanEditModal = ({
   selectedTypes,
   customSelectedTypes,
   problemTypes,
+  customTypeDraft,
+  isDirectAddOpen,
   onClose,
+  onApply,
   onSubjectChange,
   onUnitChange,
   onTypeToggle,
   onCustomTypeRemove,
+  onCustomTypeDraftChange,
+  onDirectAddOpen,
+  onDirectAddClose,
+  onDirectAddSubmit,
 }: ScanEditModalProps) => {
   if (!isOpen) return null;
 
@@ -121,14 +136,21 @@ const ScanEditModal = ({
                 );
               })}
 
-              <button
-                type="button"
-                className={s.addTypeChip}
-                onClick={() => undefined}
-              >
-                <Icon name="plus-circle" size={2} />
-                직접 추가하기
-              </button>
+              {isDirectAddOpen ? (
+                <DirectAddButton
+                  mode="input"
+                  value={customTypeDraft}
+                  onValueChange={onCustomTypeDraftChange}
+                  onSubmit={onDirectAddSubmit}
+                  onCancel={onDirectAddClose}
+                  className={s.addTypeChip}
+                />
+              ) : (
+                <DirectAddButton
+                  className={s.addTypeChip}
+                  onClick={onDirectAddOpen}
+                />
+              )}
 
               {customSelectedTypes.map((typeName) => (
                 <button
@@ -151,7 +173,7 @@ const ScanEditModal = ({
             size="48"
             tone="dark"
             label="수정 완료"
-            onClick={onClose}
+            onClick={onApply}
           />
           <button type="button" className={s.closeButton} onClick={onClose}>
             닫기

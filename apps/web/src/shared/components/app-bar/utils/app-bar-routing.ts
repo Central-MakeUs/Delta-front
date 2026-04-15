@@ -10,7 +10,6 @@ export const shouldHideAppBar = (pathname: string) => {
   if (pathname === ROUTES.AUTH.SIGNUP_INFO) return true;
   if (pathname === ROUTES.PRO.ROOT) return true;
   if (pathname === ROUTES.WRONG.CREATE_DONE) return true;
-  if (pathname.startsWith("/wrong/scans/")) return true;
   return false;
 };
 
@@ -36,6 +35,11 @@ export const getWrongRouteMatch = (pathname: string) => {
   // /wrong/[id]
   if (segments.length === 2) {
     return { type: "detail" as const, id: segments[1]! };
+  }
+
+  // /wrong/scans/[id]
+  if (segments.length === 3 && segments[1] === "scans") {
+    return { type: "scanDetail" as const, id: segments[2]! };
   }
 
   // /wrong/[id]/edit

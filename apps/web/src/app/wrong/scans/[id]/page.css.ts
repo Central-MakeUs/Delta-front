@@ -1,99 +1,35 @@
 import { style, styleVariants } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
-import { bgColor } from "@/shared/styles/color.css";
+import { bgColor, color } from "@/shared/styles/color.css";
 
-export const page = style({
-  minHeight: "100dvh",
-  background: vars.color.grayscale[0],
-  paddingBottom: "10rem",
-});
+export const page = style([
+  bgColor["grayscale-0"],
+  {
+    minHeight: "100dvh",
+    paddingBottom: "10rem",
+  },
+]);
 
-export const header = style({
-  position: "sticky",
-  top: 0,
-  zIndex: vars.zIndex.header,
-  background: vars.color.grayscale[0],
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: "1.2rem 1.6rem",
-});
+export const header = style([
+  bgColor["grayscale-0"],
+  {
+    position: "sticky",
+    top: 0,
+    zIndex: vars.zIndex.header,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "1.2rem 1.6rem",
+  },
+]);
 
 export const headerSide = style({
   minWidth: "6.5rem",
 });
 
-export const iconButton = style({
-  border: "none",
-  background: "transparent",
-  padding: 0,
-  width: "2.4rem",
-  height: "2.4rem",
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  cursor: "pointer",
-});
-
-export const headerTitleWrap = style({
-  position: "relative",
-});
-
-export const headerTitleButton = style([
-  typo.body1.bold,
-  {
-    border: "none",
-    background: "transparent",
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "0.6rem",
-    color: vars.color.grayscale[900],
-    cursor: "pointer",
-  },
-]);
-
-export const headerSkip = style([
-  typo.body3.medium,
-  {
-    minWidth: "6.5rem",
-    textAlign: "right",
-    color: vars.color.grayscale[300],
-  },
-]);
-
-export const dropdown = style({
-  position: "absolute",
-  top: "5.4rem",
-  left: "50%",
-  transform: "translateX(-50%)",
-  width: "14rem",
-  boxShadow: vars.shadow.e400,
-  borderRadius: vars.radius.r16,
-  background: vars.color.grayscale[0],
-  overflow: "hidden",
-});
-
-export const dropdownItem = style([
-  typo.body3.medium,
-  {
-    width: "100%",
-    border: "none",
-    background: vars.color.grayscale[0],
-    padding: "1.2rem 1.6rem",
-    color: vars.color.grayscale[700],
-    textAlign: "center",
-    cursor: "pointer",
-  },
-]);
-
-export const dropdownItemActive = style({
-  color: vars.color.main[500],
-  fontWeight: vars.typography.body3.fontWeight.semibold,
-});
-
 export const body = style({
-  padding: vars.space[4],
+  padding: "2rem 1.6rem",
   display: "flex",
   flexDirection: "column",
   gap: "2rem",
@@ -110,6 +46,20 @@ export const heroMeta = style({
   display: "flex",
   flexDirection: "column",
   gap: "1.2rem",
+  width: "100%",
+});
+
+export const metaRow = style({
+  display: "flex",
+  alignItems: "center",
+  gap: "1.2rem",
+});
+
+export const titleRow = style({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "1.2rem",
 });
 
 export const chipRow = style({
@@ -121,38 +71,31 @@ export const chipRow = style({
 
 export const subjectChip = style([
   typo.caption.semibold,
+  bgColor["main-500"],
+  color["grayscale-0"],
   {
     padding: "0.4rem 1.2rem",
     borderRadius: vars.radius.full,
-    background: vars.color.main[500],
-    color: vars.color.grayscale[0],
   },
 ]);
 
 export const typeChip = style([
   typo.caption.semibold,
+  bgColor["grayscale-50"],
+  color["grayscale-700"],
   {
     padding: "0.4rem 1.2rem",
     borderRadius: vars.radius.r8,
-    background: vars.color.grayscale[50],
-    color: vars.color.grayscale[700],
   },
 ]);
 
-export const heroTitle = style([
-  typo.body1.bold,
-  {
-    color: vars.color.grayscale[900],
-  },
-]);
+export const heroTitle = style([typo.body1.bold, color["grayscale-900"]]);
 
 export const editButton = style([
   typo.body3.medium,
+  color["grayscale-300"],
   {
-    border: "none",
-    background: "transparent",
-    color: vars.color.grayscale[300],
-    display: "inline-flex",
+    display: "flex",
     alignItems: "center",
     gap: "0.6rem",
     cursor: "pointer",
@@ -162,7 +105,6 @@ export const editButton = style([
 export const imageWrap = style({
   position: "relative",
   width: "100%",
-  minHeight: "23.9rem",
   borderRadius: vars.radius.r12,
   overflow: "hidden",
   border: `1px solid ${vars.color.grayscale[100]}`,
@@ -182,9 +124,7 @@ export const sectionHeader = style({
 
 export const sectionTitle = style([
   typo.body2.semibold,
-  {
-    color: vars.color.grayscale[700],
-  },
+  color["grayscale-700"],
 ]);
 
 export const bottomNav = style({
@@ -195,14 +135,11 @@ export const bottomNav = style({
 
 export const navButton = style([
   typo.body2.medium,
+  color["grayscale-500"],
   {
-    border: "none",
-    background: "transparent",
-    padding: 0,
-    color: vars.color.grayscale[500],
-    display: "inline-flex",
+    display: "flex",
     alignItems: "center",
-    gap: "0.8rem",
+    gap: "1.2rem",
     cursor: "pointer",
   },
 ]);

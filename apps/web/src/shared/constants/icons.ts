@@ -15,6 +15,7 @@ export const ICONS = [
   "default-profile",
   "default-profile1",
   "edit",
+  "edit-scan",
   "empty-graph",
   "empty-problem",
   "error-404",

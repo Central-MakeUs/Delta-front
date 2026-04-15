@@ -61,6 +61,7 @@ export const root = recipe({
       default: { justifyContent: "space-between" },
       progress: { justifyContent: "space-between" },
       title: { justifyContent: "flex-start" },
+      scanDetail: { justifyContent: "space-between" },
       graphTabs: {
         paddingInline: 0,
       },
@@ -189,3 +190,78 @@ export const actionIconButton = style([
     justifyContent: "center",
   },
 ]);
+
+export const scanTitleWrap = style({
+  position: "relative",
+  flex: "1 1 0",
+  display: "flex",
+  justifyContent: "center",
+  minWidth: 0,
+});
+
+export const scanTitleButton = style([
+  buttonReset,
+  typo.body1.bold,
+  color["grayscale-900"],
+  {
+    maxWidth: "100%",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+]);
+
+export const scanDropdown = style([
+  bgColor["grayscale-0"],
+  {
+    position: "absolute",
+    top: "calc(100% + 1.2rem)",
+    left: "50%",
+    transform: "translateX(-50%)",
+    width: "14rem",
+    borderRadius: vars.radius.r16,
+    boxShadow: vars.shadow.e400,
+    overflow: "hidden",
+    zIndex: vars.zIndex.contentOverlayHigh,
+  },
+]);
+
+export const scanDropdownItem = style([
+  buttonReset,
+  typo.body3.medium,
+  color["grayscale-700"],
+  {
+    width: "100%",
+    padding: "1.2rem 1.6rem",
+    textAlign: "center",
+  },
+]);
+
+export const scanDropdownItemActive = style([
+  typo.body3.semibold,
+  color["main-500"],
+]);
+
+export const scanRightButton = style([
+  buttonReset,
+  typo.body3.medium,
+  color["grayscale-300"],
+  {
+    minWidth: APP_BAR_SIDE_SLOT_WIDTH,
+    justifyContent: "flex-end",
+    cursor: "default",
+    selectors: {
+      "&:disabled": {
+        opacity: 1,
+      },
+    },
+  },
+]);
+
+export const triangleIcon = style([color["main-400"]]);
+
+export const scanRaw = style({
+  display: "flex",
+  gap: "0.8rem",
+  alignItems: "center",
+});

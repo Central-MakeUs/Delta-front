@@ -1,6 +1,5 @@
 ﻿"use client";
 
-import clsx from "clsx";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -12,7 +11,8 @@ import Icon from "@/shared/components/icon/icon";
 import { useCreateWrongAnswerCardMutation } from "@/shared/apis/problem-create/hooks/use-create-wrong-answer-card-mutation";
 import { useProblemTypesQuery } from "@/shared/apis/problem-type/hooks/use-problem-types-query";
 import { readWrongCreateGroupContext } from "@/app/wrong/create/utils/group-context";
-import AiSolutionText from "../../create/components/ai-solution-text/ai-solution-text";
+import clsx from "clsx";
+import AiSolutionText from "@/app/wrong/create/components/ai-solution-text/ai-solution-text";
 import {
   MATH_SUBJECT_LABELS,
   MATH_SUBJECT_TYPE_LABELS,
@@ -20,7 +20,7 @@ import {
   type MathSubjectLabel,
 } from "@/app/wrong/create/constants/option-labels";
 import { ROUTES } from "@/shared/constants/routes";
-import * as s from "./page.css";
+import * as s from "@/app/wrong/scans/[id]/page.css";
 
 const isMathSubjectLabel = (
   value: string | null | undefined
@@ -59,7 +59,6 @@ const WrongScanDetailPage = () => {
     ? (groupItem?.unitName as (typeof initialUnits)[number])
     : initialUnits[0];
 
-  const [isProblemMenuOpen, setIsProblemMenuOpen] = useState(false);
   const [isEditSheetOpen, setIsEditSheetOpen] = useState(false);
   const [selectedSubject, setSelectedSubject] =
     useState<MathSubjectLabel>(initialSubject);
@@ -68,7 +67,7 @@ const WrongScanDetailPage = () => {
     groupItem?.typeNames ?? []
   );
   const [answerMode, setAnswerMode] = useState<"objective" | "subjective">(
-    groupItem?.answerFormat === "CHOICE" ? "objective" : "subjective"
+    "objective"
   );
   const [answerChoice, setAnswerChoice] = useState<number | null>(null);
   const [answerText, setAnswerText] = useState("");
@@ -82,8 +81,6 @@ const WrongScanDetailPage = () => {
   );
 
   if (!groupItem || !Number.isFinite(scanId)) return null;
-
-  const title = `문제 (${groupIndex + 1}/${groupItems.length})`;
 
   const moveTo = (nextScanId: number) => {
     if (!groupId) return;
@@ -112,73 +109,31 @@ const WrongScanDetailPage = () => {
 
   return (
     <div className={s.page}>
-      <div className={s.header}>
-        <div className={s.headerSide}>
-          <button
-            type="button"
-            className={s.iconButton}
-            onClick={() =>
-              router.push(
-                `${ROUTES.WRONG.CREATE_SCANS}?group=${encodeURIComponent(groupId ?? "")}`
-              )
-            }
-          >
-            <Icon name="chevron" size={2.4} rotate={180} />
-          </button>
-        </div>
-
-        <div className={s.headerTitleWrap}>
-          <button
-            type="button"
-            className={s.headerTitleButton}
-            onClick={() => setIsProblemMenuOpen((prev) => !prev)}
-          >
-            {title}
-          </button>
-
-          {isProblemMenuOpen ? (
-            <div className={s.dropdown}>
-              {groupItems.map((item, index) => (
-                <button
-                  key={item.scanId}
-                  type="button"
-                  onClick={() => moveTo(item.scanId)}
-                  className={clsx(
-                    s.dropdownItem,
-                    index === groupIndex && s.dropdownItemActive
-                  )}
-                >
-                  {`${index + 1}) ${item.unitName}`}
-                </button>
-              ))}
-            </div>
-          ) : null}
-        </div>
-
-        <div className={s.headerSkip}>건너뛰기</div>
-      </div>
-
       <div className={s.body}>
         <div className={s.heroHeader}>
           <div className={s.heroMeta}>
-            <div className={s.chipRow}>
-              <div className={s.subjectChip}>{groupItem.subjectName}</div>
-              {groupItem.typeNames.map((typeName) => (
-                <div key={typeName} className={s.typeChip}>
-                  {typeName}
-                </div>
-              ))}
+            <div className={s.metaRow}>
+              <div className={s.chipRow}>
+                <div className={s.subjectChip}>{groupItem.subjectName}</div>
+                {groupItem.typeNames.map((typeName) => (
+                  <div key={typeName} className={s.typeChip}>
+                    {typeName}
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className={s.heroTitle}>{groupItem.title}</div>
+            <div className={s.titleRow}>
+              <div className={s.heroTitle}>{groupItem.title}</div>
+              <button
+                type="button"
+                className={s.editButton}
+                onClick={() => setIsEditSheetOpen(true)}
+              >
+                <Icon name="edit-scan" size={2} />
+                단원 수정하기
+              </button>
+            </div>
           </div>
-
-          <button
-            type="button"
-            className={s.editButton}
-            onClick={() => setIsEditSheetOpen(true)}
-          >
-            <Icon name="edit" size={2} />단원 수정하기
-          </button>
         </div>
 
         <div className={s.imageWrap}>
@@ -204,7 +159,10 @@ const WrongScanDetailPage = () => {
           </div>
 
           {answerMode === "objective" ? (
-            <NumberChoice value={answerChoice} onValueChange={setAnswerChoice} />
+            <NumberChoice
+              value={answerChoice}
+              onValueChange={setAnswerChoice}
+            />
           ) : (
             <TextField
               value={answerText}
@@ -225,7 +183,7 @@ const WrongScanDetailPage = () => {
           disabled={!prevItem}
           onClick={() => prevItem && moveTo(prevItem.scanId)}
         >
-          <Icon name="chevron" size={1.6} rotate={180} />
+          <Icon name="chevron" size={2.4} rotate={180} />
           이전 문제
         </button>
         <button
@@ -235,7 +193,7 @@ const WrongScanDetailPage = () => {
           onClick={() => nextItem && moveTo(nextItem.scanId)}
         >
           다음 문제
-          <Icon name="chevron" size={1.6} />
+          <Icon name="chevron" size={2.4} />
         </button>
       </div>
 
@@ -389,4 +347,3 @@ const WrongScanDetailPage = () => {
 };
 
 export default WrongScanDetailPage;
-

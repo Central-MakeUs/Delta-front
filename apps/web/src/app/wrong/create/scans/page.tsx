@@ -94,7 +94,7 @@ const WrongCreateScansPage = () => {
           ))}
           <Divider
             height="hairline"
-            tone="grayscale-100"
+            tone="grayscale-50"
             className={s.tabDivider}
           />
         </div>

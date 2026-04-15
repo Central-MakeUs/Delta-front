@@ -177,6 +177,72 @@ const AppBar = (props: AppBarProps) => {
         </div>
       );
     }
+
+    case "scanDetail": {
+      const onBack = props.onBack ?? backFallback;
+
+      return renderShell(
+        "scanDetail",
+        <>
+          <div className={s.leftSlot}>
+            <BackButton onClick={onBack} />
+          </div>
+
+          <div className={s.scanTitleWrap}>
+            <div className={s.scanRaw}>
+              <button
+                type="button"
+                className={s.scanTitleButton}
+                onClick={props.titleMenu.onToggle}
+                aria-expanded={props.titleMenu.isOpen}
+                aria-haspopup="menu"
+              >
+                {props.title}
+              </button>
+
+              <Icon
+                name="triangle"
+                size={1.6}
+                rotate={90}
+                className={s.triangleIcon}
+              />
+            </div>
+
+            {props.titleMenu.isOpen ? (
+              <div className={s.scanDropdown} role="menu">
+                {props.titleMenu.items.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    role="menuitem"
+                    onClick={item.onClick}
+                    className={clsx(
+                      s.scanDropdownItem,
+                      item.isActive && s.scanDropdownItemActive
+                    )}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          <div className={s.rightSlot}>
+            {props.rightLabel ? (
+              <button
+                type="button"
+                className={s.scanRightButton}
+                onClick={props.onRightClick}
+                disabled={!props.onRightClick}
+              >
+                {props.rightLabel}
+              </button>
+            ) : null}
+          </div>
+        </>
+      );
+    }
   }
 };
 

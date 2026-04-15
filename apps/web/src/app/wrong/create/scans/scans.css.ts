@@ -107,7 +107,8 @@ export const cardOverlay = style({
   position: "absolute",
   inset: 0,
   background:
-    "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(17,17,17,0.60) 100%)",
+    "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(17, 17, 17, 1) 100%)",
+  opacity: 0.6,
 });
 
 export const subjectChip = style({
@@ -142,10 +143,8 @@ export const chipWrap = style({
 });
 
 export const unitChip = style([
-  color["grayscale-800"],
-  {
-    backgroundColor: "rgba(241, 241, 244, 0.92)",
-  },
+  color["grayscale-900"],
+  bgColor["grayscale-50"],
 ]);
 
 export const cardTitle = style([

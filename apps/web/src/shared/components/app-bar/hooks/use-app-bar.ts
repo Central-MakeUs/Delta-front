@@ -1,6 +1,9 @@
 import { useCallback, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
+import type {
+  AppBarProps,
+  ScanDetailMenuItem,
+} from "@/shared/components/app-bar/types/app-bar";
 import { ROUTES, GRAPH_TABS, type GraphTab } from "@/shared/constants/routes";
 import {
   getWrongRouteMatch,
@@ -8,6 +11,7 @@ import {
 } from "@/shared/components/app-bar/utils/app-bar-routing";
 import { useDeleteProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-delete-problem-detail-mutation";
 import { toastSuccess } from "@/shared/components/toast/toast";
+import { readWrongCreateGroupContext } from "@/app/wrong/create/utils/group-context";
 
 type UseAppBarResult =
   | { isHidden: true; props?: never }
@@ -39,9 +43,18 @@ export const useAppBar = (): UseAppBarResult => {
   const deleteMutation = useDeleteProblemDetailMutation();
 
   const [isWrongDetailMenuOpen, setIsWrongDetailMenuOpen] = useState(false);
+  const [isScanDetailMenuOpen, setIsScanDetailMenuOpen] = useState(false);
 
   const closeWrongDetailMenu = useCallback(() => {
     setIsWrongDetailMenuOpen(false);
+  }, []);
+
+  const toggleScanDetailMenu = useCallback(() => {
+    setIsScanDetailMenuOpen((prev) => !prev);
+  }, []);
+
+  const closeScanDetailMenu = useCallback(() => {
+    setIsScanDetailMenuOpen(false);
   }, []);
 
   if (shouldHideAppBar(pathname)) return { isHidden: true };
@@ -194,6 +207,60 @@ export const useAppBar = (): UseAppBarResult => {
               iconName: "trash-modal",
             },
           ],
+        },
+      },
+    };
+  }
+
+  if (wrongMatch.type === "scanDetail") {
+    const scanId = Number(wrongMatch.id);
+    const groupId = sp.get("group");
+    const group = readWrongCreateGroupContext(groupId);
+    const items = group?.items ?? [];
+    const currentIndex = items.findIndex((item) => item.scanId === scanId);
+    const totalCount = items.length;
+    const title =
+      currentIndex >= 0 && totalCount > 0
+        ? `문제 (${currentIndex + 1}/${totalCount})`
+        : "문제";
+
+    const menuItems: [ScanDetailMenuItem, ...ScanDetailMenuItem[]] =
+      items.length > 0
+        ? (items.map((item, index) => ({
+            id: String(item.scanId),
+            label: `${index + 1}) ${item.unitName}`,
+            isActive: index === currentIndex,
+            onClick: () => {
+              closeScanDetailMenu();
+              if (!groupId) return;
+              router.push(
+                `${ROUTES.WRONG.SCAN_DETAIL(item.scanId)}?group=${encodeURIComponent(groupId)}`
+              );
+            },
+          })) as [ScanDetailMenuItem, ...ScanDetailMenuItem[]])
+        : [
+            {
+              id: "current",
+              label: title,
+              isActive: true,
+              onClick: closeScanDetailMenu,
+            },
+          ];
+
+    return {
+      isHidden: false,
+      props: {
+        variant: "scanDetail",
+        title,
+        onBack: () =>
+          router.push(
+            `${ROUTES.WRONG.CREATE_SCANS}?group=${encodeURIComponent(groupId ?? "")}`
+          ),
+        rightLabel: "건너뛰기",
+        titleMenu: {
+          isOpen: isScanDetailMenuOpen,
+          onToggle: toggleScanDetailMenu,
+          items: menuItems,
         },
       },
     };

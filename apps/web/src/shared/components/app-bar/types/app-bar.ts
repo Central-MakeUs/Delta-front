@@ -8,7 +8,8 @@ export type AppBarVariant =
   | "default"
   | "progress"
   | "title"
-  | "graphTabs";
+  | "graphTabs"
+  | "scanDetail";
 
 export type CommonProps = {
   className?: string;
@@ -96,10 +97,31 @@ export type GraphTabsProps<V extends string = string> = CommonProps & {
   tabsAriaLabel?: string;
 };
 
+export type ScanDetailMenuItem = {
+  id: string;
+  label: string;
+  isActive?: boolean;
+  onClick: () => void;
+};
+
+export type ScanDetailProps = CommonProps & {
+  variant: "scanDetail";
+  title: string;
+  onBack?: () => void;
+  rightLabel?: string;
+  onRightClick?: () => void;
+  titleMenu: {
+    isOpen: boolean;
+    onToggle: () => void;
+    items: NonEmptyArray<ScanDetailMenuItem>;
+  };
+};
+
 export type AppBarProps =
   | BasicProps
   | BasicActionProps
   | DefaultProps
   | ProgressProps
   | TitleOnlyProps
-  | GraphTabsProps;
+  | GraphTabsProps
+  | ScanDetailProps;

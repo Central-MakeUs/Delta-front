@@ -15,6 +15,7 @@ import {
   saveWrongCreateGroupContext,
   type WrongCreateGroupItem,
 } from "@/app/wrong/create/utils/group-context";
+import { inferSubjectiveFormat } from "@/app/wrong/create/utils/answer-format";
 import AiSolutionText from "@/app/wrong/create/components/ai-solution-text/ai-solution-text";
 import {
   MATH_SUBJECT_LABELS,
@@ -127,8 +128,10 @@ const WrongScanDetailPage = () => {
   const [customTypeDraft, setCustomTypeDraft] = useState("");
   const [isDirectAddOpen, setIsDirectAddOpen] = useState(false);
   const [answerMode, setAnswerMode] = useState<AnswerMode>("objective");
-  const [answerChoice, setAnswerChoice] = useState<number | null>(null);
-  const [answerText, setAnswerText] = useState("");
+  const [answerChoice, setAnswerChoice] = useState<number | null>(
+    groupItem?.answerChoiceNo ?? null
+  );
+  const [answerText, setAnswerText] = useState(groupItem?.answerValue ?? "");
 
   const availableUnits = MATH_SUBJECT_TYPE_LABELS[selectedSubject];
   const resolvedSelectedUnit = availableUnits.includes(selectedUnit as never)
@@ -188,35 +191,67 @@ const WrongScanDetailPage = () => {
     item: WrongCreateGroupItem,
     finalUnitId: string,
     finalTypeIds: string[]
-  ): ProblemCreateRequest => ({
-    scanId: item.scanId,
-    finalUnitId,
-    finalTypeIds,
-    answerFormat: answerMode === "objective" ? "CHOICE" : "TEXT",
-    answerChoiceNo: answerMode === "objective" ? answerChoice : null,
-    answerValue: answerMode === "subjective" ? answerText : null,
-  });
+  ): ProblemCreateRequest => {
+    const trimmedAnswerValue = answerText.trim();
+    const answerFormat =
+      answerMode === "objective"
+        ? "CHOICE"
+        : inferSubjectiveFormat(trimmedAnswerValue);
+
+    return {
+      scanId: item.scanId,
+      finalUnitId,
+      finalTypeIds,
+      answerFormat,
+      answerChoiceNo: answerMode === "objective" ? answerChoice : null,
+      answerValue: answerMode === "subjective" ? trimmedAnswerValue : null,
+    };
+  };
+
+  const persistCurrentAnswer = (
+    nextAnswerMode: AnswerMode,
+    nextAnswerChoice: number | null,
+    nextAnswerText: string
+  ) => {
+    const nextAnswerValue = nextAnswerText.trim();
+
+    persistGroupItem({
+      ...displayItem,
+      answerFormat:
+        nextAnswerMode === "objective"
+          ? "CHOICE"
+          : inferSubjectiveFormat(nextAnswerValue),
+      answerChoiceNo:
+        nextAnswerMode === "objective" ? nextAnswerChoice : null,
+      answerValue: nextAnswerMode === "subjective" ? nextAnswerValue : null,
+    });
+  };
 
   const handleComplete = async () => {
-    const finalUnitId = resolveUnitId(selectedSubject, resolvedSelectedUnit);
+    const finalUnitId =
+      resolveUnitId(selectedSubject, resolvedSelectedUnit) ??
+      groupItem.finalUnitId;
     if (!finalUnitId) return;
 
-    const finalTypeIds = dedupe(
-      await Promise.all(
-        selectedTypes.map(async (typeName) => {
-          const existing = problemTypes.find(
-            (type) => normalize(type.name) === normalize(typeName)
-          );
+    const finalTypeIds =
+      selectedTypes.length > 0
+        ? dedupe(
+            await Promise.all(
+              selectedTypes.map(async (typeName) => {
+                const existing = problemTypes.find(
+                  (type) => normalize(type.name) === normalize(typeName)
+                );
 
-          if (existing?.id) return existing.id;
+                if (existing?.id) return existing.id;
 
-          const created = await createCustomTypeMutation.mutateAsync({
-            name: typeName.trim(),
-          });
-          return created.id;
-        })
-      )
-    );
+                const created = await createCustomTypeMutation.mutateAsync({
+                  name: typeName.trim(),
+                });
+                return created.id;
+              })
+            )
+          )
+        : groupItem.finalTypeIds;
 
     if (finalTypeIds.length === 0) return;
 
@@ -224,6 +259,12 @@ const WrongScanDetailPage = () => {
       ...displayItem,
       finalUnitId,
       finalTypeIds,
+      answerFormat:
+        answerMode === "objective"
+          ? "CHOICE"
+          : inferSubjectiveFormat(answerText.trim()),
+      answerChoiceNo: answerMode === "objective" ? answerChoice : null,
+      answerValue: answerMode === "subjective" ? answerText.trim() : null,
       typeNames: selectedTypes,
     };
 
@@ -240,6 +281,8 @@ const WrongScanDetailPage = () => {
         finalUnitId: item.finalUnitId,
         finalTypeIds: item.finalTypeIds,
         answerFormat: item.answerFormat,
+        answerChoiceNo: item.answerChoiceNo ?? null,
+        answerValue: item.answerValue ?? null,
       } satisfies ProblemCreateRequest;
     });
 
@@ -284,6 +327,12 @@ const WrongScanDetailPage = () => {
         nextResolvedTypeIds.length > 0
           ? nextResolvedTypeIds
           : groupItem.finalTypeIds,
+      answerFormat:
+        answerMode === "objective"
+          ? "CHOICE"
+          : inferSubjectiveFormat(answerText.trim()),
+      answerChoiceNo: answerMode === "objective" ? answerChoice : null,
+      answerValue: answerMode === "subjective" ? answerText.trim() : null,
       subjectName: nextAppliedSubject,
       unitName: nextAppliedUnit,
       typeNames: nextAppliedTypes,
@@ -416,9 +465,26 @@ const WrongScanDetailPage = () => {
           answerMode={answerMode}
           answerChoice={answerChoice}
           answerText={answerText}
-          onAnswerModeChange={setAnswerMode}
-          onAnswerChoiceChange={setAnswerChoice}
-          onAnswerTextChange={setAnswerText}
+          onAnswerModeChange={(value) => {
+            setAnswerMode(value);
+
+            if (value === "objective") {
+              setAnswerText("");
+              persistCurrentAnswer(value, answerChoice, "");
+              return;
+            }
+
+            setAnswerChoice(null);
+            persistCurrentAnswer(value, null, answerText);
+          }}
+          onAnswerChoiceChange={(value) => {
+            setAnswerChoice(value);
+            persistCurrentAnswer(answerMode, value, answerText);
+          }}
+          onAnswerTextChange={(value) => {
+            setAnswerText(value);
+            persistCurrentAnswer(answerMode, answerChoice, value);
+          }}
         />
 
         <AiSolutionText />

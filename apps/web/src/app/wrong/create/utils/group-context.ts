@@ -5,6 +5,8 @@ export type WrongCreateGroupItem = {
   finalUnitId: string;
   finalTypeIds: string[];
   answerFormat: "CHOICE" | "TEXT" | "NUMBER" | "EXPRESSION";
+  answerChoiceNo?: number | null;
+  answerValue?: string | null;
   title: string;
   imageUrl: string;
   subjectName: string;

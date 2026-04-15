@@ -139,6 +139,8 @@ export const useStep1SummaryTransition = ({
           finalUnitId: payload.finalUnitId,
           finalTypeIds: payload.finalTypeIds,
           answerFormat: payload.answerFormat,
+          answerChoiceNo: payload.answerChoiceNo ?? null,
+          answerValue: payload.answerValue ?? null,
           title: `${unitName} 문제`,
           imageUrl: summary?.originalImage.viewUrl ?? "",
           subjectName,

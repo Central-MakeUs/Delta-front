@@ -72,7 +72,7 @@ export const chipRow = style({
 
 export const chip = recipe({
   base: {
-    display: "inline-flex",
+    display: "flex",
     alignItems: "center",
     cursor: "pointer",
   },
@@ -108,12 +108,12 @@ export const chip = recipe({
       ],
       add: [
         typo.body3.medium,
+        bgColor["grayscale-0"],
+        color["grayscale-400"],
         {
           border: `1px solid ${vars.color.grayscale[100]}`,
           borderRadius: vars.radius.r12,
           padding: "0.8rem 1.6rem",
-          background: vars.color.grayscale[0],
-          color: vars.color.grayscale[400],
           gap: "0.8rem",
         },
       ],
@@ -215,10 +215,18 @@ export const navButton = style([
   typo.body2.medium,
   color["grayscale-500"],
   {
+    border: "none",
+    background: "transparent",
     display: "flex",
     alignItems: "center",
     gap: "1.2rem",
     cursor: "pointer",
+    selectors: {
+      "&:disabled": {
+        color: vars.color.grayscale[300],
+        cursor: "not-allowed",
+      },
+    },
   },
 ]);
 
@@ -234,17 +242,19 @@ export const bottomAction = style([
   },
 ]);
 
-export const overlay = style({
-  position: "fixed",
-  inset: 0,
-  background: "rgba(17,17,17,0.4)",
-  display: "flex",
-  alignItems: "flex-end",
-  justifyContent: "center",
-  padding: "0 1.6rem 2.8rem",
-  boxSizing: "border-box",
-  zIndex: vars.zIndex.bottomSheetOverlay,
-});
+export const overlay = style([
+  bgColor["overDim-40"],
+  {
+    position: "fixed",
+    inset: 0,
+    display: "flex",
+    alignItems: "flex-end",
+    justifyContent: "center",
+    padding: "0 1.6rem 2.8rem",
+    boxSizing: "border-box",
+    zIndex: vars.zIndex.bottomSheetOverlay,
+  },
+]);
 
 export const sheet = style([
   bgColor["grayscale-0"],
@@ -295,35 +305,51 @@ export const chipGroup = style({
 
 export const subjectUnitHeader = style([
   typo.body3.medium,
+  color["grayscale-700"],
   {
-    display: "inline-flex",
+    display: "flex",
     alignItems: "center",
     gap: "0.4rem",
-    color: vars.color.grayscale[700],
   },
 ]);
 
 export const divider = style({
   height: "0.4rem",
   margin: "0 -1.6rem",
-  background: vars.color.grayscale[50],
   flexShrink: 0,
 });
 
-export const sheetFooter = style({
-  padding: "2rem 1.6rem calc(2rem + env(safe-area-inset-bottom))",
-  background: vars.color.grayscale[0],
-  display: "flex",
-  flexDirection: "column",
-  gap: "0.8rem",
-});
+export const sheetFooter = style([
+  bgColor["grayscale-0"],
+  {
+    padding: "2rem 1.6rem calc(2rem + env(safe-area-inset-bottom))",
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.8rem",
+  },
+]);
 
 export const closeButton = style([
   typo.body2.medium,
+  color["grayscale-500"],
   {
     border: "none",
     background: "transparent",
-    color: vars.color.grayscale[500],
     cursor: "pointer",
   },
 ]);
+
+export const customTypeItem = style({
+  display: "inline-flex",
+  cursor: "grab",
+});
+
+export const customTypeRemoveButton = style({
+  border: "none",
+  background: "transparent",
+  padding: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+});

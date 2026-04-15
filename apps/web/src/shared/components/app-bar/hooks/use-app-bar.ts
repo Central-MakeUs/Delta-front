@@ -281,7 +281,6 @@ export const useAppBar = ({
           router.push(
             `${ROUTES.WRONG.CREATE_SCANS}?group=${encodeURIComponent(groupId ?? "")}`
           ),
-        rightLabel: "건너뛰기",
         titleMenu: {
           isOpen: isScanDetailMenuOpen,
           onToggle: toggleScanDetailMenu,

@@ -1,4 +1,5 @@
 "use client";
+import { useRef } from "react";
 import { Button } from "@/shared/components/button/button/button";
 import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";
 import Divider from "@/shared/components/divider/divider";
@@ -16,7 +17,7 @@ type ScanEditModalProps = {
   availableUnits: readonly string[];
   selectedUnit: string;
   selectedTypes: string[];
-  customSelectedTypes: string[];
+  customSelectedTypes: ProblemTypeItem[];
   problemTypes: ProblemTypeItem[];
   customTypeDraft: string;
   isDirectAddOpen: boolean;
@@ -25,11 +26,12 @@ type ScanEditModalProps = {
   onSubjectChange: (subject: MathSubjectLabel) => void;
   onUnitChange: (unit: string) => void;
   onTypeToggle: (typeName: string) => void;
-  onCustomTypeRemove: (typeName: string) => void;
+  onCustomTypeRemove: (type: ProblemTypeItem) => void | Promise<void>;
+  onCustomTypeMove: (draggedTypeId: string, targetTypeId: string) => void;
   onCustomTypeDraftChange: (value: string) => void;
   onDirectAddOpen: () => void;
   onDirectAddClose: () => void;
-  onDirectAddSubmit: () => void;
+  onDirectAddSubmit: () => void | Promise<void>;
 };
 
 const ScanEditModal = ({
@@ -48,11 +50,14 @@ const ScanEditModal = ({
   onUnitChange,
   onTypeToggle,
   onCustomTypeRemove,
+  onCustomTypeMove,
   onCustomTypeDraftChange,
   onDirectAddOpen,
   onDirectAddClose,
   onDirectAddSubmit,
 }: ScanEditModalProps) => {
+  const draggedTypeIdRef = useRef<string | null>(null);
+
   if (!isOpen) return null;
 
   return (
@@ -105,12 +110,14 @@ const ScanEditModal = ({
             </div>
           </div>
 
-          <Divider className={s.divider} />
+          <Divider tone="grayscale-50" className={s.divider} />
 
           <div className={s.sheetSection}>
             <div className={s.sheetSectionTitle}>유형</div>
             <div className={s.chipGroup}>
-              {problemTypes.map((type) => {
+              {problemTypes
+                .filter((type) => !type.custom)
+                .map((type) => {
                 const active = selectedTypes.includes(type.name);
 
                 return (
@@ -128,6 +135,47 @@ const ScanEditModal = ({
                 );
               })}
 
+              {customSelectedTypes.map((type) => (
+                <div
+                  key={type.id}
+                  className={s.customTypeItem}
+                  draggable
+                  onDragStart={() => {
+                    draggedTypeIdRef.current = type.id;
+                  }}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                  }}
+                  onDrop={() => {
+                    if (
+                      !draggedTypeIdRef.current ||
+                      draggedTypeIdRef.current === type.id
+                    ) {
+                      return;
+                    }
+                    onCustomTypeMove(draggedTypeIdRef.current, type.id);
+                    draggedTypeIdRef.current = null;
+                  }}
+                  onDragEnd={() => {
+                    draggedTypeIdRef.current = null;
+                  }}
+                >
+                  <div className={s.chip({ kind: "custom" })}>
+                    <span>{type.name}</span>
+                    <button
+                      type="button"
+                      className={s.customTypeRemoveButton}
+                      onClick={() => {
+                        void onCustomTypeRemove(type);
+                      }}
+                      aria-label={`${type.name} 삭제`}
+                    >
+                      <Icon name="multiple" size={2} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+
               {isDirectAddOpen ? (
                 <DirectAddButton
                   mode="input"
@@ -143,18 +191,6 @@ const ScanEditModal = ({
                   onClick={onDirectAddOpen}
                 />
               )}
-
-              {customSelectedTypes.map((typeName) => (
-                <button
-                  key={`custom-${typeName}`}
-                  type="button"
-                  className={s.chip({ kind: "custom" })}
-                  onClick={() => onCustomTypeRemove(typeName)}
-                >
-                  <span>{typeName}</span>
-                  <Icon name="multiple" size={2} />
-                </button>
-              ))}
             </div>
           </div>
         </div>

@@ -6,6 +6,9 @@ import { Button } from "@/shared/components/button/button/button";
 import { useCreateBulkWrongAnswerCardsMutation } from "@/shared/apis/problem-create/hooks/use-create-bulk-wrong-answer-cards-mutation";
 import { useCreateCustomTypeMutation } from "@/shared/apis/problem-type/hooks/use-create-custom-type-mutation";
 import { useProblemTypesQuery } from "@/shared/apis/problem-type/hooks/use-problem-types-query";
+import { useSetProblemTypeActiveMutation } from "@/shared/apis/problem-type/hooks/use-set-problem-type-active-mutation";
+import { useUpdateCustomTypeMutation } from "@/shared/apis/problem-type/hooks/use-update-custom-type-mutation";
+import type { ProblemTypeItem } from "@/shared/apis/problem-type/problem-type-types";
 import type { ProblemCreateRequest } from "@/shared/apis/problem-create/problem-create-types";
 import {
   readWrongCreateGroupContext,
@@ -30,9 +33,18 @@ import ScanAnswerSection, {
 import ScanBottomNav from "@/app/wrong/scans/[id]/components/scan-bottom-nav";
 import ScanDetailHero from "@/app/wrong/scans/[id]/components/scan-detail-hero";
 import ScanEditModal from "@/app/wrong/scans/[id]/components/scan-edit-modal";
+import { toastError } from "@/shared/components/toast/toast";
 import * as s from "@/app/wrong/scans/[id]/page.css";
 
 const dedupe = (values: string[]) => Array.from(new Set(values.filter(Boolean)));
+
+const reorder = <T,>(values: T[], fromIndex: number, toIndex: number) => {
+  const next = values.slice();
+  const [moved] = next.splice(fromIndex, 1);
+  if (moved === undefined) return values;
+  next.splice(toIndex, 0, moved);
+  return next;
+};
 
 const isMathSubjectLabel = (
   value: string | null | undefined
@@ -85,6 +97,8 @@ const WrongScanDetailPage = () => {
 
   const createProblemMutation = useCreateBulkWrongAnswerCardsMutation();
   const createCustomTypeMutation = useCreateCustomTypeMutation();
+  const setProblemTypeActiveMutation = useSetProblemTypeActiveMutation();
+  const updateCustomTypeMutation = useUpdateCustomTypeMutation();
   const { data: problemTypes = [] } = useProblemTypesQuery();
 
   const initialSubject = isMathSubjectLabel(groupItem?.subjectName)
@@ -120,9 +134,14 @@ const WrongScanDetailPage = () => {
   const resolvedSelectedUnit = availableUnits.includes(selectedUnit as never)
     ? selectedUnit
     : availableUnits[0];
-  const customSelectedTypes = selectedTypes.filter(
-    (typeName) => !problemTypes.some((type) => type.name === typeName)
-  );
+  const customSelectedTypes = selectedTypes
+    .map((typeName) =>
+      problemTypes.find(
+        (type) =>
+          type.custom && normalize(type.name) === normalize(typeName)
+      ) ?? null
+    )
+    .filter((type): type is ProblemTypeItem => Boolean(type));
 
   if (!groupItem || !Number.isFinite(scanId)) return null;
 
@@ -292,11 +311,61 @@ const WrongScanDetailPage = () => {
     );
   };
 
-  const handleCustomTypeRemove = (typeName: string) => {
-    setSelectedTypes((prev) => prev.filter((name) => name !== typeName));
+  const handleCustomTypeRemove = async (type: ProblemTypeItem) => {
+    setSelectedTypes((prev) => prev.filter((name) => name !== type.name));
+
+    try {
+      await setProblemTypeActiveMutation.mutateAsync({
+        typeId: type.id,
+        body: { active: false },
+      });
+    } catch (error) {
+      console.error("[wrong-scan-detail] Failed to deactivate custom type", error);
+      setSelectedTypes((prev) =>
+        prev.includes(type.name) ? prev : [...prev, type.name]
+      );
+      toastError("유형 삭제에 실패했어요. 잠시 후 다시 시도해 주세요.");
+    }
   };
 
-  const handleDirectAddSubmit = () => {
+  const handleCustomTypeMove = (draggedTypeId: string, targetTypeId: string) => {
+    const customTypesById = new Map(customSelectedTypes.map((type) => [type.id, type]));
+    const currentCustomIds = customSelectedTypes.map((type) => type.id);
+    const fromIndex = currentCustomIds.indexOf(draggedTypeId);
+    const toIndex = currentCustomIds.indexOf(targetTypeId);
+
+    if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return;
+
+    const nextCustomIds = reorder(currentCustomIds, fromIndex, toIndex);
+    const regularSelectedTypes = selectedTypes.filter(
+      (typeName) =>
+        !customSelectedTypes.some(
+          (customType) => normalize(customType.name) === normalize(typeName)
+        )
+    );
+    const nextSelectedTypes = [
+      ...regularSelectedTypes,
+      ...nextCustomIds
+        .map((typeId) => customTypesById.get(typeId)?.name ?? null)
+        .filter((typeName): typeName is string => Boolean(typeName)),
+    ];
+
+    setSelectedTypes(nextSelectedTypes);
+
+    void Promise.all(
+      nextCustomIds.map((typeId, index) =>
+        updateCustomTypeMutation.mutateAsync({
+          typeId,
+          body: { sortOrder: index + 1 },
+        })
+      )
+    ).catch((error) => {
+      console.error("[wrong-scan-detail] Failed to reorder custom types", error);
+      toastError("유형 순서 변경에 실패했어요. 잠시 후 다시 시도해 주세요.");
+    });
+  };
+
+  const handleDirectAddSubmit = async () => {
     const nextTypeName = customTypeDraft.trim();
     if (!nextTypeName) {
       setIsDirectAddOpen(false);
@@ -304,11 +373,33 @@ const WrongScanDetailPage = () => {
       return;
     }
 
-    setSelectedTypes((prev) =>
-      prev.includes(nextTypeName) ? prev : [...prev, nextTypeName]
+    const existingType = problemTypes.find(
+      (type) => normalize(type.name) === normalize(nextTypeName)
     );
-    setCustomTypeDraft("");
-    setIsDirectAddOpen(false);
+
+    if (existingType) {
+      setSelectedTypes((prev) =>
+        prev.includes(existingType.name) ? prev : [...prev, existingType.name]
+      );
+      setCustomTypeDraft("");
+      setIsDirectAddOpen(false);
+      return;
+    }
+
+    try {
+      const createdType = await createCustomTypeMutation.mutateAsync({
+        name: nextTypeName,
+      });
+
+      setSelectedTypes((prev) =>
+        prev.includes(createdType.name) ? prev : [...prev, createdType.name]
+      );
+      setCustomTypeDraft("");
+      setIsDirectAddOpen(false);
+    } catch (error) {
+      console.error("[wrong-scan-detail] Failed to create custom type", error);
+      toastError("유형 추가에 실패했어요. 잠시 후 다시 시도해 주세요.");
+    }
   };
 
   return (
@@ -362,6 +453,7 @@ const WrongScanDetailPage = () => {
         onUnitChange={setSelectedUnit}
         onTypeToggle={handleTypeToggle}
         onCustomTypeRemove={handleCustomTypeRemove}
+        onCustomTypeMove={handleCustomTypeMove}
         onCustomTypeDraftChange={setCustomTypeDraft}
         onDirectAddOpen={() => setIsDirectAddOpen(true)}
         onDirectAddClose={() => {

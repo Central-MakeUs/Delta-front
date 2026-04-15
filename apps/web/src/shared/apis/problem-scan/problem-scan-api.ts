@@ -5,7 +5,9 @@ import { API_PATHS } from "@/shared/apis/constants/api-paths";
 import type {
   ProblemScanCreateResponse,
   ProblemScanGroupCreateResponse,
+  ProblemScanGroupId,
   ProblemScanGroupSummaryResponse,
+  ProblemScanStatus,
   ProblemScanSummaryResponse,
 } from "@/shared/apis/problem-scan/problem-scan-types";
 
@@ -56,13 +58,26 @@ const requireNumber = (v: unknown, field: string) => {
   throw new Error(`[problemScanApi] Invalid ${field}: ${String(v)}`);
 };
 
+const toOptionalGroupId = (value: unknown): ProblemScanGroupId => {
+  if (value === null || value === undefined || value === "") return null;
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+const ALLOWED_STATUS = ["UPLOADED", "OCR_DONE", "AI_DONE", "FAILED"] as const;
+
+const coerceStatus = (v?: string | null): ProblemScanStatus =>
+  (ALLOWED_STATUS as readonly string[]).includes(v ?? "")
+    ? (v as ProblemScanStatus)
+    : "UPLOADED";
+
 const normalizeCreate = (
   raw: RawProblemScanCreateResponse
 ): ProblemScanCreateResponse => {
   return {
     scanId: requireNumber(raw.scanId, "scanId"),
     assetId: requireNumber(raw.assetId, "assetId"),
-    status: raw.status ?? "UPLOADED",
+    status: coerceStatus(raw.status),
   };
 };
 
@@ -98,16 +113,10 @@ const normalizeGroupCreate = (
   raw: RawProblemScanGroupCreateResponse
 ): ProblemScanGroupCreateResponse => {
   return {
-    groupId: raw.groupId ?? raw.scanGroupId ?? null,
+    groupId: toOptionalGroupId(raw.groupId ?? raw.scanGroupId),
     scanIds: toScanIdList(raw),
   };
 };
-const ALLOWED_STATUS = ["UPLOADED", "OCR_DONE", "AI_DONE", "FAILED"] as const;
-
-const coerceStatus = (v?: string) =>
-  (ALLOWED_STATUS as readonly string[]).includes(v ?? "")
-    ? (v as (typeof ALLOWED_STATUS)[number])
-    : "UPLOADED";
 
 const normalizeSummary = (
   raw: RawProblemScanSummaryResponse
@@ -154,8 +163,8 @@ const normalizeGroupSummary = (
   const rawSummaries = raw.summaries ?? raw.scans ?? [];
 
   return {
-    groupId: raw.groupId ?? raw.scanGroupId ?? null,
-    status: raw.status,
+    groupId: toOptionalGroupId(raw.groupId ?? raw.scanGroupId),
+    status: coerceStatus(raw.status),
     completedScanCount:
       raw.completedScanCount ?? raw.completed_scan_count ?? undefined,
     totalScanCount: raw.totalScanCount ?? raw.total_scan_count ?? undefined,

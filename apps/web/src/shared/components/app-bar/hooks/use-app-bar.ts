@@ -11,11 +11,23 @@ import {
 } from "@/shared/components/app-bar/utils/app-bar-routing";
 import { useDeleteProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-delete-problem-detail-mutation";
 import { toastSuccess } from "@/shared/components/toast/toast";
-import { readWrongCreateGroupContext } from "@/app/wrong/create/utils/group-context";
 
 type UseAppBarResult =
   | { isHidden: true; props?: never }
   | { isHidden: false; props: AppBarProps };
+
+type AppBarGroupContext = {
+  items: Array<{
+    scanId: number;
+    unitName: string;
+  }>;
+} | null;
+
+type UseAppBarOptions = {
+  getWrongCreateGroupContext?: (
+    groupId: string | null | undefined
+  ) => AppBarGroupContext;
+};
 
 const isGraphTab = (v: string | null): v is GraphTab =>
   v === GRAPH_TABS.UNIT || v === GRAPH_TABS.WRONG;
@@ -36,7 +48,9 @@ const parseFrom = (raw: string | null) => {
   }
 };
 
-export const useAppBar = (): UseAppBarResult => {
+export const useAppBar = ({
+  getWrongCreateGroupContext,
+}: UseAppBarOptions = {}): UseAppBarResult => {
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
@@ -226,7 +240,7 @@ export const useAppBar = (): UseAppBarResult => {
   if (wrongMatch.type === "scanDetail") {
     const scanId = Number(wrongMatch.id);
     const groupId = sp.get("group");
-    const group = readWrongCreateGroupContext(groupId);
+    const group = getWrongCreateGroupContext?.(groupId) ?? null;
     const items = group?.items ?? [];
     const currentIndex = items.findIndex((item) => item.scanId === scanId);
     const totalCount = items.length;

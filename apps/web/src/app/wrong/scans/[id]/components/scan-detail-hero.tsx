@@ -17,9 +17,14 @@ const ScanDetailHero = ({ item, onEditClick }: ScanDetailHeroProps) => {
         <div className={s.heroMeta}>
           <div className={s.metaRow}>
             <div className={s.chipRow}>
-              <div className={s.subjectChip}>{item.subjectName}</div>
-              {item.typeNames.map((typeName) => (
-                <div key={typeName} className={s.typeChip}>
+              <div className={s.chip({ kind: "subject" })}>
+                {item.subjectName}
+              </div>
+              {item.typeNames.map((typeName, index) => (
+                <div
+                  key={`${typeName}-${index}`}
+                  className={s.chip({ kind: "type" })}
+                >
                   {typeName}
                 </div>
               ))}

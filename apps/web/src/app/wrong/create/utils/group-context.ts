@@ -35,10 +35,14 @@ export const saveWrongCreateGroupContext = (
   context: WrongCreateGroupContext
 ) => {
   if (typeof window === "undefined") return;
-  window.sessionStorage.setItem(
-    buildStorageKey(context.id),
-    JSON.stringify(context)
-  );
+  try {
+    window.sessionStorage.setItem(
+      buildStorageKey(context.id),
+      JSON.stringify(context)
+    );
+  } catch (error) {
+    console.error("[wrong-create-group] Failed to save session storage", error);
+  }
 };
 
 export const readWrongCreateGroupContext = (

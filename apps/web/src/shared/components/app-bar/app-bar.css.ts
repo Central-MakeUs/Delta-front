@@ -191,7 +191,7 @@ export const actionIconButton = style([
   },
 ]);
 
-export const scanTitleWrap = style({
+export const centerTitleWrap = style({
   position: "relative",
   flex: "1 1 0",
   display: "flex",
@@ -199,7 +199,7 @@ export const scanTitleWrap = style({
   minWidth: 0,
 });
 
-export const scanTitleButton = style([
+export const centerTitleButton = style([
   buttonReset,
   typo.body1.bold,
   color["grayscale-900"],
@@ -211,7 +211,7 @@ export const scanTitleButton = style([
   },
 ]);
 
-export const scanDropdown = style([
+export const titleDropdown = style([
   bgColor["grayscale-0"],
   {
     position: "absolute",
@@ -226,7 +226,7 @@ export const scanDropdown = style([
   },
 ]);
 
-export const scanDropdownItem = style([
+export const titleDropdownItem = style([
   buttonReset,
   typo.body3.medium,
   color["grayscale-700"],
@@ -236,12 +236,12 @@ export const scanDropdownItem = style([
   },
 ]);
 
-export const scanDropdownItemActive = style([
+export const titleDropdownItemActive = style([
   typo.body3.semibold,
   color["main-500"],
 ]);
 
-export const scanRightButton = style([
+export const rightLabelButton = style([
   buttonReset,
   typo.body3.medium,
   color["grayscale-300"],
@@ -257,9 +257,9 @@ export const scanRightButton = style([
   },
 ]);
 
-export const triangleIcon = style([color["main-400"]]);
+export const titleMenuIcon = style([color["main-400"]]);
 
-export const scanRaw = style({
+export const titleRow = style({
   display: "flex",
   gap: "0.8rem",
   alignItems: "center",

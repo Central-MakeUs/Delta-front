@@ -67,6 +67,7 @@ export const Chip = ({
       <span
         className={chipClassName}
         aria-label={ariaLabel ?? label}
+        role={ariaLabel ? "text" : undefined}
         data-state={state}
         data-tone={tone}
       >
@@ -83,10 +84,7 @@ export const Chip = ({
   return (
     <button
       type={type}
-      className={clsx(
-        s.chip({ size, shape, state, tone, fullWidth }),
-        className
-      )}
+      className={chipClassName}
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel ?? label}

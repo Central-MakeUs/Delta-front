@@ -59,6 +59,7 @@ export type RouteValue =
   | typeof ROUTES.WRONG.ROOT
   | typeof ROUTES.WRONG.CREATE
   | typeof ROUTES.WRONG.CREATE_DONE
+  | typeof ROUTES.WRONG.CREATE_SCANS
   | typeof ROUTES.MY.ROOT
   | typeof ROUTES.MY.EDIT
   | typeof ROUTES.MY.TERMS_OR_SERVICE

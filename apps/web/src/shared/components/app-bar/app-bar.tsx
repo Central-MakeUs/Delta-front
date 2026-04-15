@@ -188,11 +188,11 @@ const AppBar = (props: AppBarProps) => {
             <BackButton onClick={onBack} />
           </div>
 
-          <div className={s.scanTitleWrap}>
-            <div className={s.scanRaw}>
+          <div className={s.centerTitleWrap}>
+            <div className={s.titleRow}>
               <button
                 type="button"
-                className={s.scanTitleButton}
+                className={s.centerTitleButton}
                 onClick={props.titleMenu.onToggle}
                 aria-expanded={props.titleMenu.isOpen}
                 aria-haspopup="menu"
@@ -203,12 +203,12 @@ const AppBar = (props: AppBarProps) => {
               <Icon
                 name="triangle-scan"
                 size={1.6}
-                className={s.triangleIcon}
+                className={s.titleMenuIcon}
               />
             </div>
 
             {props.titleMenu.isOpen ? (
-              <div className={s.scanDropdown} role="menu">
+              <div className={s.titleDropdown} role="menu">
                 {props.titleMenu.items.map((item) => (
                   <button
                     key={item.id}
@@ -216,8 +216,8 @@ const AppBar = (props: AppBarProps) => {
                     role="menuitem"
                     onClick={item.onClick}
                     className={clsx(
-                      s.scanDropdownItem,
-                      item.isActive && s.scanDropdownItemActive
+                      s.titleDropdownItem,
+                      item.isActive && s.titleDropdownItemActive
                     )}
                   >
                     {item.label}
@@ -231,7 +231,7 @@ const AppBar = (props: AppBarProps) => {
             {props.rightLabel ? (
               <button
                 type="button"
-                className={s.scanRightButton}
+                className={s.rightLabelButton}
                 onClick={props.onRightClick}
                 disabled={!props.onRightClick}
               >

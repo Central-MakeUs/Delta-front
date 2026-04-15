@@ -1,4 +1,5 @@
-import { style, styleVariants } from "@vanilla-extract/css";
+import { style } from "@vanilla-extract/css";
+import { recipe } from "@vanilla-extract/recipes";
 import { vars } from "@/shared/styles/theme.css";
 import { typo } from "@/shared/styles/typography.css";
 import { bgColor, color } from "@/shared/styles/color.css";
@@ -69,25 +70,97 @@ export const chipRow = style({
   flexWrap: "wrap",
 });
 
-export const subjectChip = style([
-  typo.caption.semibold,
-  bgColor["main-500"],
-  color["grayscale-0"],
-  {
-    padding: "0.4rem 1.2rem",
-    borderRadius: vars.radius.full,
+export const chip = recipe({
+  base: {
+    display: "inline-flex",
+    alignItems: "center",
+    cursor: "pointer",
   },
-]);
-
-export const typeChip = style([
-  typo.caption.semibold,
-  bgColor["grayscale-50"],
-  color["grayscale-700"],
-  {
-    padding: "0.4rem 1.2rem",
-    borderRadius: vars.radius.r8,
+  variants: {
+    kind: {
+      subject: [
+        typo.caption.semibold,
+        bgColor["main-500"],
+        color["grayscale-0"],
+        {
+          padding: "0.4rem 1.2rem",
+          borderRadius: vars.radius.full,
+          cursor: "default",
+        },
+      ],
+      type: [
+        typo.caption.semibold,
+        bgColor["grayscale-50"],
+        color["grayscale-700"],
+        {
+          padding: "0.4rem 1.2rem",
+          borderRadius: vars.radius.r8,
+          cursor: "default",
+        },
+      ],
+      button: [
+        typo.body3.medium,
+        {
+          border: "none",
+          borderRadius: vars.radius.r12,
+          padding: "0.8rem 1.6rem",
+        },
+      ],
+      add: [
+        typo.body3.medium,
+        {
+          border: `1px solid ${vars.color.grayscale[100]}`,
+          borderRadius: vars.radius.r12,
+          padding: "0.8rem 1.6rem",
+          background: vars.color.grayscale[0],
+          color: vars.color.grayscale[400],
+          gap: "0.8rem",
+        },
+      ],
+      custom: [
+        typo.body3.medium,
+        {
+          border: "none",
+          borderRadius: vars.radius.r12,
+          padding: "0.8rem 1.6rem",
+          gap: "0.8rem",
+        },
+      ],
+    },
+    tone: {
+      default: {},
+      selected: {},
+    },
   },
-]);
+  compoundVariants: [
+    {
+      variants: { kind: "button", tone: "default" },
+      style: {
+        background: vars.color.grayscale[50],
+        color: vars.color.grayscale[700],
+        fontWeight: vars.typography.body3.fontWeight.medium,
+      },
+    },
+    {
+      variants: { kind: "button", tone: "selected" },
+      style: {
+        background: vars.color.main[100],
+        color: vars.color.main[500],
+        fontWeight: vars.typography.body3.fontWeight.semibold,
+      },
+    },
+    {
+      variants: { kind: "custom", tone: "default" },
+      style: {
+        background: vars.color.grayscale[50],
+        color: vars.color.grayscale[700],
+      },
+    },
+  ],
+  defaultVariants: {
+    tone: "default",
+  },
+});
 
 export const heroTitle = style([typo.body1.bold, color["grayscale-900"]]);
 
@@ -236,59 +309,6 @@ export const divider = style({
   background: vars.color.grayscale[50],
   flexShrink: 0,
 });
-
-export const chipButton = style([
-  typo.body3.medium,
-  {
-    border: "none",
-    borderRadius: vars.radius.r12,
-    padding: "0.8rem 1.6rem",
-    cursor: "pointer",
-  },
-]);
-
-export const chipButtonTone = styleVariants({
-  default: {
-    background: vars.color.grayscale[50],
-    color: vars.color.grayscale[700],
-    fontWeight: vars.typography.body3.fontWeight.medium,
-  },
-  selected: {
-    background: vars.color.main[100],
-    color: vars.color.main[500],
-    fontWeight: vars.typography.body3.fontWeight.semibold,
-  },
-});
-
-export const addTypeChip = style([
-  typo.body3.medium,
-  {
-    border: `1px solid ${vars.color.grayscale[100]}`,
-    borderRadius: vars.radius.r12,
-    padding: "0.8rem 1.6rem",
-    background: vars.color.grayscale[0],
-    color: vars.color.grayscale[400],
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "0.8rem",
-    cursor: "pointer",
-  },
-]);
-
-export const customTypeChip = style([
-  typo.body3.medium,
-  {
-    border: "none",
-    borderRadius: vars.radius.r12,
-    padding: "0.8rem 1.6rem",
-    background: vars.color.grayscale[50],
-    color: vars.color.grayscale[700],
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "0.8rem",
-    cursor: "pointer",
-  },
-]);
 
 export const sheetFooter = style({
   padding: "2rem 1.6rem calc(2rem + env(safe-area-inset-bottom))",

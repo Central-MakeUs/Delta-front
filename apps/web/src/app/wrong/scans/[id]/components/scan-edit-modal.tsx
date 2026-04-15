@@ -1,6 +1,4 @@
 "use client";
-
-import clsx from "clsx";
 import { Button } from "@/shared/components/button/button/button";
 import DirectAddButton from "@/app/wrong/create/components/direct-add-button/direct-add-button";
 import Divider from "@/shared/components/divider/divider";
@@ -74,12 +72,10 @@ const ScanEditModal = ({
                   key={subject}
                   type="button"
                   onClick={() => onSubjectChange(subject)}
-                  className={clsx(
-                    s.chipButton,
-                    selectedSubject === subject
-                      ? s.chipButtonTone.selected
-                      : s.chipButtonTone.default
-                  )}
+                  className={s.chip({
+                    kind: "button",
+                    tone: selectedSubject === subject ? "selected" : "default",
+                  })}
                 >
                   {subject}
                 </button>
@@ -98,12 +94,10 @@ const ScanEditModal = ({
                   key={unit}
                   type="button"
                   onClick={() => onUnitChange(unit)}
-                  className={clsx(
-                    s.chipButton,
-                    selectedUnit === unit
-                      ? s.chipButtonTone.selected
-                      : s.chipButtonTone.default
-                  )}
+                  className={s.chip({
+                    kind: "button",
+                    tone: selectedUnit === unit ? "selected" : "default",
+                  })}
                 >
                   {unit}
                 </button>
@@ -124,12 +118,10 @@ const ScanEditModal = ({
                     key={type.id}
                     type="button"
                     onClick={() => onTypeToggle(type.name)}
-                    className={clsx(
-                      s.chipButton,
-                      active
-                        ? s.chipButtonTone.selected
-                        : s.chipButtonTone.default
-                    )}
+                    className={s.chip({
+                      kind: "button",
+                      tone: active ? "selected" : "default",
+                    })}
                   >
                     {type.name}
                   </button>
@@ -143,11 +135,11 @@ const ScanEditModal = ({
                   onValueChange={onCustomTypeDraftChange}
                   onSubmit={onDirectAddSubmit}
                   onCancel={onDirectAddClose}
-                  className={s.addTypeChip}
+                  className={s.chip({ kind: "add" })}
                 />
               ) : (
                 <DirectAddButton
-                  className={s.addTypeChip}
+                  className={s.chip({ kind: "add" })}
                   onClick={onDirectAddOpen}
                 />
               )}
@@ -156,7 +148,7 @@ const ScanEditModal = ({
                 <button
                   key={`custom-${typeName}`}
                   type="button"
-                  className={s.customTypeChip}
+                  className={s.chip({ kind: "custom" })}
                   onClick={() => onCustomTypeRemove(typeName)}
                 >
                   <span>{typeName}</span>

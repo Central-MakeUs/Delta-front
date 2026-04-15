@@ -65,6 +65,17 @@ const normalizeBulkCreateResponse = (
     );
   }
 
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(
+      "[problem-create] normalizeBulkCreateResponse: unexpected response",
+      data
+    );
+  } else {
+    console.warn(
+      "[problem-create] normalizeBulkCreateResponse: unexpected response shape"
+    );
+  }
+
   return { problems: [] };
 };
 

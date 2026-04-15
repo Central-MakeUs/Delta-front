@@ -7,8 +7,10 @@ export const readScanIds = (sp: URLSearchParams) => {
 
   return raw
     .split(",")
-    .map((value) => Number(value.trim()))
-    .filter((value) => Number.isFinite(value));
+    .map((value) => value.trim())
+    .filter((value) => value !== "")
+    .map((value) => Number(value))
+    .filter((value) => Number.isFinite(value) && value > 0);
 };
 
 export const readScanId = (sp: URLSearchParams) => {

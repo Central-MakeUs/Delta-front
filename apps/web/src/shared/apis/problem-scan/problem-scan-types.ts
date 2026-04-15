@@ -1,19 +1,20 @@
 export type ProblemScanStatus = "UPLOADED" | "OCR_DONE" | "AI_DONE" | "FAILED";
+export type ProblemScanGroupId = number | null;
 
 export type ProblemScanCreateResponse = {
   scanId: number;
   assetId: number;
-  status: ProblemScanStatus | string;
+  status: ProblemScanStatus;
 };
 
 export type ProblemScanGroupCreateResponse = {
-  groupId?: number | string | null;
+  groupId?: ProblemScanGroupId;
   scanIds: number[];
 };
 
 export type ProblemScanGroupSummaryResponse = {
-  groupId?: number | string | null;
-  status?: string;
+  groupId?: ProblemScanGroupId;
+  status?: ProblemScanStatus;
   completedScanCount?: number;
   totalScanCount?: number;
   summaries: ProblemScanSummaryResponse[];

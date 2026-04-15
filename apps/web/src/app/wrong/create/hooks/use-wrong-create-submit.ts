@@ -10,6 +10,7 @@ import type {
   AnswerFormat,
   ProblemCreateRequest,
 } from "@/shared/apis/problem-create/problem-create-types";
+import { toastError } from "@/shared/components/toast/toast";
 import {
   createWrongCreateGroupId,
   saveWrongCreateGroupContext,
@@ -130,25 +131,17 @@ export const useWrongCreateSubmit = ({
       )
     );
 
-    const payload: ProblemCreateRequest[] = targetScanIds.map((currentScanId) => ({
-      scanId: currentScanId,
-      ...basePayload,
-    }));
+    const summaryByScanId = new Map(
+      summaries
+        .filter((summary): summary is NonNullable<typeof summary> => Boolean(summary))
+        .map((summary) => [summary.scanId, summary])
+    );
 
-    try {
-      const response = await createMutation.mutateAsync(payload);
-      const problems = response.problems;
-
-      const summaryByScanId = new Map(
-        summaries
-          .filter((summary): summary is NonNullable<typeof summary> => Boolean(summary))
-          .map((summary) => [summary.scanId, summary])
-      );
-
-      const items: WrongCreateGroupItem[] = problems.map((problem) => {
-        const summary = summaryByScanId.get(problem.scanId);
+    const buildGroupItems = (scanIdList: number[]): WrongCreateGroupItem[] => {
+      return scanIdList.map((currentScanId) => {
+        const summary = summaryByScanId.get(currentScanId);
         return {
-          scanId: problem.scanId,
+          scanId: currentScanId,
           finalUnitId,
           finalTypeIds,
           answerFormat,
@@ -160,20 +153,44 @@ export const useWrongCreateSubmit = ({
           needsReview: summary?.classification.needsReview ?? false,
         };
       });
+    };
 
-      const groupId = createWrongCreateGroupId();
+    const payload: ProblemCreateRequest[] = targetScanIds.map((currentScanId) => ({
+      scanId: currentScanId,
+      ...basePayload,
+    }));
+    const groupId = createWrongCreateGroupId();
+
+    try {
+      const response = await createMutation.mutateAsync(payload);
+      const createdScanIds =
+        response.problems.length > 0
+          ? response.problems.map((problem) => problem.scanId)
+          : targetScanIds;
+
       saveWrongCreateGroupContext({
         id: groupId,
         createdAt: Date.now(),
-        items,
+        items: buildGroupItems(createdScanIds),
       });
 
       router.push(`${ROUTES.WRONG.CREATE_DONE}?group=${encodeURIComponent(groupId)}`);
     } catch (e) {
       const err = e as unknown;
       if (err instanceof ApiError && err.status === 409) {
-        router.push(ROUTES.WRONG.CREATE_DONE);
+        saveWrongCreateGroupContext({
+          id: groupId,
+          createdAt: Date.now(),
+          items: buildGroupItems(targetScanIds),
+        });
+        router.push(
+          `${ROUTES.WRONG.CREATE_DONE}?group=${encodeURIComponent(groupId)}`
+        );
+        return;
       }
+
+      console.error("[wrong-create] Failed to create wrong answer cards", err);
+      toastError("오답 생성에 실패했어요. 잠시 후 다시 시도해 주세요.");
     }
   };
 

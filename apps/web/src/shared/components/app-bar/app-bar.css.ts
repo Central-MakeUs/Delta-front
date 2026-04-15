@@ -240,10 +240,31 @@ export const titleDropdownItem = style([
   {
     width: "100%",
     padding: "1.2rem 1.6rem",
+    justifyContent: "flex-start",
+    textAlign: "left",
   },
 ]);
 
+export const titleDropdownItemText = style({
+  display: "block",
+  width: "100%",
+  textAlign: "center",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+});
+
 export const titleDropdownItemActive = style([
+  typo.body3.semibold,
+  color["main-500"],
+]);
+
+export const titleDropdownItemTextInactive = style([
+  typo.body3.medium,
+  color["grayscale-700"],
+]);
+
+export const titleDropdownItemTextActive = style([
   typo.body3.semibold,
   color["main-500"],
 ]);

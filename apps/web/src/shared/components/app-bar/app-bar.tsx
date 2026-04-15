@@ -217,7 +217,16 @@ const AppBar = (props: AppBarProps) => {
                       item.isActive && s.titleDropdownItemActive
                     )}
                   >
-                    {item.label}
+                    <span
+                      className={clsx(
+                        s.titleDropdownItemText,
+                        item.isActive
+                          ? s.titleDropdownItemTextActive
+                          : s.titleDropdownItemTextInactive
+                      )}
+                    >
+                      {item.label}
+                    </span>
                   </button>
                 ))}
               </div>

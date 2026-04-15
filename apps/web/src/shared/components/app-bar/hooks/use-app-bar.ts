@@ -151,6 +151,17 @@ export const useAppBar = (): UseAppBarResult => {
     };
   }
 
+  if (wrongMatch.type === "createScans") {
+    return {
+      isHidden: false,
+      props: {
+        variant: "basic",
+        title: "",
+        onBack: () => router.push(ROUTES.WRONG.CREATE),
+      },
+    };
+  }
+
   if (wrongMatch.type === "list") {
     return {
       isHidden: false,

@@ -24,6 +24,9 @@ export const parseProgress = (searchParams: URLSearchParams) => {
 };
 
 export const getWrongRouteMatch = (pathname: string) => {
+  if (pathname === ROUTES.WRONG.CREATE_SCANS)
+    return { type: "createScans" as const };
+
   if (pathname.startsWith(ROUTES.WRONG.CREATE))
     return { type: "create" as const };
 

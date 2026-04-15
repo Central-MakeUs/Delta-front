@@ -111,13 +111,22 @@ export const cardOverlay = style({
   opacity: 0.6,
 });
 
-export const subjectChip = style({
-  position: "absolute",
-  top: 0,
-  right: "-3px",
-  zIndex: vars.zIndex.contentOverlayHigh,
-  borderRadius: `0 0 0 ${vars.radius.r8}`,
-});
+export const subjectChip = style([
+  bgColor["main-500"],
+  color["grayscale-0"],
+  typo.caption.semibold,
+  {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    zIndex: vars.zIndex.contentOverlayHigh,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "0.4rem 1.2rem",
+    borderRadius: `0 0 0 ${vars.radius.r8}`,
+  },
+]);
 
 export const cardBody = style({
   position: "absolute",

@@ -17,7 +17,10 @@ import {
 } from "@/app/wrong/create/utils/group-context";
 import type { ProblemCreateRequest } from "@/shared/apis/problem-create/problem-create-types";
 import { ROUTES } from "@/shared/constants/routes";
-import { SUBJECT_NAME_BY_ID, UNIT_BY_ID } from "@/shared/constants/math-curriculum";
+import {
+  SUBJECT_NAME_BY_ID,
+  UNIT_BY_ID,
+} from "@/shared/constants/math-curriculum";
 
 const POLL_INTERVAL_MS = 1200;
 
@@ -28,7 +31,8 @@ type Params = {
   router: { push: (href: string) => void };
 };
 
-const dedupe = (values: string[]) => Array.from(new Set(values.filter(Boolean)));
+const dedupe = (values: string[]) =>
+  Array.from(new Set(values.filter(Boolean)));
 
 const isFailedSummary = (summary: ProblemScanSummaryResponse) => {
   return summary.status === "FAILED" || Boolean(summary.failReason);
@@ -43,7 +47,8 @@ const buildPayloadFromSummary = (
     aiUnitName: summary.classification.unit?.name ?? null,
   });
 
-  const finalUnitId = summary.classification.unit?.id ?? fallback.unitId ?? null;
+  const finalUnitId =
+    summary.classification.unit?.id ?? fallback.unitId ?? null;
 
   const finalTypeIds = dedupe(
     (summary.classification.types ?? [])
@@ -120,10 +125,13 @@ export const useStep1SummaryTransition = ({
           summary?.classification.subject?.name ??
           (unit?.subjectId ? SUBJECT_NAME_BY_ID[unit.subjectId] : "Unknown");
         const unitName =
-          summary?.classification.unit?.name ?? unit?.name ?? "Uploaded problem";
+          summary?.classification.unit?.name ??
+          unit?.name ??
+          "Uploaded problem";
         const typeNames =
           payload?.finalTypeIds.map(
-            (typeId) => problemTypes.find((type) => type.id === typeId)?.name ?? typeId
+            (typeId) =>
+              problemTypes.find((type) => type.id === typeId)?.name ?? typeId
           ) ?? [];
 
         return {
@@ -131,7 +139,7 @@ export const useStep1SummaryTransition = ({
           finalUnitId: payload.finalUnitId,
           finalTypeIds: payload.finalTypeIds,
           answerFormat: payload.answerFormat,
-          title: `${unitName} problem`,
+          title: `${unitName} 문제`,
           imageUrl: summary?.originalImage.viewUrl ?? "",
           subjectName,
           unitName,
@@ -147,7 +155,9 @@ export const useStep1SummaryTransition = ({
         items,
       });
 
-      router.push(`${ROUTES.WRONG.CREATE_SCANS}?group=${encodeURIComponent(groupId)}`);
+      router.push(
+        `${ROUTES.WRONG.CREATE_SCANS}?group=${encodeURIComponent(groupId)}`
+      );
     },
     [problemTypes, router]
   );
@@ -178,7 +188,10 @@ export const useStep1SummaryTransition = ({
         .map((summary) => buildPayloadFromSummary(summary, problemTypeNames))
         .filter((payload): payload is ProblemCreateRequest => Boolean(payload));
 
-      if (payloads.length !== scanIds.length || summaries.length !== scanIds.length) {
+      if (
+        payloads.length !== scanIds.length ||
+        summaries.length !== scanIds.length
+      ) {
         clearTimer();
         timerRef.current = setTimeout(() => {
           pollSummariesRef.current();

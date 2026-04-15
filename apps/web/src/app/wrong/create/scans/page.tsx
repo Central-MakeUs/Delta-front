@@ -139,15 +139,7 @@ const WrongCreateScansPage = () => {
                   </div>
                 </div>
 
-                <Chip
-                  as="span"
-                  label={item.subjectName}
-                  size="md"
-                  shape="square"
-                  tone="solid"
-                  state="active"
-                  className={s.subjectChip}
-                />
+                <span className={s.subjectChip}>{item.subjectName}</span>
               </Link>
             ))}
           </div>

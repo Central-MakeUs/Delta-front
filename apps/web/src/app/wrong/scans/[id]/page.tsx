@@ -1,25 +1,24 @@
-﻿"use client";
+"use client";
 
-import Image from "next/image";
 import { useMemo, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/shared/components/button/button/button";
-import { Toggle } from "@/shared/components/toggle/toggle";
-import { NumberChoice } from "@/shared/components/number-choice/number-choice";
-import TextField from "@/shared/components/text-field/text-field";
-import Icon from "@/shared/components/icon/icon";
 import { useCreateWrongAnswerCardMutation } from "@/shared/apis/problem-create/hooks/use-create-wrong-answer-card-mutation";
 import { useProblemTypesQuery } from "@/shared/apis/problem-type/hooks/use-problem-types-query";
 import { readWrongCreateGroupContext } from "@/app/wrong/create/utils/group-context";
-import clsx from "clsx";
 import AiSolutionText from "@/app/wrong/create/components/ai-solution-text/ai-solution-text";
 import {
   MATH_SUBJECT_LABELS,
   MATH_SUBJECT_TYPE_LABELS,
-  TOGGLE_OPTIONS,
   type MathSubjectLabel,
 } from "@/app/wrong/create/constants/option-labels";
 import { ROUTES } from "@/shared/constants/routes";
+import ScanAnswerSection, {
+  type AnswerMode,
+} from "@/app/wrong/scans/[id]/components/scan-answer-section";
+import ScanBottomNav from "@/app/wrong/scans/[id]/components/scan-bottom-nav";
+import ScanDetailHero from "@/app/wrong/scans/[id]/components/scan-detail-hero";
+import ScanEditSheet from "@/app/wrong/scans/[id]/components/scan-edit-sheet";
 import * as s from "@/app/wrong/scans/[id]/page.css";
 
 const isMathSubjectLabel = (
@@ -66,9 +65,7 @@ const WrongScanDetailPage = () => {
   const [selectedTypes, setSelectedTypes] = useState<string[]>(
     groupItem?.typeNames ?? []
   );
-  const [answerMode, setAnswerMode] = useState<"objective" | "subjective">(
-    "objective"
-  );
+  const [answerMode, setAnswerMode] = useState<AnswerMode>("objective");
   const [answerChoice, setAnswerChoice] = useState<number | null>(null);
   const [answerText, setAnswerText] = useState("");
 
@@ -107,95 +104,39 @@ const WrongScanDetailPage = () => {
     );
   };
 
+  const handleTypeToggle = (typeName: string) => {
+    setSelectedTypes((prev) =>
+      prev.includes(typeName)
+        ? prev.filter((name) => name !== typeName)
+        : [...prev, typeName]
+    );
+  };
+
+  const handleCustomTypeRemove = (typeName: string) => {
+    setSelectedTypes((prev) => prev.filter((name) => name !== typeName));
+  };
+
   return (
     <div className={s.page}>
       <div className={s.body}>
-        <div className={s.heroHeader}>
-          <div className={s.heroMeta}>
-            <div className={s.metaRow}>
-              <div className={s.chipRow}>
-                <div className={s.subjectChip}>{groupItem.subjectName}</div>
-                {groupItem.typeNames.map((typeName) => (
-                  <div key={typeName} className={s.typeChip}>
-                    {typeName}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className={s.titleRow}>
-              <div className={s.heroTitle}>{groupItem.title}</div>
-              <button
-                type="button"
-                className={s.editButton}
-                onClick={() => setIsEditSheetOpen(true)}
-              >
-                <Icon name="edit-scan" size={2} />
-                단원 수정하기
-              </button>
-            </div>
-          </div>
-        </div>
+        <ScanDetailHero
+          item={groupItem}
+          onEditClick={() => setIsEditSheetOpen(true)}
+        />
 
-        <div className={s.imageWrap}>
-          <Image
-            src={groupItem.imageUrl}
-            alt={groupItem.title}
-            fill
-            unoptimized
-            style={{ objectFit: "contain" }}
-          />
-        </div>
-
-        <div className={s.section}>
-          <div className={s.sectionHeader}>
-            <div className={s.sectionTitle}>정답</div>
-            <Toggle
-              value={answerMode}
-              onValueChange={(value) =>
-                setAnswerMode(value as "objective" | "subjective")
-              }
-              options={TOGGLE_OPTIONS}
-            />
-          </div>
-
-          {answerMode === "objective" ? (
-            <NumberChoice
-              value={answerChoice}
-              onValueChange={setAnswerChoice}
-            />
-          ) : (
-            <TextField
-              value={answerText}
-              onChange={(event) => setAnswerText(event.target.value)}
-              placeholder="정답을 입력해 주세요."
-              fullWidth
-            />
-          )}
-        </div>
+        <ScanAnswerSection
+          answerMode={answerMode}
+          answerChoice={answerChoice}
+          answerText={answerText}
+          onAnswerModeChange={setAnswerMode}
+          onAnswerChoiceChange={setAnswerChoice}
+          onAnswerTextChange={setAnswerText}
+        />
 
         <AiSolutionText />
       </div>
 
-      <div className={s.bottomNav}>
-        <button
-          type="button"
-          className={s.navButton}
-          disabled={!prevItem}
-          onClick={() => prevItem && moveTo(prevItem.scanId)}
-        >
-          <Icon name="chevron" size={2.4} rotate={180} />
-          이전 문제
-        </button>
-        <button
-          type="button"
-          className={s.navButton}
-          disabled={!nextItem}
-          onClick={() => nextItem && moveTo(nextItem.scanId)}
-        >
-          다음 문제
-          <Icon name="chevron" size={2.4} />
-        </button>
-      </div>
+      <ScanBottomNav prevItem={prevItem} nextItem={nextItem} onMove={moveTo} />
 
       <div className={s.bottomAction}>
         <Button
@@ -208,140 +149,20 @@ const WrongScanDetailPage = () => {
         />
       </div>
 
-      {isEditSheetOpen ? (
-        <div
-          className={s.overlay}
-          onClick={(e) =>
-            e.target === e.currentTarget && setIsEditSheetOpen(false)
-          }
-        >
-          <div className={s.sheet}>
-            <div className={s.sheetHeader}>유형 & 단원 분류 수정</div>
-
-            <div className={s.sheetBody}>
-              <div className={s.sheetSection}>
-                <div className={s.sheetSectionTitle}>단원</div>
-                <div className={s.chipGroup}>
-                  {MATH_SUBJECT_LABELS.map((subject) => (
-                    <button
-                      key={subject}
-                      type="button"
-                      onClick={() => setSelectedSubject(subject)}
-                      className={clsx(
-                        s.chipButton,
-                        selectedSubject === subject
-                          ? s.chipButtonTone.selected
-                          : s.chipButtonTone.default
-                      )}
-                    >
-                      {subject}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className={s.sheetSection}>
-                <div className={s.subjectUnitHeader}>
-                  <Icon name="triangle" size={1.6} rotate={90} />
-                  <span>{selectedSubject}</span>
-                </div>
-                <div className={s.chipGroup}>
-                  {availableUnits.map((unit) => (
-                    <button
-                      key={unit}
-                      type="button"
-                      onClick={() => setSelectedUnit(unit)}
-                      className={clsx(
-                        s.chipButton,
-                        resolvedSelectedUnit === unit
-                          ? s.chipButtonTone.selected
-                          : s.chipButtonTone.default
-                      )}
-                    >
-                      {unit}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className={s.divider} />
-
-              <div className={s.sheetSection}>
-                <div className={s.sheetSectionTitle}>유형</div>
-                <div className={s.chipGroup}>
-                  {problemTypes.map((type) => {
-                    const active = selectedTypes.includes(type.name);
-
-                    return (
-                      <button
-                        key={type.id}
-                        type="button"
-                        onClick={() =>
-                          setSelectedTypes((prev) =>
-                            prev.includes(type.name)
-                              ? prev.filter((name) => name !== type.name)
-                              : [...prev, type.name]
-                          )
-                        }
-                        className={clsx(
-                          s.chipButton,
-                          active
-                            ? s.chipButtonTone.selected
-                            : s.chipButtonTone.default
-                        )}
-                      >
-                        {type.name}
-                      </button>
-                    );
-                  })}
-
-                  <button
-                    type="button"
-                    className={s.addTypeChip}
-                    onClick={() => undefined}
-                  >
-                    <Icon name="plus-circle" size={2} />
-                    직접 추가하기
-                  </button>
-
-                  {customSelectedTypes.map((typeName) => (
-                    <button
-                      key={`custom-${typeName}`}
-                      type="button"
-                      className={s.customTypeChip}
-                      onClick={() =>
-                        setSelectedTypes((prev) =>
-                          prev.filter((name) => name !== typeName)
-                        )
-                      }
-                    >
-                      <span>{typeName}</span>
-                      <Icon name="multiple" size={2} />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className={s.sheetFooter}>
-              <Button
-                fullWidth
-                size="48"
-                tone="dark"
-                label="수정 완료"
-                onClick={() => setIsEditSheetOpen(false)}
-              />
-              <button
-                type="button"
-                className={s.closeButton}
-                onClick={() => setIsEditSheetOpen(false)}
-              >
-                닫기
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <ScanEditSheet
+        isOpen={isEditSheetOpen}
+        selectedSubject={selectedSubject}
+        availableUnits={availableUnits}
+        selectedUnit={resolvedSelectedUnit}
+        selectedTypes={selectedTypes}
+        customSelectedTypes={customSelectedTypes}
+        problemTypes={problemTypes}
+        onClose={() => setIsEditSheetOpen(false)}
+        onSubjectChange={setSelectedSubject}
+        onUnitChange={setSelectedUnit}
+        onTypeToggle={handleTypeToggle}
+        onCustomTypeRemove={handleCustomTypeRemove}
+      />
     </div>
   );
 };

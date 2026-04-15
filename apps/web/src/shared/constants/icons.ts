@@ -52,6 +52,7 @@ export const ICONS = [
   "trash-chip",
   "trash-modal",
   "triangle",
+  "triangle-scan",
   "unlock",
   "user",
   "wrong-check",

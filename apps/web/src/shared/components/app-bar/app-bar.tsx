@@ -201,9 +201,8 @@ const AppBar = (props: AppBarProps) => {
               </button>
 
               <Icon
-                name="triangle"
+                name="triangle-scan"
                 size={1.6}
-                rotate={90}
                 className={s.triangleIcon}
               />
             </div>

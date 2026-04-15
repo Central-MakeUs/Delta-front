@@ -233,7 +233,6 @@ export const scanDropdownItem = style([
   {
     width: "100%",
     padding: "1.2rem 1.6rem",
-    textAlign: "center",
   },
 ]);
 

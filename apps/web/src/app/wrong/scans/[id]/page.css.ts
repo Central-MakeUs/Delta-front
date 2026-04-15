@@ -103,11 +103,16 @@ export const editButton = style([
 ]);
 
 export const imageWrap = style({
-  position: "relative",
   width: "100%",
   borderRadius: vars.radius.r12,
   overflow: "hidden",
   border: `1px solid ${vars.color.grayscale[100]}`,
+});
+
+export const image = style({
+  display: "block",
+  width: "100%",
+  height: "auto",
 });
 
 export const section = style({
@@ -163,15 +168,17 @@ export const overlay = style({
   display: "flex",
   alignItems: "flex-end",
   justifyContent: "center",
+  padding: "0 1.6rem 2.8rem",
+  boxSizing: "border-box",
   zIndex: vars.zIndex.bottomSheetOverlay,
 });
 
 export const sheet = style({
   width: "min(100%, 39rem)",
+  maxWidth: "39rem",
   height: "54rem",
   background: vars.color.grayscale[0],
-  borderTopLeftRadius: vars.radius.r24,
-  borderTopRightRadius: vars.radius.r24,
+  borderRadius: vars.radius.r24,
   display: "grid",
   gridTemplateRows: "auto 1fr auto",
   overflow: "hidden",

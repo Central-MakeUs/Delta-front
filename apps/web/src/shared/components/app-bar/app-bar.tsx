@@ -189,23 +189,20 @@ const AppBar = (props: AppBarProps) => {
           </div>
 
           <div className={s.centerTitleWrap}>
-            <div className={s.titleRow}>
-              <button
-                type="button"
-                className={s.centerTitleButton}
-                onClick={props.titleMenu.onToggle}
-                aria-expanded={props.titleMenu.isOpen}
-                aria-haspopup="menu"
-              >
-                {props.title}
-              </button>
-
+            <button
+              type="button"
+              className={s.centerTitleButton}
+              onClick={props.titleMenu.onToggle}
+              aria-expanded={props.titleMenu.isOpen}
+              aria-haspopup="menu"
+            >
+              <span className={s.titleText}>{props.title}</span>
               <Icon
                 name="triangle-scan"
                 size={1.6}
                 className={s.titleMenuIcon}
               />
-            </div>
+            </button>
 
             {props.titleMenu.isOpen ? (
               <div className={s.titleDropdown} role="menu">

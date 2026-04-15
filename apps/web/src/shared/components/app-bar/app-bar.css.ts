@@ -204,12 +204,18 @@ export const centerTitleButton = style([
   typo.body1.bold,
   color["grayscale-900"],
   {
+    gap: "0.8rem",
     maxWidth: "100%",
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
   },
 ]);
+
+export const titleText = style({
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+});
 
 export const titleDropdown = style([
   bgColor["grayscale-0"],
@@ -258,9 +264,3 @@ export const rightLabelButton = style([
 ]);
 
 export const titleMenuIcon = style([color["main-400"]]);
-
-export const titleRow = style({
-  display: "flex",
-  gap: "0.8rem",
-  alignItems: "center",
-});

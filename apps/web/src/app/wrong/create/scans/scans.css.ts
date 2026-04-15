@@ -161,6 +161,9 @@ export const cardTitle = style([
   color["grayscale-0"],
   {
     alignSelf: "stretch",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
   },
 ]);
 

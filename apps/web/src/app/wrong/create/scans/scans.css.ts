@@ -3,12 +3,14 @@ import { vars } from "@/shared/styles/theme.css";
 import { color, bgColor } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
 
-export const page = style({
-  minHeight: "100dvh",
-  display: "flex",
-  flexDirection: "column",
-  backgroundColor: vars.color.grayscale[0],
-});
+export const page = style([
+  bgColor["grayscale-0"],
+  {
+    minHeight: "100dvh",
+    display: "flex",
+    flexDirection: "column",
+  },
+]);
 
 export const header = style({
   padding: "2rem 1.6rem 1.2rem",
@@ -18,33 +20,50 @@ export const header = style({
 });
 
 export const title = style([typo.h3, color["grayscale-900"]]);
-export const description = style([typo.body2.medium, color["grayscale-600"]]);
+export const description = style([typo.body2.medium, color["grayscale-500"]]);
+
+export const tabSection = style({
+  display: "flex",
+  flexDirection: "column",
+  position: "relative",
+});
 
 export const tabRow = style({
   display: "flex",
   gap: "0.8rem",
   padding: "0 1.6rem 1.6rem",
-  borderBottom: `1px solid ${vars.color.grayscale[100]}`,
   overflowX: "auto",
+  position: "relative",
+  zIndex: 1,
+});
+
+export const tabDivider = style({
+  position: "absolute",
+  left: 0,
+  right: 0,
+  bottom: "1.6rem",
+  zIndex: vars.zIndex.background,
 });
 
 export const tabButton = style([
   typo.body2.semibold,
+  color["grayscale-500"],
   {
     padding: "0.8rem 0.4rem",
-    border: "none",
-    borderBottom: "2px solid transparent",
+    borderBottom: "0.2rem solid transparent",
     background: "transparent",
-    color: vars.color.grayscale[500],
     whiteSpace: "nowrap",
     cursor: "pointer",
   },
 ]);
 
-export const tabButtonActive = style({
-  color: vars.color.grayscale[900],
-  borderBottomColor: vars.color.grayscale[900],
-});
+export const tabButtonActive = style([
+  typo.body2.bold,
+  color["grayscale-900"],
+  {
+    borderBottomColor: vars.color.grayscale[900],
+  },
+]);
 
 export const content = style({
   flex: 1,
@@ -62,14 +81,22 @@ export const grid = style({
   },
 });
 
-export const card = style({
+export const card = style([
+  bgColor["grayscale-50"],
+  {
+    position: "relative",
+    aspectRatio: "174 / 174",
+    cursor: "pointer",
+    borderRadius: `0 0 ${vars.radius.r12} ${vars.radius.r12}`,
+  },
+]);
+
+export const cardFrame = style({
   position: "relative",
-  borderRadius: vars.radius.r12,
+  width: "100%",
+  height: "100%",
+  borderRadius: `0 0 ${vars.radius.r12} ${vars.radius.r12}`,
   overflow: "hidden",
-  aspectRatio: "174 / 174",
-  border: `1px solid ${vars.color.grayscale[100]}`,
-  backgroundColor: vars.color.grayscale[50],
-  cursor: "pointer",
 });
 
 export const cardImage = style({
@@ -83,25 +110,13 @@ export const cardOverlay = style({
     "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(17,17,17,0.60) 100%)",
 });
 
-export const subjectBadge = style({
+export const subjectChip = style({
   position: "absolute",
   top: 0,
-  right: 0,
-  zIndex: 1,
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: "0.4rem 1.2rem",
-  backgroundColor: vars.color.main[500],
-  borderBottomLeftRadius: vars.radius.r8,
+  right: "-3px",
+  zIndex: vars.zIndex.contentOverlayHigh,
+  borderRadius: `0 0 0 ${vars.radius.r8}`,
 });
-
-export const subjectBadgeText = style([
-  typo.caption.semibold,
-  {
-    color: vars.color.grayscale[0],
-  },
-]);
 
 export const cardBody = style({
   position: "absolute",
@@ -126,16 +141,10 @@ export const chipWrap = style({
   alignItems: "flex-start",
 });
 
-export const chipUnit = style([
-  typo.caption.semibold,
+export const unitChip = style([
+  color["grayscale-800"],
   {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "0.4rem 0.8rem",
-    borderRadius: vars.radius.r6,
     backgroundColor: "rgba(241, 241, 244, 0.92)",
-    color: vars.color.grayscale[800],
   },
 ]);
 
@@ -162,6 +171,7 @@ export const footer = style([
     position: "fixed",
     margin: "0 auto",
     maxWidth: "43rem",
+    zIndex: vars.zIndex.bottomNav,
     left: 0,
     right: 0,
     bottom: 0,

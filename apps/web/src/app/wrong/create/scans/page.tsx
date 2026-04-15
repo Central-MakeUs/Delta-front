@@ -6,6 +6,8 @@ import Link from "next/link";
 import clsx from "clsx";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/shared/components/button/button/button";
+import Chip from "@/shared/components/chip/chip";
+import Divider from "@/shared/components/divider/divider";
 import { ROUTES } from "@/shared/constants/routes";
 import {
   readWrongCreateGroupContext,
@@ -73,22 +75,29 @@ const WrongCreateScansPage = () => {
         </p>
       </div>
 
-      <div className={s.tabRow} role="tablist" aria-label="등록 문제 상태">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            role="tab"
-            aria-selected={activeTab === tab.id}
-            className={clsx(
-              s.tabButton,
-              activeTab === tab.id && s.tabButtonActive
-            )}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className={s.tabSection}>
+        <div className={s.tabRow} role="tablist" aria-label="등록 문제 상태">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              className={clsx(
+                s.tabButton,
+                activeTab === tab.id && s.tabButtonActive
+              )}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
+          <Divider
+            height="hairline"
+            tone="grayscale-100"
+            className={s.tabDivider}
+          />
+        </div>
       </div>
 
       <div className={s.content}>
@@ -102,28 +111,43 @@ const WrongCreateScansPage = () => {
                 href={buildProblemHref(item)}
                 className={s.card}
               >
-                {item.imageUrl ? (
-                  <Image
-                    src={item.imageUrl}
-                    alt={item.title}
-                    fill
-                    unoptimized
-                    className={s.cardImage}
-                  />
-                ) : null}
-                <div className={s.cardOverlay} />
-                <div className={s.subjectBadge}>
-                  <span className={s.subjectBadgeText}>{item.subjectName}</span>
-                </div>
-
-                <div className={s.cardBody}>
-                  <div className={s.cardContent}>
-                    <div className={s.chipWrap}>
-                      <span className={s.chipUnit}>{item.unitName}</span>
+                <div className={s.cardFrame}>
+                  {item.imageUrl ? (
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.title}
+                      fill
+                      unoptimized
+                      className={s.cardImage}
+                    />
+                  ) : null}
+                  <div className={s.cardOverlay} />
+                  <div className={s.cardBody}>
+                    <div className={s.cardContent}>
+                      <div className={s.chipWrap}>
+                        <Chip
+                          as="span"
+                          label={item.unitName}
+                          size="xs"
+                          shape="square"
+                          tone="surface"
+                          className={s.unitChip}
+                        />
+                      </div>
+                      <p className={s.cardTitle}>{item.title}</p>
                     </div>
-                    <p className={s.cardTitle}>{item.title}</p>
                   </div>
                 </div>
+
+                <Chip
+                  as="span"
+                  label={item.subjectName}
+                  size="md"
+                  shape="square"
+                  tone="solid"
+                  state="active"
+                  className={s.subjectChip}
+                />
               </Link>
             ))}
           </div>

@@ -119,7 +119,7 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
           submit();
         }}
       >
-        <Icon name="plus-circle" size={2} />
+        <Icon name="plus-circle" size={2} aria-hidden="true" />
         <input
           ref={inputRef}
           className={clsx(s.input, typo.body3.medium, color["grayscale-400"])}
@@ -163,7 +163,7 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
       disabled={disabled}
       aria-label={ariaLabel}
     >
-      <Icon name={iconName} size={iconSizeRem} />
+      <Icon name={iconName} size={iconSizeRem} aria-hidden="true" />
       <span className={s.label}>{label}</span>
     </button>
   );

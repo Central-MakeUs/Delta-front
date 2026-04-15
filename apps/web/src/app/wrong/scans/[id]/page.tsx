@@ -350,6 +350,7 @@ const WrongScanDetailPage = () => {
         .filter((typeName): typeName is string => Boolean(typeName)),
     ];
 
+    const previousSelectedTypes = [...selectedTypes];
     setSelectedTypes(nextSelectedTypes);
 
     void Promise.all(
@@ -361,6 +362,7 @@ const WrongScanDetailPage = () => {
       )
     ).catch((error) => {
       console.error("[wrong-scan-detail] Failed to reorder custom types", error);
+      setSelectedTypes(previousSelectedTypes);
       toastError("유형 순서 변경에 실패했어요. 잠시 후 다시 시도해 주세요.");
     });
   };

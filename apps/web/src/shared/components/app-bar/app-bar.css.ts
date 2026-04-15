@@ -215,6 +215,7 @@ export const centerTitleButton = style([
 export const titleText = style({
   overflow: "hidden",
   textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 });
 
 export const titleDropdown = style([

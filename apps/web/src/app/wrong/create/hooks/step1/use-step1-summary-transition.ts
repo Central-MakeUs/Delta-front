@@ -41,14 +41,13 @@ const isFailedSummary = (summary: ProblemScanSummaryResponse) => {
 const buildPayloadFromSummary = (
   summary: ProblemScanSummaryResponse,
   problemTypeNames: Map<string, string>
-): ProblemCreateRequest | null => {
+): ProblemCreateRequest => {
   const fallback = computeRecommendation({
     aiSubjectName: summary.classification.subject?.name ?? null,
     aiUnitName: summary.classification.unit?.name ?? null,
   });
 
-  const finalUnitId =
-    summary.classification.unit?.id ?? fallback.unitId ?? null;
+  const finalUnitId = summary.classification.unit?.id ?? fallback.unitId ?? "";
 
   const finalTypeIds = dedupe(
     (summary.classification.types ?? [])
@@ -61,8 +60,6 @@ const buildPayloadFromSummary = (
       })
       .filter((value): value is string => Boolean(value))
   );
-
-  if (!finalUnitId || finalTypeIds.length === 0) return null;
 
   return {
     scanId: summary.scanId,
@@ -110,17 +107,10 @@ export const useStep1SummaryTransition = ({
   }, [clearTimer, goStep]);
 
   const createGroupContext = useCallback(
-    (
-      summaries: ProblemScanSummaryResponse[],
-      payloads: ProblemCreateRequest[]
-    ) => {
-      const summaryByScanId = new Map(
-        summaries.map((summary) => [summary.scanId, summary])
-      );
-
-      const items = payloads.map((payload) => {
-        const summary = summaryByScanId.get(payload.scanId);
-        const unit = payload ? UNIT_BY_ID[payload.finalUnitId] : undefined;
+    (summaries: ProblemScanSummaryResponse[]) => {
+      const items = summaries.map((summary) => {
+        const payload = buildPayloadFromSummary(summary, problemTypeNames);
+        const unit = payload.finalUnitId ? UNIT_BY_ID[payload.finalUnitId] : undefined;
         const subjectName =
           summary?.classification.subject?.name ??
           (unit?.subjectId ? SUBJECT_NAME_BY_ID[unit.subjectId] : "Unknown");
@@ -146,7 +136,9 @@ export const useStep1SummaryTransition = ({
           subjectName,
           unitName,
           typeNames,
-          needsReview: summary?.classification.needsReview ?? false,
+          needsReview:
+            summary?.classification.needsReview ??
+            (!payload.finalUnitId || payload.finalTypeIds.length === 0),
         };
       });
 
@@ -161,7 +153,7 @@ export const useStep1SummaryTransition = ({
         `${ROUTES.WRONG.CREATE_SCANS}?group=${encodeURIComponent(groupId)}`
       );
     },
-    [problemTypes, router]
+    [problemTypeNames, problemTypes, router]
   );
 
   const pollSummaries = useCallback(async () => {
@@ -179,6 +171,12 @@ export const useStep1SummaryTransition = ({
 
       if (flowKeyRef.current !== flowKey || !isMountedRef.current) return;
 
+      if (groupSummary.status === "FAILED") {
+        toastError(getFailToastMessage("UNKNOWN"));
+        resetFlow();
+        return;
+      }
+
       const failed = summaries.find(isFailedSummary);
       if (failed) {
         toastError(getFailToastMessage(failed.failReason ?? "UNKNOWN"));
@@ -186,14 +184,11 @@ export const useStep1SummaryTransition = ({
         return;
       }
 
-      const payloads = summaries
-        .map((summary) => buildPayloadFromSummary(summary, problemTypeNames))
-        .filter((payload): payload is ProblemCreateRequest => Boolean(payload));
+      const isGroupReady =
+        summaries.length === scanIds.length &&
+        summaries.every((summary) => summary.status === "AI_DONE");
 
-      if (
-        payloads.length !== scanIds.length ||
-        summaries.length !== scanIds.length
-      ) {
+      if (!isGroupReady) {
         clearTimer();
         timerRef.current = setTimeout(() => {
           pollSummariesRef.current();
@@ -205,7 +200,7 @@ export const useStep1SummaryTransition = ({
       createdFlowRef.current = flowKey;
       if (!isMountedRef.current) return;
 
-      createGroupContext(summaries, payloads);
+      createGroupContext(summaries);
     } catch {
       clearTimer();
       timerRef.current = setTimeout(() => {
@@ -215,7 +210,6 @@ export const useStep1SummaryTransition = ({
   }, [
     clearTimer,
     createGroupContext,
-    problemTypeNames,
     problemTypes.length,
     resetFlow,
     groupId,

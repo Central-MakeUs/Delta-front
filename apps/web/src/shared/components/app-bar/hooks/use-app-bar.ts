@@ -277,10 +277,15 @@ export const useAppBar = ({
       props: {
         variant: "scanDetail",
         title,
-        onBack: () =>
+        onBack: () => {
+          if (!groupId) {
+            router.push(ROUTES.WRONG.CREATE);
+            return;
+          }
           router.push(
-            `${ROUTES.WRONG.CREATE_SCANS}?group=${encodeURIComponent(groupId ?? "")}`
-          ),
+            `${ROUTES.WRONG.CREATE_SCANS}?group=${encodeURIComponent(groupId)}`
+          );
+        },
         titleMenu: {
           isOpen: isScanDetailMenuOpen,
           onToggle: toggleScanDetailMenu,

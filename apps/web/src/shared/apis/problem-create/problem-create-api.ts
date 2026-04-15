@@ -76,7 +76,11 @@ const normalizeBulkCreateResponse = (
     );
   }
 
-  return { problems: [] };
+  throw new ApiError(
+    "응답 형식이 올바르지 않아요.",
+    500,
+    "INVALID_BULK_RESPONSE"
+  );
 };
 
 export const createBulkWrongAnswerCards = async (

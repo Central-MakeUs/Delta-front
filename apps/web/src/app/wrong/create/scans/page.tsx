@@ -26,8 +26,14 @@ const WrongCreateScansPage = () => {
   const group = useMemo(() => readWrongCreateGroupContext(groupId), [groupId]);
 
   useEffect(() => {
-    if (!groupId || group) return;
-    router.replace(ROUTES.WRONG.ROOT);
+    if (!groupId) {
+      router.replace(ROUTES.WRONG.CREATE);
+      return;
+    }
+
+    if (!group) {
+      router.replace(ROUTES.WRONG.ROOT);
+    }
   }, [group, groupId, router]);
 
   const items = useMemo(() => group?.items ?? [], [group]);

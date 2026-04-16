@@ -1,16 +1,12 @@
 "use client";
-
 import { useMemo, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import type { ProblemCreateRequest } from "@/shared/apis/problem-create/problem-create-types";
 import { useCreateBulkWrongAnswerCardsMutation } from "@/shared/apis/problem-create/hooks/use-create-bulk-wrong-answer-cards-mutation";
 import { useCreateCustomTypeMutation } from "@/shared/apis/problem-type/hooks/use-create-custom-type-mutation";
 import { useProblemTypesQuery } from "@/shared/apis/problem-type/hooks/use-problem-types-query";
 import { useUpdateCustomTypeMutation } from "@/shared/apis/problem-type/hooks/use-update-custom-type-mutation";
 import type { ProblemTypeItem } from "@/shared/apis/problem-type/problem-type-types";
-import { inferSubjectiveFormat } from "@/app/wrong/create/utils/answer-format";
 import {
-  MATH_SUBJECT_LABELS,
   MATH_SUBJECT_TYPE_LABELS,
   type MathSubjectLabel,
 } from "@/app/wrong/create/constants/option-labels";
@@ -20,34 +16,22 @@ import {
   type WrongCreateGroupItem,
 } from "@/app/wrong/create/utils/group-context";
 import { normalize } from "@/app/wrong/create/utils/label-match";
-import type { AnswerMode } from "@/app/wrong/scans/[id]/components/scan-answer-section";
 import {
-  dedupe,
-  isMathSubjectLabel,
-  reorder,
+  getInitialScanState,
   resolveKnownTypeIds,
   resolveUnitId,
 } from "@/app/wrong/scans/[id]/utils";
+import {
+  buildAnswerFields,
+  buildBulkCreatePayload,
+} from "@/app/wrong/scans/[id]/payload";
+import { useScanAnswerActions } from "@/app/wrong/scans/[id]/hooks/use-scan-answer-actions";
+import {
+  buildMovedCustomTypes,
+  submitDirectAddType,
+} from "@/app/wrong/scans/[id]/type-actions";
 import { ROUTES } from "@/shared/constants/routes";
 import { toastError } from "@/shared/components/toast/toast";
-
-const buildAnswerFields = (
-  answerMode: AnswerMode,
-  answerChoice: number | null,
-  answerText: string
-) => {
-  const trimmedAnswerValue = answerText.trim();
-
-  return {
-    answerFormat:
-      answerMode === "objective"
-        ? ("CHOICE" as const)
-        : inferSubjectiveFormat(trimmedAnswerValue),
-    answerChoiceNo: answerMode === "objective" ? answerChoice : null,
-    answerValue: answerMode === "subjective" ? trimmedAnswerValue : null,
-  };
-};
-
 export const useWrongScanDetail = () => {
   const params = useParams();
   const router = useRouter();
@@ -58,50 +42,26 @@ export const useWrongScanDetail = () => {
   const groupItems = group?.items ?? [];
   const groupIndex = groupItems.findIndex((item) => item.scanId === scanId);
   const groupItem = groupIndex >= 0 ? groupItems[groupIndex] : null;
-
   const createProblemMutation = useCreateBulkWrongAnswerCardsMutation();
   const createCustomTypeMutation = useCreateCustomTypeMutation();
   const updateCustomTypeMutation = useUpdateCustomTypeMutation();
   const { data: problemTypes = [] } = useProblemTypesQuery();
-
-  const initialSubject = isMathSubjectLabel(groupItem?.subjectName)
-    ? groupItem.subjectName
-    : MATH_SUBJECT_LABELS[0];
-  const initialUnits = MATH_SUBJECT_TYPE_LABELS[initialSubject];
-  const initialUnit = initialUnits.includes(
-    (groupItem?.unitName ?? "") as never
-  )
-    ? (groupItem?.unitName as (typeof initialUnits)[number])
-    : initialUnits[0];
-  const initialAnswerMode: AnswerMode =
-    groupItem?.answerFormat === "CHOICE" ? "objective" : "subjective";
-
+  const initial = getInitialScanState(groupItem);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedSubject, setSelectedSubject] =
-    useState<MathSubjectLabel>(initialSubject);
-  const [selectedUnit, setSelectedUnit] = useState<string>(initialUnit);
+    useState<MathSubjectLabel>(initial.subject);
+  const [selectedUnit, setSelectedUnit] = useState<string>(initial.unit);
   const [selectedTypes, setSelectedTypes] = useState<string[]>(
     groupItem?.typeNames ?? []
   );
   const [appliedSubject, setAppliedSubject] =
-    useState<MathSubjectLabel>(initialSubject);
-  const [appliedUnit, setAppliedUnit] = useState<string>(initialUnit);
+    useState<MathSubjectLabel>(initial.subject);
+  const [appliedUnit, setAppliedUnit] = useState<string>(initial.unit);
   const [appliedTypes, setAppliedTypes] = useState<string[]>(
     groupItem?.typeNames ?? []
   );
   const [customTypeDraft, setCustomTypeDraft] = useState("");
   const [isDirectAddOpen, setIsDirectAddOpen] = useState(false);
-  const [answerMode, setAnswerMode] = useState<AnswerMode>(initialAnswerMode);
-  const [answerChoice, setAnswerChoice] = useState<number | null>(
-    groupItem?.answerChoiceNo ?? null
-  );
-  const [answerText, setAnswerText] = useState(groupItem?.answerValue ?? "");
-
-  const prevItem = groupIndex > 0 ? groupItems[groupIndex - 1] : null;
-  const nextItem =
-    groupIndex >= 0 && groupIndex < groupItems.length - 1
-      ? groupItems[groupIndex + 1]
-      : null;
   const availableUnits = MATH_SUBJECT_TYPE_LABELS[selectedSubject];
   const resolvedSelectedUnit = availableUnits.includes(selectedUnit as never)
     ? selectedUnit
@@ -114,15 +74,16 @@ export const useWrongScanDetail = () => {
       ) ?? null
     )
     .filter((type): type is ProblemTypeItem => Boolean(type));
-
+  const prevItem = groupIndex > 0 ? groupItems[groupIndex - 1] : null;
+  const nextItem =
+    groupIndex >= 0 && groupIndex < groupItems.length - 1
+      ? groupItems[groupIndex + 1]
+      : null;
   const isReady = Boolean(groupItem) && Number.isFinite(scanId);
-
   const persistGroupItem = (nextItem: WrongCreateGroupItem) => {
     if (!groupId) return;
-
     const latestGroup = readWrongCreateGroupContext(groupId);
     if (!latestGroup) return;
-
     saveWrongCreateGroupContext({
       ...latestGroup,
       items: latestGroup.items.map((item) =>
@@ -130,54 +91,35 @@ export const useWrongScanDetail = () => {
       ),
     });
   };
-
   const displayItem = useMemo(() => {
     if (!groupItem) return null;
-
-    const resolvedTypeIdsFromSelection = resolveKnownTypeIds(
-      appliedTypes,
-      problemTypes
-    );
-
+    const resolvedTypeIds = resolveKnownTypeIds(appliedTypes, problemTypes);
     return {
       ...groupItem,
       finalUnitId:
         resolveUnitId(appliedSubject, appliedUnit) ?? groupItem.finalUnitId,
       finalTypeIds:
-        resolvedTypeIdsFromSelection.length > 0
-          ? resolvedTypeIdsFromSelection
-          : groupItem.finalTypeIds,
+        resolvedTypeIds.length > 0 ? resolvedTypeIds : groupItem.finalTypeIds,
       subjectName: appliedSubject,
       unitName: appliedUnit,
       typeNames: appliedTypes,
       title: `${appliedUnit} 문제`,
     } satisfies WrongCreateGroupItem;
   }, [appliedSubject, appliedTypes, appliedUnit, groupItem, problemTypes]);
-
-  const persistCurrentAnswer = (
-    nextAnswerMode: AnswerMode,
-    nextAnswerChoice: number | null,
-    nextAnswerText: string
-  ) => {
-    if (!displayItem) return;
-
-    persistGroupItem({
-      ...displayItem,
-      ...buildAnswerFields(nextAnswerMode, nextAnswerChoice, nextAnswerText),
-    });
-  };
-
-  const buildCurrentProblemPayload = (
-    item: WrongCreateGroupItem,
-    finalUnitId: string,
-    finalTypeIds: string[]
-  ): ProblemCreateRequest => ({
-    scanId: item.scanId,
-    finalUnitId,
-    finalTypeIds,
-    ...buildAnswerFields(answerMode, answerChoice, answerText),
+  const {
+    answerMode,
+    answerChoice,
+    answerText,
+    handleAnswerModeChange,
+    handleAnswerChoiceChange,
+    handleAnswerTextChange,
+  } = useScanAnswerActions({
+    initialMode: initial.answerMode,
+    initialChoice: groupItem?.answerChoiceNo ?? null,
+    initialText: groupItem?.answerValue ?? "",
+    displayItem,
+    persistGroupItem,
   });
-
   const moveTo = (nextScanId: number) => {
     if (!groupId) return;
     router.push(
@@ -188,58 +130,20 @@ export const useWrongScanDetail = () => {
   const handleComplete = async () => {
     if (!groupItem || !displayItem) return;
 
-    const finalUnitId =
-      resolveUnitId(selectedSubject, resolvedSelectedUnit) ??
-      groupItem.finalUnitId;
-    if (!finalUnitId) return;
-
-    const finalTypeIds =
-      selectedTypes.length > 0
-        ? dedupe(
-            await Promise.all(
-              selectedTypes.map(async (typeName) => {
-                const existing = problemTypes.find(
-                  (type) => normalize(type.name) === normalize(typeName)
-                );
-
-                if (existing?.id) return existing.id;
-
-                const created = await createCustomTypeMutation.mutateAsync({
-                  name: typeName.trim(),
-                });
-                return created.id;
-              })
-            )
-          )
-        : groupItem.finalTypeIds;
-
-    if (finalTypeIds.length === 0) return;
-
-    const nextItem: WrongCreateGroupItem = {
-      ...displayItem,
-      finalUnitId,
-      finalTypeIds,
-      typeNames: selectedTypes,
-      ...buildAnswerFields(answerMode, answerChoice, answerText),
-    };
-
-    persistGroupItem(nextItem);
-
     const latestGroup = readWrongCreateGroupContext(groupId);
-    const payloadItems = (latestGroup?.items ?? [nextItem]).map((item) =>
-      item.scanId === nextItem.scanId
-        ? buildCurrentProblemPayload(nextItem, finalUnitId, finalTypeIds)
-        : {
-            scanId: item.scanId,
-            finalUnitId: item.finalUnitId,
-            finalTypeIds: item.finalTypeIds,
-            answerFormat: item.answerFormat,
-            answerChoiceNo: item.answerChoiceNo ?? null,
-            answerValue: item.answerValue ?? null,
-          }
-    );
+    const result = await buildBulkCreatePayload({
+      items: latestGroup?.items ?? [displayItem],
+      currentItem: displayItem,
+      answerMode,
+      answerChoice,
+      answerText,
+      problemTypes,
+      createType: (name) => createCustomTypeMutation.mutateAsync({ name }),
+    });
+    if (!result) return;
 
-    createProblemMutation.mutate(payloadItems, {
+    persistGroupItem(result.nextCurrentItem);
+    createProblemMutation.mutate(result.payloadItems, {
       onSuccess: () => {
         router.push(
           groupId
@@ -262,27 +166,22 @@ export const useWrongScanDetail = () => {
   const handleEditApply = () => {
     if (!groupItem) return;
 
-    const nextAppliedSubject = selectedSubject;
-    const nextAppliedUnit = resolvedSelectedUnit;
-    const nextAppliedTypes = [...selectedTypes];
-    const nextResolvedTypeIds = resolveKnownTypeIds(nextAppliedTypes, problemTypes);
+    const nextSubject = selectedSubject;
+    const nextUnit = resolvedSelectedUnit;
+    const nextTypes = [...selectedTypes];
+    const nextTypeIds = resolveKnownTypeIds(nextTypes, problemTypes);
 
-    setAppliedSubject(nextAppliedSubject);
-    setAppliedUnit(nextAppliedUnit);
-    setAppliedTypes(nextAppliedTypes);
-
+    setAppliedSubject(nextSubject);
+    setAppliedUnit(nextUnit);
+    setAppliedTypes(nextTypes);
     persistGroupItem({
       ...groupItem,
-      finalUnitId:
-        resolveUnitId(nextAppliedSubject, nextAppliedUnit) ?? groupItem.finalUnitId,
-      finalTypeIds:
-        nextResolvedTypeIds.length > 0
-          ? nextResolvedTypeIds
-          : groupItem.finalTypeIds,
-      subjectName: nextAppliedSubject,
-      unitName: nextAppliedUnit,
-      typeNames: nextAppliedTypes,
-      title: `${nextAppliedUnit} 문제`,
+      finalUnitId: resolveUnitId(nextSubject, nextUnit) ?? groupItem.finalUnitId,
+      finalTypeIds: nextTypeIds.length > 0 ? nextTypeIds : groupItem.finalTypeIds,
+      subjectName: nextSubject,
+      unitName: nextUnit,
+      typeNames: nextTypes,
+      title: `${nextUnit} 문제`,
       ...buildAnswerFields(answerMode, answerChoice, answerText),
     });
 
@@ -299,45 +198,20 @@ export const useWrongScanDetail = () => {
     );
   };
 
-  const handleTypeToggle = (typeName: string) => {
-    setSelectedTypes((prev) =>
-      prev.includes(typeName)
-        ? prev.filter((name) => name !== typeName)
-        : [...prev, typeName]
-    );
-  };
-
-  const handleCustomTypeRemove = (type: ProblemTypeItem) => {
-    setSelectedTypes((prev) => prev.filter((name) => name !== type.name));
-  };
-
   const handleCustomTypeMove = (draggedTypeId: string, targetTypeId: string) => {
-    const customTypesById = new Map(customSelectedTypes.map((type) => [type.id, type]));
-    const currentCustomIds = customSelectedTypes.map((type) => type.id);
-    const fromIndex = currentCustomIds.indexOf(draggedTypeId);
-    const toIndex = currentCustomIds.indexOf(targetTypeId);
-
-    if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return;
-
-    const nextCustomIds = reorder(currentCustomIds, fromIndex, toIndex);
-    const regularSelectedTypes = selectedTypes.filter(
-      (typeName) =>
-        !customSelectedTypes.some(
-          (customType) => normalize(customType.name) === normalize(typeName)
-        )
-    );
-    const nextSelectedTypes = [
-      ...regularSelectedTypes,
-      ...nextCustomIds
-        .map((typeId) => customTypesById.get(typeId)?.name ?? null)
-        .filter((typeName): typeName is string => Boolean(typeName)),
-    ];
+    const moved = buildMovedCustomTypes({
+      selectedTypes,
+      customSelectedTypes,
+      draggedTypeId,
+      targetTypeId,
+    });
+    if (!moved) return;
 
     const previousSelectedTypes = [...selectedTypes];
-    setSelectedTypes(nextSelectedTypes);
+    setSelectedTypes(moved.nextSelectedTypes);
 
     void Promise.all(
-      nextCustomIds.map((typeId, index) =>
+      moved.nextCustomIds.map((typeId, index) =>
         updateCustomTypeMutation.mutateAsync({
           typeId,
           body: { sortOrder: index + 1 },
@@ -351,63 +225,24 @@ export const useWrongScanDetail = () => {
   };
 
   const handleDirectAddSubmit = async () => {
-    const nextTypeName = customTypeDraft.trim();
-    if (!nextTypeName) {
-      setIsDirectAddOpen(false);
-      setCustomTypeDraft("");
-      return;
-    }
-
-    const existingType = problemTypes.find(
-      (type) => normalize(type.name) === normalize(nextTypeName)
-    );
-
-    if (existingType) {
-      setSelectedTypes((prev) =>
-        prev.includes(existingType.name) ? prev : [...prev, existingType.name]
-      );
-      setCustomTypeDraft("");
-      setIsDirectAddOpen(false);
-      return;
-    }
-
-    try {
-      const createdType = await createCustomTypeMutation.mutateAsync({
-        name: nextTypeName,
-      });
-
-      setSelectedTypes((prev) =>
-        prev.includes(createdType.name) ? prev : [...prev, createdType.name]
-      );
-      setCustomTypeDraft("");
-      setIsDirectAddOpen(false);
-    } catch (error) {
+    const nextType = await submitDirectAddType({
+      draft: customTypeDraft,
+      problemTypes,
+      createType: (name) => createCustomTypeMutation.mutateAsync({ name }),
+    }).catch((error) => {
       console.error("[wrong-scan-detail] Failed to create custom type", error);
       toastError("유형 추가에 실패했어요. 잠시 후 다시 시도해 주세요.");
-    }
-  };
+      return undefined;
+    });
 
-  const handleAnswerModeChange = (value: AnswerMode) => {
-    setAnswerMode(value);
-
-    if (value === "objective") {
-      setAnswerText("");
-      persistCurrentAnswer(value, answerChoice, "");
-      return;
+    if (nextType) {
+      setSelectedTypes((prev) =>
+        prev.includes(nextType.name) ? prev : [...prev, nextType.name]
+      );
     }
 
-    setAnswerChoice(null);
-    persistCurrentAnswer(value, null, answerText);
-  };
-
-  const handleAnswerChoiceChange = (value: number | null) => {
-    setAnswerChoice(value);
-    persistCurrentAnswer(answerMode, value, answerText);
-  };
-
-  const handleAnswerTextChange = (value: string) => {
-    setAnswerText(value);
-    persistCurrentAnswer(answerMode, answerChoice, value);
+    setCustomTypeDraft("");
+    setIsDirectAddOpen(false);
   };
 
   return {
@@ -434,8 +269,16 @@ export const useWrongScanDetail = () => {
     handleEditModalClose,
     handleEditApply,
     handleSubjectChange,
-    handleTypeToggle,
-    handleCustomTypeRemove,
+    handleTypeToggle: (typeName: string) => {
+      setSelectedTypes((prev) =>
+        prev.includes(typeName)
+          ? prev.filter((name) => name !== typeName)
+          : [...prev, typeName]
+      );
+    },
+    handleCustomTypeRemove: (type: ProblemTypeItem) => {
+      setSelectedTypes((prev) => prev.filter((name) => name !== type.name));
+    },
     handleCustomTypeMove,
     handleDirectAddSubmit,
     handleAnswerModeChange,

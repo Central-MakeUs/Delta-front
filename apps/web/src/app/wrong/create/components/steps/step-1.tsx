@@ -14,6 +14,7 @@ import { useMinLoading } from "@/app/wrong/create/utils/use-min-loading";
 import { toastError } from "@/shared/components/toast/toast";
 
 const MIN_UPLOAD_LOADING_MS = 1000;
+const MAX_SCAN_IMAGE_COUNT = 10;
 
 type Step1Props = {
   onNext: (res: ProblemScanGroupCreateResponse) => void;
@@ -31,6 +32,11 @@ const Step1 = ({ onNext, onSelectImage, disabled = false }: Step1Props) => {
   const handlePicked = useCallback(
     (files: File[], source: ImagePickSource) => {
       if (isBusy) return;
+
+      if (files.length > MAX_SCAN_IMAGE_COUNT) {
+        toastError(`문제 스캔 이미지는 최대 ${MAX_SCAN_IMAGE_COUNT}장까지 가능해요.`);
+        return;
+      }
 
       for (const file of files) {
         const error = validateImageFile(file);

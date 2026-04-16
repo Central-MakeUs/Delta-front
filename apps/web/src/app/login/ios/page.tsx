@@ -6,6 +6,7 @@ import LoginDecorations from "@/app/login/login-decorations";
 import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
 import * as s from "@/app/login/login.css";
+import {actions} from "../login.css";
 
 declare global {
   interface Window {
@@ -49,7 +50,7 @@ const IosLoginPage = () => {
           <p className={s.tagline}>나만의 수학 오답노트</p>
         </header>
 
-        <section className={s.iosactions} aria-label="소셜 로그인">
+        <section className={s.actions} aria-label="소셜 로그인">
           <Button
             icon="kakao"
             label="Kakao로 시작하기"

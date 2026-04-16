@@ -9,7 +9,7 @@ import type {
   WebViewHttpErrorEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-const WEB_BASE_URL = "https://semo-xi.vercel.app";
+const WEB_BASE_URL = "http://10.0.2.2:3000";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
@@ -103,7 +103,7 @@ const WebViewScreen = () => {
     <WebView
       ref={webViewRef}
       style={styles.webview}
-      source={{ uri: `${WEB_BASE_URL}/` }}
+      source={{ uri: `${WEB_BASE_URL}/?platform=${Platform.OS}` }}
       javaScriptEnabled
       domStorageEnabled
       sharedCookiesEnabled

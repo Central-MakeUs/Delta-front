@@ -106,6 +106,7 @@ const MyPageView = ({
                 <div className={s.linkedAccountValue}>
                   {provider === "KAKAO" && <Icon name="kakao" size={2} />}
                   {provider === "APPLE" && <Icon name="apple" size={2} />}
+                  {provider === "GOOGLE" && <Icon name="google" size={2} />}
                   <span className={s.emailText}>{linkedEmail}</span>
                 </div>
               </div>

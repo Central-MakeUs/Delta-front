@@ -108,8 +108,10 @@ export type ScanDetailProps = CommonProps & {
   variant: "scanDetail";
   title: string;
   onBack?: () => void;
-  rightLabel?: string;
-  onRightClick?: () => void;
+  rightAction?: {
+    label: string;
+    onClick: () => void;
+  };
   titleMenu: {
     isOpen: boolean;
     onToggle: () => void;

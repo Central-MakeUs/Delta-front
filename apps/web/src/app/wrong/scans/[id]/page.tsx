@@ -6,7 +6,6 @@ import { Button } from "@/shared/components/button/button/button";
 import { useCreateBulkWrongAnswerCardsMutation } from "@/shared/apis/problem-create/hooks/use-create-bulk-wrong-answer-cards-mutation";
 import { useCreateCustomTypeMutation } from "@/shared/apis/problem-type/hooks/use-create-custom-type-mutation";
 import { useProblemTypesQuery } from "@/shared/apis/problem-type/hooks/use-problem-types-query";
-import { useSetProblemTypeActiveMutation } from "@/shared/apis/problem-type/hooks/use-set-problem-type-active-mutation";
 import { useUpdateCustomTypeMutation } from "@/shared/apis/problem-type/hooks/use-update-custom-type-mutation";
 import type { ProblemTypeItem } from "@/shared/apis/problem-type/problem-type-types";
 import type { ProblemCreateRequest } from "@/shared/apis/problem-create/problem-create-types";
@@ -98,7 +97,6 @@ const WrongScanDetailPage = () => {
 
   const createProblemMutation = useCreateBulkWrongAnswerCardsMutation();
   const createCustomTypeMutation = useCreateCustomTypeMutation();
-  const setProblemTypeActiveMutation = useSetProblemTypeActiveMutation();
   const updateCustomTypeMutation = useUpdateCustomTypeMutation();
   const { data: problemTypes = [] } = useProblemTypesQuery();
 
@@ -127,7 +125,10 @@ const WrongScanDetailPage = () => {
   );
   const [customTypeDraft, setCustomTypeDraft] = useState("");
   const [isDirectAddOpen, setIsDirectAddOpen] = useState(false);
-  const [answerMode, setAnswerMode] = useState<AnswerMode>("objective");
+  const initialAnswerMode: AnswerMode =
+    groupItem?.answerFormat === "CHOICE" ? "objective" : "subjective";
+  const [answerMode, setAnswerMode] =
+    useState<AnswerMode>(initialAnswerMode);
   const [answerChoice, setAnswerChoice] = useState<number | null>(
     groupItem?.answerChoiceNo ?? null
   );
@@ -360,21 +361,8 @@ const WrongScanDetailPage = () => {
     );
   };
 
-  const handleCustomTypeRemove = async (type: ProblemTypeItem) => {
+  const handleCustomTypeRemove = (type: ProblemTypeItem) => {
     setSelectedTypes((prev) => prev.filter((name) => name !== type.name));
-
-    try {
-      await setProblemTypeActiveMutation.mutateAsync({
-        typeId: type.id,
-        body: { active: false },
-      });
-    } catch (error) {
-      console.error("[wrong-scan-detail] Failed to deactivate custom type", error);
-      setSelectedTypes((prev) =>
-        prev.includes(type.name) ? prev : [...prev, type.name]
-      );
-      toastError("유형 삭제에 실패했어요. 잠시 후 다시 시도해 주세요.");
-    }
   };
 
   const handleCustomTypeMove = (draggedTypeId: string, targetTypeId: string) => {

@@ -65,7 +65,7 @@ const buildPayloadFromSummary = (
     scanId: summary.scanId,
     finalUnitId,
     finalTypeIds,
-    answerFormat: "TEXT",
+    answerFormat: "CHOICE",
   };
 };
 

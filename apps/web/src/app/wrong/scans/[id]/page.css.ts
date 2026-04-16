@@ -344,6 +344,28 @@ export const customTypeItem = style({
   cursor: "grab",
 });
 
+export const customTypeActions = style({
+  display: "flex",
+  alignItems: "center",
+  gap: "0.4rem",
+});
+
+export const customTypeMoveButton = style({
+  border: "none",
+  background: "transparent",
+  padding: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+  selectors: {
+    "&:disabled": {
+      color: vars.color.grayscale[300],
+      cursor: "not-allowed",
+    },
+  },
+});
+
 export const customTypeRemoveButton = style({
   border: "none",
   background: "transparent",

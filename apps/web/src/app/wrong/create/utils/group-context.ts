@@ -25,6 +25,20 @@ const STORAGE_PREFIX = "wrong-create-group:";
 
 const buildStorageKey = (groupId: string) => `${STORAGE_PREFIX}${groupId}`;
 
+const isWrongCreateGroupContext = (
+  value: unknown
+): value is WrongCreateGroupContext => {
+  if (typeof value !== "object" || value === null) return false;
+
+  const candidate = value as Partial<WrongCreateGroupContext>;
+
+  return (
+    typeof candidate.id === "string" &&
+    typeof candidate.createdAt === "number" &&
+    Array.isArray(candidate.items)
+  );
+};
+
 export const createWrongCreateGroupId = () => {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
     return crypto.randomUUID();
@@ -56,7 +70,8 @@ export const readWrongCreateGroupContext = (
   if (!raw) return null;
 
   try {
-    return JSON.parse(raw) as WrongCreateGroupContext;
+    const parsed = JSON.parse(raw);
+    return isWrongCreateGroupContext(parsed) ? parsed : null;
   } catch {
     return null;
   }

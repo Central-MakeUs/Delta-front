@@ -57,16 +57,34 @@ const ScanEditModal = ({
   onDirectAddSubmit,
 }: ScanEditModalProps) => {
   const draggedTypeIdRef = useRef<string | null>(null);
+  const moveCustomTypeByOffset = (typeId: string, offset: -1 | 1) => {
+    const currentIndex = customSelectedTypes.findIndex(
+      (customType) => customType.id === typeId,
+    );
+
+    if (currentIndex === -1) return;
+
+    const targetIndex = currentIndex + offset;
+
+    if (targetIndex < 0 || targetIndex >= customSelectedTypes.length) return;
+
+    onCustomTypeMove(typeId, customSelectedTypes[targetIndex].id);
+  };
 
   if (!isOpen) return null;
 
   return (
     <div
       className={s.overlay}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="scan-edit-modal-title"
       onClick={(event) => event.target === event.currentTarget && onClose()}
     >
       <div className={s.sheet}>
-        <div className={s.sheetHeader}>유형 & 단원 분류 수정</div>
+        <div id="scan-edit-modal-title" className={s.sheetHeader}>
+          유형 & 단원 분류 수정
+        </div>
 
         <div className={s.sheetBody}>
           <div className={s.sheetSection}>
@@ -118,63 +136,92 @@ const ScanEditModal = ({
               {problemTypes
                 .filter((type) => !type.custom)
                 .map((type) => {
-                const active = selectedTypes.includes(type.name);
+                  const active = selectedTypes.includes(type.name);
+
+                  return (
+                    <button
+                      key={type.id}
+                      type="button"
+                      onClick={() => onTypeToggle(type.name)}
+                      className={s.chip({
+                        kind: "button",
+                        tone: active ? "selected" : "default",
+                      })}
+                    >
+                      {type.name}
+                    </button>
+                  );
+                })}
+
+              {customSelectedTypes.map((type, index) => {
+                const isFirst = index === 0;
+                const isLast = index === customSelectedTypes.length - 1;
 
                 return (
-                  <button
+                  <div
                     key={type.id}
-                    type="button"
-                    onClick={() => onTypeToggle(type.name)}
-                    className={s.chip({
-                      kind: "button",
-                      tone: active ? "selected" : "default",
-                    })}
+                    className={s.customTypeItem}
+                    draggable
+                    onDragStart={() => {
+                      draggedTypeIdRef.current = type.id;
+                    }}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                    }}
+                    onDrop={() => {
+                      if (
+                        !draggedTypeIdRef.current ||
+                        draggedTypeIdRef.current === type.id
+                      ) {
+                        return;
+                      }
+                      onCustomTypeMove(draggedTypeIdRef.current, type.id);
+                      draggedTypeIdRef.current = null;
+                    }}
+                    onDragEnd={() => {
+                      draggedTypeIdRef.current = null;
+                    }}
                   >
-                    {type.name}
-                  </button>
+                    <div className={s.chip({ kind: "custom" })}>
+                      <span>{type.name}</span>
+                      <div className={s.customTypeActions}>
+                        <button
+                          type="button"
+                          className={s.customTypeMoveButton}
+                          onClick={() => {
+                            moveCustomTypeByOffset(type.id, -1);
+                          }}
+                          disabled={isFirst}
+                          aria-label={`${type.name} 위로 이동`}
+                        >
+                          <Icon name="chevron" size={1.6} rotate={270} />
+                        </button>
+                        <button
+                          type="button"
+                          className={s.customTypeMoveButton}
+                          onClick={() => {
+                            moveCustomTypeByOffset(type.id, 1);
+                          }}
+                          disabled={isLast}
+                          aria-label={`${type.name} 아래로 이동`}
+                        >
+                          <Icon name="chevron" size={1.6} rotate={90} />
+                        </button>
+                        <button
+                          type="button"
+                          className={s.customTypeRemoveButton}
+                          onClick={() => {
+                            void onCustomTypeRemove(type);
+                          }}
+                          aria-label={`${type.name} 삭제`}
+                        >
+                          <Icon name="multiple" size={2} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
-
-              {customSelectedTypes.map((type) => (
-                <div
-                  key={type.id}
-                  className={s.customTypeItem}
-                  draggable
-                  onDragStart={() => {
-                    draggedTypeIdRef.current = type.id;
-                  }}
-                  onDragOver={(event) => {
-                    event.preventDefault();
-                  }}
-                  onDrop={() => {
-                    if (
-                      !draggedTypeIdRef.current ||
-                      draggedTypeIdRef.current === type.id
-                    ) {
-                      return;
-                    }
-                    onCustomTypeMove(draggedTypeIdRef.current, type.id);
-                    draggedTypeIdRef.current = null;
-                  }}
-                  onDragEnd={() => {
-                    draggedTypeIdRef.current = null;
-                  }}
-                >
-                  <div className={s.chip({ kind: "custom" })}>
-                    <span>{type.name}</span>
-                    <button
-                      type="button"
-                      className={s.customTypeRemoveButton}
-                      onClick={() => {
-                        void onCustomTypeRemove(type);
-                      }}
-                      aria-label={`${type.name} 삭제`}
-                    >
-                      <Icon name="multiple" size={2} />
-                    </button>
-                  </div>
-                </div>
-              ))}
 
               {isDirectAddOpen ? (
                 <DirectAddButton

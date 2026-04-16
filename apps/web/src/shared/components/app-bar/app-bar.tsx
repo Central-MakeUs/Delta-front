@@ -234,14 +234,13 @@ const AppBar = (props: AppBarProps) => {
           </div>
 
           <div className={s.rightSlot}>
-            {props.rightLabel ? (
+            {props.rightAction ? (
               <button
                 type="button"
                 className={s.rightLabelButton}
-                onClick={props.onRightClick}
-                disabled={!props.onRightClick}
+                onClick={props.rightAction.onClick}
               >
-                {props.rightLabel}
+                {props.rightAction.label}
               </button>
             ) : null}
           </div>

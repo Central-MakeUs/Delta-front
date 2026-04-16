@@ -1,10 +1,12 @@
 import { useCallback, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import type { AppBarProps } from "@/shared/components/app-bar/types/app-bar";
+import type {
+  AppBarProps,
+  ScanDetailMenuItem,
+} from "@/shared/components/app-bar/types/app-bar";
 import { ROUTES, GRAPH_TABS, type GraphTab } from "@/shared/constants/routes";
 import {
   getWrongRouteMatch,
-  parseProgress,
   shouldHideAppBar,
 } from "@/shared/components/app-bar/utils/app-bar-routing";
 import { useDeleteProblemDetailMutation } from "@/shared/apis/problem-detail/hooks/use-delete-problem-detail-mutation";
@@ -14,13 +16,17 @@ type UseAppBarResult =
   | { isHidden: true; props?: never }
   | { isHidden: false; props: AppBarProps };
 
-const clamp = (value: number, min: number, max: number) => {
-  return Math.min(Math.max(value, min), max);
-};
+type AppBarGroupContext = {
+  items: Array<{
+    scanId: number;
+    unitName: string;
+  }>;
+} | null;
 
-const buildUrl = (pathname: string, params: URLSearchParams) => {
-  const qs = params.toString();
-  return qs ? `${pathname}?${qs}` : pathname;
+type UseAppBarOptions = {
+  getWrongCreateGroupContext?: (
+    groupId: string | null | undefined
+  ) => AppBarGroupContext;
 };
 
 const isGraphTab = (v: string | null): v is GraphTab =>
@@ -42,21 +48,27 @@ const parseFrom = (raw: string | null) => {
   }
 };
 
-const hasValidScanId = (params: URLSearchParams) => {
-  const v = params.get("scanId");
-  return Boolean(v && v !== "null" && v !== "undefined");
-};
-
-export const useAppBar = (): UseAppBarResult => {
+export const useAppBar = ({
+  getWrongCreateGroupContext,
+}: UseAppBarOptions = {}): UseAppBarResult => {
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
   const deleteMutation = useDeleteProblemDetailMutation();
 
   const [isWrongDetailMenuOpen, setIsWrongDetailMenuOpen] = useState(false);
+  const [isScanDetailMenuOpen, setIsScanDetailMenuOpen] = useState(false);
 
   const closeWrongDetailMenu = useCallback(() => {
     setIsWrongDetailMenuOpen(false);
+  }, []);
+
+  const toggleScanDetailMenu = useCallback(() => {
+    setIsScanDetailMenuOpen((prev) => !prev);
+  }, []);
+
+  const closeScanDetailMenu = useCallback(() => {
+    setIsScanDetailMenuOpen(false);
   }, []);
 
   if (shouldHideAppBar(pathname)) return { isHidden: true };
@@ -133,12 +145,9 @@ export const useAppBar = (): UseAppBarResult => {
 
   if (wrongMatch.type === "create") {
     const params = new URLSearchParams(sp.toString());
-    const { total, currentStep } = parseProgress(params);
 
     const isLoading = params.get("hideAppBar") === "1";
     if (isLoading) return { isHidden: true };
-
-    const hasScan = hasValidScanId(params);
 
     const from = parseFrom(params.get("from")) ?? ROUTES.WRONG.ROOT;
 
@@ -146,33 +155,23 @@ export const useAppBar = (): UseAppBarResult => {
       router.replace(from);
     };
 
-    const replaceStep = (nextStep: number) => {
-      const safe = clamp(nextStep, 1, total);
-      const nextParams = new URLSearchParams(sp.toString());
-
-      if (safe === 1) {
-        nextParams.set("step", "1");
-        nextParams.delete("scanId");
-        nextParams.delete("unitId");
-        nextParams.delete("typeIds");
-        router.replace(buildUrl(pathname, nextParams), { scroll: false });
-        return;
-      }
-
-      if (!hasValidScanId(nextParams)) return;
-
-      nextParams.set("step", String(safe));
-      router.replace(buildUrl(pathname, nextParams), { scroll: false });
-    };
-
     return {
       isHidden: false,
       props: {
-        variant: "progress",
-        total,
-        currentStep: hasScan ? currentStep : 1,
-        onStepChange: replaceStep,
+        variant: "basic",
+        title: "",
         onBack: exitCreate,
+      },
+    };
+  }
+
+  if (wrongMatch.type === "createScans") {
+    return {
+      isHidden: false,
+      props: {
+        variant: "basic",
+        title: "",
+        onBack: () => router.push(ROUTES.WRONG.CREATE),
       },
     };
   }
@@ -233,6 +232,64 @@ export const useAppBar = (): UseAppBarResult => {
               iconName: "trash-modal",
             },
           ],
+        },
+      },
+    };
+  }
+
+  if (wrongMatch.type === "scanDetail") {
+    const scanId = Number(wrongMatch.id);
+    const groupId = sp.get("group");
+    const group = getWrongCreateGroupContext?.(groupId) ?? null;
+    const items = group?.items ?? [];
+    const currentIndex = items.findIndex((item) => item.scanId === scanId);
+    const totalCount = items.length;
+    const title =
+      currentIndex >= 0 && totalCount > 0
+        ? `문제 (${currentIndex + 1}/${totalCount})`
+        : "문제";
+
+    const menuItems: [ScanDetailMenuItem, ...ScanDetailMenuItem[]] =
+      items.length > 0
+        ? (items.map((item, index) => ({
+            id: String(item.scanId),
+            label: `${index + 1}) ${item.unitName}`,
+            isActive: index === currentIndex,
+            onClick: () => {
+              closeScanDetailMenu();
+              if (!groupId) return;
+              router.push(
+                `${ROUTES.WRONG.SCAN_DETAIL(item.scanId)}?group=${encodeURIComponent(groupId)}`
+              );
+            },
+          })) as [ScanDetailMenuItem, ...ScanDetailMenuItem[]])
+        : [
+            {
+              id: "current",
+              label: title,
+              isActive: true,
+              onClick: closeScanDetailMenu,
+            },
+          ];
+
+    return {
+      isHidden: false,
+      props: {
+        variant: "scanDetail",
+        title,
+        onBack: () => {
+          if (!groupId) {
+            router.push(ROUTES.WRONG.CREATE);
+            return;
+          }
+          router.push(
+            `${ROUTES.WRONG.CREATE_SCANS}?group=${encodeURIComponent(groupId)}`
+          );
+        },
+        titleMenu: {
+          isOpen: isScanDetailMenuOpen,
+          onToggle: toggleScanDetailMenu,
+          items: menuItems,
         },
       },
     };

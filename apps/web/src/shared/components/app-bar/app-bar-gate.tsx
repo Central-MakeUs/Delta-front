@@ -6,10 +6,13 @@ import { ROUTES } from "@/shared/constants/routes";
 import AppBar from "@/shared/components/app-bar/app-bar";
 import { useAppBar } from "@/shared/components/app-bar/hooks/use-app-bar";
 import * as s from "@/shared/components/app-bar/app-bar.css";
+import { readWrongCreateGroupContext } from "@/app/wrong/create/utils/group-context";
 
 export const AppBarGate = () => {
   const pathname = usePathname();
-  const result = useAppBar();
+  const result = useAppBar({
+    getWrongCreateGroupContext: readWrongCreateGroupContext,
+  });
   if (result.isHidden) return null;
   const isMy = pathname === ROUTES.MY.ROOT;
 

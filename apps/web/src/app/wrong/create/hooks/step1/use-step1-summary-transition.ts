@@ -1,311 +1,253 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { ProblemScanCreateResponse } from "@/shared/apis/problem-scan/problem-scan-types";
-import { useProblemScanSummaryQuery } from "@/shared/apis/problem-scan/hooks/use-problem-scan-summary-query";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { toastError } from "@/shared/components/toast/toast";
 import { getFailToastMessage } from "@/app/wrong/create/utils/get-fail-toast-message";
+import type {
+  ProblemScanGroupCreateResponse,
+  ProblemScanGroupSummaryResponse,
+  ProblemScanSummaryResponse,
+} from "@/shared/apis/problem-scan/problem-scan-types";
+import { problemScanApi } from "@/shared/apis/problem-scan/problem-scan-api";
+import { useProblemTypesQuery } from "@/shared/apis/problem-type/hooks/use-problem-types-query";
+import { computeRecommendation } from "@/app/wrong/create/utils/chapter-recommend";
 import {
-  defer,
-  readClassification,
-  readFailReason,
-  readStatus,
-} from "@/app/wrong/create/utils/scan-summary-reader";
+  createWrongCreateGroupId,
+  saveWrongCreateGroupContext,
+} from "@/app/wrong/create/utils/group-context";
+import type { ProblemCreateRequest } from "@/shared/apis/problem-create/problem-create-types";
+import { ROUTES } from "@/shared/constants/routes";
 import {
-  SUMMARY_FETCH_DELAY_MS,
-  SUMMARY_MAX_WAIT_MS,
-  SUMMARY_POLL_INTERVAL_MS,
-} from "@/app/wrong/create/constants/summary-time";
+  SUBJECT_NAME_BY_ID,
+  UNIT_BY_ID,
+} from "@/shared/constants/math-curriculum";
+
+const POLL_INTERVAL_MS = 1200;
 
 type Params = {
-  currentStep: number;
-  scanId: number | null;
-  spString: string;
-  pathname: string;
-  router: { replace: (href: string, options?: { scroll?: boolean }) => void };
+  scanIds: number[];
+  groupId: string | null;
   goStep: (nextStep: number, extra?: Record<string, string | null>) => void;
+  router: { push: (href: string) => void };
+};
+
+const dedupe = (values: string[]) =>
+  Array.from(new Set(values.filter(Boolean)));
+
+const isFailedSummary = (summary: ProblemScanSummaryResponse) => {
+  return summary.status === "FAILED" || Boolean(summary.failReason);
+};
+
+const buildPayloadFromSummary = (
+  summary: ProblemScanSummaryResponse,
+  problemTypeNames: Map<string, string>
+): ProblemCreateRequest => {
+  const fallback = computeRecommendation({
+    aiSubjectName: summary.classification.subject?.name ?? null,
+    aiUnitName: summary.classification.unit?.name ?? null,
+  });
+
+  const finalUnitId = summary.classification.unit?.id ?? fallback.unitId ?? "";
+
+  const finalTypeIds = dedupe(
+    (summary.classification.types ?? [])
+      .map((type) => {
+        if (type.id) return type.id;
+        if (type.name) {
+          return problemTypeNames.get(type.name.trim()) ?? null;
+        }
+        return null;
+      })
+      .filter((value): value is string => Boolean(value))
+  );
+
+  return {
+    scanId: summary.scanId,
+    finalUnitId,
+    finalTypeIds,
+    answerFormat: "CHOICE",
+  };
 };
 
 export const useStep1SummaryTransition = ({
-  currentStep,
-  scanId,
+  scanIds,
+  groupId,
   goStep,
+  router,
 }: Params) => {
-  const [scanIdForSummaryQuery, setScanIdForSummaryQuery] = useState<
-    number | null
-  >(null);
-  const [isWaitingDelay, setIsWaitingDelay] = useState(false);
-  const [isRetryActionsVisible, setIsRetryActionsVisible] = useState(false);
+  const { data: problemTypes = [] } = useProblemTypesQuery();
 
-  const delayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const maxWaitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isMountedRef = useRef(true);
+  const flowKeyRef = useRef<string>("");
+  const createdFlowRef = useRef<string>("");
+  const pollSummariesRef = useRef<() => void>(() => undefined);
 
-  const mountedRef = useRef(true);
-  const flowScanIdRef = useRef<number | null>(null);
-  const transitionedScanIdRef = useRef<number | null>(null);
-  const failedScanIdRef = useRef<number | null>(null);
+  const problemTypeNames = useMemo(() => {
+    return new Map(problemTypes.map((type) => [type.name.trim(), type.id]));
+  }, [problemTypes]);
 
-  useEffect(() => {
-    mountedRef.current = true;
-    return () => {
-      mountedRef.current = false;
-    };
+  const clearTimer = useCallback(() => {
+    if (!timerRef.current) return;
+    clearTimeout(timerRef.current);
+    timerRef.current = null;
   }, []);
 
-  const clearDelayTimer = useCallback(() => {
-    if (!delayTimerRef.current) return;
-    clearTimeout(delayTimerRef.current);
-    delayTimerRef.current = null;
-  }, []);
-
-  const clearPollTimer = useCallback(() => {
-    if (!pollTimerRef.current) return;
-    clearInterval(pollTimerRef.current);
-    pollTimerRef.current = null;
-  }, []);
-
-  const clearMaxWaitTimer = useCallback(() => {
-    if (!maxWaitTimerRef.current) return;
-    clearTimeout(maxWaitTimerRef.current);
-    maxWaitTimerRef.current = null;
-  }, []);
-
-  const clearAllTimers = useCallback(() => {
-    clearDelayTimer();
-    clearPollTimer();
-    clearMaxWaitTimer();
-  }, [clearDelayTimer, clearPollTimer, clearMaxWaitTimer]);
-
-  useEffect(() => {
-    return () => clearAllTimers();
-  }, [clearAllTimers]);
-
-  useEffect(() => {
-    if (!scanId) {
-      flowScanIdRef.current = null;
-      transitionedScanIdRef.current = null;
-      failedScanIdRef.current = null;
-      clearAllTimers();
-
-      defer(() => {
-        if (!mountedRef.current) return;
-        setScanIdForSummaryQuery(null);
-        setIsWaitingDelay(false);
-        setIsRetryActionsVisible(false);
-      });
-
-      return;
-    }
-
-    if (flowScanIdRef.current === scanId) return;
-
-    flowScanIdRef.current = scanId;
-    transitionedScanIdRef.current = null;
-    failedScanIdRef.current = null;
-
-    clearAllTimers();
-
-    const flowId = scanId;
-
-    defer(() => {
-      if (!mountedRef.current) return;
-      if (flowScanIdRef.current !== flowId) return;
-      setScanIdForSummaryQuery(flowId);
-      setIsRetryActionsVisible(false);
-      setIsWaitingDelay(currentStep === 1);
-    });
-
-    if (currentStep === 1) {
-      delayTimerRef.current = setTimeout(() => {
-        if (!mountedRef.current) return;
-        if (flowScanIdRef.current !== flowId) return;
-        setIsWaitingDelay(false);
-        delayTimerRef.current = null;
-      }, SUMMARY_FETCH_DELAY_MS);
-    }
-
-    maxWaitTimerRef.current = setTimeout(() => {
-      if (!mountedRef.current) return;
-      if (flowScanIdRef.current !== flowId) return;
-      setIsRetryActionsVisible(true);
-      clearPollTimer();
-      maxWaitTimerRef.current = null;
-    }, SUMMARY_MAX_WAIT_MS);
-  }, [scanId, currentStep, clearAllTimers, clearPollTimer]);
-
-  const {
-    data: prefetchedSummary,
-    isFetching: isSummaryFetching,
-    isError: isSummaryError,
-    refetch: refetchSummary,
-  } = useProblemScanSummaryQuery(scanIdForSummaryQuery);
-
-  const failReason = useMemo(
-    () => readFailReason(prefetchedSummary),
-    [prefetchedSummary]
-  );
-  const scanStatus = useMemo(
-    () => readStatus(prefetchedSummary),
-    [prefetchedSummary]
-  );
-
-  const isFailed = useMemo(() => {
-    if (failReason) return true;
-    if (scanStatus === "FAILED") return true;
-    return false;
-  }, [failReason, scanStatus]);
-
-  useEffect(() => {
-    if (!scanIdForSummaryQuery) return;
-    if (!isFailed) return;
-
-    if (failedScanIdRef.current === scanIdForSummaryQuery) return;
-    failedScanIdRef.current = scanIdForSummaryQuery;
-
-    clearAllTimers();
-
-    toastError(getFailToastMessage(failReason ?? "UNKNOWN"));
-
-    defer(() => {
-      if (!mountedRef.current) return;
-
-      setScanIdForSummaryQuery(null);
-      setIsWaitingDelay(false);
-      setIsRetryActionsVisible(false);
-
-      goStep(1, {
-        scanId: null,
-        chapterId: null,
-        unitId: null,
-        typeIds: null,
-      });
-    });
-  }, [scanIdForSummaryQuery, isFailed, failReason, clearAllTimers, goStep]);
-
-  const clsState = useMemo(
-    () => readClassification(prefetchedSummary),
-    [prefetchedSummary]
-  );
-
-  const isSummaryReady = useMemo(() => {
-    if (!prefetchedSummary) return false;
-    if (isFailed) return false;
-
-    if (!clsState) return false;
-    if (clsState.needsReview) return true;
-
-    return (
-      scanStatus === "AI_DONE" &&
-      clsState.hasSubject &&
-      clsState.hasUnit &&
-      clsState.hasTypes
-    );
-  }, [prefetchedSummary, isFailed, clsState, scanStatus]);
-
-  const showRetryActions = useMemo(() => {
-    const isErrorStable = isSummaryError && !isSummaryFetching;
-    return isRetryActionsVisible || isErrorStable;
-  }, [isRetryActionsVisible, isSummaryError, isSummaryFetching]);
-
-  useEffect(() => {
-    if (currentStep !== 1) return;
-    if (!scanId) return;
-    if (!scanIdForSummaryQuery) return;
-    if (isFailed) return;
-    if (!isSummaryReady) return;
-
-    if (transitionedScanIdRef.current === scanId) return;
-    transitionedScanIdRef.current = scanId;
-
-    goStep(2, {
-      scanId: String(scanId),
+  const resetFlow = useCallback(() => {
+    clearTimer();
+    createdFlowRef.current = "";
+    goStep(1, {
+      scanId: null,
+      groupId: null,
+      scanIds: null,
       chapterId: null,
       unitId: null,
       typeIds: null,
     });
+  }, [clearTimer, goStep]);
+
+  const createGroupContext = useCallback(
+    (summaries: ProblemScanSummaryResponse[]) => {
+      const items = summaries.map((summary) => {
+        const payload = buildPayloadFromSummary(summary, problemTypeNames);
+        const unit = payload.finalUnitId ? UNIT_BY_ID[payload.finalUnitId] : undefined;
+        const subjectName =
+          summary?.classification.subject?.name ??
+          (unit?.subjectId ? SUBJECT_NAME_BY_ID[unit.subjectId] : "Unknown");
+        const unitName =
+          summary?.classification.unit?.name ??
+          unit?.name ??
+          "Uploaded problem";
+        const typeNames =
+          payload?.finalTypeIds.map(
+            (typeId) =>
+              problemTypes.find((type) => type.id === typeId)?.name ?? typeId
+          ) ?? [];
+
+        return {
+          scanId: payload.scanId,
+          finalUnitId: payload.finalUnitId,
+          finalTypeIds: payload.finalTypeIds,
+          answerFormat: payload.answerFormat,
+          answerChoiceNo: payload.answerChoiceNo ?? null,
+          answerValue: payload.answerValue ?? null,
+          title: `${unitName} 문제`,
+          imageUrl: summary?.originalImage.viewUrl ?? "",
+          subjectName,
+          unitName,
+          typeNames,
+          needsReview:
+            summary?.classification.needsReview ??
+            (!payload.finalUnitId || payload.finalTypeIds.length === 0),
+        };
+      });
+
+      const groupId = createWrongCreateGroupId();
+      saveWrongCreateGroupContext({
+        id: groupId,
+        createdAt: Date.now(),
+        items,
+      });
+
+      router.push(
+        `${ROUTES.WRONG.CREATE_SCANS}?group=${encodeURIComponent(groupId)}`
+      );
+    },
+    [problemTypeNames, problemTypes, router]
+  );
+
+  const pollSummaries = useCallback(async () => {
+    if (!groupId || scanIds.length === 0 || problemTypes.length === 0) {
+      return;
+    }
+
+    const flowKey = `${groupId}:${scanIds.join(",")}`;
+    flowKeyRef.current = flowKey;
+
+    try {
+      const groupSummary: ProblemScanGroupSummaryResponse =
+        await problemScanApi.getGroupSummary({ groupId });
+      const summaries = groupSummary.summaries;
+
+      if (flowKeyRef.current !== flowKey || !isMountedRef.current) return;
+
+      if (groupSummary.status === "FAILED") {
+        toastError(getFailToastMessage("UNKNOWN"));
+        resetFlow();
+        return;
+      }
+
+      const failed = summaries.find(isFailedSummary);
+      if (failed) {
+        toastError(getFailToastMessage(failed.failReason ?? "UNKNOWN"));
+        resetFlow();
+        return;
+      }
+
+      const isGroupReady =
+        summaries.length === scanIds.length &&
+        summaries.every((summary) => summary.status === "AI_DONE");
+
+      if (!isGroupReady) {
+        clearTimer();
+        timerRef.current = setTimeout(() => {
+          pollSummariesRef.current();
+        }, POLL_INTERVAL_MS);
+        return;
+      }
+
+      if (createdFlowRef.current === flowKey) return;
+      createdFlowRef.current = flowKey;
+      if (!isMountedRef.current) return;
+
+      createGroupContext(summaries);
+    } catch {
+      clearTimer();
+      timerRef.current = setTimeout(() => {
+        pollSummariesRef.current();
+      }, POLL_INTERVAL_MS);
+    }
   }, [
-    currentStep,
-    scanId,
-    scanIdForSummaryQuery,
-    isFailed,
-    isSummaryReady,
-    goStep,
+    clearTimer,
+    createGroupContext,
+    problemTypes.length,
+    resetFlow,
+    groupId,
+    scanIds,
   ]);
 
   useEffect(() => {
-    if (!scanIdForSummaryQuery) return;
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      clearTimer();
+    };
+  }, [clearTimer]);
 
-    if (isFailed) {
-      clearPollTimer();
-      clearMaxWaitTimer();
+  useEffect(() => {
+    pollSummariesRef.current = () => {
+      void pollSummaries();
+    };
+  }, [pollSummaries]);
+
+  useEffect(() => {
+    clearTimer();
+
+    if (!groupId && scanIds.length === 0) {
       return;
     }
 
-    if (isSummaryReady) {
-      clearPollTimer();
-      clearMaxWaitTimer();
-      return;
-    }
-
-    if (isSummaryError) {
-      clearPollTimer();
-      return;
-    }
-
-    if (showRetryActions) {
-      clearPollTimer();
-      return;
-    }
-
-    if (!pollTimerRef.current) {
-      pollTimerRef.current = setInterval(() => {
-        refetchSummary();
-      }, SUMMARY_POLL_INTERVAL_MS);
-    }
-
-    return () => clearPollTimer();
-  }, [
-    scanIdForSummaryQuery,
-    isFailed,
-    isSummaryReady,
-    isSummaryError,
-    showRetryActions,
-    refetchSummary,
-    clearPollTimer,
-    clearMaxWaitTimer,
-  ]);
-
-  const retrySummary = useCallback(() => {
-    setIsRetryActionsVisible(false);
-    clearPollTimer();
-    clearMaxWaitTimer();
-
-    const flowId = flowScanIdRef.current;
-
-    if (flowId) {
-      maxWaitTimerRef.current = setTimeout(() => {
-        if (!mountedRef.current) return;
-        if (flowScanIdRef.current !== flowId) return;
-        setIsRetryActionsVisible(true);
-        clearPollTimer();
-        maxWaitTimerRef.current = null;
-      }, SUMMARY_MAX_WAIT_MS);
-    }
-
-    refetchSummary();
-  }, [refetchSummary, clearPollTimer, clearMaxWaitTimer]);
+    void pollSummaries();
+  }, [clearTimer, groupId, pollSummaries, scanIds]);
 
   const handleUploaded = useCallback(
-    (res: ProblemScanCreateResponse) => {
-      const nextScanId = res.scanId;
+    (res: ProblemScanGroupCreateResponse) => {
+      if (res.scanIds.length === 0) return;
 
-      flowScanIdRef.current = null;
-      transitionedScanIdRef.current = null;
-      failedScanIdRef.current = null;
-
+      createdFlowRef.current = "";
       goStep(1, {
-        scanId: String(nextScanId),
+        groupId: res.groupId ? String(res.groupId) : null,
+        scanIds: res.scanIds.join(","),
         chapterId: null,
         unitId: null,
         typeIds: null,
@@ -314,17 +256,9 @@ export const useStep1SummaryTransition = ({
     [goStep]
   );
 
-  const isStep1Blocked =
-    currentStep === 1 &&
-    (isWaitingDelay ||
-      isSummaryFetching ||
-      (!!scanIdForSummaryQuery && !isSummaryReady && !showRetryActions));
-
   return {
     handleUploaded,
-    isStep1Blocked,
-    showRetryActions,
-    retrySummary,
+    isStep1Blocked: Boolean(groupId) || scanIds.length > 0,
   };
 };
 

@@ -20,12 +20,16 @@ export const API_PATHS = {
   },
   PROBLEM_SCANS: {
     ROOT: `${API_V1}/problem-scans`,
+    GROUPS: `${API_V1}/problem-scans/groups`,
+    GROUP_SUMMARY: (groupId: number | string) =>
+      `${API_V1}/problem-scans/groups/${groupId}/summary`,
     DETAIL: (scanId: number | string) => `${API_V1}/problem-scans/${scanId}`,
     SUMMARY: (scanId: number | string) =>
       `${API_V1}/problem-scans/${scanId}/summary`,
   },
   PROBLEM_CREATE: {
     ROOT: `${API_V1}/problems`,
+    BULK: `${API_V1}/problems/bulk`,
   },
   PROBLEM_LIST: {
     SCROLL: `${API_V1}/problems/scroll`,

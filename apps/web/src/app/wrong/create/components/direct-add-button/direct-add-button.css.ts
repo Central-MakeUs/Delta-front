@@ -2,14 +2,11 @@ import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 
 export const button = style({
-  width: "100%",
-  display: "flex",
+  display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
   gap: "0.8rem",
-  padding: "1.6rem",
-  border: `0.1rem solid ${vars.color.grayscale[100]}`,
-  borderRadius: vars.radius.r12,
+  minWidth: 0,
   cursor: "pointer",
 
   selectors: {
@@ -22,20 +19,21 @@ export const button = style({
 
 export const label = style({
   display: "block",
+  textAlign: "center",
+  whiteSpace: "nowrap",
 });
 
 export const inputWrapper = style({
-  width: "100%",
-  display: "flex",
+  display: "inline-flex",
   alignItems: "center",
   justifyContent: "center",
-  padding: "1.6rem",
-  border: `0.1rem solid ${vars.color.grayscale[100]}`,
-  borderRadius: vars.radius.r12,
+  gap: "0.8rem",
+  minWidth: 0,
+  cursor: "text",
 });
 
 export const input = style({
-  width: "100%",
+  width: "9ch",
   border: "none",
   outline: "none",
   background: "transparent",
@@ -44,7 +42,7 @@ export const input = style({
 
   selectors: {
     "&::placeholder": {
-      color: vars.color.grayscale[100],
+      color: vars.color.grayscale[400],
       opacity: 1,
     },
   },

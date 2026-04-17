@@ -6,24 +6,15 @@ import LoginDecorations from "@/app/login/login-decorations";
 import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
 import * as s from "@/app/login/login.css";
-import {actions} from "../login.css";
-
-declare global {
-  interface Window {
-    ReactNativeWebView?: { postMessage: (msg: string) => void };
-  }
-}
-
-const postOAuthMessage = (url: string, callbackPrefix: string) => {
-  window.ReactNativeWebView?.postMessage(
-    JSON.stringify({ type: "OAUTH_START", url, callbackPrefix })
-  );
-};
+import {
+  isReactNativeWebView,
+  postOAuthMessage,
+} from "@/shared/apis/auth/native-bridge";
 
 const IosLoginPage = () => {
   const onKakaoStart = () => {
     const url = kakaoOAuth.buildAuthorizeUrl();
-    if (window.ReactNativeWebView) {
+    if (isReactNativeWebView()) {
       postOAuthMessage(url, kakaoOAuth.buildRedirectUri());
     } else {
       window.location.assign(url);
@@ -33,7 +24,7 @@ const IosLoginPage = () => {
   const onAppleStart = () => {
     const url = appleOAuth.buildAuthorizeUrl();
     if (!url) return;
-    if (window.ReactNativeWebView) {
+    if (isReactNativeWebView()) {
       postOAuthMessage(url, `${window.location.origin}/oauth/apple/callback`);
     } else {
       window.location.assign(url);

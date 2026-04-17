@@ -6,23 +6,15 @@ import LoginDecorations from "@/app/login/login-decorations";
 import { googleOAuth } from "@/shared/apis/auth/google-oauth";
 import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import * as s from "@/app/login/login.css";
-
-declare global {
-  interface Window {
-    ReactNativeWebView?: { postMessage: (msg: string) => void };
-  }
-}
-
-const postOAuthMessage = (url: string, callbackPrefix: string) => {
-  window.ReactNativeWebView?.postMessage(
-    JSON.stringify({ type: "OAUTH_START", url, callbackPrefix })
-  );
-};
+import {
+  isReactNativeWebView,
+  postOAuthMessage,
+} from "@/shared/apis/auth/native-bridge";
 
 const AndroidLoginPage = () => {
   const onGoogleStart = () => {
     const url = googleOAuth.buildAuthorizeUrl();
-    if (window.ReactNativeWebView) {
+    if (isReactNativeWebView()) {
       postOAuthMessage(url, googleOAuth.buildRedirectUri());
     } else {
       window.location.assign(url);
@@ -31,7 +23,7 @@ const AndroidLoginPage = () => {
 
   const onKakaoStart = () => {
     const url = kakaoOAuth.buildAuthorizeUrl();
-    if (window.ReactNativeWebView) {
+    if (isReactNativeWebView()) {
       postOAuthMessage(url, kakaoOAuth.buildRedirectUri());
     } else {
       window.location.assign(url);

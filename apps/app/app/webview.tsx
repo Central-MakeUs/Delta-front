@@ -2,12 +2,21 @@ import React, { useCallback, useRef } from "react";
 import { Platform, StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
-import * as WebBrowser from "expo-web-browser";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 import type {
   ShouldStartLoadRequest,
   WebViewErrorEvent,
   WebViewHttpErrorEvent,
 } from "react-native-webview/lib/WebViewTypes";
+
+GoogleSignin.configure({
+  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? "",
+  iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+  offlineAccess: true,
+});
 
 const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
@@ -36,18 +45,39 @@ const WebViewScreen = () => {
           return;
         }
 
-        if (data?.type === "OAUTH_START" && data.url && data.callbackPrefix) {
-          void (async () => {
-            const result = await WebBrowser.openAuthSessionAsync(
-              data.url,
-              data.callbackPrefix
-            );
-            if (result.type === "success" && result.url) {
-              webViewRef.current?.injectJavaScript(
-                `window.location.replace(${JSON.stringify(result.url)});true;`
-              );
-            }
-          })();
+        if (data?.type === "OAUTH_START" && data.url) {
+          const url = data.url as string;
+          const callbackPrefix = data.callbackPrefix as string | undefined;
+
+          if (url.includes("accounts.google.com") && callbackPrefix) {
+            const state = new URL(url).searchParams.get("state");
+            void (async () => {
+              try {
+                await GoogleSignin.hasPlayServices({
+                  showPlayServicesUpdateDialog: true,
+                });
+                const result = await GoogleSignin.signIn();
+                const serverAuthCode = result.data?.serverAuthCode;
+                if (!serverAuthCode) return;
+                const params = new URLSearchParams({ code: serverAuthCode });
+                if (state) params.set("state", state);
+                const callbackUrl = `${callbackPrefix}?${params.toString()}`;
+                webViewRef.current?.injectJavaScript(
+                  `window.location.replace(${JSON.stringify(callbackUrl)});true;`
+                );
+              } catch (e: unknown) {
+                const err = e as { code?: string };
+                if (err?.code !== statusCodes.SIGN_IN_CANCELLED && __DEV__) {
+                  console.warn("[GoogleSignin] error:", e);
+                }
+              }
+            })();
+            return;
+          }
+
+          webViewRef.current?.injectJavaScript(
+            `window.location.replace(${JSON.stringify(url)});true;`
+          );
           return;
         }
       } catch {}

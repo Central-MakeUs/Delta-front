@@ -7,6 +7,7 @@ import {
   consumeAuthFresh,
 } from "@/shared/apis/auth/auth-events";
 import { ROUTES } from "@/shared/constants/routes";
+import { platformStorage } from "@/shared/apis/auth/platform-storage";
 
 const shouldSkipRedirect = (pathname: string | null) => {
   if (!pathname) return true;
@@ -24,7 +25,7 @@ export const AuthLogoutListener = () => {
     const handleAuthLogout = () => {
       if (shouldSkipRedirect(pathname)) return;
       if (consumeAuthFresh()) return;
-      router.replace(ROUTES.AUTH.LOGIN);
+      router.replace(platformStorage.getLoginRoute());
     };
 
     window.addEventListener(AUTH_LOGOUT_EVENT, handleAuthLogout);

@@ -13,6 +13,7 @@ declare global {
 export type WebViewMessageType =
   | "CHECKOUT_CLICK"
   | "NAVIGATION_BACK"
+  | "OAUTH_START"
   | string;
 
 export type NativeToWebMessageType = "INIT_DATA" | string;

@@ -7,6 +7,8 @@ const clampInt = (value: number, min: number, max: number) => {
 
 export const shouldHideAppBar = (pathname: string) => {
   if (pathname === ROUTES.AUTH.LOGIN) return true;
+  if (pathname === ROUTES.AUTH.LOGIN_IOS) return true;
+  if (pathname === ROUTES.AUTH.LOGIN_ANDROID) return true;
   if (pathname === ROUTES.AUTH.SIGNUP_INFO) return true;
   if (pathname === ROUTES.PRO.ROOT) return true;
   if (pathname === ROUTES.WRONG.CREATE_DONE) return true;

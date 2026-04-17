@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "cloud.deltasemo.semo",
+      "sha256_cert_fingerprints": [
+        "DCFB449100D4728FD0C445B6AA5744FCEFB02507B6E8C0665F2BA2C9B9D1464A"
+      ]
+    }
+  }
+]

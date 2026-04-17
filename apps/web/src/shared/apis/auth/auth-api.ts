@@ -26,6 +26,15 @@ export const authApi = {
     return unwrapApiResponse(res.data);
   },
 
+  googleLogin: async (params: { code: string }) => {
+    const res = await instance.post<ApiResponse<SocialLoginData>>(
+      API_PATHS.AUTH.GOOGLE_LOGIN,
+      { code: params.code }
+    );
+
+    return unwrapApiResponse(res.data);
+  },
+
   appleLogin: async (params: {
     code: string;
     user?: AppleUserFromApple | null;

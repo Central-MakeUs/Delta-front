@@ -22,6 +22,7 @@ export const ICONS = [
   "file",
   "file-text",
   "filter",
+  "google",
   "graph-active",
   "graph-default",
   "graphic-camera",

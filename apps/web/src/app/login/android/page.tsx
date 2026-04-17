@@ -3,16 +3,15 @@
 import Icon from "@/shared/components/icon/icon";
 import { Button } from "@/shared/components/button/button/button";
 import LoginDecorations from "@/app/login/login-decorations";
-import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
-import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
-import * as s from "@/app/login/login.css";
 import { googleOAuth } from "@/shared/apis/auth/google-oauth";
+import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
+import * as s from "@/app/login/login.css";
 import {
   isReactNativeWebView,
   postOAuthMessage,
 } from "@/shared/apis/auth/native-bridge";
 
-const LoginPage = () => {
+const AndroidLoginPage = () => {
   const onGoogleStart = () => {
     const url = googleOAuth.buildAuthorizeUrl();
     if (isReactNativeWebView()) {
@@ -26,16 +25,6 @@ const LoginPage = () => {
     const url = kakaoOAuth.buildAuthorizeUrl();
     if (isReactNativeWebView()) {
       postOAuthMessage(url, kakaoOAuth.buildRedirectUri());
-    } else {
-      window.location.assign(url);
-    }
-  };
-
-  const onAppleStart = () => {
-    const url = appleOAuth.buildAuthorizeUrl();
-    if (!url) return;
-    if (isReactNativeWebView()) {
-      postOAuthMessage(url, `${window.location.origin}/oauth/apple/callback`);
     } else {
       window.location.assign(url);
     }
@@ -64,16 +53,10 @@ const LoginPage = () => {
             tone="kakao"
             onClick={onKakaoStart}
           />
-          <Button
-            icon="apple"
-            label="Apple로 시작하기"
-            tone="dark"
-            onClick={onAppleStart}
-          />
         </section>
       </div>
     </main>
   );
 };
 
-export default LoginPage;
+export default AndroidLoginPage;

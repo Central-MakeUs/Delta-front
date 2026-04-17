@@ -39,7 +39,7 @@ export const vars = createThemeContract({
     success: { 100: null, 500: null, 700: null },
     warning: { 100: null, 500: null, 600: null },
     error: { 100: null, 500: null, 700: null },
-    login: { kakao: null, bgGradient: null },
+    login: { kakao: null, google: null, bgGradient: null },
     etc: { crown: null, myGradient: null, wrongCardGradient: null },
   },
   space: { 0: null, 2: null, 3: null, 4: null, 6: null },
@@ -193,6 +193,7 @@ export const lightTheme = createTheme(vars, {
     error: { 100: "#FFC5C1", 500: "#FF4538", 700: "#B53128" },
     login: {
       kakao: "#FEE500",
+      google: "#FFFFFF",
       bgGradient: "linear-gradient(180deg, #ffffff 0%, #ffdbd6 100%)",
     },
     etc: {

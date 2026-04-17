@@ -1,3 +1,5 @@
+import { emitAuthSessionChanged } from "@/shared/apis/auth/auth-events";
+
 type Tokens = {
   accessToken: string | null;
   refreshToken: string | null;
@@ -5,6 +7,11 @@ type Tokens = {
 
 const ACCESS_KEY = "delta:access-token";
 const REFRESH_KEY = "delta:refresh-token";
+
+export const TOKEN_STORAGE_KEYS = {
+  access: ACCESS_KEY,
+  refresh: REFRESH_KEY,
+} as const;
 
 const safeGet = (k: string) => {
   if (typeof window === "undefined") return null;
@@ -32,10 +39,12 @@ export const tokenStorage = {
 
     safeSet(ACCESS_KEY, next.accessToken);
     safeSet(REFRESH_KEY, next.refreshToken);
+    emitAuthSessionChanged();
   },
 
   clear: () => {
     safeSet(ACCESS_KEY, null);
     safeSet(REFRESH_KEY, null);
+    emitAuthSessionChanged();
   },
 };

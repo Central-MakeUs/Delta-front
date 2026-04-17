@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from "react";
 import { Platform, StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
+import * as WebBrowser from "expo-web-browser";
 import type {
   ShouldStartLoadRequest,
   WebViewErrorEvent,
@@ -34,9 +35,24 @@ const WebViewScreen = () => {
           webViewRef.current?.goBack();
           return;
         }
+
+        if (data?.type === "OAUTH_START" && data.url && data.callbackPrefix) {
+          void (async () => {
+            const result = await WebBrowser.openAuthSessionAsync(
+              data.url,
+              data.callbackPrefix
+            );
+            if (result.type === "success" && result.url) {
+              webViewRef.current?.injectJavaScript(
+                `window.location.replace(${JSON.stringify(result.url)});true;`
+              );
+            }
+          })();
+          return;
+        }
       } catch {}
     },
-    [],
+    []
   );
 
   const handleShouldStart = useCallback(
@@ -66,7 +82,7 @@ const WebViewScreen = () => {
       openExternalUrl(url);
       return false;
     },
-    [openExternalUrl],
+    [openExternalUrl]
   );
 
   const handleError = useCallback((e: WebViewErrorEvent) => {
@@ -74,7 +90,7 @@ const WebViewScreen = () => {
       console.warn(
         "[WebView] Load error:",
         e.nativeEvent?.description,
-        e.nativeEvent?.code,
+        e.nativeEvent?.code
       );
   }, []);
 
@@ -87,7 +103,7 @@ const WebViewScreen = () => {
     <WebView
       ref={webViewRef}
       style={styles.webview}
-      source={{ uri: `${WEB_BASE_URL}/` }}
+      source={{ uri: `${WEB_BASE_URL}/?platform=${Platform.OS}` }}
       javaScriptEnabled
       domStorageEnabled
       sharedCookiesEnabled

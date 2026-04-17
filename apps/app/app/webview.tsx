@@ -9,7 +9,7 @@ import type {
   WebViewHttpErrorEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-const WEB_BASE_URL = "http://10.0.2.2:3000";
+const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
@@ -40,11 +40,11 @@ const WebViewScreen = () => {
           void (async () => {
             const result = await WebBrowser.openAuthSessionAsync(
               data.url,
-              data.callbackPrefix,
+              data.callbackPrefix
             );
             if (result.type === "success" && result.url) {
               webViewRef.current?.injectJavaScript(
-                `window.location.replace(${JSON.stringify(result.url)});true;`,
+                `window.location.replace(${JSON.stringify(result.url)});true;`
               );
             }
           })();
@@ -52,7 +52,7 @@ const WebViewScreen = () => {
         }
       } catch {}
     },
-    [],
+    []
   );
 
   const handleShouldStart = useCallback(
@@ -82,7 +82,7 @@ const WebViewScreen = () => {
       openExternalUrl(url);
       return false;
     },
-    [openExternalUrl],
+    [openExternalUrl]
   );
 
   const handleError = useCallback((e: WebViewErrorEvent) => {
@@ -90,7 +90,7 @@ const WebViewScreen = () => {
       console.warn(
         "[WebView] Load error:",
         e.nativeEvent?.description,
-        e.nativeEvent?.code,
+        e.nativeEvent?.code
       );
   }, []);
 

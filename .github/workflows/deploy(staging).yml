@@ -29,12 +29,12 @@ jobs:
       - name: Build web
         run: pnpm build:web
         env:
-          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
-          NEXT_PUBLIC_KAKAO_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_KAKAO_CLIENT_ID }}
-          NEXT_PUBLIC_KAKAO_SCOPES: ${{ secrets.NEXT_PUBLIC_KAKAO_SCOPES }}
-          NEXT_PUBLIC_APPLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_APPLE_CLIENT_ID }}
-          NEXT_PUBLIC_APPLE_REDIRECT_URI: ${{ secrets.NEXT_PUBLIC_APPLE_REDIRECT_URI }}
-          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
+          NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
+          NEXT_PUBLIC_KAKAO_CLIENT_ID: ${{ vars.NEXT_PUBLIC_KAKAO_CLIENT_ID }}
+          NEXT_PUBLIC_KAKAO_SCOPES: ${{ vars.NEXT_PUBLIC_KAKAO_SCOPES }}
+          NEXT_PUBLIC_APPLE_CLIENT_ID: ${{ vars.NEXT_PUBLIC_APPLE_CLIENT_ID }}
+          NEXT_PUBLIC_APPLE_REDIRECT_URI: ${{ vars.NEXT_PUBLIC_APPLE_REDIRECT_URI }}
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ vars.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
 
       - name: Copy build to EC2
         uses: appleboy/scp-action@v0.1.7

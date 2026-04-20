@@ -59,8 +59,22 @@ const WrongPage = () => {
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useProblemScrollInfiniteQuery({ params: scrollParams });
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const pageRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const isFetchingNextRef = useRef(false);
+
+  useEffect(() => {
+    const findScrollParent = (node: HTMLElement | null): HTMLElement | null => {
+      if (!node) return null;
+      const oy = window.getComputedStyle(node).overflowY;
+      if (oy === "auto" || oy === "scroll") return node;
+      return findScrollParent(node.parentElement);
+    };
+    scrollContainerRef.current = findScrollParent(
+      pageRef.current?.parentElement ?? null
+    );
+  }, []);
 
   useEffect(() => {
     isFetchingNextRef.current = isFetchingNextPage;
@@ -90,24 +104,35 @@ const WrongPage = () => {
   const totalElements = data?.pages?.[0]?.totalElements ?? 0;
 
   useEffect(() => {
+    const container = scrollContainerRef.current;
+    const getScrollTop = () =>
+      container ? container.scrollTop : window.scrollY;
+
     const onScroll = () => {
       setShowScrollToTop(
-        visibleCards.length >= 2 && window.scrollY > SCROLL_THRESHOLD_PX
+        visibleCards.length >= 2 && getScrollTop() > SCROLL_THRESHOLD_PX
       );
     };
     onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+
+    const target: EventTarget = container ?? window;
+    target.addEventListener("scroll", onScroll, { passive: true });
+    return () => target.removeEventListener("scroll", onScroll);
   }, [visibleCards.length]);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const showInlineLoading = isLoading || (isFetchingNextPage && !data);
 
   return (
-    <div className={s.page}>
+    <div ref={pageRef} className={s.page}>
       <div className={s.filterSection}>
         <div className={s.filterRow}>
           <Filter label="필터" icon="filter" onClick={() => openFilter()} />

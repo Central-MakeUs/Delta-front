@@ -8,11 +8,14 @@ import type {
   WebViewErrorEvent,
   WebViewHttpErrorEvent,
 } from "react-native-webview/lib/WebViewTypes";
+import { useWebViewTokenRefresh } from "../hooks/use-webview-token-refresh";
 
 const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
+
+  useWebViewTokenRefresh(webViewRef);
 
   const openExternalUrl = useCallback((url: string) => {
     Linking.openURL(url).catch((err) => {
@@ -115,6 +118,7 @@ const WebViewScreen = () => {
       onMessage={handleMessage}
       onError={handleError}
       onHttpError={handleHttpError}
+      onContentProcessDidTerminate={() => webViewRef.current?.reload()}
     />
   );
 };

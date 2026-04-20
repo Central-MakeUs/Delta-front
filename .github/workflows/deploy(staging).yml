@@ -23,14 +23,12 @@ jobs:
 
             git pull origin staging
 
-            cat <<'EOF' > apps/web/.env.local
-            NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
-            NEXT_PUBLIC_KAKAO_CLIENT_ID=${{ secrets.NEXT_PUBLIC_KAKAO_CLIENT_ID }}
-            NEXT_PUBLIC_KAKAO_SCOPES=${{ secrets.NEXT_PUBLIC_KAKAO_SCOPES }}
-            NEXT_PUBLIC_APPLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_APPLE_CLIENT_ID }}
-            NEXT_PUBLIC_APPLE_REDIRECT_URI=${{ secrets.NEXT_PUBLIC_APPLE_REDIRECT_URI }}
-            NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
-            EOF
+            echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" > apps/web/.env.local
+            echo "NEXT_PUBLIC_KAKAO_CLIENT_ID=${{ secrets.NEXT_PUBLIC_KAKAO_CLIENT_ID }}" >> apps/web/.env.local
+            echo "NEXT_PUBLIC_KAKAO_SCOPES=${{ secrets.NEXT_PUBLIC_KAKAO_SCOPES }}" >> apps/web/.env.local
+            echo "NEXT_PUBLIC_APPLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_APPLE_CLIENT_ID }}" >> apps/web/.env.local
+            echo "NEXT_PUBLIC_APPLE_REDIRECT_URI=${{ secrets.NEXT_PUBLIC_APPLE_REDIRECT_URI }}" >> apps/web/.env.local
+            echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}" >> apps/web/.env.local
 
             pnpm install --frozen-lockfile
 

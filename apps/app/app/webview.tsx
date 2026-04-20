@@ -2,26 +2,23 @@ import React, { useCallback, useRef } from "react";
 import { Platform, StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
-import {
-  GoogleSignin,
-  statusCodes,
-} from "@react-native-google-signin/google-signin";
+import { performKakaoLogin } from "@/native-auth/kakao";
+import { performAppleLogin } from "@/native-auth/apple";
 import type {
   ShouldStartLoadRequest,
   WebViewErrorEvent,
   WebViewHttpErrorEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-GoogleSignin.configure({
-  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? "",
-  iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
-  offlineAccess: true,
-});
-
-const WEB_BASE_URL = "https://semo-xi.vercel.app";
+const WEB_BASE_URL = "http://10.0.2.2:3000";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
+
+  const injectEvent = useCallback((eventName: string, detail: object) => {
+    const js = `window.dispatchEvent(new CustomEvent(${JSON.stringify(eventName)},{detail:${JSON.stringify(detail)}}));true;`;
+    webViewRef.current?.injectJavaScript(js);
+  }, []);
 
   const openExternalUrl = useCallback((url: string) => {
     Linking.openURL(url).catch((err) => {
@@ -46,43 +43,39 @@ const WebViewScreen = () => {
         }
 
         if (data?.type === "OAUTH_START" && data.url) {
-          const url = data.url as string;
-          const callbackPrefix = data.callbackPrefix as string | undefined;
+          const url: string = data.url;
 
-          if (url.includes("accounts.google.com") && callbackPrefix) {
-            const state = new URL(url).searchParams.get("state");
+          if (url.includes("kauth.kakao.com")) {
             void (async () => {
               try {
-                await GoogleSignin.hasPlayServices({
-                  showPlayServicesUpdateDialog: true,
+                const result = await performKakaoLogin();
+                injectEvent("nativeKakaoAuth", result);
+              } catch (err: any) {
+                injectEvent("nativeKakaoAuthError", {
+                  message: err?.message ?? "카카오 로그인 실패",
                 });
-                const result = await GoogleSignin.signIn();
-                const serverAuthCode = result.data?.serverAuthCode;
-                if (!serverAuthCode) return;
-                const params = new URLSearchParams({ code: serverAuthCode });
-                if (state) params.set("state", state);
-                const callbackUrl = `${callbackPrefix}?${params.toString()}`;
-                webViewRef.current?.injectJavaScript(
-                  `window.location.replace(${JSON.stringify(callbackUrl)});true;`
-                );
-              } catch (e: unknown) {
-                const err = e as { code?: string };
-                if (err?.code !== statusCodes.SIGN_IN_CANCELLED && __DEV__) {
-                  console.warn("[GoogleSignin] error:", e);
-                }
               }
             })();
             return;
           }
 
-          webViewRef.current?.injectJavaScript(
-            `window.location.replace(${JSON.stringify(url)});true;`
-          );
-          return;
+          if (url.includes("appleid.apple.com")) {
+            void (async () => {
+              try {
+                const result = await performAppleLogin();
+                injectEvent("nativeAppleAuth", result);
+              } catch (err: any) {
+                injectEvent("nativeAppleAuthError", {
+                  message: err?.message ?? "Apple 로그인 실패",
+                });
+              }
+            })();
+            return;
+          }
         }
       } catch {}
     },
-    []
+    [injectEvent],
   );
 
   const handleShouldStart = useCallback(
@@ -112,7 +105,7 @@ const WebViewScreen = () => {
       openExternalUrl(url);
       return false;
     },
-    [openExternalUrl]
+    [openExternalUrl],
   );
 
   const handleError = useCallback((e: WebViewErrorEvent) => {
@@ -120,7 +113,7 @@ const WebViewScreen = () => {
       console.warn(
         "[WebView] Load error:",
         e.nativeEvent?.description,
-        e.nativeEvent?.code
+        e.nativeEvent?.code,
       );
   }, []);
 

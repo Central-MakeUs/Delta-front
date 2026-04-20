@@ -15,6 +15,9 @@
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
     "@react-native-google-signin/google-signin": "^16.1.2",
+    "@react-native-kakao/core": "^2.4.5",
+    "@react-native-kakao/user": "^2.4.5",
+    "expo-apple-authentication": "~7.1.3",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",

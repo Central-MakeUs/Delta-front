@@ -2,14 +2,57 @@ name: Deploy Web (Staging)
 
 on:
   push:
-    branches: [staging]
+    branches:
+      - staging
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - staging
 
 jobs:
-  deploy:
+  build_and_deploy_job:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
+    name: Build and Deploy Job
 
     steps:
-      - name: Deploy to EC2
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build web
+        run: pnpm build:web
+        env:
+          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+          NEXT_PUBLIC_KAKAO_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_KAKAO_CLIENT_ID }}
+          NEXT_PUBLIC_KAKAO_SCOPES: ${{ secrets.NEXT_PUBLIC_KAKAO_SCOPES }}
+          NEXT_PUBLIC_APPLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_APPLE_CLIENT_ID }}
+          NEXT_PUBLIC_APPLE_REDIRECT_URI: ${{ secrets.NEXT_PUBLIC_APPLE_REDIRECT_URI }}
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
+
+      - name: Copy build to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "apps/web/.next/,apps/web/public/,apps/web/package.json,apps/web/next.config.ts"
+          target: "/home/ubuntu/Delta-front"
+
+      - name: Restart PM2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -18,20 +61,20 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            cd ~/Delta-front/apps/web
+            pm2 reload delta-web || pm2 start npm --name "delta-web" -- start
 
-            cd ~/Delta-front
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request Job
 
-            git pull origin staging
-
-            echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" > apps/web/.env.local
-            echo "NEXT_PUBLIC_KAKAO_CLIENT_ID=${{ secrets.NEXT_PUBLIC_KAKAO_CLIENT_ID }}" >> apps/web/.env.local
-            echo "NEXT_PUBLIC_KAKAO_SCOPES=${{ secrets.NEXT_PUBLIC_KAKAO_SCOPES }}" >> apps/web/.env.local
-            echo "NEXT_PUBLIC_APPLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_APPLE_CLIENT_ID }}" >> apps/web/.env.local
-            echo "NEXT_PUBLIC_APPLE_REDIRECT_URI=${{ secrets.NEXT_PUBLIC_APPLE_REDIRECT_URI }}" >> apps/web/.env.local
-            echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}" >> apps/web/.env.local
-
-            pnpm install --frozen-lockfile
-
-            pnpm build:web
-
-            pm2 reload delta-web || pm2 start npm --name "delta-web" -- start -- --prefix apps/web
+    steps:
+      - name: Stop PM2 preview
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            pm2 stop delta-web || true

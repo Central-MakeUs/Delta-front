@@ -12,11 +12,13 @@ import {
   isReactNativeWebView,
   postOAuthMessage,
 } from "@/shared/apis/auth/native-bridge";
+import { useGoogleLoginMutation } from "@/shared/apis/auth/hooks/use-google-login-mutation";
 import { useKakaoLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-login-mutation";
 import { ROUTES } from "@/shared/constants/routes";
 
 const AndroidLoginPage = () => {
   const router = useRouter();
+  const googleLogin = useGoogleLoginMutation();
   const kakaoLogin = useKakaoLoginMutation();
 
   const handleLoginSuccess = useCallback(
@@ -37,9 +39,23 @@ const AndroidLoginPage = () => {
       );
     };
 
+    const onGoogleAuth = (e: Event) => {
+      const { serverAuthCode } =
+        (e as CustomEvent<{ serverAuthCode: string }>).detail ?? {};
+      if (!serverAuthCode) return;
+      googleLogin.mutate(
+        { code: serverAuthCode },
+        { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
+      );
+    };
+
+    window.addEventListener("nativeGoogleAuth", onGoogleAuth);
     window.addEventListener("nativeKakaoAuth", onKakaoAuth);
-    return () => window.removeEventListener("nativeKakaoAuth", onKakaoAuth);
-  }, [kakaoLogin, handleLoginSuccess]);
+    return () => {
+      window.removeEventListener("nativeGoogleAuth", onGoogleAuth);
+      window.removeEventListener("nativeKakaoAuth", onKakaoAuth);
+    };
+  }, [googleLogin, kakaoLogin, handleLoginSuccess]);
 
   const onGoogleStart = () => {
     const url = googleOAuth.buildAuthorizeUrl();

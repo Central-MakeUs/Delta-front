@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from "react";
 import { Platform, StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
+import { performGoogleLogin, googleStatusCodes } from "@/native-auth/google";
 import { performKakaoLogin } from "@/native-auth/kakao";
 import { performAppleLogin } from "@/native-auth/apple";
 import type {
@@ -45,6 +46,22 @@ const WebViewScreen = () => {
 
         if (data?.type === "OAUTH_START" && data.url) {
           const url: string = data.url;
+
+          if (url.includes("accounts.google.com")) {
+            void (async () => {
+              try {
+                const result = await performGoogleLogin();
+                injectEvent("nativeGoogleAuth", result);
+              } catch (err: any) {
+                if (err?.code !== googleStatusCodes.SIGN_IN_CANCELLED) {
+                  injectEvent("nativeGoogleAuthError", {
+                    message: err?.message ?? "Google 로그인 실패",
+                  });
+                }
+              }
+            })();
+            return;
+          }
 
           if (url.includes("kauth.kakao.com")) {
             void (async () => {

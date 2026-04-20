@@ -50,17 +50,23 @@ jobs:
           source: "apps/web/.next/,apps/web/public/,apps/web/package.json,apps/web/next.config.ts"
           target: "/home/ubuntu/Delta-front"
 
-      - name: Restart PM2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
+      - with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
             cd ~/Delta-front/apps/web
-            pm2 reload delta-web || pm2 start npm --name "delta-web" -- start
+
+            npm install --production --no-audit --no-fund
+
+            pm2 delete delta-web || true
+
+            pm2 start npm --name "delta-web" --cwd "/home/ubuntu/Delta-front/apps/web" -- start
+
+            pm2 save
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

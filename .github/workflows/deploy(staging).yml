@@ -4,16 +4,11 @@ on:
   push:
     branches:
       - staging
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - staging
 
 jobs:
-  build_and_deploy_job:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+  deploy:
     runs-on: ubuntu-latest
-    name: Build and Deploy Job
+    name: Build and Deploy
 
     steps:
       - name: Checkout code
@@ -50,35 +45,17 @@ jobs:
           source: "apps/web/.next/,apps/web/public/,apps/web/package.json,apps/web/next.config.ts"
           target: "/home/ubuntu/Delta-front"
 
-      - with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-            cd ~/Delta-front/apps/web
-
-            npm install --production --no-audit --no-fund
-
-            pm2 delete delta-web || true
-
-            pm2 start npm --name "delta-web" --cwd "/home/ubuntu/Delta-front/apps/web" -- start
-
-            pm2 save
-
-  close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    name: Close Pull Request Job
-
-    steps:
-      - name: Stop PM2 preview
+      - name: Restart PM2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            pm2 stop delta-web || true
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            cd ~/Delta-front/apps/web
+            npm install --production --no-audit --no-fund
+            pm2 delete delta-web || true
+            pm2 start npm --name "delta-web" --cwd "/home/ubuntu/Delta-front/apps/web" -- start
+            pm2 save

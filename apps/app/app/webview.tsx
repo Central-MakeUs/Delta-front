@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from "react";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
@@ -8,14 +8,15 @@ import type {
   WebViewErrorEvent,
   WebViewHttpErrorEvent,
 } from "react-native-webview/lib/WebViewTypes";
-import { useWebViewTokenRefresh } from "../hooks/use-webview-token-refresh";
+import { useWebViewNativeTokenStorage } from "../hooks/use-webview-native-token-storage";
+import type { TokenBridgeMessage } from "../hooks/use-webview-native-token-storage";
 
 const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
 
-  useWebViewTokenRefresh(webViewRef);
+  const { initialScript, handleTokenMessage } = useWebViewNativeTokenStorage();
 
   const openExternalUrl = useCallback((url: string) => {
     Linking.openURL(url).catch((err) => {
@@ -39,15 +40,20 @@ const WebViewScreen = () => {
           return;
         }
 
+        if (data?.type === "TOKEN_UPDATE" || data?.type === "TOKEN_CLEAR") {
+          handleTokenMessage(data as TokenBridgeMessage);
+          return;
+        }
+
         if (data?.type === "OAUTH_START" && data.url && data.callbackPrefix) {
           void (async () => {
             const result = await WebBrowser.openAuthSessionAsync(
               data.url,
-              data.callbackPrefix
+              data.callbackPrefix,
             );
             if (result.type === "success" && result.url) {
               webViewRef.current?.injectJavaScript(
-                `window.location.replace(${JSON.stringify(result.url)});true;`
+                `window.location.replace(${JSON.stringify(result.url)});true;`,
               );
             }
           })();
@@ -55,7 +61,7 @@ const WebViewScreen = () => {
         }
       } catch {}
     },
-    []
+    [handleTokenMessage],
   );
 
   const handleShouldStart = useCallback(
@@ -85,7 +91,7 @@ const WebViewScreen = () => {
       openExternalUrl(url);
       return false;
     },
-    [openExternalUrl]
+    [openExternalUrl],
   );
 
   const handleError = useCallback((e: WebViewErrorEvent) => {
@@ -93,7 +99,7 @@ const WebViewScreen = () => {
       console.warn(
         "[WebView] Load error:",
         e.nativeEvent?.description,
-        e.nativeEvent?.code
+        e.nativeEvent?.code,
       );
   }, []);
 
@@ -101,6 +107,11 @@ const WebViewScreen = () => {
     if (__DEV__)
       console.warn("[WebView] HTTP error:", e.nativeEvent?.statusCode);
   }, []);
+
+  // SecureStore 로드 완료 전까지 빈 배경 노출 (통상 50ms 미만)
+  if (initialScript === undefined) {
+    return <View style={styles.webview} />;
+  }
 
   return (
     <WebView
@@ -114,6 +125,7 @@ const WebViewScreen = () => {
       allowsInlineMediaPlayback
       mediaCapturePermissionGrantType="prompt"
       originWhitelist={["*"]}
+      injectedJavaScriptBeforeContentLoaded={initialScript}
       onShouldStartLoadWithRequest={handleShouldStart}
       onMessage={handleMessage}
       onError={handleError}

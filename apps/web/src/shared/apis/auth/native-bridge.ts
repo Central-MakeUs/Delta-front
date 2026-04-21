@@ -8,14 +8,35 @@ export type OAuthStartBridgeMessage = {
   callbackPrefix: string;
 };
 
-export function postOAuthMessage(url: string, callbackPrefix: string): void {
+export type OpenExternalUrlBridgeMessage = {
+  type: "OPEN_EXTERNAL_URL";
+  url: string;
+};
+
+type WebViewBridgeMessage =
+  | OAuthStartBridgeMessage
+  | OpenExternalUrlBridgeMessage;
+
+function postWebViewMessage(payload: WebViewBridgeMessage): void {
   if (typeof window === "undefined") return;
+  window.ReactNativeWebView?.postMessage(JSON.stringify(payload));
+}
+
+export function postOAuthMessage(url: string, callbackPrefix: string): void {
   const payload: OAuthStartBridgeMessage = {
     type: "OAUTH_START",
     url,
     callbackPrefix,
   };
-  window.ReactNativeWebView?.postMessage(JSON.stringify(payload));
+  postWebViewMessage(payload);
+}
+
+export function postOpenExternalUrlMessage(url: string): void {
+  const payload: OpenExternalUrlBridgeMessage = {
+    type: "OPEN_EXTERNAL_URL",
+    url,
+  };
+  postWebViewMessage(payload);
 }
 
 export function isReactNativeWebView(): boolean {

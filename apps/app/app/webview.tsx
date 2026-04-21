@@ -7,12 +7,17 @@ import type {
   ShouldStartLoadRequest,
   WebViewErrorEvent,
   WebViewHttpErrorEvent,
+  WebViewOpenWindowEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
 const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
+
+  const isSafeExternalUrl = useCallback((url: string) => {
+    return url.startsWith("https://") || url.startsWith("http://");
+  }, []);
 
   const openExternalUrl = useCallback((url: string) => {
     Linking.openURL(url).catch((err) => {
@@ -36,6 +41,15 @@ const WebViewScreen = () => {
           return;
         }
 
+        if (
+          data?.type === "OPEN_EXTERNAL_URL" &&
+          typeof data.url === "string" &&
+          isSafeExternalUrl(data.url)
+        ) {
+          openExternalUrl(data.url);
+          return;
+        }
+
         if (data?.type === "OAUTH_START" && data.url && data.callbackPrefix) {
           void (async () => {
             const result = await WebBrowser.openAuthSessionAsync(
@@ -52,7 +66,7 @@ const WebViewScreen = () => {
         }
       } catch {}
     },
-    []
+    [isSafeExternalUrl, openExternalUrl]
   );
 
   const handleShouldStart = useCallback(
@@ -99,6 +113,15 @@ const WebViewScreen = () => {
       console.warn("[WebView] HTTP error:", e.nativeEvent?.statusCode);
   }, []);
 
+  const handleOpenWindow = useCallback(
+    (e: WebViewOpenWindowEvent) => {
+      const url = String(e.nativeEvent?.targetUrl ?? "");
+      if (!url || !isSafeExternalUrl(url)) return;
+      openExternalUrl(url);
+    },
+    [isSafeExternalUrl, openExternalUrl]
+  );
+
   return (
     <WebView
       ref={webViewRef}
@@ -112,6 +135,7 @@ const WebViewScreen = () => {
       mediaCapturePermissionGrantType="prompt"
       originWhitelist={["*"]}
       onShouldStartLoadWithRequest={handleShouldStart}
+      onOpenWindow={handleOpenWindow}
       onMessage={handleMessage}
       onError={handleError}
       onHttpError={handleHttpError}

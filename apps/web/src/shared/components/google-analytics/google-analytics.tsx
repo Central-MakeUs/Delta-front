@@ -13,7 +13,6 @@ declare global {
       params?: Record<string, unknown>
     ) => void;
     dataLayer: unknown[];
-    ReactNativeWebView?: { postMessage: (message: string) => void };
   }
 }
 

@@ -42,6 +42,7 @@ export const color = {
   "error-700": style({ color: vars.color.error[700] }),
   // ETC Color
   "login-kakao": style({ color: vars.color.login.kakao }),
+  "login-google": style({ color: vars.color.login.google }),
   "etc-crown": style({ color: vars.color.etc.crown }),
 };
 
@@ -86,6 +87,7 @@ export const bgColor = {
   "error-700": style({ backgroundColor: vars.color.error[700] }),
   // ETC Color
   "login-kakao": style({ backgroundColor: vars.color.login.kakao }),
+  "login-google": style({ backgroundColor: vars.color.login.google }),
   "etc-crown": style({ backgroundColor: vars.color.etc.crown }),
 };
 

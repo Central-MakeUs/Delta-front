@@ -1,4 +1,12 @@
 export const AUTH_LOGOUT_EVENT = "app:auth-logout" as const;
+
+/** tokenStorage 변경(동일 탭) 시 — AuthGuard 등이 인증 상태를 다시 읽도록 알림 */
+export const AUTH_SESSION_CHANGED = "app:auth-session-changed" as const;
+
+export const emitAuthSessionChanged = () => {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event(AUTH_SESSION_CHANGED));
+};
 export const AUTH_FRESH_KEY = "app:auth-fresh" as const;
 export const AUTH_FRESH_GRACE_MS = 3000;
 

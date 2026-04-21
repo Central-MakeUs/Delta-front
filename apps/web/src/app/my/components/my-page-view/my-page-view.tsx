@@ -121,6 +121,18 @@ const MyPageView = ({
                 />
 
                 <MenuItem
+                  iconName="send"
+                  label="불편사항 제보"
+                  onClick={() => {
+                    window.open(
+                      "https://docs.google.com/forms/d/e/1FAIpQLSdieT9YkV9lYkugiRqMM8YWhgvuIvrNTdJakNF3nvDAwn_5ZQ/viewform?usp=header",
+                      "_blank",
+                      "noopener,noreferrer"
+                    );
+                  }}
+                />
+
+                <MenuItem
                   iconName="log-out"
                   label="로그아웃"
                   onClick={handleLogoutClick}

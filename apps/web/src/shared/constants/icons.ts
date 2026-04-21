@@ -46,6 +46,7 @@ export const ICONS = [
   "pro-modal",
   "reset",
   "search",
+  "send",
   "star",
   "target",
   "toast-error",

@@ -17,5 +17,12 @@ export type ProblemCreateResponse = {
   scanId: number;
 };
 
+export type ProblemBulkCreateResponse = {
+  problems: ProblemCreateResponse[];
+};
+
 export type ApiResponseProblemCreateResponse =
   ApiResponse<ProblemCreateResponse>;
+
+export type ApiResponseProblemBulkCreateResponse =
+  ApiResponse<ProblemBulkCreateResponse>;

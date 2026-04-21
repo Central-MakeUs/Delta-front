@@ -9,6 +9,8 @@ import { useMyProfileImageQuery } from "@/shared/apis/profile-image/hooks/use-my
 import { ROUTES } from "@/shared/constants/routes";
 import { readProfileImageUrl } from "@/app/my/utils/read-profile-image-url";
 
+const DEFAULT_USER_NAME = "사용자";
+
 type ErrorResponseShape = {
   status?: number;
   code?: string;
@@ -58,12 +60,12 @@ const MyPage = () => {
   );
 
   if (isProfileLoading) return null;
-  if (!profile) return null;
+
   return (
     <MyPageView
-      userName={profile.nickname ?? ""}
-      linkedEmail={profile.email ?? ""}
-      provider={profile.oauthProvider ?? ""}
+      userName={profile?.nickname?.trim() || DEFAULT_USER_NAME}
+      linkedEmail={profile?.email ?? ""}
+      provider={profile?.oauthProvider ?? ""}
       profileImageUrl={profileImageUrl}
       onLogout={() => router.replace(ROUTES.AUTH.LOGIN)}
       onWithdraw={() => router.replace(ROUTES.AUTH.LOGIN)}

@@ -2,17 +2,11 @@
 
 import { useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { parseProgress } from "@/shared/components/app-bar/utils/app-bar-routing";
 import {
   clamp,
-  readScanId,
+  readScanIds,
   readStr,
 } from "@/app/wrong/create/utils/search-params";
-
-const readTypeIds = (params: URLSearchParams) => {
-  const raw = readStr(params, "typeIds");
-  return raw;
-};
 
 export const useWrongCreateRoute = () => {
   const router = useRouter();
@@ -22,14 +16,11 @@ export const useWrongCreateRoute = () => {
   const spString = sp.toString();
   const params = useMemo(() => new URLSearchParams(spString), [spString]);
 
-  const { total, currentStep } = parseProgress(new URLSearchParams(spString));
-
-  const scanId = useMemo(() => readScanId(params), [params]);
-  const unitId = useMemo(() => readStr(params, "unitId"), [params]);
-  const typeIds = useMemo(() => readTypeIds(params), [params]);
+  const scanIds = useMemo(() => readScanIds(params), [params]);
+  const groupId = useMemo(() => readStr(params, "groupId"), [params]);
 
   const goStep = (nextStep: number, extra?: Record<string, string | null>) => {
-    const safe = clamp(nextStep, 1, total);
+    const safe = clamp(nextStep, 1, Number.MAX_SAFE_INTEGER);
     const nextParams = new URLSearchParams(spString);
     nextParams.set("step", String(safe));
 
@@ -46,9 +37,6 @@ export const useWrongCreateRoute = () => {
       nextParams.delete("typeIds");
     }
 
-    const nextScanId = readScanId(nextParams);
-    if (!nextScanId && safe > 1) return;
-
     const nextQuery = nextParams.toString();
     if (nextQuery === spString) return;
 
@@ -60,11 +48,8 @@ export const useWrongCreateRoute = () => {
     pathname,
     spString,
     params,
-    total,
-    currentStep,
-    scanId,
-    unitId,
-    typeIds,
+    scanIds,
+    groupId,
     goStep,
   };
 };

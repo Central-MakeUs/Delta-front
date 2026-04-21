@@ -26,6 +26,9 @@ export const parseProgress = (searchParams: URLSearchParams) => {
 };
 
 export const getWrongRouteMatch = (pathname: string) => {
+  if (pathname === ROUTES.WRONG.CREATE_SCANS)
+    return { type: "createScans" as const };
+
   if (pathname.startsWith(ROUTES.WRONG.CREATE))
     return { type: "create" as const };
 
@@ -37,6 +40,11 @@ export const getWrongRouteMatch = (pathname: string) => {
   // /wrong/[id]
   if (segments.length === 2) {
     return { type: "detail" as const, id: segments[1]! };
+  }
+
+  // /wrong/scans/[id]
+  if (segments.length === 3 && segments[1] === "scans") {
+    return { type: "scanDetail" as const, id: segments[2]! };
   }
 
   // /wrong/[id]/edit

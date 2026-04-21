@@ -177,6 +177,76 @@ const AppBar = (props: AppBarProps) => {
         </div>
       );
     }
+
+    case "scanDetail": {
+      const onBack = props.onBack ?? backFallback;
+
+      return renderShell(
+        "scanDetail",
+        <>
+          <div className={s.leftSlot}>
+            <BackButton onClick={onBack} />
+          </div>
+
+          <div className={s.centerTitleWrap}>
+            <button
+              type="button"
+              className={s.centerTitleButton}
+              onClick={props.titleMenu.onToggle}
+              aria-expanded={props.titleMenu.isOpen}
+              aria-haspopup="menu"
+            >
+              <span className={s.titleText}>{props.title}</span>
+              <Icon
+                name="triangle-scan"
+                size={1.6}
+                className={s.titleMenuIcon}
+              />
+            </button>
+
+            {props.titleMenu.isOpen ? (
+              <div className={s.titleDropdown} role="menu">
+                {props.titleMenu.items.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    role="menuitem"
+                    onClick={item.onClick}
+                    className={clsx(
+                      s.titleDropdownItem,
+                      item.isActive && s.titleDropdownItemActive
+                    )}
+                  >
+                    <span
+                      className={clsx(
+                        s.titleDropdownItemText,
+                        item.isActive
+                          ? s.titleDropdownItemTextActive
+                          : s.titleDropdownItemTextInactive
+                      )}
+                    >
+                      {item.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          <div className={s.rightSlot}>
+            {props.rightAction ? (
+              <button
+                type="button"
+                className={s.rightLabelButton}
+                onClick={props.rightAction.onClick}
+              >
+                {props.rightAction.label}
+              </button>
+            ) : null}
+          </div>
+        </>
+      );
+    }
   }
 };
 

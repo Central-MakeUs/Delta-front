@@ -9,6 +9,7 @@ export type IconSize = number;
 export type ChipSize = "xs" | "md" | "lg";
 export type ChipShape = "pill" | "square";
 export type ChipState = "default" | "active";
+export type ChipAs = "button" | "span";
 export type ChipTone =
   | "auto"
   | "surface"
@@ -21,6 +22,7 @@ export type ChipTone =
 
 type ChipProps = {
   label: string;
+  as?: ChipAs;
   icon?: IconName;
   iconSize?: IconSize;
   iconRotate?: 0 | 90 | 180 | 270;
@@ -40,6 +42,7 @@ type ChipProps = {
 
 export const Chip = ({
   label,
+  as = "button",
   icon,
   iconRotate = 270,
   size = "lg",
@@ -54,13 +57,34 @@ export const Chip = ({
   className,
   ariaLabel,
 }: ChipProps) => {
+  const chipClassName = clsx(
+    s.chip({ size, shape, state, tone, fullWidth }),
+    className
+  );
+
+  if (as === "span") {
+    return (
+      <span
+        className={chipClassName}
+        aria-label={ariaLabel ?? label}
+        role={ariaLabel ? "text" : undefined}
+        data-state={state}
+        data-tone={tone}
+      >
+        {icon ? (
+          <span className={s.iconWrap} aria-hidden>
+            <Icon name={icon} size={iconSize} rotate={iconRotate} />
+          </span>
+        ) : null}
+        <span className={s.label}>{label}</span>
+      </span>
+    );
+  }
+
   return (
     <button
       type={type}
-      className={clsx(
-        s.chip({ size, shape, state, tone, fullWidth }),
-        className
-      )}
+      className={chipClassName}
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel ?? label}

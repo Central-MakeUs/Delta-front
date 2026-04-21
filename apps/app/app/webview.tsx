@@ -10,7 +10,7 @@ import type {
   WebViewHttpErrorEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-const WEB_BASE_URL = "https://semo-xi.kro.kr";
+const WEB_BASE_URL = "https://semo-xi.duckdns.org";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);

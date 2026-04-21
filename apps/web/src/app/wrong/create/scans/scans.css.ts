@@ -86,8 +86,36 @@ export const card = style([
   {
     position: "relative",
     aspectRatio: "174 / 174",
-    cursor: "pointer",
     borderRadius: `0 0 ${vars.radius.r12} ${vars.radius.r12}`,
+  },
+]);
+
+export const cardLink = style({
+  position: "relative",
+  display: "block",
+  width: "100%",
+  height: "100%",
+  borderRadius: `0 0 ${vars.radius.r12} ${vars.radius.r12}`,
+  overflow: "hidden",
+  cursor: "pointer",
+});
+
+export const deleteButton = style([
+  bgColor["grayscale-0"],
+  color["grayscale-900"],
+  {
+    position: "absolute",
+    top: "0.8rem",
+    left: "0.8rem",
+    zIndex: vars.zIndex.contentOverlayHigh,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "3.2rem",
+    height: "3.2rem",
+    borderRadius: vars.radius.r8,
+    boxShadow: "0 0.4rem 1.2rem rgba(0, 0, 0, 0.16)",
+    cursor: "pointer",
   },
 ]);
 

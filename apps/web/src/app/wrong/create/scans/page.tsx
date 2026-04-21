@@ -8,10 +8,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/shared/components/button/button/button";
 import Chip from "@/shared/components/chip/chip";
 import Divider from "@/shared/components/divider/divider";
+import Icon from "@/shared/components/icon/icon";
+import CompleteModal from "@/shared/components/modal/complete-modal/complete-modal";
 import { ROUTES } from "@/shared/constants/routes";
 import {
   readWrongCreateGroupContext,
+  saveWrongCreateGroupContext,
   type WrongCreateGroupItem,
+  type WrongCreateGroupContext,
 } from "@/app/wrong/create/utils/group-context";
 import * as s from "./scans.css";
 
@@ -22,8 +26,16 @@ const WrongCreateScansPage = () => {
   const searchParams = useSearchParams();
   const groupId = searchParams.get("group");
   const [activeTab, setActiveTab] = useState<TabId>("all");
-
-  const group = useMemo(() => readWrongCreateGroupContext(groupId), [groupId]);
+  const storedGroup = useMemo(
+    () => readWrongCreateGroupContext(groupId),
+    [groupId]
+  );
+  const [updatedGroup, setUpdatedGroup] =
+    useState<WrongCreateGroupContext | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<WrongCreateGroupItem | null>(
+    null
+  );
+  const group = updatedGroup?.id === groupId ? updatedGroup : storedGroup;
 
   useEffect(() => {
     if (!groupId) {
@@ -31,10 +43,10 @@ const WrongCreateScansPage = () => {
       return;
     }
 
-    if (!group) {
+    if (!storedGroup) {
       router.replace(ROUTES.WRONG.ROOT);
     }
-  }, [group, groupId, router]);
+  }, [groupId, router, storedGroup]);
 
   const items = useMemo(() => group?.items ?? [], [group]);
 
@@ -68,6 +80,19 @@ const WrongCreateScansPage = () => {
     const firstItem = items[0];
     if (!firstItem) return;
     router.push(buildProblemHref(firstItem));
+  };
+
+  const handleDeleteConfirm = () => {
+    if (!group || !deleteTarget) return;
+
+    const nextGroup = {
+      ...group,
+      items: group.items.filter((item) => item.scanId !== deleteTarget.scanId),
+    };
+
+    saveWrongCreateGroupContext(nextGroup);
+    setUpdatedGroup(nextGroup);
+    setDeleteTarget(null);
   };
 
   if (!group) return null;
@@ -112,41 +137,47 @@ const WrongCreateScansPage = () => {
         ) : (
           <div className={s.grid}>
             {visibleItems.map((item) => (
-              <Link
-                key={item.scanId}
-                href={buildProblemHref(item)}
-                className={s.card}
-              >
-                <div className={s.cardFrame}>
-                  {item.imageUrl ? (
-                    <Image
-                      src={item.imageUrl}
-                      alt={item.title}
-                      fill
-                      unoptimized
-                      className={s.cardImage}
-                    />
-                  ) : null}
-                  <div className={s.cardOverlay} />
-                  <div className={s.cardBody}>
-                    <div className={s.cardContent}>
-                      <div className={s.chipWrap}>
-                        <Chip
-                          as="span"
-                          label={item.unitName}
-                          size="xs"
-                          shape="square"
-                          tone="surface"
-                          className={s.unitChip}
-                        />
+              <div key={item.scanId} className={s.card}>
+                <Link href={buildProblemHref(item)} className={s.cardLink}>
+                  <div className={s.cardFrame}>
+                    {item.imageUrl ? (
+                      <Image
+                        src={item.imageUrl}
+                        alt={item.title}
+                        fill
+                        unoptimized
+                        className={s.cardImage}
+                      />
+                    ) : null}
+                    <div className={s.cardOverlay} />
+                    <div className={s.cardBody}>
+                      <div className={s.cardContent}>
+                        <div className={s.chipWrap}>
+                          <Chip
+                            as="span"
+                            label={item.unitName}
+                            size="xs"
+                            shape="square"
+                            tone="surface"
+                            className={s.unitChip}
+                          />
+                        </div>
+                        <p className={s.cardTitle}>{item.title}</p>
                       </div>
-                      <p className={s.cardTitle}>{item.title}</p>
                     </div>
                   </div>
-                </div>
 
-                <span className={s.subjectChip}>{item.subjectName}</span>
-              </Link>
+                  <span className={s.subjectChip}>{item.subjectName}</span>
+                </Link>
+                <button
+                  type="button"
+                  className={s.deleteButton}
+                  aria-label={`${item.title} 삭제`}
+                  onClick={() => setDeleteTarget(item)}
+                >
+                  <Icon name="trash-chip" size={1.8} />
+                </button>
+              </div>
             ))}
           </div>
         )}
@@ -162,6 +193,17 @@ const WrongCreateScansPage = () => {
           disabled={items.length === 0}
         />
       </div>
+
+      <CompleteModal
+        title="문제를 삭제할까요?"
+        description="삭제한 문제는 이번 등록 목록에서 제외돼요."
+        cancelLabel="취소"
+        confirmLabel="삭제"
+        iconName="trash-modal"
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDeleteConfirm}
+      />
     </div>
   );
 };

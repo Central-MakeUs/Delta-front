@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/shared/components/button/button/button";
+import CompleteModal from "@/shared/components/modal/complete-modal/complete-modal";
 import AiSolutionText from "@/app/wrong/create/components/ai-solution-text/ai-solution-text";
 import ScanAnswerSection from "@/app/wrong/scans/[id]/components/scan-answer-section";
 import ScanBottomNav from "@/app/wrong/scans/[id]/components/scan-bottom-nav";
@@ -10,6 +12,7 @@ import { useWrongScanDetail } from "@/app/wrong/scans/[id]/hooks/use-wrong-scan-
 import * as s from "@/app/wrong/scans/[id]/page.css";
 
 const WrongScanDetailPage = () => {
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const {
     isReady,
     displayItem,
@@ -74,7 +77,7 @@ const WrongScanDetailPage = () => {
           size="48"
           tone="dark"
           label="완료"
-          onClick={handleComplete}
+          onClick={() => setIsCompleteModalOpen(true)}
           disabled={isCompleteDisabled}
         />
       </div>
@@ -100,6 +103,16 @@ const WrongScanDetailPage = () => {
         onDirectAddOpen={openDirectAdd}
         onDirectAddClose={closeDirectAdd}
         onDirectAddSubmit={handleDirectAddSubmit}
+      />
+
+      <CompleteModal
+        title="모든 문제를 등록할까요?"
+        description="완료를 누르면 등록한 문제가 모두 오답 목록에 저장돼요."
+        cancelLabel="취소"
+        confirmLabel={isCompleteDisabled ? "처리 중..." : "완료"}
+        isOpen={isCompleteModalOpen}
+        onClose={() => setIsCompleteModalOpen(false)}
+        onConfirm={handleComplete}
       />
     </div>
   );

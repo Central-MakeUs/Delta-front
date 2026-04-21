@@ -65,15 +65,13 @@ const WrongPage = () => {
   const isFetchingNextRef = useRef(false);
 
   useEffect(() => {
-    const findScrollParent = (node: HTMLElement | null): HTMLElement | null => {
+    const getScrollParent = (node: HTMLElement | null): HTMLElement | null => {
       if (!node) return null;
       const oy = window.getComputedStyle(node).overflowY;
       if (oy === "auto" || oy === "scroll") return node;
-      return findScrollParent(node.parentElement);
+      return getScrollParent(node.parentElement);
     };
-    scrollContainerRef.current = findScrollParent(
-      pageRef.current?.parentElement ?? null
-    );
+    scrollContainerRef.current = getScrollParent(pageRef.current);
   }, []);
 
   useEffect(() => {

@@ -2,8 +2,6 @@ import React, { useCallback, useRef } from "react";
 import { Platform, StyleSheet } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
-import { performKakaoLogin } from "@/native-auth/kakao";
-import { performAppleLogin } from "@/native-auth/apple";
 import type {
   ShouldStartLoadRequest,
   WebViewErrorEvent,
@@ -14,11 +12,6 @@ const WEB_BASE_URL = "https://semo-xi.duckdns.org";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
-
-  const injectEvent = useCallback((eventName: string, detail: object) => {
-    const js = `window.dispatchEvent(new CustomEvent(${JSON.stringify(eventName)},{detail:${JSON.stringify(detail)}}));true;`;
-    webViewRef.current?.injectJavaScript(js);
-  }, []);
 
   const openExternalUrl = useCallback((url: string) => {
     Linking.openURL(url).catch((err) => {
@@ -41,41 +34,9 @@ const WebViewScreen = () => {
           webViewRef.current?.goBack();
           return;
         }
-
-        if (data?.type === "OAUTH_START" && data.url) {
-          const url: string = data.url;
-
-          if (url.includes("kauth.kakao.com")) {
-            void (async () => {
-              try {
-                const result = await performKakaoLogin();
-                injectEvent("nativeKakaoAuth", result);
-              } catch (err: any) {
-                injectEvent("nativeKakaoAuthError", {
-                  message: err?.message ?? "카카오 로그인 실패",
-                });
-              }
-            })();
-            return;
-          }
-
-          if (url.includes("appleid.apple.com")) {
-            void (async () => {
-              try {
-                const result = await performAppleLogin();
-                injectEvent("nativeAppleAuth", result);
-              } catch (err: any) {
-                injectEvent("nativeAppleAuthError", {
-                  message: err?.message ?? "Apple 로그인 실패",
-                });
-              }
-            })();
-            return;
-          }
-        }
       } catch {}
     },
-    [injectEvent],
+    [],
   );
 
   const handleShouldStart = useCallback(

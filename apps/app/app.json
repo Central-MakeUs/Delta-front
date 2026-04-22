@@ -54,20 +54,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router",
-      [
-        "@react-native-google-signin/google-signin",
-        {
-          "iosUrlScheme": "com.googleusercontent.apps.REPLACE_WITH_IOS_CLIENT_ID"
-        }
-      ],
-      [
-        "@react-native-kakao/core",
-        {
-          "nativeAppKey": "REPLACE_WITH_KAKAO_NATIVE_APP_KEY",
-          "kotlinVersion": "1.9.0"
-        }
-      ]
+      "expo-router"
     ],
     "experiments": {
       "typedRoutes": true,

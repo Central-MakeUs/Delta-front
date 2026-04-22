@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from "react";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
@@ -9,11 +9,14 @@ import type {
   WebViewHttpErrorEvent,
   WebViewOpenWindowEvent,
 } from "react-native-webview/lib/WebViewTypes";
+import { useWebViewNativeTokenStorage } from "../hooks/use-webview-native-token-storage";
+import type { TokenBridgeMessage } from "../hooks/use-webview-native-token-storage";
 
 const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
+  const { initialScript, handleTokenMessage } = useWebViewNativeTokenStorage();
 
   const isSafeExternalUrl = useCallback((url: string) => {
     return url.startsWith("https://") || url.startsWith("http://");
@@ -50,15 +53,20 @@ const WebViewScreen = () => {
           return;
         }
 
+        if (data?.type === "TOKEN_UPDATE" || data?.type === "TOKEN_CLEAR") {
+          handleTokenMessage(data as TokenBridgeMessage);
+          return;
+        }
+
         if (data?.type === "OAUTH_START" && data.url && data.callbackPrefix) {
           void (async () => {
             const result = await WebBrowser.openAuthSessionAsync(
               data.url,
-              data.callbackPrefix
+              data.callbackPrefix,
             );
             if (result.type === "success" && result.url) {
               webViewRef.current?.injectJavaScript(
-                `window.location.replace(${JSON.stringify(result.url)});true;`
+                `window.location.replace(${JSON.stringify(result.url)});true;`,
               );
             }
           })();
@@ -66,7 +74,7 @@ const WebViewScreen = () => {
         }
       } catch {}
     },
-    [isSafeExternalUrl, openExternalUrl]
+    [handleTokenMessage, isSafeExternalUrl, openExternalUrl],
   );
 
   const handleShouldStart = useCallback(
@@ -96,7 +104,7 @@ const WebViewScreen = () => {
       openExternalUrl(url);
       return false;
     },
-    [openExternalUrl]
+    [openExternalUrl],
   );
 
   const handleError = useCallback((e: WebViewErrorEvent) => {
@@ -104,7 +112,7 @@ const WebViewScreen = () => {
       console.warn(
         "[WebView] Load error:",
         e.nativeEvent?.description,
-        e.nativeEvent?.code
+        e.nativeEvent?.code,
       );
   }, []);
 
@@ -119,8 +127,13 @@ const WebViewScreen = () => {
       if (!url || !isSafeExternalUrl(url)) return;
       openExternalUrl(url);
     },
-    [isSafeExternalUrl, openExternalUrl]
+    [isSafeExternalUrl, openExternalUrl],
   );
+
+  // Keep the WebView hidden until SecureStore tokens are injected.
+  if (initialScript === undefined) {
+    return <View style={styles.webview} />;
+  }
 
   return (
     <WebView
@@ -134,11 +147,13 @@ const WebViewScreen = () => {
       allowsInlineMediaPlayback
       mediaCapturePermissionGrantType="prompt"
       originWhitelist={["*"]}
+      injectedJavaScriptBeforeContentLoaded={initialScript}
       onShouldStartLoadWithRequest={handleShouldStart}
       onOpenWindow={handleOpenWindow}
       onMessage={handleMessage}
       onError={handleError}
       onHttpError={handleHttpError}
+      onContentProcessDidTerminate={() => webViewRef.current?.reload()}
     />
   );
 };

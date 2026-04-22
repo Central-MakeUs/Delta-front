@@ -13,9 +13,21 @@ export type OpenExternalUrlBridgeMessage = {
   url: string;
 };
 
+export type TokenUpdateBridgeMessage = {
+  type: "TOKEN_UPDATE";
+  accessToken: string | null;
+  refreshToken: string | null;
+};
+
+export type TokenClearBridgeMessage = {
+  type: "TOKEN_CLEAR";
+};
+
 type WebViewBridgeMessage =
   | OAuthStartBridgeMessage
-  | OpenExternalUrlBridgeMessage;
+  | OpenExternalUrlBridgeMessage
+  | TokenUpdateBridgeMessage
+  | TokenClearBridgeMessage;
 
 function postWebViewMessage(payload: WebViewBridgeMessage): void {
   if (typeof window === "undefined") return;
@@ -23,20 +35,33 @@ function postWebViewMessage(payload: WebViewBridgeMessage): void {
 }
 
 export function postOAuthMessage(url: string, callbackPrefix: string): void {
-  const payload: OAuthStartBridgeMessage = {
+  postWebViewMessage({
     type: "OAUTH_START",
     url,
     callbackPrefix,
-  };
-  postWebViewMessage(payload);
+  });
 }
 
 export function postOpenExternalUrlMessage(url: string): void {
-  const payload: OpenExternalUrlBridgeMessage = {
+  postWebViewMessage({
     type: "OPEN_EXTERNAL_URL",
     url,
-  };
-  postWebViewMessage(payload);
+  });
+}
+
+export function postTokenUpdate(
+  accessToken: string | null,
+  refreshToken: string | null
+): void {
+  postWebViewMessage({
+    type: "TOKEN_UPDATE",
+    accessToken,
+    refreshToken,
+  });
+}
+
+export function postTokenClear(): void {
+  postWebViewMessage({ type: "TOKEN_CLEAR" });
 }
 
 export function isReactNativeWebView(): boolean {

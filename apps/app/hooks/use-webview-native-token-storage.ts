@@ -62,13 +62,6 @@ const buildInjectionScript = ({ accessToken, refreshToken }: Tokens): string => 
   return `(function(){try{${sets.join("")}}catch(e){}})();true;`;
 };
 
-/**
- * WebView가 렌더링되기 전에 SecureStore에서 토큰을 읽어 localStorage에 주입하고,
- * 웹에서 TOKEN_UPDATE/TOKEN_CLEAR 메시지를 받으면 SecureStore에 동기화한다.
- *
- * @returns initialScript - WebView의 injectedJavaScriptBeforeContentLoaded에 전달할 스크립트.
- *          undefined이면 아직 SecureStore 로드 중이므로 WebView 렌더링을 보류해야 한다.
- */
 export function useWebViewNativeTokenStorage() {
   const [initialScript, setInitialScript] = useState<string | undefined>(undefined);
 

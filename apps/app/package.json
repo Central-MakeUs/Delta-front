@@ -13,6 +13,7 @@
     "lint:fix": "expo lint --fix"
   },
   "dependencies": {
+    "@webview-bridge/react-native": "^1.7.9",
     "@expo/vector-icons": "^15.0.3",
     "@react-native-google-signin/google-signin": "^16.1.2",
     "@react-native-kakao/core": "^2.4.5",

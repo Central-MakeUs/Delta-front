@@ -1,13 +1,13 @@
 import * as AppleAuthentication from "expo-apple-authentication";
 import { Platform } from "react-native";
 
-export type AppleLoginResult =
+export type AppleSignInResult =
   | { status: "success"; authorizationCode: string }
   | { status: "cancelled" }
   | { status: "unavailable" }
-  | { status: "error"; message: string };
+  | { status: "error"; reason: string; message?: string };
 
-export const performAppleLogin = async (): Promise<AppleLoginResult> => {
+export const performAppleLogin = async (): Promise<AppleSignInResult> => {
   if (Platform.OS !== "ios") {
     return { status: "unavailable" };
   }
@@ -26,7 +26,7 @@ export const performAppleLogin = async (): Promise<AppleLoginResult> => {
     });
 
     if (!credential.authorizationCode) {
-      return { status: "error", message: "인증 코드를 받지 못했습니다." };
+      return { status: "error", reason: "missing-auth-code", message: "인증 코드를 받지 못했습니다." };
     }
 
     return { status: "success", authorizationCode: credential.authorizationCode };
@@ -34,6 +34,6 @@ export const performAppleLogin = async (): Promise<AppleLoginResult> => {
     if (error?.code === "ERR_REQUEST_CANCELED") {
       return { status: "cancelled" };
     }
-    return { status: "error", message: error?.message ?? "Apple 로그인 실패" };
+    return { status: "error", reason: error?.code ?? "sign-in-failed", message: error?.message };
   }
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Icon from "@/shared/components/icon/icon";
 import { Button } from "@/shared/components/button/button/button";
@@ -8,13 +8,9 @@ import LoginDecorations from "@/app/login/login-decorations";
 import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
 import * as s from "@/app/login/login.css";
-import {
-  isReactNativeWebView,
-  postNativeKakaoLogin,
-  postNativeAppleLogin,
-  type NativeKakaoLoginResult,
-  type NativeAppleLoginResult,
-} from "@/shared/apis/auth/native-bridge";
+import { isReactNativeWebView } from "@/shared/apis/auth/native-bridge";
+import { getNativeBridge } from "@/shared/bridge";
+import type { KakaoSignInResult, AppleSignInResult } from "@/shared/bridge";
 import { useKakaoLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-login-mutation";
 import { useAppleLoginMutation } from "@/shared/apis/auth/hooks/use-apple-login-mutation";
 import { ROUTES } from "@/shared/constants/routes";
@@ -31,51 +27,36 @@ const IosLoginPage = () => {
     [router]
   );
 
-  useEffect(() => {
-    if (!isReactNativeWebView()) return;
-
-    const onKakaoResult = (e: Event) => {
-      const result = (e as CustomEvent<NativeKakaoLoginResult>).detail;
-      if (!result || result.status !== "success") return;
-      kakaoLogin.mutate(
-        { code: result.accessToken },
-        { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
-      );
-    };
-
-    const onAppleResult = (e: Event) => {
-      const result = (e as CustomEvent<NativeAppleLoginResult>).detail;
-      if (!result || result.status !== "success") return;
-      appleLogin.mutate(
-        { code: result.authorizationCode },
-        { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
-      );
-    };
-
-    window.addEventListener("nativeKakaoLoginResult", onKakaoResult);
-    window.addEventListener("nativeAppleLoginResult", onAppleResult);
-    return () => {
-      window.removeEventListener("nativeKakaoLoginResult", onKakaoResult);
-      window.removeEventListener("nativeAppleLoginResult", onAppleResult);
-    };
-  }, [kakaoLogin, appleLogin, handleLoginSuccess]);
-
-  const onKakaoStart = () => {
-    if (isReactNativeWebView()) {
-      postNativeKakaoLogin();
-    } else {
+  const onKakaoStart = async () => {
+    if (!isReactNativeWebView()) {
       window.location.assign(kakaoOAuth.buildAuthorizeUrl());
+      return;
     }
+    const bridge = getNativeBridge();
+    if (!bridge) return;
+    const result: KakaoSignInResult = await bridge.signInWithKakao();
+    if (result.status !== "success") return;
+    kakaoLogin.mutate(
+      { code: result.accessToken },
+      { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
+    );
   };
 
-  const onAppleStart = () => {
-    if (isReactNativeWebView()) {
-      postNativeAppleLogin();
-    } else {
+  const onAppleStart = async () => {
+    if (!isReactNativeWebView()) {
       const url = appleOAuth.buildAuthorizeUrl();
       if (!url) return;
       window.location.assign(url);
+      return;
     }
+    const bridge = getNativeBridge();
+    if (!bridge) return;
+    const result: AppleSignInResult = await bridge.signInWithApple();
+    if (result.status !== "success") return;
+    appleLogin.mutate(
+      { code: result.authorizationCode },
+      { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
+    );
   };
 
   return (

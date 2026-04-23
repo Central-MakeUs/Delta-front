@@ -17,6 +17,7 @@
     "icons:gen": "tsx src/shared/scripts/gen-icons.ts"
   },
   "dependencies": {
+    "@webview-bridge/web": "^1.7.9",
     "@tanstack/react-query": "^5.90.14",
     "@tanstack/react-query-devtools": "^5.91.2",
     "@vanilla-extract/css": "^1.18.0",

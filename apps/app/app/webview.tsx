@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from "react";
 import { Platform, StyleSheet, View } from "react-native";
-import { WebView } from "react-native-webview";
+import { createWebView, type BridgeWebView } from "@webview-bridge/react-native";
 import * as Linking from "expo-linking";
 import type {
   ShouldStartLoadRequest,
@@ -10,13 +10,17 @@ import type {
 } from "react-native-webview/lib/WebViewTypes";
 import { useWebViewNativeTokenStorage } from "../hooks/use-webview-native-token-storage";
 import type { TokenBridgeMessage } from "../hooks/use-webview-native-token-storage";
-import { performKakaoLogin } from "../native-auth/kakao";
-import { performAppleLogin } from "../native-auth/apple";
+import { appBridge } from "../bridge/appBridge";
 
 const WEB_BASE_URL = "https://semo-xi.duckdns.org";
 
+const { WebView: BridgedWebView } = createWebView({
+  bridge: appBridge,
+  debug: __DEV__,
+});
+
 const WebViewScreen = () => {
-  const webViewRef = useRef<WebView>(null);
+  const webViewRef = useRef<BridgeWebView>(null);
   const { initialScript, handleTokenMessage } = useWebViewNativeTokenStorage();
 
   const isSafeExternalUrl = useCallback((url: string) => {
@@ -28,11 +32,6 @@ const WebViewScreen = () => {
       if (__DEV__)
         console.warn("[Linking] Failed to open URL:", url, err?.message);
     });
-  }, []);
-
-  const injectResult = useCallback((eventName: string, detail: object) => {
-    const js = `window.dispatchEvent(new CustomEvent(${JSON.stringify(eventName)},{detail:${JSON.stringify(detail)}}));true;`;
-    webViewRef.current?.injectJavaScript(js);
   }, []);
 
   const handleMessage = useCallback(
@@ -63,25 +62,9 @@ const WebViewScreen = () => {
           handleTokenMessage(data as TokenBridgeMessage);
           return;
         }
-
-        if (data?.type === "NATIVE_KAKAO_LOGIN") {
-          void (async () => {
-            const result = await performKakaoLogin();
-            injectResult("nativeKakaoLoginResult", result);
-          })();
-          return;
-        }
-
-        if (data?.type === "NATIVE_APPLE_LOGIN") {
-          void (async () => {
-            const result = await performAppleLogin();
-            injectResult("nativeAppleLoginResult", result);
-          })();
-          return;
-        }
       } catch {}
     },
-    [handleTokenMessage, isSafeExternalUrl, openExternalUrl, injectResult],
+    [handleTokenMessage, isSafeExternalUrl, openExternalUrl],
   );
 
   const handleShouldStart = useCallback(
@@ -142,7 +125,7 @@ const WebViewScreen = () => {
   }
 
   return (
-    <WebView
+    <BridgedWebView
       ref={webViewRef}
       style={styles.webview}
       source={{ uri: `${WEB_BASE_URL}/?platform=${Platform.OS}` }}

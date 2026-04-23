@@ -47,6 +47,9 @@ importers:
       '@react-navigation/native':
         specifier: ^7.1.8
         version: 7.1.26(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      '@webview-bridge/react-native':
+        specifier: ^1.7.9
+        version: 1.7.9(react-native-webview@13.16.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(react@19.1.0)
       expo:
         specifier: ~54.0.30
         version: 54.0.30(@babel/core@7.28.5)(@expo/metro-runtime@6.1.2)(expo-router@6.0.21)(react-native-webview@13.16.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -153,6 +156,9 @@ importers:
       '@vanilla-extract/sprinkles':
         specifier: ^1.6.5
         version: 1.6.5(@vanilla-extract/css@1.18.0)
+      '@webview-bridge/web':
+        specifier: ^1.7.9
+        version: 1.7.9
       axios:
         specifier: ^1.13.2
         version: 1.13.2
@@ -2862,6 +2868,21 @@ packages:
 
   '@webassemblyjs/wast-printer@1.14.1':
     resolution: {integrity: sha512-kPSSXE6De1XOR820C90RIo2ogvZG+c3KiHzqUoO/F34Y2shGzesfqv7o57xrxovZJH/MetF5UjroJ/R/3isoiw==}
+
+  '@webview-bridge/react-native@1.7.9':
+    resolution: {integrity: sha512-ODrro8FCdWiXkuABXLgwYdrum+SkBB0C2MwbfF/cttdNtKm0mav/DdEOP+zJNDmz7nDZqMPOvj4d+IxyFRQRMg==}
+    peerDependencies:
+      react: '*'
+      react-native-webview: '*'
+
+  '@webview-bridge/types@1.7.9':
+    resolution: {integrity: sha512-Xqi6opGJB+LVpyb+2ZxqpKv2ox2/cnkbp0G2OMCnSNi/D6U5HkMsSbaW8GrXGEVwbybltK7uLKN+el1CqEGiRg==}
+
+  '@webview-bridge/utils@1.7.9':
+    resolution: {integrity: sha512-qTgppsE7ydroMJTeIpLiS7TIdKmdw2z6CtakPDutivkG2pztKa8CCB8ap1UkUoaE6RHQS1XeEBEII3HasW/WRw==}
+
+  '@webview-bridge/web@1.7.9':
+    resolution: {integrity: sha512-CxOOGpE4yOwdpm15S6i/KagwYXX5W6CedPRKor+ublk8sDkbotWImSdO99L7Z1wEoSic0EF3fN3MeU7dObBG3w==}
 
   '@xmldom/xmldom@0.8.11':
     resolution: {integrity: sha512-cQzWCtO6C8TQiYl1ruKNn2U6Ao4o4WBBcbL61yJl84x+j5sOWWFU9X7DpND8XZG3daDppSsigMdfAIl2upQBRw==}
@@ -10406,6 +10427,23 @@ snapshots:
     dependencies:
       '@webassemblyjs/ast': 1.14.1
       '@xtuc/long': 4.2.2
+
+  '@webview-bridge/react-native@1.7.9(react-native-webview@13.16.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      '@webview-bridge/types': 1.7.9
+      '@webview-bridge/utils': 1.7.9
+      react: 19.1.0
+      react-native-webview: 13.16.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      use-sync-external-store: 1.6.0(react@19.1.0)
+
+  '@webview-bridge/types@1.7.9': {}
+
+  '@webview-bridge/utils@1.7.9': {}
+
+  '@webview-bridge/web@1.7.9':
+    dependencies:
+      '@webview-bridge/types': 1.7.9
+      '@webview-bridge/utils': 1.7.9
 
   '@xmldom/xmldom@0.8.11': {}
 

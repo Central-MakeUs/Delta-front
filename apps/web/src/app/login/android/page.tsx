@@ -8,9 +8,14 @@ import LoginDecorations from "@/app/login/login-decorations";
 import { googleOAuth } from "@/shared/apis/auth/google-oauth";
 import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import * as s from "@/app/login/login.css";
-import { isReactNativeWebView } from "@/shared/apis/auth/native-bridge";
-import { getNativeBridge } from "@/shared/bridge";
-import type { GoogleSignInResult, KakaoSignInResult } from "@/shared/bridge";
+import {
+  isReactNativeWebView,
+  postNativeGoogleLogin,
+  postNativeKakaoLogin,
+  waitForNativeResult,
+  type NativeGoogleLoginResult,
+  type NativeKakaoLoginResult,
+} from "@/shared/apis/auth/native-bridge";
 import { useGoogleLoginMutation } from "@/shared/apis/auth/hooks/use-google-login-mutation";
 import { useKakaoLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-login-mutation";
 import { ROUTES } from "@/shared/constants/routes";
@@ -32,9 +37,8 @@ const AndroidLoginPage = () => {
       window.location.assign(googleOAuth.buildAuthorizeUrl());
       return;
     }
-    const bridge = getNativeBridge();
-    if (!bridge) return;
-    const result: GoogleSignInResult = await bridge.signInWithGoogle();
+    postNativeGoogleLogin();
+    const result = await waitForNativeResult<NativeGoogleLoginResult>("NATIVE_GOOGLE_LOGIN_RESULT");
     if (result.status !== "success") return;
     googleLogin.mutate(
       { code: result.serverAuthCode },
@@ -47,12 +51,11 @@ const AndroidLoginPage = () => {
       window.location.assign(kakaoOAuth.buildAuthorizeUrl());
       return;
     }
-    const bridge = getNativeBridge();
-    if (!bridge) return;
-    const result: KakaoSignInResult = await bridge.signInWithKakao();
+    postNativeKakaoLogin();
+    const result = await waitForNativeResult<NativeKakaoLoginResult>("NATIVE_KAKAO_LOGIN_RESULT");
     if (result.status !== "success") return;
     kakaoLogin.mutate(
-      { code: result.accessToken },
+      { code: result.authorizationCode },
       { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
     );
   };

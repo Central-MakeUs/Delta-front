@@ -8,9 +8,14 @@ import LoginDecorations from "@/app/login/login-decorations";
 import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
 import * as s from "@/app/login/login.css";
-import { isReactNativeWebView } from "@/shared/apis/auth/native-bridge";
-import { getNativeBridge } from "@/shared/bridge";
-import type { KakaoSignInResult, AppleSignInResult } from "@/shared/bridge";
+import {
+  isReactNativeWebView,
+  postNativeKakaoLogin,
+  postNativeAppleLogin,
+  waitForNativeResult,
+  type NativeKakaoLoginResult,
+  type NativeAppleLoginResult,
+} from "@/shared/apis/auth/native-bridge";
 import { useKakaoLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-login-mutation";
 import { useAppleLoginMutation } from "@/shared/apis/auth/hooks/use-apple-login-mutation";
 import { ROUTES } from "@/shared/constants/routes";
@@ -32,12 +37,11 @@ const IosLoginPage = () => {
       window.location.assign(kakaoOAuth.buildAuthorizeUrl());
       return;
     }
-    const bridge = getNativeBridge();
-    if (!bridge) return;
-    const result: KakaoSignInResult = await bridge.signInWithKakao();
+    postNativeKakaoLogin();
+    const result = await waitForNativeResult<NativeKakaoLoginResult>("NATIVE_KAKAO_LOGIN_RESULT");
     if (result.status !== "success") return;
     kakaoLogin.mutate(
-      { code: result.accessToken },
+      { code: result.authorizationCode },
       { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
     );
   };
@@ -49,9 +53,8 @@ const IosLoginPage = () => {
       window.location.assign(url);
       return;
     }
-    const bridge = getNativeBridge();
-    if (!bridge) return;
-    const result: AppleSignInResult = await bridge.signInWithApple();
+    postNativeAppleLogin();
+    const result = await waitForNativeResult<NativeAppleLoginResult>("NATIVE_APPLE_LOGIN_RESULT");
     if (result.status !== "success") return;
     appleLogin.mutate(
       { code: result.authorizationCode },

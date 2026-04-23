@@ -6,6 +6,7 @@
     "dev": "next dev --webpack",
     "test": "vitest run --passWithNoTests",
     "build": "next build --webpack",
+    "build:staging": "node --env-file=.env.staging node_modules/.bin/next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
@@ -17,7 +18,6 @@
     "icons:gen": "tsx src/shared/scripts/gen-icons.ts"
   },
   "dependencies": {
-    "@webview-bridge/web": "^1.7.9",
     "@tanstack/react-query": "^5.90.14",
     "@tanstack/react-query-devtools": "^5.91.2",
     "@vanilla-extract/css": "^1.18.0",

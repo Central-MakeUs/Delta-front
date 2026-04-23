@@ -72,19 +72,16 @@ export const appleOAuth = {
 
   buildAuthorizeUrl: () => {
     const clientId = (process.env.NEXT_PUBLIC_APPLE_CLIENT_ID ?? "").trim();
-    const redirectUri = (
-      process.env.NEXT_PUBLIC_APPLE_REDIRECT_URI?.trim() ||
-      (typeof window !== "undefined"
+    const redirectUri =
+      typeof window !== "undefined"
         ? `${window.location.origin}${ROUTES.AUTH.APPLE_CALLBACK}`
-        : "")
-    ).trim();
+        : "";
 
     safeSessionSet(SPLASH_SUPPRESS_ONCE_KEY, "1");
 
     if (!clientId || !redirectUri) {
       devWarn(
-        "[appleOAuth] NEXT_PUBLIC_APPLE_CLIENT_ID 또는 NEXT_PUBLIC_APPLE_REDIRECT_URI가 없습니다. " +
-          "Apple Developer Console의 Return URL과 동일한 redirect_uri를 설정하세요."
+        "[appleOAuth] NEXT_PUBLIC_APPLE_CLIENT_ID가 없거나 window 환경이 아닙니다."
       );
       return "";
     }

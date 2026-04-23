@@ -57,13 +57,6 @@
       "expo-router",
       [
         "@react-native-google-signin/google-signin"
-      ],
-      [
-        "@react-native-kakao/core",
-        {
-          "nativeAppKey": "REPLACE_WITH_KAKAO_NATIVE_APP_KEY",
-          "kotlinVersion": "1.9.0"
-        }
       ]
     ],
     "experiments": {

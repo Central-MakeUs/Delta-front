@@ -15,6 +15,13 @@ import { useWithdrawalMutation } from "@/shared/apis/user/hooks/use-withdrawal-m
 import { ROUTES } from "@/shared/constants/routes";
 import BottomSheetWithdraw from "@/shared/components/bottom-sheet/bottom-sheet-withdraw/bottom-sheet-withdraw";
 import { toastError, toastSuccess } from "@/shared/components/toast/toast";
+import {
+  isReactNativeWebView,
+  postOpenExternalUrlMessage,
+} from "@/shared/apis/auth/native-bridge";
+
+const INCONVENIENCE_REPORT_FORM_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSdieT9YkV9lYkugiRqMM8YWhgvuIvrNTdJakNF3nvDAwn_5ZQ/viewform?usp=header";
 
 type MyPageViewProps = {
   userName: string;
@@ -118,6 +125,23 @@ const MyPageView = ({
                   iconName="file-text"
                   label="서비스 이용약관"
                   onClick={() => router.push(ROUTES.MY.TERMS_OR_SERVICE)}
+                />
+
+                <MenuItem
+                  iconName="send"
+                  label="불편사항 제보"
+                  onClick={() => {
+                    if (isReactNativeWebView()) {
+                      postOpenExternalUrlMessage(INCONVENIENCE_REPORT_FORM_URL);
+                      return;
+                    }
+
+                    window.open(
+                      INCONVENIENCE_REPORT_FORM_URL,
+                      "_blank",
+                      "noopener,noreferrer"
+                    );
+                  }}
                 />
 
                 <MenuItem

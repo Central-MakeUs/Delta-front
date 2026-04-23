@@ -1,23 +1,38 @@
 import React, { useCallback, useRef } from "react";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Linking from "expo-linking";
 import type {
   ShouldStartLoadRequest,
   WebViewErrorEvent,
   WebViewHttpErrorEvent,
+  WebViewOpenWindowEvent,
 } from "react-native-webview/lib/WebViewTypes";
+import { useWebViewNativeTokenStorage } from "../hooks/use-webview-native-token-storage";
+import type { TokenBridgeMessage } from "../hooks/use-webview-native-token-storage";
+import { performKakaoLogin } from "../native-auth/kakao";
+import { performAppleLogin } from "../native-auth/apple";
 
 const WEB_BASE_URL = "https://semo-xi.duckdns.org";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
+  const { initialScript, handleTokenMessage } = useWebViewNativeTokenStorage();
+
+  const isSafeExternalUrl = useCallback((url: string) => {
+    return url.startsWith("https://") || url.startsWith("http://");
+  }, []);
 
   const openExternalUrl = useCallback((url: string) => {
     Linking.openURL(url).catch((err) => {
       if (__DEV__)
         console.warn("[Linking] Failed to open URL:", url, err?.message);
     });
+  }, []);
+
+  const injectResult = useCallback((eventName: string, detail: object) => {
+    const js = `window.dispatchEvent(new CustomEvent(${JSON.stringify(eventName)},{detail:${JSON.stringify(detail)}}));true;`;
+    webViewRef.current?.injectJavaScript(js);
   }, []);
 
   const handleMessage = useCallback(
@@ -34,9 +49,39 @@ const WebViewScreen = () => {
           webViewRef.current?.goBack();
           return;
         }
+
+        if (
+          data?.type === "OPEN_EXTERNAL_URL" &&
+          typeof data.url === "string" &&
+          isSafeExternalUrl(data.url)
+        ) {
+          openExternalUrl(data.url);
+          return;
+        }
+
+        if (data?.type === "TOKEN_UPDATE" || data?.type === "TOKEN_CLEAR") {
+          handleTokenMessage(data as TokenBridgeMessage);
+          return;
+        }
+
+        if (data?.type === "NATIVE_KAKAO_LOGIN") {
+          void (async () => {
+            const result = await performKakaoLogin();
+            injectResult("nativeKakaoLoginResult", result);
+          })();
+          return;
+        }
+
+        if (data?.type === "NATIVE_APPLE_LOGIN") {
+          void (async () => {
+            const result = await performAppleLogin();
+            injectResult("nativeAppleLoginResult", result);
+          })();
+          return;
+        }
       } catch {}
     },
-    [],
+    [handleTokenMessage, isSafeExternalUrl, openExternalUrl, injectResult],
   );
 
   const handleShouldStart = useCallback(
@@ -83,6 +128,19 @@ const WebViewScreen = () => {
       console.warn("[WebView] HTTP error:", e.nativeEvent?.statusCode);
   }, []);
 
+  const handleOpenWindow = useCallback(
+    (e: WebViewOpenWindowEvent) => {
+      const url = String(e.nativeEvent?.targetUrl ?? "");
+      if (!url || !isSafeExternalUrl(url)) return;
+      openExternalUrl(url);
+    },
+    [isSafeExternalUrl, openExternalUrl],
+  );
+
+  if (initialScript === undefined) {
+    return <View style={styles.webview} />;
+  }
+
   return (
     <WebView
       ref={webViewRef}
@@ -95,10 +153,13 @@ const WebViewScreen = () => {
       allowsInlineMediaPlayback
       mediaCapturePermissionGrantType="prompt"
       originWhitelist={["*"]}
+      injectedJavaScriptBeforeContentLoaded={initialScript}
       onShouldStartLoadWithRequest={handleShouldStart}
+      onOpenWindow={handleOpenWindow}
       onMessage={handleMessage}
       onError={handleError}
       onHttpError={handleHttpError}
+      onContentProcessDidTerminate={() => webViewRef.current?.reload()}
     />
   );
 };

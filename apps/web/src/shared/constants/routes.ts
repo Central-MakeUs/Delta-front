@@ -31,6 +31,8 @@ export const ROUTES = {
     ROOT: `/${WRONG_PREFIX}`,
     CREATE: `/${WRONG_PREFIX}/create`,
     CREATE_DONE: `/${WRONG_PREFIX}/create/done`,
+    CREATE_SCANS: `/${WRONG_PREFIX}/create/scans`,
+    SCAN_DETAIL: (id: string | number) => `/${WRONG_PREFIX}/scans/${id}`,
     DETAIL: (id: string | number) => `/${WRONG_PREFIX}/${id}`,
     EDIT: (id: string | number) => `/${WRONG_PREFIX}/${id}/edit`,
   },
@@ -60,6 +62,7 @@ export type RouteValue =
   | typeof ROUTES.WRONG.ROOT
   | typeof ROUTES.WRONG.CREATE
   | typeof ROUTES.WRONG.CREATE_DONE
+  | typeof ROUTES.WRONG.CREATE_SCANS
   | typeof ROUTES.MY.ROOT
   | typeof ROUTES.MY.EDIT
   | typeof ROUTES.MY.TERMS_OR_SERVICE

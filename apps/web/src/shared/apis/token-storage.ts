@@ -1,4 +1,5 @@
 import { emitAuthSessionChanged } from "@/shared/apis/auth/auth-events";
+import { postTokenUpdate, postTokenClear } from "@/shared/apis/auth/native-bridge";
 
 type Tokens = {
   accessToken: string | null;
@@ -40,11 +41,13 @@ export const tokenStorage = {
     safeSet(ACCESS_KEY, next.accessToken);
     safeSet(REFRESH_KEY, next.refreshToken);
     emitAuthSessionChanged();
+    postTokenUpdate(next.accessToken, next.refreshToken);
   },
 
   clear: () => {
     safeSet(ACCESS_KEY, null);
     safeSet(REFRESH_KEY, null);
     emitAuthSessionChanged();
+    postTokenClear();
   },
 };

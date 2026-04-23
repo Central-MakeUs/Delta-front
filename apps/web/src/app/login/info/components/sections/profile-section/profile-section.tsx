@@ -38,7 +38,8 @@ const ProfileSection = ({
     handleCameraChange,
     handleAlbumChange,
   } = useImageSourcePicker({
-    onSelect: (file) => {
+    onSelect: ([file]) => {
+      if (!file) return;
       onProfileImageChange(file);
       setIsModalOpen(false);
     },

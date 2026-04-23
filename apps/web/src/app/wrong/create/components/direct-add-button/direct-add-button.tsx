@@ -110,7 +110,7 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
           s.inputWrapper,
           bgColor["grayscale-0"],
           color["grayscale-400"],
-          typo.body2.medium,
+          typo.body3.medium,
           props.className
         )}
         onClick={() => inputRef.current?.focus()}
@@ -119,9 +119,10 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
           submit();
         }}
       >
+        <Icon name="plus-circle" size={2} aria-hidden="true" />
         <input
           ref={inputRef}
-          className={clsx(s.input, typo.body2.medium, color["grayscale-400"])}
+          className={clsx(s.input, typo.body3.medium, color["grayscale-400"])}
           value={props.value}
           onChange={(e) => props.onValueChange(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -141,7 +142,7 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
 
   const {
     iconName = "plus-circle",
-    iconSizeRem = 2.4,
+    iconSizeRem = 2,
     type = "button",
     onClick,
     disabled = false,
@@ -155,14 +156,14 @@ const DirectAddButton = (props: DirectAddButtonProps) => {
         s.button,
         bgColor["grayscale-0"],
         color["grayscale-400"],
-        typo.body2.medium,
+        typo.body3.medium,
         className
       )}
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel}
     >
-      <Icon name={iconName} size={iconSizeRem} />
+      <Icon name={iconName} size={iconSizeRem} aria-hidden="true" />
       <span className={s.label}>{label}</span>
     </button>
   );

@@ -14,6 +14,7 @@ export type WebViewMessageType =
   | "CHECKOUT_CLICK"
   | "NAVIGATION_BACK"
   | "OAUTH_START"
+  | "OPEN_EXTERNAL_URL"
   | string;
 
 export type NativeToWebMessageType = "INIT_DATA" | string;

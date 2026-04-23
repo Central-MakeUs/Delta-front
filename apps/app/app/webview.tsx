@@ -14,7 +14,7 @@ import { performKakaoLogin } from "../native-auth/kakao";
 import { performAppleLogin } from "../native-auth/apple";
 import { performGoogleLogin } from "../native-auth/google";
 
-const WEB_BASE_URL = "https://semo-xi.duckdns.org";
+const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);
@@ -34,7 +34,7 @@ const WebViewScreen = () => {
   const dispatchToWeb = useCallback((detail: object) => {
     const json = JSON.stringify(detail).replace(/'/g, "\\'");
     webViewRef.current?.injectJavaScript(
-      `window.dispatchEvent(new CustomEvent('rnMessage', { detail: ${json} })); true;`
+      `window.dispatchEvent(new CustomEvent('rnMessage', { detail: ${json} })); true;`,
     );
   }, []);
 

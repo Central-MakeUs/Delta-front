@@ -38,7 +38,9 @@ const AndroidLoginPage = () => {
       return;
     }
     postNativeGoogleLogin();
-    const result = await waitForNativeResult<NativeGoogleLoginResult>("NATIVE_GOOGLE_LOGIN_RESULT");
+    const result = await waitForNativeResult<NativeGoogleLoginResult>(
+      "NATIVE_GOOGLE_LOGIN_RESULT"
+    );
     if (result.status !== "success") return;
     googleLogin.mutate(
       { code: result.serverAuthCode },
@@ -52,7 +54,9 @@ const AndroidLoginPage = () => {
       return;
     }
     postNativeKakaoLogin();
-    const result = await waitForNativeResult<NativeKakaoLoginResult>("NATIVE_KAKAO_LOGIN_RESULT");
+    const result = await waitForNativeResult<NativeKakaoLoginResult>(
+      "NATIVE_KAKAO_LOGIN_RESULT"
+    );
     if (result.status !== "success") return;
     kakaoLogin.mutate(
       { code: result.authorizationCode },

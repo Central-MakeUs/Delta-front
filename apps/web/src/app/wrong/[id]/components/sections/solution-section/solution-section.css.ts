@@ -72,6 +72,8 @@ export const solutionPlainText = style([
     color: vars.color.grayscale[900],
     width: "100%",
     whiteSpace: "pre-wrap",
+    textWrap: "pretty",
+    lineHeight: 1.6,
     wordBreak: "keep-all",
     padding: "1.6rem",
     overflowY: "auto",

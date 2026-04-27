@@ -1,7 +1,5 @@
 import { Redirect } from "expo-router";
 
-const Index = () => {
+export default function Index() {
   return <Redirect href="/webview" />;
-};
-
-export default Index;
+}

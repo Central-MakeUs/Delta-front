@@ -7,38 +7,20 @@ import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
 import * as s from "@/app/login/login.css";
 import { googleOAuth } from "@/shared/apis/auth/google-oauth";
-import {
-  isReactNativeWebView,
-  postOAuthMessage,
-} from "@/shared/apis/auth/native-bridge";
 
 const LoginPage = () => {
   const onGoogleStart = () => {
-    const url = googleOAuth.buildAuthorizeUrl();
-    if (isReactNativeWebView()) {
-      postOAuthMessage(url, googleOAuth.buildRedirectUri());
-    } else {
-      window.location.assign(url);
-    }
+    window.location.assign(googleOAuth.buildAuthorizeUrl());
   };
 
   const onKakaoStart = () => {
-    const url = kakaoOAuth.buildAuthorizeUrl();
-    if (isReactNativeWebView()) {
-      postOAuthMessage(url, kakaoOAuth.buildRedirectUri());
-    } else {
-      window.location.assign(url);
-    }
+    window.location.assign(kakaoOAuth.buildAuthorizeUrl());
   };
 
   const onAppleStart = () => {
     const url = appleOAuth.buildAuthorizeUrl();
     if (!url) return;
-    if (isReactNativeWebView()) {
-      postOAuthMessage(url, `${window.location.origin}/oauth/apple/callback`);
-    } else {
-      window.location.assign(url);
-    }
+    window.location.assign(url);
   };
 
   return (

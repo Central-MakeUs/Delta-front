@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback } from "react";
+import { useRouter } from "next/navigation";
 import Icon from "@/shared/components/icon/icon";
 import { Button } from "@/shared/components/button/button/button";
 import LoginDecorations from "@/app/login/login-decorations";
@@ -8,26 +10,58 @@ import { kakaoOAuth } from "@/shared/apis/auth/kakao-oauth";
 import * as s from "@/app/login/login.css";
 import {
   isReactNativeWebView,
-  postOAuthMessage,
+  postNativeGoogleLogin,
+  postNativeKakaoLogin,
+  waitForNativeResult,
+  type NativeGoogleLoginResult,
+  type NativeKakaoLoginResult,
 } from "@/shared/apis/auth/native-bridge";
+import { useGoogleLoginMutation } from "@/shared/apis/auth/hooks/use-google-login-mutation";
+import { useKakaoLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-login-mutation";
+import { ROUTES } from "@/shared/constants/routes";
 
 const AndroidLoginPage = () => {
-  const onGoogleStart = () => {
-    const url = googleOAuth.buildAuthorizeUrl();
-    if (isReactNativeWebView()) {
-      postOAuthMessage(url, googleOAuth.buildRedirectUri());
-    } else {
-      window.location.assign(url);
+  const router = useRouter();
+  const googleLogin = useGoogleLoginMutation();
+  const kakaoLogin = useKakaoLoginMutation();
+
+  const handleLoginSuccess = useCallback(
+    (isNewUser?: boolean) => {
+      router.replace(isNewUser ? ROUTES.AUTH.SIGNUP_INFO : ROUTES.HOME);
+    },
+    [router]
+  );
+
+  const onGoogleStart = async () => {
+    if (!isReactNativeWebView()) {
+      window.location.assign(googleOAuth.buildAuthorizeUrl());
+      return;
     }
+    postNativeGoogleLogin();
+    const result = await waitForNativeResult<NativeGoogleLoginResult>(
+      "NATIVE_GOOGLE_LOGIN_RESULT"
+    );
+    if (result.status !== "success") return;
+    googleLogin.mutate(
+      { code: result.serverAuthCode },
+      { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
+    );
   };
 
-  const onKakaoStart = () => {
-    const url = kakaoOAuth.buildAuthorizeUrl();
-    if (isReactNativeWebView()) {
-      postOAuthMessage(url, kakaoOAuth.buildRedirectUri());
-    } else {
-      window.location.assign(url);
+  const onKakaoStart = async () => {
+    if (!isReactNativeWebView()) {
+      window.location.assign(kakaoOAuth.buildAuthorizeUrl());
+      return;
     }
+    postNativeKakaoLogin();
+    const result = await waitForNativeResult<NativeKakaoLoginResult>(
+      "NATIVE_KAKAO_LOGIN_RESULT"
+    );
+    if (result.status !== "success") return;
+    kakaoLogin.mutate(
+      { code: result.authorizationCode },
+      { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
+    );
   };
 
   return (

@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback } from "react";
+import { useRouter } from "next/navigation";
 import Icon from "@/shared/components/icon/icon";
 import { Button } from "@/shared/components/button/button/button";
 import LoginDecorations from "@/app/login/login-decorations";
@@ -8,27 +10,79 @@ import { appleOAuth } from "@/shared/apis/auth/apple-oauth";
 import * as s from "@/app/login/login.css";
 import {
   isReactNativeWebView,
-  postOAuthMessage,
+  postNativeKakaoLogin,
+  postNativeAppleLogin,
+  waitForNativeResult,
+  type NativeKakaoLoginResult,
+  type NativeAppleLoginResult,
+  postNativeGoogleLogin,
+  NativeGoogleLoginResult,
 } from "@/shared/apis/auth/native-bridge";
+import { useKakaoLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-login-mutation";
+import { useAppleLoginMutation } from "@/shared/apis/auth/hooks/use-apple-login-mutation";
+import { ROUTES } from "@/shared/constants/routes";
+import { googleOAuth } from "@/shared/apis/auth/google-oauth";
+import { useGoogleLoginMutation } from "@/shared/apis/auth/hooks/use-google-login-mutation";
 
 const IosLoginPage = () => {
-  const onKakaoStart = () => {
-    const url = kakaoOAuth.buildAuthorizeUrl();
-    if (isReactNativeWebView()) {
-      postOAuthMessage(url, kakaoOAuth.buildRedirectUri());
-    } else {
-      window.location.assign(url);
+  const router = useRouter();
+  const googleLogin = useGoogleLoginMutation();
+  const kakaoLogin = useKakaoLoginMutation();
+  const appleLogin = useAppleLoginMutation();
+
+  const handleLoginSuccess = useCallback(
+    (isNewUser?: boolean) => {
+      router.replace(isNewUser ? ROUTES.AUTH.SIGNUP_INFO : ROUTES.HOME);
+    },
+    [router]
+  );
+  const onGoogleStart = async () => {
+    if (!isReactNativeWebView()) {
+      window.location.assign(googleOAuth.buildAuthorizeUrl());
+      return;
     }
+    postNativeGoogleLogin();
+    const result = await waitForNativeResult<NativeGoogleLoginResult>(
+      "NATIVE_GOOGLE_LOGIN_RESULT"
+    );
+    if (result.status !== "success") return;
+    googleLogin.mutate(
+      { code: result.serverAuthCode },
+      { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
+    );
+  };
+  const onKakaoStart = async () => {
+    if (!isReactNativeWebView()) {
+      window.location.assign(kakaoOAuth.buildAuthorizeUrl());
+      return;
+    }
+    postNativeKakaoLogin();
+    const result = await waitForNativeResult<NativeKakaoLoginResult>(
+      "NATIVE_KAKAO_LOGIN_RESULT"
+    );
+    if (result.status !== "success") return;
+    kakaoLogin.mutate(
+      { code: result.authorizationCode },
+      { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
+    );
   };
 
-  const onAppleStart = () => {
-    const url = appleOAuth.buildAuthorizeUrl();
-    if (!url) return;
-    if (isReactNativeWebView()) {
-      postOAuthMessage(url, `${window.location.origin}/oauth/apple/callback`);
-    } else {
+  const onAppleStart = async () => {
+    if (!isReactNativeWebView()) {
+      const url = appleOAuth.buildAuthorizeUrl();
+      if (!url) return;
       window.location.assign(url);
+      return;
     }
+    postNativeAppleLogin();
+    const result = await waitForNativeResult<NativeAppleLoginResult>(
+      "NATIVE_APPLE_LOGIN_RESULT"
+    );
+    if (result.status !== "success") return;
+    appleLogin.mutate(
+      { code: result.authorizationCode },
+      { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
+    );
   };
 
   return (
@@ -42,6 +96,12 @@ const IosLoginPage = () => {
         </header>
 
         <section className={s.actions} aria-label="소셜 로그인">
+          <Button
+            icon="google"
+            label="Google로 시작하기"
+            tone="google"
+            onClick={onGoogleStart}
+          />
           <Button
             icon="kakao"
             label="Kakao로 시작하기"

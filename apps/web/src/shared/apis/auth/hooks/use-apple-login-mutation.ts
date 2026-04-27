@@ -3,12 +3,12 @@ import { authApi } from "@/shared/apis/auth/auth-api";
 import { userKeys } from "@/shared/apis/user/user-keys";
 import { toastSuccess } from "@/shared/components/toast/toast";
 
-export const useAppleExchangeMutation = () => {
+export const useAppleLoginMutation = () => {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: (params: { loginKey: string }) =>
-      authApi.appleExchange(params.loginKey),
+    mutationFn: (params: { code: string }) =>
+      authApi.appleLogin({ code: params.code, user: null }),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: userKeys.me() });
       toastSuccess("로그인에 성공했습니다!");

@@ -6,15 +6,18 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {}
     },
     "preview": {
       "distribution": "internal",
-      "node": "22.12.0"
+      "node": "22.12.0",
+      "env": {}
     },
     "production": {
       "autoIncrement": true,
-      "credentialsSource": "remote"
+      "credentialsSource": "remote",
+      "env": {}
     }
   },
   "submit": {

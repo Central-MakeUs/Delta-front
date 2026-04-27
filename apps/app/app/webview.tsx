@@ -1,8 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import { Platform, StyleSheet, View } from "react-native";
-import { WebView } from "react-native-webview";
+import WebView from "react-native-webview";
 import * as Linking from "expo-linking";
-import * as WebBrowser from "expo-web-browser";
 import type {
   ShouldStartLoadRequest,
   WebViewErrorEvent,
@@ -11,6 +10,9 @@ import type {
 } from "react-native-webview/lib/WebViewTypes";
 import { useWebViewNativeTokenStorage } from "../hooks/use-webview-native-token-storage";
 import type { TokenBridgeMessage } from "../hooks/use-webview-native-token-storage";
+import { performKakaoLogin } from "../native-auth/kakao";
+import { performAppleLogin } from "../native-auth/apple";
+import { performGoogleLogin } from "../native-auth/google";
 
 const WEB_BASE_URL = "https://semo-xi.vercel.app";
 
@@ -27,6 +29,13 @@ const WebViewScreen = () => {
       if (__DEV__)
         console.warn("[Linking] Failed to open URL:", url, err?.message);
     });
+  }, []);
+
+  const dispatchToWeb = useCallback((detail: object) => {
+    const json = JSON.stringify(detail).replace(/'/g, "\\'");
+    webViewRef.current?.injectJavaScript(
+      `window.dispatchEvent(new CustomEvent('rnMessage', { detail: ${json} })); true;`,
+    );
   }, []);
 
   const handleMessage = useCallback(
@@ -58,23 +67,29 @@ const WebViewScreen = () => {
           return;
         }
 
-        if (data?.type === "OAUTH_START" && data.url && data.callbackPrefix) {
-          void (async () => {
-            const result = await WebBrowser.openAuthSessionAsync(
-              data.url,
-              data.callbackPrefix,
-            );
-            if (result.type === "success" && result.url) {
-              webViewRef.current?.injectJavaScript(
-                `window.location.replace(${JSON.stringify(result.url)});true;`,
-              );
-            }
-          })();
+        if (data?.type === "NATIVE_KAKAO_LOGIN") {
+          performKakaoLogin().then((result) => {
+            dispatchToWeb({ type: "NATIVE_KAKAO_LOGIN_RESULT", ...result });
+          });
+          return;
+        }
+
+        if (data?.type === "NATIVE_APPLE_LOGIN") {
+          performAppleLogin().then((result) => {
+            dispatchToWeb({ type: "NATIVE_APPLE_LOGIN_RESULT", ...result });
+          });
+          return;
+        }
+
+        if (data?.type === "NATIVE_GOOGLE_LOGIN") {
+          performGoogleLogin().then((result) => {
+            dispatchToWeb({ type: "NATIVE_GOOGLE_LOGIN_RESULT", ...result });
+          });
           return;
         }
       } catch {}
     },
-    [handleTokenMessage, isSafeExternalUrl, openExternalUrl],
+    [dispatchToWeb, handleTokenMessage, isSafeExternalUrl, openExternalUrl],
   );
 
   const handleShouldStart = useCallback(
@@ -130,7 +145,6 @@ const WebViewScreen = () => {
     [isSafeExternalUrl, openExternalUrl],
   );
 
-  // Keep the WebView hidden until SecureStore tokens are injected.
   if (initialScript === undefined) {
     return <View style={styles.webview} />;
   }

@@ -6,6 +6,7 @@
     "dev": "next dev --webpack",
     "test": "vitest run --passWithNoTests",
     "build": "next build --webpack",
+    "build:staging": "node --env-file=.env.staging node_modules/.bin/next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",

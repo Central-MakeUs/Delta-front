@@ -48,20 +48,23 @@ const AndroidLoginPage = () => {
     );
   };
 
-  const onKakaoStart = async () => {
-    if (!isReactNativeWebView()) {
-      window.location.assign(kakaoOAuth.buildAuthorizeUrl());
-      return;
-    }
-    postNativeKakaoLogin();
-    const result = await waitForNativeResult<NativeKakaoLoginResult>(
-      "NATIVE_KAKAO_LOGIN_RESULT"
-    );
-    if (result.status !== "success") return;
-    kakaoLogin.mutate(
-      { code: result.authorizationCode },
-      { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
-    );
+  // const onKakaoStart = async () => {
+  //   if (!isReactNativeWebView()) {
+  //     window.location.assign(kakaoOAuth.buildAuthorizeUrl());
+  //     return;
+  //   }
+  //   postNativeKakaoLogin();
+  //   const result = await waitForNativeResult<NativeKakaoLoginResult>(
+  //     "NATIVE_KAKAO_LOGIN_RESULT"
+  //   );
+  //   if (result.status !== "success") return;
+  //   kakaoLogin.mutate(
+  //     { code: result.authorizationCode },
+  //     { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
+  //   );
+  // };
+  const onKakaoStart = () => {
+    window.location.assign(kakaoOAuth.buildAuthorizeUrl());
   };
 
   return (

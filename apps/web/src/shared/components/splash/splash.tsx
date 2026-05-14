@@ -71,7 +71,7 @@ const Splash = ({ onDone }: SplashProps) => {
         autoplay
         loop={false}
         animationData={splashLottie}
-        onDOMLoaded={() => lottieRef.current?.setSpeed(1.5)}
+        onDOMLoaded={() => lottieRef.current?.setSpeed(1.7)}
         className={s.image}
       />
     </div>

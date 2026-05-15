@@ -46,15 +46,6 @@
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]
-        },
-        {
-          "action": "VIEW",
-          "data": [
-            {
-              "scheme": "kakaoa51c4333b70b50271e9fbc532fadd600"
-            }
-          ],
-          "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
     },
@@ -64,6 +55,13 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "@react-native-seoul/kakao-login",
+        {
+          "kakaoAppKey": "a51c4333b70b50271e9fbc532fadd600",
+          "kotlinVersion": "2.1.21"
+        }
+      ],
       [
         "@react-native-google-signin/google-signin",
         {

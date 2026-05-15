@@ -17,14 +17,14 @@ import {
   type NativeKakaoLoginResult,
 } from "@/shared/apis/auth/native-bridge";
 import { useGoogleLoginMutation } from "@/shared/apis/auth/hooks/use-google-login-mutation";
-import { useKakaoLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-login-mutation";
+import { useKakaoNativeLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-native-login-mutation";
 import { ROUTES } from "@/shared/constants/routes";
 import { toastError } from "@/shared/components/toast/toast";
 
 const AndroidLoginPage = () => {
   const router = useRouter();
   const googleLogin = useGoogleLoginMutation();
-  const kakaoLogin = useKakaoLoginMutation();
+  const kakaoNativeLogin = useKakaoNativeLoginMutation();
 
   const handleLoginSuccess = useCallback(
     (isNewUser?: boolean) => {
@@ -71,8 +71,8 @@ const AndroidLoginPage = () => {
       toastError("카카오 로그인에 실패했습니다. 다시 시도해주세요.");
       return;
     }
-    kakaoLogin.mutate(
-      { code: result.authorizationCode },
+    kakaoNativeLogin.mutate(
+      { accessToken: result.accessToken },
       {
         onSuccess: (data) => handleLoginSuccess(data?.isNewUser),
         onError: () =>

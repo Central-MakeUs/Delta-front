@@ -14,7 +14,7 @@ import { performKakaoLogin } from "../native-auth/kakao";
 import { performAppleLogin } from "../native-auth/apple";
 import { performGoogleLogin } from "../native-auth/google";
 
-const WEB_BASE_URL = "https://semo-xi.vercel.app";
+const WEB_BASE_URL = "https://semo-xi.duckdns.org";
 
 const WebViewScreen = () => {
   const webViewRef = useRef<WebView>(null);

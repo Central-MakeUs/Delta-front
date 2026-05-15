@@ -14,24 +14,26 @@ import {
   waitForNativeResult,
   type NativeKakaoLoginResult,
   postNativeGoogleLogin,
-  NativeGoogleLoginResult,
+  type NativeGoogleLoginResult,
 } from "@/shared/apis/auth/native-bridge";
-import { useKakaoLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-login-mutation";
+import { useKakaoNativeLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-native-login-mutation";
+import { useGoogleLoginMutation } from "@/shared/apis/auth/hooks/use-google-login-mutation";
 import { ROUTES } from "@/shared/constants/routes";
 import { googleOAuth } from "@/shared/apis/auth/google-oauth";
-import { useGoogleLoginMutation } from "@/shared/apis/auth/hooks/use-google-login-mutation";
 import { toastError } from "@/shared/components/toast/toast";
 
 const IosLoginPage = () => {
   const router = useRouter();
   const googleLogin = useGoogleLoginMutation();
-  const kakaoLogin = useKakaoLoginMutation();
+  const kakaoNativeLogin = useKakaoNativeLoginMutation();
+
   const handleLoginSuccess = useCallback(
     (isNewUser?: boolean) => {
       router.replace(isNewUser ? ROUTES.AUTH.SIGNUP_INFO : ROUTES.HOME);
     },
     [router]
   );
+
   const onGoogleStart = async () => {
     if (!isReactNativeWebView()) {
       window.location.assign(googleOAuth.buildAuthorizeUrl());
@@ -54,6 +56,7 @@ const IosLoginPage = () => {
       }
     );
   };
+
   const onKakaoStart = async () => {
     if (!isReactNativeWebView()) {
       window.location.assign(kakaoOAuth.buildAuthorizeUrl());
@@ -68,8 +71,8 @@ const IosLoginPage = () => {
       toastError("카카오 로그인에 실패했습니다. 다시 시도해주세요.");
       return;
     }
-    kakaoLogin.mutate(
-      { code: result.authorizationCode },
+    kakaoNativeLogin.mutate(
+      { accessToken: result.accessToken },
       {
         onSuccess: (data) => handleLoginSuccess(data?.isNewUser),
         onError: () => toastError("카카오 로그인에 실패했습니다. 다시 시도해주세요."),

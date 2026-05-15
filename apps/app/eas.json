@@ -7,17 +7,32 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "env": {}
+      "env": {
+        "EXPO_PUBLIC_WEB_BASE_URL": "https://semo-xi.vercel.app",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "1005616322531-fnhfhvo1h5bau1oile4dtmtff7uokot1.apps.googleusercontent.com",
+        "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "1005616322531-tgugr04ltoccvbiitb8svv2md3adf0nj.apps.googleusercontent.com",
+        "EXPO_PUBLIC_KAKAO_REST_API_KEY": "e9643b56205d8755b53dbc62990275a3"
+      }
     },
     "preview": {
       "distribution": "internal",
       "node": "22.12.0",
-      "env": {}
+      "env": {
+        "EXPO_PUBLIC_WEB_BASE_URL": "https://semo-xi.vercel.app",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "1005616322531-fnhfhvo1h5bau1oile4dtmtff7uokot1.apps.googleusercontent.com",
+        "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "1005616322531-tgugr04ltoccvbiitb8svv2md3adf0nj.apps.googleusercontent.com",
+        "EXPO_PUBLIC_KAKAO_REST_API_KEY": "e9643b56205d8755b53dbc62990275a3"
+      }
     },
     "production": {
       "autoIncrement": true,
       "credentialsSource": "remote",
-      "env": {}
+      "env": {
+        "EXPO_PUBLIC_WEB_BASE_URL": "https://semo-xi.vercel.app",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "1005616322531-fnhfhvo1h5bau1oile4dtmtff7uokot1.apps.googleusercontent.com",
+        "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "1005616322531-tgugr04ltoccvbiitb8svv2md3adf0nj.apps.googleusercontent.com",
+        "EXPO_PUBLIC_KAKAO_REST_API_KEY": "e9643b56205d8755b53dbc62990275a3"
+      }
     }
   },
   "submit": {

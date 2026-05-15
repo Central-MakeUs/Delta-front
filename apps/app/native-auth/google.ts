@@ -10,18 +10,24 @@ export type GoogleSignInResult =
   | { status: "cancelled" }
   | { status: "error"; reason: string; message?: string };
 
-export const performGoogleLogin = async (): Promise<GoogleSignInResult> => {
+const configure = () => {
   GoogleSignin.configure({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? "",
-    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ?? undefined,
+    iosClientId:
+      Platform.OS === "ios"
+        ? (process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ?? undefined)
+        : undefined,
     offlineAccess: true,
+    forceCodeForRefreshToken: true,
   });
+};
+
+export const performGoogleLogin = async (): Promise<GoogleSignInResult> => {
+  configure();
 
   try {
     if (Platform.OS === "android") {
-      await GoogleSignin.hasPlayServices({
-        showPlayServicesUpdateDialog: true,
-      });
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
     }
 
     const response = await GoogleSignin.signIn();
@@ -42,7 +48,10 @@ export const performGoogleLogin = async (): Promise<GoogleSignInResult> => {
     return { status: "success", serverAuthCode };
   } catch (error) {
     if (isErrorWithCode(error)) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+      if (
+        error.code === statusCodes.SIGN_IN_CANCELLED ||
+        error.code === statusCodes.IN_PROGRESS
+      ) {
         return { status: "cancelled" };
       }
       return {

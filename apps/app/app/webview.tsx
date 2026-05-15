@@ -82,7 +82,12 @@ const WebViewScreen = () => {
         }
 
         if (data?.type === "NATIVE_GOOGLE_LOGIN") {
+          console.log("[Google] performGoogleLogin start");
           performGoogleLogin().then((result) => {
+            console.log(
+              "[Google] performGoogleLogin result:",
+              JSON.stringify(result),
+            );
             dispatchToWeb({ type: "NATIVE_GOOGLE_LOGIN_RESULT", ...result });
           });
           return;

@@ -2,7 +2,7 @@
   "expo": {
     "name": "세모",
     "slug": "semo",
-    "version": "1.0.3",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "semo",
@@ -46,6 +46,15 @@
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]
+        },
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "kakaoa51c4333b70b50271e9fbc532fadd600"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
     },
@@ -58,7 +67,8 @@
       [
         "@react-native-google-signin/google-signin",
         {
-          "iosUrlScheme": "com.googleusercontent.apps.1005616322531-tgugr04ltoccvbiitb8svv2md3adf0nj"
+          "iosUrlScheme": "com.googleusercontent.apps.1005616322531-tgugr04ltoccvbiitb8svv2md3adf0nj",
+          "androidClientId": "1005616322531-8ff2h5kfe1cgefmf92qire8mr4v253dt.apps.googleusercontent.com"
         }
       ]
     ],

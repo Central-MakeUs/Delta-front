@@ -20,6 +20,7 @@ import { useKakaoLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-login-
 import { ROUTES } from "@/shared/constants/routes";
 import { googleOAuth } from "@/shared/apis/auth/google-oauth";
 import { useGoogleLoginMutation } from "@/shared/apis/auth/hooks/use-google-login-mutation";
+import { toastError } from "@/shared/components/toast/toast";
 
 const IosLoginPage = () => {
   const router = useRouter();
@@ -40,29 +41,40 @@ const IosLoginPage = () => {
     const result = await waitForNativeResult<NativeGoogleLoginResult>(
       "NATIVE_GOOGLE_LOGIN_RESULT"
     );
-    if (result.status !== "success") return;
+    if (result.status === "cancelled") return;
+    if (result.status !== "success") {
+      toastError("구글 로그인에 실패했습니다. 다시 시도해주세요.");
+      return;
+    }
     googleLogin.mutate(
       { code: result.serverAuthCode },
-      { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
+      {
+        onSuccess: (data) => handleLoginSuccess(data?.isNewUser),
+        onError: () => toastError("구글 로그인에 실패했습니다. 다시 시도해주세요."),
+      }
     );
   };
-  // const onKakaoStart = async () => {
-  //   if (!isReactNativeWebView()) {
-  //     window.location.assign(kakaoOAuth.buildAuthorizeUrl());
-  //     return;
-  //   }
-  //   postNativeKakaoLogin();
-  //   const result = await waitForNativeResult<NativeKakaoLoginResult>(
-  //     "NATIVE_KAKAO_LOGIN_RESULT"
-  //   );
-  //   if (result.status !== "success") return;
-  //   kakaoLogin.mutate(
-  //     { code: result.authorizationCode },
-  //     { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
-  //   );
-  // };
-  const onKakaoStart = () => {
-    window.location.assign(kakaoOAuth.buildAuthorizeUrl());
+  const onKakaoStart = async () => {
+    if (!isReactNativeWebView()) {
+      window.location.assign(kakaoOAuth.buildAuthorizeUrl());
+      return;
+    }
+    postNativeKakaoLogin();
+    const result = await waitForNativeResult<NativeKakaoLoginResult>(
+      "NATIVE_KAKAO_LOGIN_RESULT"
+    );
+    if (result.status === "cancelled") return;
+    if (result.status !== "success") {
+      toastError("카카오 로그인에 실패했습니다. 다시 시도해주세요.");
+      return;
+    }
+    kakaoLogin.mutate(
+      { code: result.authorizationCode },
+      {
+        onSuccess: (data) => handleLoginSuccess(data?.isNewUser),
+        onError: () => toastError("카카오 로그인에 실패했습니다. 다시 시도해주세요."),
+      }
+    );
   };
 
   const onAppleStart = () => {

@@ -5,7 +5,9 @@ export type KakaoSignInResult =
   | { status: "cancelled" }
   | { status: "error"; reason: string; message?: string };
 
-const REDIRECT_URI = "app://oauth/kakao";
+const NATIVE_KEY = "a51c4333b70b50271e9fbc532fadd600";
+const KAKAO_SCHEME = `kakao${NATIVE_KEY}`;
+const REDIRECT_URI = `${KAKAO_SCHEME}://oauth`;
 
 export const performKakaoLogin = async (): Promise<KakaoSignInResult> => {
   try {

@@ -15,7 +15,8 @@ export const root = style([
     placeSelf: "start",
     justifySelf: "start",
     padding: "0 0.2rem",
-    borderRadius: "17px",
+    height: "3.2rem",
+    borderRadius: vars.radius.full,
   },
 ]);
 

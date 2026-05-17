@@ -19,6 +19,7 @@ type UseAppBarResult =
 type AppBarGroupContext = {
   items: Array<{
     scanId: number;
+    subjectName: string;
     unitName: string;
   }>;
 } | null;
@@ -253,7 +254,7 @@ export const useAppBar = ({
       items.length > 0
         ? (items.map((item, index) => ({
             id: String(item.scanId),
-            label: `${index + 1}) ${item.unitName}`,
+            label: `${index + 1}) ${item.subjectName}`,
             isActive: index === currentIndex,
             onClick: () => {
               closeScanDetailMenu();

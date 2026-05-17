@@ -106,10 +106,10 @@ const WrongScanDetailPage = () => {
       />
 
       <CompleteModal
-        title="모든 문제를 등록할까요?"
-        description="완료를 누르면 등록한 문제가 모두 오답 목록에 저장돼요."
+        title="문제를 등록할까요?"
+        description="완료를 누르면 현재 스캔한 문제가 모두 등록돼요."
         cancelLabel="취소"
-        confirmLabel={isCompleteDisabled ? "처리 중..." : "완료"}
+        confirmLabel={isCompleteDisabled ? "처리 중..." : "등록"}
         isOpen={isCompleteModalOpen}
         onClose={() => setIsCompleteModalOpen(false)}
         onConfirm={handleComplete}

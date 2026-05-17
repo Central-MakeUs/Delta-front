@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useCompleteWrongCreateScansMutation } from "@/shared/apis/problem-create/hooks/use-complete-wrong-create-scans-mutation";
 import { Button } from "@/shared/components/button/button/button";
 import Chip from "@/shared/components/chip/chip";
 import Divider from "@/shared/components/divider/divider";
@@ -35,6 +36,7 @@ const WrongCreateScansPage = () => {
   const [deleteTarget, setDeleteTarget] = useState<WrongCreateGroupItem | null>(
     null
   );
+  const completeMutation = useCompleteWrongCreateScansMutation();
   const group = updatedGroup?.id === groupId ? updatedGroup : storedGroup;
 
   useEffect(() => {
@@ -76,10 +78,9 @@ const WrongCreateScansPage = () => {
     return `${ROUTES.WRONG.SCAN_DETAIL(item.scanId)}?group=${encodeURIComponent(groupId)}`;
   };
 
-  const handleNext = () => {
-    const firstItem = items[0];
-    if (!firstItem) return;
-    router.push(buildProblemHref(firstItem));
+  const handleComplete = async () => {
+    if (!groupId) return;
+    completeMutation.mutate(groupId);
   };
 
   const handleDeleteConfirm = () => {
@@ -188,9 +189,9 @@ const WrongCreateScansPage = () => {
           fullWidth
           size="48"
           tone="dark"
-          label="다음"
-          onClick={handleNext}
-          disabled={items.length === 0}
+          label="완료"
+          onClick={handleComplete}
+          disabled={items.length === 0 || completeMutation.isPending}
         />
       </div>
 

@@ -2,9 +2,11 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { setAuthFresh } from "@/shared/apis/auth/auth-events";
 import { ROUTES } from "@/shared/constants/routes";
 import { userApi } from "@/shared/apis/user/user-api";
+import { userKeys } from "@/shared/apis/user/user-keys";
 import { useUploadMyProfileImageMutation } from "@/shared/apis/profile-image/hooks/use-upload-my-profile-image-mutation";
 import type { LoginInfoFormData } from "./use-login-info-form";
 
@@ -22,6 +24,7 @@ type Params = {
 
 export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
   const router = useRouter();
+  const qc = useQueryClient();
   const uploadProfileImage = useUploadMyProfileImageMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -44,6 +47,7 @@ export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
         await uploadProfileImage.mutateAsync(formData.profileImage);
       }
 
+      await qc.invalidateQueries({ queryKey: userKeys.all });
       setAuthFresh();
       router.replace(ROUTES.HOME);
     } catch (e: unknown) {
@@ -60,6 +64,7 @@ export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
     formData.nickname,
     formData.profileImage,
     router,
+    qc,
     uploadProfileImage,
   ]);
 

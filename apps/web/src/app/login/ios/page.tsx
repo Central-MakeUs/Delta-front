@@ -52,7 +52,8 @@ const IosLoginPage = () => {
       { code: result.serverAuthCode },
       {
         onSuccess: (data) => handleLoginSuccess(data?.isNewUser),
-        onError: () => toastError("구글 로그인에 실패했습니다. 다시 시도해주세요."),
+        onError: () =>
+          toastError("구글 로그인에 실패했습니다. 다시 시도해주세요."),
       }
     );
   };
@@ -75,14 +76,18 @@ const IosLoginPage = () => {
       { accessToken: result.accessToken },
       {
         onSuccess: (data) => handleLoginSuccess(data?.isNewUser),
-        onError: () => toastError("카카오 로그인에 실패했습니다. 다시 시도해주세요."),
+        onError: () =>
+          toastError("카카오 로그인에 실패했습니다. 다시 시도해주세요."),
       }
     );
   };
 
   const onAppleStart = () => {
     const url = appleOAuth.buildAuthorizeUrl();
-    if (!url) return;
+    if (!url) {
+      toastError("Apple 로그인에 실패했습니다. 다시 시도해주세요.");
+      return;
+    }
     window.location.assign(url);
   };
 

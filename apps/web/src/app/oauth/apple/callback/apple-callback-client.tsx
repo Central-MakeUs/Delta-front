@@ -46,11 +46,11 @@ const AppleCallbackView = () => {
     }
 
     executedRef.current = true;
-    window.sessionStorage.setItem(CONSUMED_LOGIN_KEY, loginKey);
 
     exchange
       .mutateAsync({ loginKey })
       .then(async (data) => {
+        window.sessionStorage.setItem(CONSUMED_LOGIN_KEY, loginKey);
         const profile = await userApi.getMyProfile();
         const needsSignupInfo =
           profile.nickname == null ||
@@ -63,7 +63,6 @@ const AppleCallbackView = () => {
         }
       })
       .catch(() => {
-        window.sessionStorage.removeItem(CONSUMED_LOGIN_KEY);
         goLogin("exchange failed");
       });
   }, [loginKey, errorParam, router, exchange]);

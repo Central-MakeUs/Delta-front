@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import AppleCallbackView from "./apple-callback-client";
+import AppleCallbackView from "@/app/oauth/apple/callback/apple-callback-client";
 
 const Fallback = () => (
   <main

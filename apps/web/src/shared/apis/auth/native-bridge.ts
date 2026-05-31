@@ -1,5 +1,5 @@
 export type NativeKakaoLoginResult =
-  | { status: "success"; authorizationCode: string }
+  | { status: "success"; accessToken: string }
   | { status: "cancelled" }
   | { status: "error"; message: string };
 

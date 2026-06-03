@@ -33,8 +33,8 @@ const WrongCreateDonePage = () => {
         />
         <Button
           tone="default"
-          label="홈으로"
-          onClick={() => router.push(ROUTES.HOME)}
+          label="문제 목록으로"
+          onClick={() => router.push(ROUTES.WRONG.ROOT)}
         />
       </div>
     </div>

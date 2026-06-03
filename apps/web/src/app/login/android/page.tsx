@@ -17,13 +17,14 @@ import {
   type NativeKakaoLoginResult,
 } from "@/shared/apis/auth/native-bridge";
 import { useGoogleLoginMutation } from "@/shared/apis/auth/hooks/use-google-login-mutation";
-import { useKakaoLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-login-mutation";
+import { useKakaoNativeLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-native-login-mutation";
 import { ROUTES } from "@/shared/constants/routes";
+import { toastError } from "@/shared/components/toast/toast";
 
 const AndroidLoginPage = () => {
   const router = useRouter();
   const googleLogin = useGoogleLoginMutation();
-  const kakaoLogin = useKakaoLoginMutation();
+  const kakaoNativeLogin = useKakaoNativeLoginMutation();
 
   const handleLoginSuccess = useCallback(
     (isNewUser?: boolean) => {
@@ -41,10 +42,18 @@ const AndroidLoginPage = () => {
     const result = await waitForNativeResult<NativeGoogleLoginResult>(
       "NATIVE_GOOGLE_LOGIN_RESULT"
     );
-    if (result.status !== "success") return;
+    if (result.status === "cancelled") return;
+    if (result.status !== "success") {
+      toastError("구글 로그인에 실패했습니다. 다시 시도해주세요.");
+      return;
+    }
     googleLogin.mutate(
       { code: result.serverAuthCode },
-      { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
+      {
+        onSuccess: (data) => handleLoginSuccess(data?.isNewUser),
+        onError: () =>
+          toastError("구글 로그인에 실패했습니다. 다시 시도해주세요."),
+      }
     );
   };
 
@@ -57,10 +66,18 @@ const AndroidLoginPage = () => {
     const result = await waitForNativeResult<NativeKakaoLoginResult>(
       "NATIVE_KAKAO_LOGIN_RESULT"
     );
-    if (result.status !== "success") return;
-    kakaoLogin.mutate(
-      { code: result.authorizationCode },
-      { onSuccess: (data) => handleLoginSuccess(data?.isNewUser) }
+    if (result.status === "cancelled") return;
+    if (result.status !== "success") {
+      toastError("카카오 로그인에 실패했습니다. 다시 시도해주세요.");
+      return;
+    }
+    kakaoNativeLogin.mutate(
+      { accessToken: result.accessToken },
+      {
+        onSuccess: (data) => handleLoginSuccess(data?.isNewUser),
+        onError: () =>
+          toastError("카카오 로그인에 실패했습니다. 다시 시도해주세요."),
+      }
     );
   };
 

@@ -20,7 +20,7 @@ export const overlay = style([
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    animation: `${splashOut} 5s ease-out forwards`,
+    animation: `${splashOut} 4s ease-out forwards`,
   },
 ]);
 

@@ -24,7 +24,7 @@ type Params = {
 
 export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const uploadProfileImage = useUploadMyProfileImageMutation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -43,12 +43,13 @@ export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
         termsAgreed: true,
       } as Parameters<typeof userApi.onboarding>[0]);
 
-      await queryClient.invalidateQueries({ queryKey: userKeys.me() });
+      await qc.invalidateQueries({ queryKey: userKeys.me() });
 
       if (formData.profileImage) {
         await uploadProfileImage.mutateAsync(formData.profileImage);
       }
 
+      await qc.invalidateQueries({ queryKey: userKeys.all });
       setAuthFresh();
       router.replace(ROUTES.HOME);
     } catch (e: unknown) {
@@ -65,6 +66,7 @@ export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
     formData.nickname,
     formData.profileImage,
     router,
+    qc,
     uploadProfileImage,
   ]);
 

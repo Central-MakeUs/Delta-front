@@ -10,7 +10,7 @@ export const mapProblemDetailToSectionData = (
 
   return {
     id: String(data.problemId),
-    title: `${subjectName} ${unitName}`,
+    title: subjectName,
     subjectChip: subjectName,
     imagePath: data.originalImage?.viewUrl ?? "",
     questionType: data.answerFormat === "CHOICE" ? "objective" : "subjective",

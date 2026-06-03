@@ -48,14 +48,16 @@ export const useWrongScanDetail = () => {
   const { data: problemTypes = [] } = useProblemTypesQuery();
   const initial = getInitialScanState(groupItem);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedSubject, setSelectedSubject] =
-    useState<MathSubjectLabel>(initial.subject);
+  const [selectedSubject, setSelectedSubject] = useState<MathSubjectLabel>(
+    initial.subject
+  );
   const [selectedUnit, setSelectedUnit] = useState<string>(initial.unit);
   const [selectedTypes, setSelectedTypes] = useState<string[]>(
     groupItem?.typeNames ?? []
   );
-  const [appliedSubject, setAppliedSubject] =
-    useState<MathSubjectLabel>(initial.subject);
+  const [appliedSubject, setAppliedSubject] = useState<MathSubjectLabel>(
+    initial.subject
+  );
   const [appliedUnit, setAppliedUnit] = useState<string>(initial.unit);
   const [appliedTypes, setAppliedTypes] = useState<string[]>(
     groupItem?.typeNames ?? []
@@ -67,11 +69,11 @@ export const useWrongScanDetail = () => {
     ? selectedUnit
     : availableUnits[0];
   const customSelectedTypes = selectedTypes
-    .map((typeName) =>
-      problemTypes.find(
-        (type) =>
-          type.custom && normalize(type.name) === normalize(typeName)
-      ) ?? null
+    .map(
+      (typeName) =>
+        problemTypes.find(
+          (type) => type.custom && normalize(type.name) === normalize(typeName)
+        ) ?? null
     )
     .filter((type): type is ProblemTypeItem => Boolean(type));
   const prevItem = groupIndex > 0 ? groupItems[groupIndex - 1] : null;
@@ -103,7 +105,7 @@ export const useWrongScanDetail = () => {
       subjectName: appliedSubject,
       unitName: appliedUnit,
       typeNames: appliedTypes,
-      title: `${appliedUnit} 문제`,
+      title: `${appliedSubject} 문제`,
     } satisfies WrongCreateGroupItem;
   }, [appliedSubject, appliedTypes, appliedUnit, groupItem, problemTypes]);
   const {
@@ -140,7 +142,11 @@ export const useWrongScanDetail = () => {
       problemTypes,
       createType: (name) => createCustomTypeMutation.mutateAsync({ name }),
     });
-    if (!result) return;
+
+    if (!result) {
+      toastError("등록할 문제가 부족해요. 단원과 유형을 확인해 주세요.");
+      return;
+    }
 
     persistGroupItem(result.nextCurrentItem);
     createProblemMutation.mutate(result.payloadItems, {
@@ -149,6 +155,14 @@ export const useWrongScanDetail = () => {
           groupId
             ? `${ROUTES.WRONG.CREATE_DONE}?group=${encodeURIComponent(groupId)}`
             : ROUTES.WRONG.CREATE_DONE
+        );
+      },
+      onError: (error) => {
+        console.error("[wrong-scan-detail] Complete failed", error);
+        toastError(
+          error instanceof Error
+            ? error.message
+            : "문제 등록에 실패했어요. 잠시 후 다시 시도해 주세요."
         );
       },
     });
@@ -176,12 +190,14 @@ export const useWrongScanDetail = () => {
     setAppliedTypes(nextTypes);
     persistGroupItem({
       ...groupItem,
-      finalUnitId: resolveUnitId(nextSubject, nextUnit) ?? groupItem.finalUnitId,
-      finalTypeIds: nextTypeIds.length > 0 ? nextTypeIds : groupItem.finalTypeIds,
+      finalUnitId:
+        resolveUnitId(nextSubject, nextUnit) ?? groupItem.finalUnitId,
+      finalTypeIds:
+        nextTypeIds.length > 0 ? nextTypeIds : groupItem.finalTypeIds,
       subjectName: nextSubject,
       unitName: nextUnit,
       typeNames: nextTypes,
-      title: `${nextUnit} 문제`,
+      title: `${nextSubject} 문제`,
       ...buildAnswerFields(answerMode, answerChoice, answerText),
     });
 
@@ -198,7 +214,10 @@ export const useWrongScanDetail = () => {
     );
   };
 
-  const handleCustomTypeMove = (draggedTypeId: string, targetTypeId: string) => {
+  const handleCustomTypeMove = (
+    draggedTypeId: string,
+    targetTypeId: string
+  ) => {
     const moved = buildMovedCustomTypes({
       selectedTypes,
       customSelectedTypes,
@@ -218,7 +237,10 @@ export const useWrongScanDetail = () => {
         })
       )
     ).catch((error) => {
-      console.error("[wrong-scan-detail] Failed to reorder custom types", error);
+      console.error(
+        "[wrong-scan-detail] Failed to reorder custom types",
+        error
+      );
       setSelectedTypes(previousSelectedTypes);
       toastError("유형 순서 변경에 실패했어요. 잠시 후 다시 시도해 주세요.");
     });

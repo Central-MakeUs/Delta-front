@@ -110,7 +110,9 @@ export const useStep1SummaryTransition = ({
     (summaries: ProblemScanSummaryResponse[]) => {
       const items = summaries.map((summary) => {
         const payload = buildPayloadFromSummary(summary, problemTypeNames);
-        const unit = payload.finalUnitId ? UNIT_BY_ID[payload.finalUnitId] : undefined;
+        const unit = payload.finalUnitId
+          ? UNIT_BY_ID[payload.finalUnitId]
+          : undefined;
         const subjectName =
           summary?.classification.subject?.name ??
           (unit?.subjectId ? SUBJECT_NAME_BY_ID[unit.subjectId] : "Unknown");
@@ -131,7 +133,7 @@ export const useStep1SummaryTransition = ({
           answerFormat: payload.answerFormat,
           answerChoiceNo: payload.answerChoiceNo ?? null,
           answerValue: payload.answerValue ?? null,
-          title: `${unitName} 문제`,
+          title: `${subjectName} 문제`,
           imageUrl: summary?.originalImage.viewUrl ?? "",
           subjectName,
           unitName,

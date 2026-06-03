@@ -11,15 +11,9 @@ interface HeaderSectionProps {
 const HeaderSection = ({ title, subjectChip, chips }: HeaderSectionProps) => {
   return (
     <div className={styles.headerSection}>
-      <Chip
-        size="md"
-        shape="pill"
-        tone="solid"
-        label={subjectChip}
-        state="active"
-      />
+      <Chip size="md" shape="pill" tone="solid" label={subjectChip} />
       <div className={styles.headerTop}>
-        <h1 className={styles.title}>{title}</h1>
+        <h1 className={styles.title}>{title} 문제</h1>
         <div className={styles.headerChips}>
           {chips.map((chip) => (
             <Chip

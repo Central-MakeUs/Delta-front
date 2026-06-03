@@ -21,7 +21,7 @@ export const mapProblemListItemToCard = (
 
   return {
     id: String(item.problemId),
-    title: `${unitName} 문제`,
+    title: `${subjectName} 문제`,
     date: formatDate(item.createdAt),
     imageSrc: item.previewImage?.viewUrl ?? "",
     chips: {

@@ -43,6 +43,8 @@ export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
         termsAgreed: true,
       } as Parameters<typeof userApi.onboarding>[0]);
 
+      await qc.invalidateQueries({ queryKey: userKeys.me() });
+
       if (formData.profileImage) {
         await uploadProfileImage.mutateAsync(formData.profileImage);
       }

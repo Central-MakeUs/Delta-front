@@ -110,7 +110,7 @@ const IosLoginPage = () => {
       return;
     }
     appleLogin.mutate(
-      { code: result.authorizationCode },
+      { code: result.authorizationCode, identityToken: result.identityToken },
       {
         onSuccess: (data) => handleLoginSuccess(data?.isNewUser),
         onError: () =>

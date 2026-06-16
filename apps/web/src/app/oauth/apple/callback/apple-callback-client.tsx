@@ -8,6 +8,7 @@ import { userApi } from "@/shared/apis/user/user-api";
 import Loading from "@/shared/components/loading/loading";
 
 const CONSUMED_LOGIN_KEY = "apple:consumed-login-key";
+const IN_PROGRESS_KEY = "apple:exchange-in-progress";
 
 const AppleCallbackView = () => {
   const router = useRouter();
@@ -45,12 +46,18 @@ const AppleCallbackView = () => {
       return;
     }
 
+    // Splash 리마운트 등으로 동일 loginKey exchange가 이중 실행되지 않도록 방지
+    const inProgress = window.sessionStorage.getItem(IN_PROGRESS_KEY);
+    if (inProgress === loginKey) return;
+
     executedRef.current = true;
+    window.sessionStorage.setItem(IN_PROGRESS_KEY, loginKey);
 
     exchange
       .mutateAsync({ loginKey })
       .then(async (data) => {
         window.sessionStorage.setItem(CONSUMED_LOGIN_KEY, loginKey);
+        window.sessionStorage.removeItem(IN_PROGRESS_KEY);
         const profile = await userApi.getMyProfile();
         const needsSignupInfo =
           profile.nickname == null ||
@@ -63,6 +70,7 @@ const AppleCallbackView = () => {
         }
       })
       .catch(() => {
+        window.sessionStorage.removeItem(IN_PROGRESS_KEY);
         goLogin("exchange failed");
       });
   }, [loginKey, errorParam, router, exchange]);

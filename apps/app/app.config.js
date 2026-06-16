@@ -60,23 +60,28 @@ module.exports = {
     plugins: [
       "expo-router",
       "./plugins/with-modular-headers",
-      "expo-apple-authentication",
-      [
-        "@react-native-seoul/kakao-login",
-        {
-          kakaoAppKey: "a51c4333b70b50271e9fbc532fadd600",
-          kotlinVersion: "2.1.21",
-        },
-      ],
-      [
-        "@react-native-google-signin/google-signin",
-        {
-          iosUrlScheme:
-            "com.googleusercontent.apps.1005616322531-tgugr04ltoccvbiitb8svv2md3adf0nj",
-          androidClientId:
-            "1005616322531-8ff2h5kfe1cgefmf92qire8mr4v253dt.apps.googleusercontent.com",
-        },
-      ],
+      ...(process.env.KAKAO_APP_KEY
+        ? [
+            [
+              "@react-native-seoul/kakao-login",
+              {
+                kakaoAppKey: process.env.KAKAO_APP_KEY,
+                kotlinVersion: "2.1.21",
+              },
+            ],
+          ]
+        : []),
+      ...(process.env.GOOGLE_IOS_URL_SCHEME
+        ? [
+            [
+              "@react-native-google-signin/google-signin",
+              {
+                iosUrlScheme: process.env.GOOGLE_IOS_URL_SCHEME,
+                androidClientId: process.env.GOOGLE_ANDROID_CLIENT_ID,
+              },
+            ],
+          ]
+        : []),
     ],
     experiments: {
       typedRoutes: true,

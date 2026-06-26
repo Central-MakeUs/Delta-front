@@ -4,7 +4,7 @@ export type NativeKakaoLoginResult =
   | { status: "error"; message: string };
 
 export type NativeAppleLoginResult =
-  | { status: "success"; authorizationCode: string; identityToken?: string }
+  | { status: "success"; authorizationCode: string }
   | { status: "cancelled" }
   | { status: "unavailable" }
   | { status: "error"; message: string };

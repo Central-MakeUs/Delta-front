@@ -7,8 +7,8 @@ export const useAppleLoginMutation = () => {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: (params: { code: string; identityToken?: string }) =>
-      authApi.appleLogin({ code: params.code, identityToken: params.identityToken, user: null }),
+    mutationFn: (params: { code: string }) =>
+      authApi.appleLogin({ code: params.code, user: null }),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: userKeys.me() });
       toastSuccess("로그인에 성공했습니다!");

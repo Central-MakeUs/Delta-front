@@ -45,16 +45,11 @@ export const authApi = {
 
   appleLogin: async (params: {
     code: string;
-    identityToken?: string;
     user?: AppleUserFromApple | null;
   }) => {
     const res = await instance.post<ApiResponse<SocialLoginData>>(
       API_PATHS.AUTH.APPLE_LOGIN,
-      {
-        code: params.code,
-        identityToken: params.identityToken,
-        user: params.user ?? null,
-      }
+      { code: params.code, user: params.user ?? null }
     );
 
     return unwrapApiResponse(res.data);

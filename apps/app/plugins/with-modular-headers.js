@@ -3,9 +3,9 @@ const fs = require("fs");
 const path = require("path");
 
 /**
- * Adds `use_modular_headers!` to the Podfile so that Swift pods like
- * AppCheckCore (pulled in by @react-native-google-signin/google-signin v16)
- * can resolve their dependencies (GoogleUtilities, RecaptchaInterop) as modules.
+ * Required for @react-native-google-signin/google-signin v16 without Firebase.
+ * Adds `use_modular_headers!` to the Podfile so AppCheckCore can resolve
+ * GoogleUtilities and RecaptchaInterop as modules.
  */
 module.exports = function withModularHeaders(config) {
   return withDangerousMod(config, [

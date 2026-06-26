@@ -15,8 +15,8 @@ const configure = () => {
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? "",
     iosClientId:
       Platform.OS === "ios"
-        ? (process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ?? undefined)
-        : undefined,
+        ? (process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ?? null)
+        : null,
     offlineAccess: true,
     forceCodeForRefreshToken: true,
   });

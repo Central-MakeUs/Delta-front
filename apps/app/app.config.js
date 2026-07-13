@@ -60,37 +60,27 @@ module.exports = {
     plugins: [
       "expo-router",
       "./plugins/with-modular-headers",
-      ...(process.env.KAKAO_APP_KEY
-        ? [
-            [
-              "@react-native-seoul/kakao-login",
-              {
-                kakaoAppKey: process.env.KAKAO_APP_KEY,
-                kotlinVersion: "2.1.21",
-              },
-            ],
-          ]
-        : []),
-      ...(process.env.GOOGLE_IOS_URL_SCHEME
-        ? [
-            [
-              "@react-native-google-signin/google-signin",
-              {
-                iosUrlScheme: process.env.GOOGLE_IOS_URL_SCHEME,
-                androidClientId: process.env.GOOGLE_ANDROID_CLIENT_ID,
-              },
-            ],
-          ]
-        : []),
+      [
+        "@react-native-seoul/kakao-login",
+        {
+          kakaoAppKey: process.env.KAKAO_APP_KEY,
+          kotlinVersion: "2.1.21",
+        },
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          iosUrlScheme: process.env.GOOGLE_IOS_URL_SCHEME,
+          androidClientId: process.env.GOOGLE_ANDROID_CLIENT_ID,
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,
       reactCompiler: true,
     },
     extra: {
-      eas: {
-        projectId: "bce9a825-13bd-4c0c-a468-d28fd61dbf83",
-      },
+      eas: {},
     },
   },
 };

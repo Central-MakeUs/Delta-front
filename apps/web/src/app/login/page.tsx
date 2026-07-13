@@ -13,15 +13,12 @@ import {
   isReactNativeWebView,
   postNativeGoogleLogin,
   postNativeKakaoLogin,
-  postNativeAppleLogin,
   waitForNativeResult,
   type NativeGoogleLoginResult,
   type NativeKakaoLoginResult,
-  type NativeAppleLoginResult,
 } from "@/shared/apis/auth/native-bridge";
 import { useGoogleLoginMutation } from "@/shared/apis/auth/hooks/use-google-login-mutation";
 import { useKakaoNativeLoginMutation } from "@/shared/apis/auth/hooks/use-kakao-native-login-mutation";
-import { useAppleLoginMutation } from "@/shared/apis/auth/hooks/use-apple-login-mutation";
 import { ROUTES } from "@/shared/constants/routes";
 import { toastError } from "@/shared/components/toast/toast";
 
@@ -29,7 +26,6 @@ const LoginPage = () => {
   const router = useRouter();
   const googleLogin = useGoogleLoginMutation();
   const kakaoNativeLogin = useKakaoNativeLoginMutation();
-  const appleLogin = useAppleLoginMutation();
 
   const handleLoginSuccess = useCallback(
     (isNewUser?: boolean) => {
@@ -86,31 +82,7 @@ const LoginPage = () => {
     );
   };
 
-  const onAppleStart = async () => {
-    if (isReactNativeWebView()) {
-      postNativeAppleLogin();
-      const result = await waitForNativeResult<NativeAppleLoginResult>(
-        "NATIVE_APPLE_LOGIN_RESULT"
-      );
-      if (result.status === "cancelled") return;
-      if (result.status === "unavailable") {
-        toastError("이 기기에서는 Apple 로그인을 사용할 수 없습니다.");
-        return;
-      }
-      if (result.status !== "success") {
-        toastError("Apple 로그인에 실패했습니다. 다시 시도해주세요.");
-        return;
-      }
-      appleLogin.mutate(
-        { code: result.authorizationCode },
-        {
-          onSuccess: (data) => handleLoginSuccess(data?.isNewUser),
-          onError: () =>
-            toastError("Apple 로그인에 실패했습니다. 다시 시도해주세요."),
-        }
-      );
-      return;
-    }
+  const onAppleStart = () => {
     const url = appleOAuth.buildAuthorizeUrl();
     if (!url) {
       toastError("Apple 로그인에 실패했습니다. 다시 시도해주세요.");

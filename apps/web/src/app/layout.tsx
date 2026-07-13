@@ -26,6 +26,9 @@ export const metadata: Metadata = {
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
   },
+  verification: {
+    google: "aU_rJrV6f-ENrTb8__9TKcz65AICPBfpZl5AhPasrlw",
+  },
 };
 
 const SvgSpriteInjector = () => {

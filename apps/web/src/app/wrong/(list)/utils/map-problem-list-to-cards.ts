@@ -1,4 +1,4 @@
-import type { WrongCardProps } from "@/app/wrong/(list)/components/wrong-card";
+import type { WrongCardProps } from "@/shared/components/wrong-card/wrong-card";
 import type { ProblemScrollItem } from "@/shared/apis/problem-list/problem-scroll-types";
 
 const formatDate = (dateString: string): string => {

@@ -1,23 +1,26 @@
 "use client";
 
 import type { KeyboardEventHandler } from "react";
+import clsx from "clsx";
 import Image, { type StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
 import Chip from "@/shared/components/chip/chip";
-import * as s from "@/app/wrong/(list)/components/wrong-card.css";
+import * as s from "@/shared/components/wrong-card/wrong-card.css";
 import Icon from "@/shared/components/icon/icon";
 
 export type WrongCardProps = {
   title: string;
-  date: string;
+  date?: string;
   imageSrc: StaticImageData | string;
   imageAlt: string;
   chips: {
     primary: string;
-    secondary: string[];
+    secondary: readonly string[];
   };
-  href: string;
+  /** 없으면 클릭할 수 없는 미리보기 카드로 렌더링된다 (코치마크 등) */
+  href?: string;
   isCompleted?: boolean;
+  className?: string;
 };
 
 const WrongCard = ({
@@ -28,14 +31,16 @@ const WrongCard = ({
   chips,
   href,
   isCompleted,
+  className,
 }: WrongCardProps) => {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(href);
+    if (href) router.push(href);
   };
 
   const handleKeyDown: KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (!href) return;
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       router.push(href);
@@ -44,11 +49,11 @@ const WrongCard = ({
 
   return (
     <div
-      className={s.card}
+      className={clsx(s.card, !href && s.cardStatic, className)}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      role="link"
-      tabIndex={0}
+      role={href ? "link" : undefined}
+      tabIndex={href ? 0 : undefined}
     >
       <Image
         src={imageSrc}
@@ -85,7 +90,7 @@ const WrongCard = ({
 
         <div className={s.titleSection}>
           <span className={s.title}>{title}</span>
-          <span className={s.date}>{date}</span>
+          {date ? <span className={s.date}>{date}</span> : null}
         </div>
       </div>
     </div>

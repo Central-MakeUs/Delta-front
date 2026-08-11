@@ -50,6 +50,16 @@ export const grid = style({
   paddingBottom: "2rem",
 });
 
+/** 2열 그리드에 맞춰 오답 카드를 디자인의 정방형 비율로 조정 */
+export const sampleCard = style({
+  selectors: {
+    "&&": {
+      aspectRatio: "171 / 173",
+      borderRadius: vars.radius.r8,
+    },
+  },
+});
+
 /** 하단 CTA 위로 카드가 자연스럽게 사라지는 페이드 */
 export const footer = style({
   position: "relative",

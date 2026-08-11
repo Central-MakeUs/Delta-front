@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/shared/components/button/button/button";
 import Icon from "@/shared/components/icon/icon";
 import { toastSuccess } from "@/shared/components/toast/toast";
+import WrongCard from "@/shared/components/wrong-card/wrong-card";
+import sampleImage from "@/shared/assets/images/wrong-sample.png";
 import CoachMarkOverlay from "@/shared/components/coach-mark/coach-mark-overlay/coach-mark-overlay";
-import SampleProblemCard from "@/shared/components/coach-mark/practice-step/components/sample-problem-card";
 import {
   COACH_MARK_PRACTICE,
   COACH_MARK_PRACTICE_SAMPLE,
@@ -60,7 +61,17 @@ export const PracticeStep = () => {
         {Array.from(
           { length: COACH_MARK_PRACTICE_SAMPLE.PREVIEW_COUNT },
           (_, index) => (
-            <SampleProblemCard key={index} />
+            <WrongCard
+              key={index}
+              className={s.sampleCard}
+              title={COACH_MARK_PRACTICE_SAMPLE.TITLE}
+              imageSrc={sampleImage}
+              imageAlt={COACH_MARK_PRACTICE_SAMPLE.TITLE}
+              chips={{
+                primary: COACH_MARK_PRACTICE_SAMPLE.TAG,
+                secondary: COACH_MARK_PRACTICE_SAMPLE.CHIPS,
+              }}
+            />
           )
         )}
       </div>

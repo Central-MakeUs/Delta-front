@@ -4,7 +4,7 @@ import { useMemo, useRef, useEffect, useState } from "react";
 import clsx from "clsx";
 import * as s from "@/app/wrong/(list)/wrong.css";
 import Filter from "@/shared/components/filter/filter";
-import WrongCard from "@/app/wrong/(list)/components/wrong-card";
+import WrongCard from "@/shared/components/wrong-card/wrong-card";
 import BottomSheetSort from "@/shared/components/bottom-sheet/bottom-sheet-sort/bottom-sheet-sort";
 import BottomSheetFilter from "@/shared/components/bottom-sheet/bottom-sheet-filter/bottom-sheet-filter";
 import { useWrongFilters } from "@/app/wrong/(list)/hooks/use-wrong-filters";

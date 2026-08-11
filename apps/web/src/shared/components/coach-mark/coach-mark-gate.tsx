@@ -21,20 +21,25 @@ export const CoachMarkGate = () => {
 
   const isOnGraph = pathname.startsWith(ROUTES.GRAPH.ROOT);
 
+  const shouldAdvanceToGraphNudge =
+    step === COACH_MARK_STEPS.PRACTICE && pathname === ROUTES.WRONG.ROOT;
+
   const shouldAdvanceToHomeNudge =
     step === COACH_MARK_STEPS.GRAPH_NUDGE && isOnGraph;
+
+  const shouldAdvance = shouldAdvanceToGraphNudge || shouldAdvanceToHomeNudge;
 
   const shouldFinish = step === COACH_MARK_STEPS.HOME_NUDGE && !isOnGraph;
 
   useEffect(() => {
-    if (shouldAdvanceToHomeNudge) advanceCoachMark();
-  }, [shouldAdvanceToHomeNudge]);
+    if (shouldAdvance) advanceCoachMark();
+  }, [shouldAdvance]);
 
   useEffect(() => {
     if (shouldFinish) finishCoachMark();
   }, [shouldFinish]);
 
-  if (!step || shouldAdvanceToHomeNudge || shouldFinish) return null;
+  if (!step || shouldAdvance || shouldFinish) return null;
 
   switch (step) {
     case COACH_MARK_STEPS.WELCOME:

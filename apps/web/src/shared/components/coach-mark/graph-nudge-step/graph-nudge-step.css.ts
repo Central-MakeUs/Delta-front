@@ -1,15 +1,16 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
+import { FAB_DOCK_BOTTOM } from "@/shared/components/button/fab-button/fab-button.css";
 
 export const dock = style({
   position: "fixed",
   left: "50%",
-  // "위로 올라가기" 버튼(bottom 9rem + 높이)보다 위에 떠야 한다.
-  bottom: "calc(13.6rem + env(safe-area-inset-bottom))",
+  bottom: FAB_DOCK_BOTTOM,
   transform: "translateX(-50%)",
   width: "100%",
   maxWidth: "43rem",
-  zIndex: vars.zIndex.coachMark,
+  // "위로 올라가기" 버튼(zIndex.bottomSheet)에 가려지지 않아야 한다.
+  zIndex: vars.zIndex.bottomSheet,
   display: "flex",
   justifyContent: "flex-end",
   paddingRight: "1.2rem",

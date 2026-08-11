@@ -12,7 +12,6 @@ import {
   COACH_MARK_PRACTICE,
   COACH_MARK_PRACTICE_SAMPLE,
 } from "@/shared/components/coach-mark/constants/coach-mark";
-import { advanceCoachMark } from "@/shared/components/coach-mark/coach-mark-store";
 import { ROUTES } from "@/shared/constants/routes";
 import * as s from "@/shared/components/coach-mark/practice-step/practice-step.css";
 
@@ -27,9 +26,9 @@ export const PracticeStep = () => {
     toastSuccess(COACH_MARK_PRACTICE.TOAST, 6.5);
   }, []);
 
+  // 오버레이를 유지한 채 이동하고, 단계 전환은 게이트가 오답 목록 도착을 감지해 처리한다.
   const handleViewList = () => {
-    advanceCoachMark();
-    router.push(ROUTES.WRONG.ROOT);
+    router.replace(ROUTES.WRONG.ROOT);
   };
 
   return (

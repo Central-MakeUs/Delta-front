@@ -1,7 +1,9 @@
 "use client";
 
+import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import Icon from "@/shared/components/icon/icon";
+import { useDialogFocus } from "@/shared/hooks/use-dialog-focus";
 import * as fabStyles from "@/shared/components/button/fab-button/fab-button.css";
 import CoachMarkTooltip from "@/shared/components/coach-mark/coach-mark-tooltip/coach-mark-tooltip";
 import { COACH_MARK_REGISTER_NUDGE } from "@/shared/components/coach-mark/constants/coach-mark";
@@ -11,13 +13,21 @@ import * as s from "@/shared/components/coach-mark/register-nudge-step/register-
 
 export const RegisterNudgeStep = () => {
   const router = useRouter();
+  const containerRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(containerRef);
 
   const handleRegister = () => {
     router.push(buildWrongCreateHref(ROUTES.HOME));
   };
 
   return (
-    <div role="dialog" aria-modal="true" aria-label={COACH_MARK_REGISTER_NUDGE.ARIA_LABEL}>
+    <div
+      ref={containerRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={COACH_MARK_REGISTER_NUDGE.ARIA_LABEL}
+      tabIndex={-1}
+    >
       <div className={s.dim} />
 
       <div className={s.dock}>

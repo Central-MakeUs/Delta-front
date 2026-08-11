@@ -3,7 +3,7 @@ import Icon from "@/shared/components/icon/icon";
 import type { IconName } from "@/shared/components/bottom-nav/constants/bottom-nav";
 import * as s from "@/shared/components/bottom-nav/bottom-nav.css";
 
-type Props = {
+type BottomNavItemProps = {
   isActive: boolean;
   label: string;
   iconName: IconName;
@@ -17,7 +17,7 @@ export const BottomNavItem = ({
   iconName,
   onClick,
   isEmphasized = false,
-}: Props) => {
+}: BottomNavItemProps) => {
   return (
     <button
       type="button"

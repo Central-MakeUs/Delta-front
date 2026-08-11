@@ -16,7 +16,6 @@ export const mapProblemListItemToCard = (
   item: ProblemScrollItem
 ): Omit<WrongCardProps, "imageAlt"> & { id: string } => {
   const subjectName = item.subject.name;
-  const unitName = item.unit.name;
   const typeNames = item.types.map((type) => type.name);
 
   return {

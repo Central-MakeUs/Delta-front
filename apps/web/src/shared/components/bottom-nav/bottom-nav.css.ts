@@ -48,6 +48,15 @@ export const item = style({
   cursor: "pointer",
 });
 
+/** 코치마크에서 특정 탭을 도드라져 보이게 하는 강조 카드 */
+export const itemEmphasized = style([
+  bgColor["grayscale-0"],
+  {
+    borderRadius: vars.radius.r12,
+    boxShadow: vars.shadow.e300,
+  },
+]);
+
 export const iconWrap = style({
   width: "2.4rem",
   height: "2.4rem",

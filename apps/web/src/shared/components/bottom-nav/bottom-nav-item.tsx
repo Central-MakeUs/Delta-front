@@ -8,6 +8,8 @@ type Props = {
   label: string;
   iconName: IconName;
   onClick: () => void;
+  /** 코치마크 등에서 탭을 강조할 때 사용 */
+  isEmphasized?: boolean;
 };
 
 export const BottomNavItem = ({
@@ -15,11 +17,12 @@ export const BottomNavItem = ({
   label,
   iconName,
   onClick,
+  isEmphasized = false,
 }: Props) => {
   return (
     <button
       type="button"
-      className={s.item}
+      className={clsx(s.item, isEmphasized && s.itemEmphasized)}
       aria-current={isActive ? "page" : undefined}
       onClick={onClick}
     >

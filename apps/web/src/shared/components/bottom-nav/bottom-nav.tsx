@@ -3,6 +3,8 @@
 import { useRouter, usePathname } from "next/navigation";
 import BottomNavItem from "@/shared/components/bottom-nav/bottom-nav-item";
 import { useBottomNav } from "@/shared/components/bottom-nav/hooks/use-bottom-nav";
+import { useCoachMarkStep } from "@/shared/components/coach-mark/coach-mark-store";
+import { COACH_MARK_STEPS } from "@/shared/components/coach-mark/constants/coach-mark";
 import { ROUTES } from "@/shared/constants/routes";
 import * as s from "@/shared/components/bottom-nav/bottom-nav.css";
 
@@ -11,6 +13,7 @@ export const BottomNav = () => {
   const pathname = usePathname();
 
   const { isHidden, activeKey, items } = useBottomNav();
+  const coachMarkStep = useCoachMarkStep();
 
   const handleNavigate = (href: string) => {
     router.push(href);
@@ -24,6 +27,10 @@ export const BottomNav = () => {
     pathname === ROUTES.GRAPH.ROOT;
 
   const safeActiveKey = isAllowedActiveRoute ? activeKey : undefined;
+
+  // 코치마크 마지막 단계에서는 그래프 탭을 강조한다.
+  const emphasizedKey =
+    coachMarkStep === COACH_MARK_STEPS.GRAPH_NUDGE ? "graph" : undefined;
 
   return (
     <>
@@ -40,6 +47,7 @@ export const BottomNav = () => {
                   label={item.label}
                   iconName={item.iconName(isActive)}
                   onClick={() => handleNavigate(item.href)}
+                  isEmphasized={emphasizedKey === item.key}
                 />
               );
             })}

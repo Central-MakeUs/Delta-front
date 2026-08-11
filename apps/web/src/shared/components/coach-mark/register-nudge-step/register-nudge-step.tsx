@@ -38,7 +38,7 @@ export const RegisterNudgeStep = () => {
           >
             <Icon name="file" size={2.4} className={fabStyles.icon} />
           </button>
-          <Icon name="coach-hand" size={3.6} className={s.hand} />
+          <Icon name="coach-hand" size={6.3} className={s.hand} />
         </div>
       </div>
     </div>

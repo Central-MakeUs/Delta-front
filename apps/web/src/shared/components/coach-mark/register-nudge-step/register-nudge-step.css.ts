@@ -48,8 +48,7 @@ export const tooltip = style({
 
 export const hand = style({
   position: "absolute",
-  right: "-0.8rem",
-  bottom: "-2rem",
-  transform: "rotate(-20deg)",
+  right: "-1.5rem",
+  bottom: "-3.6rem",
   pointerEvents: "none",
 });

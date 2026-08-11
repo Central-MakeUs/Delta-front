@@ -11,6 +11,8 @@ export const COACH_MARK_STEPS = {
   PRACTICE: "practice",
   /** 오답 목록 - 그래프 탭 유도 */
   GRAPH_NUDGE: "graph-nudge",
+  /** 그래프 - 홈으로 돌아가 직접 등록 유도 */
+  HOME_NUDGE: "home-nudge",
 } as const;
 
 /**
@@ -22,6 +24,7 @@ export const COACH_MARK_SEQUENCE = [
   COACH_MARK_STEPS.REGISTER_NUDGE,
   COACH_MARK_STEPS.PRACTICE,
   COACH_MARK_STEPS.GRAPH_NUDGE,
+  COACH_MARK_STEPS.HOME_NUDGE,
 ] as const;
 
 export const COACH_MARK_WELCOME = {
@@ -56,6 +59,10 @@ export const COACH_MARK_PRACTICE_SAMPLE = {
 
 export const COACH_MARK_GRAPH_NUDGE = {
   TOOLTIP: "이제 그래프로 한눈에 파악해 볼까요?",
+} as const;
+
+export const COACH_MARK_HOME_NUDGE = {
+  TOOLTIP: "이제 홈으로 이동해 직접 문제를 등록해 볼까요?",
 } as const;
 
 export const COACH_MARK_WELCOME_FEATURES: readonly CoachMarkFeature[] = [

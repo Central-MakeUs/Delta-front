@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { COACH_MARK_STEPS } from "@/shared/components/coach-mark/constants/coach-mark";
 import {
+  advanceCoachMark,
   finishCoachMark,
   useCoachMarkStep,
 } from "@/shared/components/coach-mark/coach-mark-store";
@@ -11,6 +12,7 @@ import WelcomeStep from "@/shared/components/coach-mark/welcome-step/welcome-ste
 import RegisterNudgeStep from "@/shared/components/coach-mark/register-nudge-step/register-nudge-step";
 import PracticeStep from "@/shared/components/coach-mark/practice-step/practice-step";
 import GraphNudgeStep from "@/shared/components/coach-mark/graph-nudge-step/graph-nudge-step";
+import HomeNudgeStep from "@/shared/components/coach-mark/home-nudge-step/home-nudge-step";
 import { ROUTES } from "@/shared/constants/routes";
 
 /**
@@ -21,16 +23,24 @@ export const CoachMarkGate = () => {
   const pathname = usePathname();
   const step = useCoachMarkStep();
 
-  // 마지막 단계에서 그래프에 도달하면(말풍선이든 탭이든) 코치마크를 종료한다.
-  const shouldFinish =
-    step === COACH_MARK_STEPS.GRAPH_NUDGE &&
-    pathname.startsWith(ROUTES.GRAPH.ROOT);
+  const isOnGraph = pathname.startsWith(ROUTES.GRAPH.ROOT);
+
+  // 그래프에 도달하면(말풍선이든 탭이든) 홈 복귀 유도 단계로 넘어간다.
+  const shouldAdvanceToHomeNudge =
+    step === COACH_MARK_STEPS.GRAPH_NUDGE && isOnGraph;
+
+  // 홈 복귀 유도 단계에서 그래프를 벗어나면 코치마크를 종료한다.
+  const shouldFinish = step === COACH_MARK_STEPS.HOME_NUDGE && !isOnGraph;
+
+  useEffect(() => {
+    if (shouldAdvanceToHomeNudge) advanceCoachMark();
+  }, [shouldAdvanceToHomeNudge]);
 
   useEffect(() => {
     if (shouldFinish) finishCoachMark();
   }, [shouldFinish]);
 
-  if (!step || shouldFinish) return null;
+  if (!step || shouldAdvanceToHomeNudge || shouldFinish) return null;
 
   switch (step) {
     case COACH_MARK_STEPS.WELCOME:
@@ -44,6 +54,9 @@ export const CoachMarkGate = () => {
 
     case COACH_MARK_STEPS.GRAPH_NUDGE:
       return pathname === ROUTES.WRONG.ROOT ? <GraphNudgeStep /> : null;
+
+    case COACH_MARK_STEPS.HOME_NUDGE:
+      return <HomeNudgeStep />;
   }
 };
 

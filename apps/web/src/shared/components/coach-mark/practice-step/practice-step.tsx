@@ -16,7 +16,6 @@ import { advanceCoachMark } from "@/shared/components/coach-mark/coach-mark-stor
 import { ROUTES } from "@/shared/constants/routes";
 import * as s from "@/shared/components/coach-mark/practice-step/practice-step.css";
 
-/** 문제 등록 진입 시 연습 문제 10개로 시작하도록 안내하는 화면 */
 export const PracticeStep = () => {
   const router = useRouter();
   const hasToastedRef = useRef(false);

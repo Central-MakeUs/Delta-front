@@ -15,21 +15,15 @@ import GraphNudgeStep from "@/shared/components/coach-mark/graph-nudge-step/grap
 import HomeNudgeStep from "@/shared/components/coach-mark/home-nudge-step/home-nudge-step";
 import { ROUTES } from "@/shared/constants/routes";
 
-/**
- * 현재 코치마크 단계와 경로를 보고 해당 단계 화면을 띄운다.
- * 코치마크는 온보딩을 마친 직후에만 시작되며, 각 단계는 자신의 대상 경로에서만 렌더링된다.
- */
 export const CoachMarkGate = () => {
   const pathname = usePathname();
   const step = useCoachMarkStep();
 
   const isOnGraph = pathname.startsWith(ROUTES.GRAPH.ROOT);
 
-  // 그래프에 도달하면(말풍선이든 탭이든) 홈 복귀 유도 단계로 넘어간다.
   const shouldAdvanceToHomeNudge =
     step === COACH_MARK_STEPS.GRAPH_NUDGE && isOnGraph;
 
-  // 홈 복귀 유도 단계에서 그래프를 벗어나면 코치마크를 종료한다.
   const shouldFinish = step === COACH_MARK_STEPS.HOME_NUDGE && !isOnGraph;
 
   useEffect(() => {

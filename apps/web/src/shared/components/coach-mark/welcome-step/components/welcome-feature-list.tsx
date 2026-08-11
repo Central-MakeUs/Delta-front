@@ -6,7 +6,6 @@ type WelcomeFeatureListProps = {
   items: readonly CoachMarkFeature[];
 };
 
-/** 아이콘 원 + 제목 + 설명이 점선으로 이어지는 소개 리스트 */
 export const WelcomeFeatureList = ({ items }: WelcomeFeatureListProps) => {
   return (
     <ul className={s.list}>

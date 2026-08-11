@@ -9,7 +9,6 @@ type CoachMarkTooltipProps = {
   className?: string;
 };
 
-/** 코치마크에서 다음 행동을 안내하는 어두운 말풍선 */
 export const CoachMarkTooltip = ({
   message,
   onClick,

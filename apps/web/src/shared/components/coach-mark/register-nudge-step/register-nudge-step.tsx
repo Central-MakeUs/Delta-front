@@ -10,10 +10,6 @@ import { ROUTES } from "@/shared/constants/routes";
 import { buildWrongCreateHref } from "@/shared/utils/wrong-create-href";
 import * as s from "@/shared/components/coach-mark/register-nudge-step/register-nudge-step.css";
 
-/**
- * 홈 화면을 하얗게 덮고 FAB만 스포트라이트로 남겨 문제 등록을 유도한다.
- * 실제 FAB는 딤 아래에 있으므로, 같은 스타일의 FAB를 딤 위에 그대로 올린다.
- */
 export const RegisterNudgeStep = () => {
   const router = useRouter();
 

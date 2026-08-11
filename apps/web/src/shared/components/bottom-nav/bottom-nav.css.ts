@@ -48,7 +48,6 @@ export const item = style({
   cursor: "pointer",
 });
 
-/** 코치마크에서 특정 탭을 도드라져 보이게 하는 강조 카드 */
 export const itemEmphasized = style([
   bgColor["grayscale-0"],
   {

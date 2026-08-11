@@ -1,7 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 
-/** FAB 크기/위치 — 코치마크 스포트라이트 등 FAB에 정렬해야 하는 곳에서 재사용 */
 export const FAB_SIZE = "6.4rem";
 export const FAB_DOCK_BOTTOM = "calc(8.7rem + env(safe-area-inset-bottom))";
 

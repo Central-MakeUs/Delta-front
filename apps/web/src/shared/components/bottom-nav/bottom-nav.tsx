@@ -28,7 +28,6 @@ export const BottomNav = () => {
 
   const safeActiveKey = isAllowedActiveRoute ? activeKey : undefined;
 
-  // 코치마크 마지막 단계에서는 그래프 탭을 강조한다.
   const emphasizedKey =
     coachMarkStep === COACH_MARK_STEPS.GRAPH_NUDGE ? "graph" : undefined;
 

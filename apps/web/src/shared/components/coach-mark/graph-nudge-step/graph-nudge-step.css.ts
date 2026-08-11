@@ -1,7 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 
-/** 바텀 내비게이션(높이 6.4rem) 바로 위, 그래프 탭 근처에 말풍선을 띄우는 독 */
 export const dock = style({
   position: "fixed",
   left: "50%",

@@ -8,7 +8,6 @@ type Props = {
   label: string;
   iconName: IconName;
   onClick: () => void;
-  /** 코치마크 등에서 탭을 강조할 때 사용 */
   isEmphasized?: boolean;
 };
 

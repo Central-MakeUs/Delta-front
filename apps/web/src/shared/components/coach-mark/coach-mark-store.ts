@@ -10,10 +10,6 @@ import type {
   CoachMarkStep,
 } from "@/shared/components/coach-mark/types/coach-mark";
 
-/**
- * 코치마크는 홈 → 문제 등록 플로우까지 여러 라우트에 걸쳐 이어지므로
- * 모듈 단위 스토어 + localStorage 로 진행 단계를 유지한다.
- */
 const listeners = new Set<() => void>();
 
 let state: CoachMarkState = null;
@@ -87,12 +83,10 @@ const subscribe = (listener: () => void) => {
   };
 };
 
-/** 온보딩 완료 직후에만 호출한다. 첫 단계부터 코치마크를 시작한다. */
 export const startCoachMark = () => {
   setState(COACH_MARK_SEQUENCE[0]);
 };
 
-/** 다음 단계로 이동. 마지막 단계였다면 코치마크를 종료한다. */
 export const advanceCoachMark = () => {
   const current = getSnapshot();
   if (!current) return;
@@ -101,7 +95,6 @@ export const advanceCoachMark = () => {
   setState(COACH_MARK_SEQUENCE[nextIndex] ?? null);
 };
 
-/** 코치마크를 즉시 종료한다. */
 export const finishCoachMark = () => {
   setState(null);
 };

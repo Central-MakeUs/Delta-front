@@ -11,9 +11,7 @@ import {
 import { advanceCoachMark } from "@/shared/components/coach-mark/coach-mark-store";
 import * as s from "@/shared/components/coach-mark/welcome-step/welcome-step.css";
 
-/** 온보딩 직후 홈에서 가장 먼저 보여주는 환영 화면 */
 export const WelcomeStep = () => {
-  // 홈에 그대로 머무르고, 다음 단계(FAB 등록 유도)가 이어서 표시된다.
   const handleStart = () => {
     advanceCoachMark();
   };

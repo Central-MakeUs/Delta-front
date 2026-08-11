@@ -3,7 +3,6 @@ import { bgColor, color } from "@/shared/styles/color.css";
 import { typo } from "@/shared/styles/typography.css";
 import { vars } from "@/shared/styles/theme.css";
 
-/** 연습 문제 화면은 상단부터 꽉 차게 쓰므로 오버레이 기본 여백을 줄인다. */
 export const body = style({
   selectors: {
     "&&": {
@@ -50,7 +49,6 @@ export const grid = style({
   paddingBottom: "2rem",
 });
 
-/** 2열 그리드에 맞춰 오답 카드를 디자인의 정방형 비율로 조정 */
 export const sampleCard = style({
   selectors: {
     "&&": {
@@ -60,7 +58,6 @@ export const sampleCard = style({
   },
 });
 
-/** 하단 CTA 위로 카드가 자연스럽게 사라지는 페이드 */
 export const footer = style({
   position: "relative",
   selectors: {

@@ -3,7 +3,6 @@ import * as s from "@/shared/components/coach-mark/welcome-step/components/welco
 
 const GRADIENT_ID = "coach-mark-welcome-hero-gradient";
 
-/** 환영 화면 중앙의 세모 심볼. 로고와 동일한 삼각형에 그라데이션을 입힌다. */
 export const WelcomeHero = () => {
   return (
     <svg

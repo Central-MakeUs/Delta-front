@@ -52,7 +52,6 @@ export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
 
       await qc.invalidateQueries({ queryKey: userKeys.all });
       setAuthFresh();
-      // 온보딩을 마친 사용자에게만 홈에서부터 코치마크를 보여준다.
       startCoachMark();
       router.replace(ROUTES.HOME);
     } catch (e: unknown) {

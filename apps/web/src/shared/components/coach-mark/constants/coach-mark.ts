@@ -3,22 +3,13 @@ import type { CoachMarkFeature } from "@/shared/components/coach-mark/types/coac
 export const COACH_MARK_STORAGE_KEY = "app:coach-mark-step" as const;
 
 export const COACH_MARK_STEPS = {
-  /** 홈 - 환영 화면 */
   WELCOME: "welcome",
-  /** 홈 - FAB로 문제 등록 유도 */
   REGISTER_NUDGE: "register-nudge",
-  /** 문제 등록 - 연습 문제로 시작하기 */
   PRACTICE: "practice",
-  /** 오답 목록 - 그래프 탭 유도 */
   GRAPH_NUDGE: "graph-nudge",
-  /** 그래프 - 홈으로 돌아가 직접 등록 유도 */
   HOME_NUDGE: "home-nudge",
 } as const;
 
-/**
- * 코치마크 진행 순서.
- * 새 단계를 추가할 때는 이 배열에만 순서대로 넣으면 된다.
- */
 export const COACH_MARK_SEQUENCE = [
   COACH_MARK_STEPS.WELCOME,
   COACH_MARK_STEPS.REGISTER_NUDGE,
@@ -48,9 +39,7 @@ export const COACH_MARK_PRACTICE = {
 } as const;
 
 export const COACH_MARK_PRACTICE_SAMPLE = {
-  /** 등록되는 연습 문제 개수 */
   COUNT: 10,
-  /** 화면에 미리보기로 노출할 카드 개수 */
   PREVIEW_COUNT: 6,
   TITLE: "공통수학1 문제",
   TAG: "공통수학1",

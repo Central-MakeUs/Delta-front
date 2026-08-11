@@ -4,7 +4,6 @@ import { typo } from "@/shared/styles/typography.css";
 import { vars } from "@/shared/styles/theme.css";
 
 const CIRCLE_SIZE = "4.2rem";
-/** 원의 반지름. 점선 커넥터를 원 아래에서 시작시키는 데 쓴다. */
 const CIRCLE_RADIUS = "2.1rem";
 
 export const list = style({
@@ -23,7 +22,6 @@ export const item = style({
   padding: "1.2rem 0",
 
   selectors: {
-    // 아이콘 원과 원 사이를 잇는 점선
     "&:not(:last-child)::after": {
       content: '""',
       position: "absolute",

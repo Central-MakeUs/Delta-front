@@ -17,7 +17,6 @@ export type WrongCardProps = {
     primary: string;
     secondary: readonly string[];
   };
-  /** 없으면 클릭할 수 없는 미리보기 카드로 렌더링된다 (코치마크 등) */
   href?: string;
   isCompleted?: boolean;
   className?: string;

@@ -3,7 +3,6 @@ import { bgColor } from "@/shared/styles/color.css";
 import { vars } from "@/shared/styles/theme.css";
 import { APP_BAR_HEIGHT } from "@/shared/components/app-bar/constants/app-bar";
 
-/** 앱바는 그대로 보이도록 그 아래부터 화면을 덮는다. */
 export const overlay = style([
   bgColor["grayscale-0"],
   {

@@ -8,6 +8,7 @@ import { ROUTES } from "@/shared/constants/routes";
 import { userApi } from "@/shared/apis/user/user-api";
 import { userKeys } from "@/shared/apis/user/user-keys";
 import { useUploadMyProfileImageMutation } from "@/shared/apis/profile-image/hooks/use-upload-my-profile-image-mutation";
+import { startCoachMark } from "@/shared/components/coach-mark/coach-mark-store";
 import type { LoginInfoFormData } from "./use-login-info-form";
 
 const getErrorMessage = (e: unknown): string => {
@@ -51,6 +52,8 @@ export const useOnboardingSubmit = ({ formData, isAgreed }: Params) => {
 
       await qc.invalidateQueries({ queryKey: userKeys.all });
       setAuthFresh();
+      // 온보딩을 마친 사용자에게만 홈에서부터 코치마크를 보여준다.
+      startCoachMark();
       router.replace(ROUTES.HOME);
     } catch (e: unknown) {
       if (process.env.NODE_ENV !== "production") {

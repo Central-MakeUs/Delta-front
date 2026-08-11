@@ -1,0 +1,52 @@
+import { style } from "@vanilla-extract/css";
+import { bgColor } from "@/shared/styles/color.css";
+import { vars } from "@/shared/styles/theme.css";
+import { APP_BAR_HEIGHT } from "@/shared/components/app-bar/constants/app-bar";
+
+/** 앱바는 그대로 보이도록 그 아래부터 화면을 덮는다. */
+export const overlay = style([
+  bgColor["grayscale-0"],
+  {
+    position: "fixed",
+    top: APP_BAR_HEIGHT,
+    bottom: 0,
+    left: "50%",
+    transform: "translateX(-50%)",
+    width: "100%",
+    maxWidth: "43rem",
+    zIndex: vars.zIndex.coachMark,
+    display: "flex",
+    flexDirection: "column",
+    boxSizing: "border-box",
+
+    "@supports": {
+      "(top: env(safe-area-inset-top))": {
+        top: `calc(${APP_BAR_HEIGHT} + env(safe-area-inset-top))`,
+      },
+    },
+  },
+]);
+
+export const body = style({
+  flex: "1 1 auto",
+  minHeight: 0,
+  overflowY: "auto",
+  overscrollBehavior: "contain",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  padding: "6.4rem 1.6rem 0",
+  boxSizing: "border-box",
+});
+
+export const footer = style({
+  flex: "0 0 auto",
+  padding: "1.6rem",
+  boxSizing: "border-box",
+
+  "@supports": {
+    "(padding-bottom: env(safe-area-inset-bottom))": {
+      paddingBottom: "calc(1.6rem + env(safe-area-inset-bottom))",
+    },
+  },
+});

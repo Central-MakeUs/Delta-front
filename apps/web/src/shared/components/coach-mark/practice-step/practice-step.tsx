@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/shared/components/button/button/button";
 import Icon from "@/shared/components/icon/icon";
-import { toastSuccess } from "@/shared/components/toast/toast";
 import WrongCard from "@/shared/components/wrong-card/wrong-card";
 import sampleImage from "@/shared/assets/images/wrong-sample.png";
 import CoachMarkOverlay from "@/shared/components/coach-mark/coach-mark-overlay/coach-mark-overlay";
@@ -12,21 +10,15 @@ import {
   COACH_MARK_PRACTICE,
   COACH_MARK_PRACTICE_SAMPLE,
 } from "@/shared/components/coach-mark/constants/coach-mark";
+import { useRegisterPracticeProblems } from "@/shared/components/coach-mark/practice-step/hooks/use-register-practice-problems";
 import { ROUTES } from "@/shared/constants/routes";
 import * as s from "@/shared/components/coach-mark/practice-step/practice-step.css";
 
 export const PracticeStep = () => {
   const router = useRouter();
-  const hasToastedRef = useRef(false);
 
-  // TODO: 연습 문제 등록 API가 준비되면 여기서 호출하고, 성공 시 토스트를 띄운다.
-  useEffect(() => {
-    if (hasToastedRef.current) return;
-    hasToastedRef.current = true;
-    toastSuccess(COACH_MARK_PRACTICE.TOAST, 6.5);
-  }, []);
+  useRegisterPracticeProblems();
 
-  // 오버레이를 유지한 채 이동하고, 단계 전환은 게이트가 오답 목록 도착을 감지해 처리한다.
   const handleViewList = () => {
     router.replace(ROUTES.WRONG.ROOT);
   };
@@ -56,22 +48,19 @@ export const PracticeStep = () => {
       </div>
 
       <div className={s.grid}>
-        {Array.from(
-          { length: COACH_MARK_PRACTICE_SAMPLE.PREVIEW_COUNT },
-          (_, index) => (
-            <WrongCard
-              key={index}
-              className={s.sampleCard}
-              title={COACH_MARK_PRACTICE_SAMPLE.TITLE}
-              imageSrc={sampleImage}
-              imageAlt={COACH_MARK_PRACTICE_SAMPLE.TITLE}
-              chips={{
-                primary: COACH_MARK_PRACTICE_SAMPLE.TAG,
-                secondary: COACH_MARK_PRACTICE_SAMPLE.CHIPS,
-              }}
-            />
-          )
-        )}
+        {COACH_MARK_PRACTICE_SAMPLE.PREVIEW_CARD_IDS.map((id) => (
+          <WrongCard
+            key={id}
+            className={s.sampleCard}
+            title={COACH_MARK_PRACTICE_SAMPLE.TITLE}
+            imageSrc={sampleImage}
+            imageAlt={COACH_MARK_PRACTICE_SAMPLE.TITLE}
+            chips={{
+              primary: COACH_MARK_PRACTICE_SAMPLE.TAG,
+              secondary: COACH_MARK_PRACTICE_SAMPLE.CHIPS,
+            }}
+          />
+        ))}
       </div>
     </CoachMarkOverlay>
   );

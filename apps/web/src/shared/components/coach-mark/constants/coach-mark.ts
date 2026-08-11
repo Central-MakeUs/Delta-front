@@ -35,15 +35,27 @@ export const COACH_MARK_PRACTICE = {
   TITLE: "연습 문제로 시작해볼까요?",
   DESCRIPTION: "연습용 10문제로 세모를 시작해봐요!",
   TOAST: "연습 문제 10개를 등록했어요.",
+  TOAST_FAIL: "연습 문제 등록에 실패했어요.",
   CTA_LABEL: "오답 목록으로 보기",
 } as const;
 
 export const COACH_MARK_PRACTICE_SAMPLE = {
   COUNT: 10,
-  PREVIEW_COUNT: 6,
+  PREVIEW_CARD_IDS: [
+    "practice-preview-1",
+    "practice-preview-2",
+    "practice-preview-3",
+    "practice-preview-4",
+    "practice-preview-5",
+    "practice-preview-6",
+  ],
   TITLE: "공통수학1 문제",
   TAG: "공통수학1",
   CHIPS: ["다항식", "절댓값"],
+  FILE_NAME_PREFIX: "practice-sample",
+  UNIT_ID: "U_C1_POLY",
+  TYPE_IDS: ["T_ABS"],
+  ANSWER_CHOICE_NO: 4,
 } as const;
 
 export const COACH_MARK_GRAPH_NUDGE = {

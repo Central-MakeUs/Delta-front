@@ -13,7 +13,6 @@ import { advanceCoachMark } from "@/shared/components/coach-mark/coach-mark-stor
 import * as s from "@/shared/components/coach-mark/practice-step/practice-step.css";
 
 export const PracticeStep = () => {
-  // 안내를 닫고 아래에 있는 실제 문제 등록 플로우를 직접 진행하게 한다.
   const handleStartPractice = () => {
     advanceCoachMark();
   };

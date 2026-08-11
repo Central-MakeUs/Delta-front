@@ -11,10 +11,6 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(", ");
 
-/**
- * 다이얼로그가 열리면 내부로 포커스를 이동시키고 Tab 이동을 내부에 가둔다.
- * 닫히면 이전에 포커스돼 있던 요소로 복원한다.
- */
 export const useDialogFocus = (containerRef: RefObject<HTMLElement | null>) => {
   useEffect(() => {
     const container = containerRef.current;

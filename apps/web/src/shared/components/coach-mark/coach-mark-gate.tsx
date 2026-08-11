@@ -23,15 +23,12 @@ export const CoachMarkGate = () => {
 
   const isOnGraph = pathname.startsWith(ROUTES.GRAPH.ROOT);
 
-  // 각 단계는 예상 경로에 도착하면 다음 단계로 넘어가고,
-  // 흐름을 벗어난 경로로 이동하면 투어를 완전히 종료한다.
   const action: GateAction = (() => {
     switch (step) {
       case null:
         return null;
 
       case COACH_MARK_STEPS.WELCOME:
-        // 온보딩 제출 직후에는 아직 /login/info에 머물러 있다.
         return pathname === ROUTES.HOME ||
           pathname === ROUTES.AUTH.SIGNUP_INFO
           ? null
@@ -41,11 +38,9 @@ export const CoachMarkGate = () => {
         if (pathname === ROUTES.WRONG.CREATE) return "advance";
         return pathname === ROUTES.HOME ? null : "finish";
 
-      // 안내를 닫으면(advance) 유저가 실제 등록 플로우를 직접 진행한다.
       case COACH_MARK_STEPS.PRACTICE:
         return pathname.startsWith(ROUTES.WRONG.CREATE) ? null : "finish";
 
-      // 등록 플로우(/wrong 하위 경로)를 도는 동안에는 투어를 유지한다.
       case COACH_MARK_STEPS.GRAPH_NUDGE:
         if (isOnGraph) return "advance";
         return pathname.startsWith(ROUTES.WRONG.ROOT) ? null : "finish";

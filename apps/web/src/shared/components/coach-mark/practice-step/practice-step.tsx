@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Button } from "@/shared/components/button/button/button";
 import Icon from "@/shared/components/icon/icon";
 import WrongCard from "@/shared/components/wrong-card/wrong-card";
@@ -10,17 +9,13 @@ import {
   COACH_MARK_PRACTICE,
   COACH_MARK_PRACTICE_SAMPLE,
 } from "@/shared/components/coach-mark/constants/coach-mark";
-import { useRegisterPracticeProblems } from "@/shared/components/coach-mark/practice-step/hooks/use-register-practice-problems";
-import { ROUTES } from "@/shared/constants/routes";
+import { advanceCoachMark } from "@/shared/components/coach-mark/coach-mark-store";
 import * as s from "@/shared/components/coach-mark/practice-step/practice-step.css";
 
 export const PracticeStep = () => {
-  const router = useRouter();
-
-  useRegisterPracticeProblems();
-
-  const handleViewList = () => {
-    router.replace(ROUTES.WRONG.ROOT);
+  // 안내를 닫고 아래에 있는 실제 문제 등록 플로우를 직접 진행하게 한다.
+  const handleStartPractice = () => {
+    advanceCoachMark();
   };
 
   return (
@@ -33,7 +28,7 @@ export const PracticeStep = () => {
           fullWidth
           tone="complete"
           label={COACH_MARK_PRACTICE.CTA_LABEL}
-          onClick={handleViewList}
+          onClick={handleStartPractice}
         />
       }
     >

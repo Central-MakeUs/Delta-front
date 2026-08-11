@@ -41,13 +41,14 @@ export const CoachMarkGate = () => {
         if (pathname === ROUTES.WRONG.CREATE) return "advance";
         return pathname === ROUTES.HOME ? null : "finish";
 
+      // 안내를 닫으면(advance) 유저가 실제 등록 플로우를 직접 진행한다.
       case COACH_MARK_STEPS.PRACTICE:
-        if (pathname === ROUTES.WRONG.ROOT) return "advance";
-        return pathname === ROUTES.WRONG.CREATE ? null : "finish";
+        return pathname.startsWith(ROUTES.WRONG.CREATE) ? null : "finish";
 
+      // 등록 플로우(/wrong 하위 경로)를 도는 동안에는 투어를 유지한다.
       case COACH_MARK_STEPS.GRAPH_NUDGE:
         if (isOnGraph) return "advance";
-        return pathname === ROUTES.WRONG.ROOT ? null : "finish";
+        return pathname.startsWith(ROUTES.WRONG.ROOT) ? null : "finish";
 
       case COACH_MARK_STEPS.HOME_NUDGE:
         return isOnGraph ? null : "finish";
@@ -69,10 +70,10 @@ export const CoachMarkGate = () => {
       return <RegisterNudgeStep />;
 
     case COACH_MARK_STEPS.PRACTICE:
-      return <PracticeStep />;
+      return pathname === ROUTES.WRONG.CREATE ? <PracticeStep /> : null;
 
     case COACH_MARK_STEPS.GRAPH_NUDGE:
-      return <GraphNudgeStep />;
+      return pathname === ROUTES.WRONG.ROOT ? <GraphNudgeStep /> : null;
 
     case COACH_MARK_STEPS.HOME_NUDGE:
       return <HomeNudgeStep />;

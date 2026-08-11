@@ -5,7 +5,6 @@ import Icon from "@/shared/components/icon/icon";
 import * as fabStyles from "@/shared/components/button/fab-button/fab-button.css";
 import CoachMarkTooltip from "@/shared/components/coach-mark/coach-mark-tooltip/coach-mark-tooltip";
 import { COACH_MARK_REGISTER_NUDGE } from "@/shared/components/coach-mark/constants/coach-mark";
-import { advanceCoachMark } from "@/shared/components/coach-mark/coach-mark-store";
 import { ROUTES } from "@/shared/constants/routes";
 import { buildWrongCreateHref } from "@/shared/utils/wrong-create-href";
 import * as s from "@/shared/components/coach-mark/register-nudge-step/register-nudge-step.css";
@@ -14,7 +13,6 @@ export const RegisterNudgeStep = () => {
   const router = useRouter();
 
   const handleRegister = () => {
-    advanceCoachMark();
     router.push(buildWrongCreateHref(ROUTES.HOME));
   };
 

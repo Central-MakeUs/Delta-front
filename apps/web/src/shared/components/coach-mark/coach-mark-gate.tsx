@@ -15,44 +15,64 @@ import GraphNudgeStep from "@/shared/components/coach-mark/graph-nudge-step/grap
 import HomeNudgeStep from "@/shared/components/coach-mark/home-nudge-step/home-nudge-step";
 import { ROUTES } from "@/shared/constants/routes";
 
+type GateAction = "advance" | "finish" | null;
+
 export const CoachMarkGate = () => {
   const pathname = usePathname();
   const step = useCoachMarkStep();
 
   const isOnGraph = pathname.startsWith(ROUTES.GRAPH.ROOT);
 
-  const shouldAdvanceToGraphNudge =
-    step === COACH_MARK_STEPS.PRACTICE && pathname === ROUTES.WRONG.ROOT;
+  // 각 단계는 예상 경로에 도착하면 다음 단계로 넘어가고,
+  // 흐름을 벗어난 경로로 이동하면 투어를 완전히 종료한다.
+  const action: GateAction = (() => {
+    switch (step) {
+      case null:
+        return null;
 
-  const shouldAdvanceToHomeNudge =
-    step === COACH_MARK_STEPS.GRAPH_NUDGE && isOnGraph;
+      case COACH_MARK_STEPS.WELCOME:
+        // 온보딩 제출 직후에는 아직 /login/info에 머물러 있다.
+        return pathname === ROUTES.HOME ||
+          pathname === ROUTES.AUTH.SIGNUP_INFO
+          ? null
+          : "finish";
 
-  const shouldAdvance = shouldAdvanceToGraphNudge || shouldAdvanceToHomeNudge;
+      case COACH_MARK_STEPS.REGISTER_NUDGE:
+        if (pathname === ROUTES.WRONG.CREATE) return "advance";
+        return pathname === ROUTES.HOME ? null : "finish";
 
-  const shouldFinish = step === COACH_MARK_STEPS.HOME_NUDGE && !isOnGraph;
+      case COACH_MARK_STEPS.PRACTICE:
+        if (pathname === ROUTES.WRONG.ROOT) return "advance";
+        return pathname === ROUTES.WRONG.CREATE ? null : "finish";
+
+      case COACH_MARK_STEPS.GRAPH_NUDGE:
+        if (isOnGraph) return "advance";
+        return pathname === ROUTES.WRONG.ROOT ? null : "finish";
+
+      case COACH_MARK_STEPS.HOME_NUDGE:
+        return isOnGraph ? null : "finish";
+    }
+  })();
 
   useEffect(() => {
-    if (shouldAdvance) advanceCoachMark();
-  }, [shouldAdvance]);
+    if (action === "advance") advanceCoachMark();
+    if (action === "finish") finishCoachMark();
+  }, [action, step, pathname]);
 
-  useEffect(() => {
-    if (shouldFinish) finishCoachMark();
-  }, [shouldFinish]);
-
-  if (!step || shouldAdvance || shouldFinish) return null;
+  if (!step || action) return null;
 
   switch (step) {
     case COACH_MARK_STEPS.WELCOME:
       return pathname === ROUTES.HOME ? <WelcomeStep /> : null;
 
     case COACH_MARK_STEPS.REGISTER_NUDGE:
-      return pathname === ROUTES.HOME ? <RegisterNudgeStep /> : null;
+      return <RegisterNudgeStep />;
 
     case COACH_MARK_STEPS.PRACTICE:
-      return pathname === ROUTES.WRONG.CREATE ? <PracticeStep /> : null;
+      return <PracticeStep />;
 
     case COACH_MARK_STEPS.GRAPH_NUDGE:
-      return pathname === ROUTES.WRONG.ROOT ? <GraphNudgeStep /> : null;
+      return <GraphNudgeStep />;
 
     case COACH_MARK_STEPS.HOME_NUDGE:
       return <HomeNudgeStep />;

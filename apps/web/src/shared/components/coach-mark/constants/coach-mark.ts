@@ -60,6 +60,7 @@ export const COACH_MARK_PRACTICE_SAMPLE = {
 
 export const COACH_MARK_GRAPH_NUDGE = {
   TOOLTIP: "이제 그래프로 한눈에 파악해 볼까요?",
+  SHOW_DELAY_MS: 10000,
 } as const;
 
 export const COACH_MARK_HOME_NUDGE = {

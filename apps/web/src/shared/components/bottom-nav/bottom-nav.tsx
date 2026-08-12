@@ -4,7 +4,11 @@ import { useRouter, usePathname } from "next/navigation";
 import BottomNavItem from "@/shared/components/bottom-nav/bottom-nav-item";
 import { useBottomNav } from "@/shared/components/bottom-nav/hooks/use-bottom-nav";
 import { useCoachMarkStep } from "@/shared/components/coach-mark/coach-mark-store";
-import { COACH_MARK_STEPS } from "@/shared/components/coach-mark/constants/coach-mark";
+import {
+  COACH_MARK_GRAPH_NUDGE,
+  COACH_MARK_STEPS,
+} from "@/shared/components/coach-mark/constants/coach-mark";
+import { useDelayedVisible } from "@/shared/components/coach-mark/hooks/use-delayed-visible";
 import { ROUTES } from "@/shared/constants/routes";
 import * as s from "@/shared/components/bottom-nav/bottom-nav.css";
 
@@ -14,6 +18,10 @@ export const BottomNav = () => {
 
   const { isHidden, activeKey, items } = useBottomNav();
   const coachMarkStep = useCoachMarkStep();
+  const isGraphNudgeVisible = useDelayedVisible(
+    coachMarkStep === COACH_MARK_STEPS.GRAPH_NUDGE,
+    COACH_MARK_GRAPH_NUDGE.SHOW_DELAY_MS
+  );
 
   const handleNavigate = (href: string) => {
     router.push(href);
@@ -28,8 +36,7 @@ export const BottomNav = () => {
 
   const safeActiveKey = isAllowedActiveRoute ? activeKey : undefined;
 
-  const emphasizedKey =
-    coachMarkStep === COACH_MARK_STEPS.GRAPH_NUDGE ? "graph" : undefined;
+  const emphasizedKey = isGraphNudgeVisible ? "graph" : undefined;
 
   return (
     <>

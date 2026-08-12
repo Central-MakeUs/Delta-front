@@ -4,7 +4,7 @@ import { riseIn } from "@/shared/components/coach-mark/coach-mark-animation.css"
 
 export const dock = style({
   position: "fixed",
-  right: "3rem",
+  left: "50%",
   bottom: "calc(6.5rem + env(safe-area-inset-bottom))",
   transform: "translateX(-50%)",
   width: "100%",
@@ -12,7 +12,7 @@ export const dock = style({
   zIndex: vars.zIndex.bottomSheet,
   display: "flex",
   justifyContent: "flex-end",
-  paddingRight: "1.2rem",
+  paddingRight: "3rem",
   boxSizing: "border-box",
   pointerEvents: "none",
 });

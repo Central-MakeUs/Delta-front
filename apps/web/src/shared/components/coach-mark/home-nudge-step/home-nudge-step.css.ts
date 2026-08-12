@@ -4,6 +4,7 @@ import {
   FAB_DOCK_BOTTOM,
   FAB_SIZE,
 } from "@/shared/components/button/fab-button/fab-button.css";
+import { riseIn } from "@/shared/components/coach-mark/coach-mark-animation.css";
 
 export const dock = style({
   position: "fixed",
@@ -23,6 +24,9 @@ export const dock = style({
   pointerEvents: "none",
 });
 
-export const tooltip = style({
-  pointerEvents: "auto",
-});
+export const tooltip = style([
+  riseIn,
+  {
+    pointerEvents: "auto",
+  },
+]);

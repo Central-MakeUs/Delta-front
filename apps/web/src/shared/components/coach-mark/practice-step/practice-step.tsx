@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Button } from "@/shared/components/button/button/button";
 import Icon from "@/shared/components/icon/icon";
 import ScanCard from "@/shared/components/scan-card/scan-card";
@@ -9,12 +10,17 @@ import {
   COACH_MARK_PRACTICE,
   COACH_MARK_PRACTICE_SAMPLE,
 } from "@/shared/components/coach-mark/constants/coach-mark";
-import { advanceCoachMark } from "@/shared/components/coach-mark/coach-mark-store";
+import { useRegisterPracticeProblems } from "@/shared/components/coach-mark/practice-step/hooks/use-register-practice-problems";
+import { ROUTES } from "@/shared/constants/routes";
 import * as s from "@/shared/components/coach-mark/practice-step/practice-step.css";
 
 export const PracticeStep = () => {
-  const handleStartPractice = () => {
-    advanceCoachMark();
+  const router = useRouter();
+
+  useRegisterPracticeProblems();
+
+  const handleViewList = () => {
+    router.replace(ROUTES.WRONG.ROOT);
   };
 
   return (
@@ -27,7 +33,7 @@ export const PracticeStep = () => {
           fullWidth
           tone="complete"
           label={COACH_MARK_PRACTICE.CTA_LABEL}
-          onClick={handleStartPractice}
+          onClick={handleViewList}
         />
       }
     >

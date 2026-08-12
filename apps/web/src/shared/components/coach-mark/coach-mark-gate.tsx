@@ -39,6 +39,7 @@ export const CoachMarkGate = () => {
         return pathname === ROUTES.HOME ? null : "finish";
 
       case COACH_MARK_STEPS.PRACTICE:
+        if (pathname === ROUTES.WRONG.ROOT) return "advance";
         return pathname.startsWith(ROUTES.WRONG.CREATE) ? null : "finish";
 
       case COACH_MARK_STEPS.GRAPH_NUDGE:

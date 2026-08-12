@@ -49,15 +49,6 @@ export const grid = style({
   paddingBottom: "2rem",
 });
 
-export const sampleCard = style({
-  selectors: {
-    "&&": {
-      aspectRatio: "171 / 173",
-      borderRadius: vars.radius.r8,
-    },
-  },
-});
-
 export const footer = style({
   position: "relative",
   selectors: {

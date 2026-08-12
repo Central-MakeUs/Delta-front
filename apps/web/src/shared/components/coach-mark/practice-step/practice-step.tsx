@@ -2,7 +2,7 @@
 
 import { Button } from "@/shared/components/button/button/button";
 import Icon from "@/shared/components/icon/icon";
-import WrongCard from "@/shared/components/wrong-card/wrong-card";
+import ScanCard from "@/shared/components/scan-card/scan-card";
 import sampleImage from "@/shared/assets/images/wrong-sample.png";
 import CoachMarkOverlay from "@/shared/components/coach-mark/coach-mark-overlay/coach-mark-overlay";
 import {
@@ -43,16 +43,13 @@ export const PracticeStep = () => {
 
       <div className={s.grid}>
         {COACH_MARK_PRACTICE_SAMPLE.PREVIEW_CARD_IDS.map((id) => (
-          <WrongCard
+          <ScanCard
             key={id}
-            className={s.sampleCard}
             title={COACH_MARK_PRACTICE_SAMPLE.TITLE}
+            subjectName={COACH_MARK_PRACTICE_SAMPLE.TAG}
+            unitNames={COACH_MARK_PRACTICE_SAMPLE.CHIPS}
             imageSrc={sampleImage}
             imageAlt={COACH_MARK_PRACTICE_SAMPLE.TITLE}
-            chips={{
-              primary: COACH_MARK_PRACTICE_SAMPLE.TAG,
-              secondary: COACH_MARK_PRACTICE_SAMPLE.CHIPS,
-            }}
           />
         ))}
       </div>

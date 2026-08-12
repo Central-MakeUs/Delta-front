@@ -6,6 +6,7 @@ type CompressImageOptions = {
   maxDimension?: number;
   quality?: number;
   skipBelowBytes?: number;
+  mimeType?: "image/webp" | "image/jpeg";
 };
 
 const canvasToBlob = (
@@ -30,6 +31,7 @@ export const compressImageFile = async (
     maxDimension = MAX_DIMENSION,
     quality = COMPRESS_QUALITY,
     skipBelowBytes = SKIP_BELOW_BYTES,
+    mimeType = "image/webp",
   } = options;
 
   if (file.size <= skipBelowBytes) return file;
@@ -57,7 +59,7 @@ export const compressImageFile = async (
     bitmap.close();
 
     const blob =
-      (await canvasToBlob(canvas, "image/webp", quality)) ??
+      (await canvasToBlob(canvas, mimeType, quality)) ??
       (await canvasToBlob(canvas, "image/jpeg", quality));
 
     if (!blob || blob.size >= file.size) return file;

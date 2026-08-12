@@ -67,10 +67,32 @@ const waitForScansReady = async (
   throw new Error("practice scan polling timed out");
 };
 
+const MAX_TOTAL_UPLOAD_BYTES = 900 * 1024;
+const SAMPLE_MAX_DIMENSION = 1280;
+const SAMPLE_QUALITIES = [0.8, 0.6, 0.45, 0.3];
+
 const extFromType = (type: string) => {
   if (type === "image/webp") return "webp";
   if (type === "image/jpeg") return "jpg";
   return "png";
+};
+
+const compressSampleFile = async (original: File, count: number) => {
+  let best = original;
+
+  for (const quality of SAMPLE_QUALITIES) {
+    const candidate = await compressImageFile(original, {
+      skipBelowBytes: 0,
+      maxDimension: SAMPLE_MAX_DIMENSION,
+      quality,
+      mimeType: "image/jpeg",
+    });
+
+    if (candidate.size < best.size) best = candidate;
+    if (best.size * count <= MAX_TOTAL_UPLOAD_BYTES) break;
+  }
+
+  return best;
 };
 
 const buildSampleFiles = async (count: number) => {
@@ -82,7 +104,7 @@ const buildSampleFiles = async (count: number) => {
     { type: blob.type || "image/png" }
   );
 
-  const compressed = await compressImageFile(original, { skipBelowBytes: 0 });
+  const compressed = await compressSampleFile(original, count);
   const ext = extFromType(compressed.type);
 
   return Array.from(

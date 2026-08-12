@@ -19,6 +19,7 @@ export const WelcomeStep = () => {
   return (
     <CoachMarkOverlay
       ariaLabel={COACH_MARK_WELCOME.ARIA_LABEL}
+      bodyClassName={s.body}
       footer={
         <Button
           fullWidth
@@ -28,14 +29,16 @@ export const WelcomeStep = () => {
         />
       }
     >
-      <header className={s.header}>
-        <h2 className={s.title}>{COACH_MARK_WELCOME.TITLE}</h2>
-        <p className={s.description}>{COACH_MARK_WELCOME.DESCRIPTION}</p>
-      </header>
+      <div className={s.content}>
+        <header className={s.header}>
+          <h2 className={s.title}>{COACH_MARK_WELCOME.TITLE}</h2>
+          <p className={s.description}>{COACH_MARK_WELCOME.DESCRIPTION}</p>
+        </header>
 
-      <WelcomeHero />
+        <WelcomeHero />
 
-      <WelcomeFeatureList items={COACH_MARK_WELCOME_FEATURES} />
+        <WelcomeFeatureList items={COACH_MARK_WELCOME_FEATURES} />
+      </div>
     </CoachMarkOverlay>
   );
 };

@@ -65,6 +65,7 @@ export const COACH_MARK_GRAPH_NUDGE = {
 
 export const COACH_MARK_HOME_NUDGE = {
   TOOLTIP: "이제 홈으로 이동해 직접 문제를 등록해 볼까요?",
+  SHOW_DELAY_MS: 10000,
 } as const;
 
 export const COACH_MARK_WELCOME_FEATURES: readonly CoachMarkFeature[] = [

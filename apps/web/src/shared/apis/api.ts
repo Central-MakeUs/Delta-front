@@ -2,7 +2,6 @@ import axios, { type AxiosError, type AxiosRequestConfig } from "axios";
 import { tokenStorage } from "@/shared/apis/token-storage";
 import { ApiError } from "@/shared/apis/api-error";
 import { isApiResponseError } from "@/shared/apis/api-types";
-import { ERROR_CODES } from "@/shared/apis/error-codes";
 import { emitAuthLogout, isInAuthFlow } from "@/shared/apis/auth/auth-events";
 import { API_PATHS } from "@/shared/apis/constants/api-paths";
 import { API_HEADERS } from "@/shared/apis/constants/api-headers";
@@ -143,6 +142,20 @@ instance.interceptors.response.use(
       return true;
     };
 
+    if (status === 401 && !config._retry) {
+      const { refreshToken } = tokenStorage.getTokens();
+      if (refreshToken) {
+        config._retry = true;
+        try {
+          await runReissueOnce();
+          clearAuthHeader(config.headers);
+          return await instance(config);
+        } catch {
+          throw err;
+        }
+      }
+    }
+
     if (!isApiResponseError(payload)) {
       if (shouldEmitAuthLogout(status)) handleAuthDead();
       throw err;
@@ -158,45 +171,7 @@ instance.interceptors.response.use(
       throw apiError;
     }
 
-    if (
-      apiError.status === 401 &&
-      apiError.code === ERROR_CODES.AUTH.TOKEN_REQUIRED
-    ) {
-      const { refreshToken } = tokenStorage.getTokens();
-      if (refreshToken && !config._retry) {
-        config._retry = true;
-        try {
-          await runReissueOnce();
-          clearAuthHeader(config.headers);
-          return await instance(config);
-        } catch {
-          throw apiError;
-        }
-      }
-      if (shouldEmitAuthLogout(apiError.status, apiError.code))
-        handleAuthDead();
-      throw apiError;
-    }
-
-    const canRetry =
-      apiError.status === 401 &&
-      apiError.code === ERROR_CODES.AUTH.AUTHENTICATION_FAILED &&
-      !config._retry;
-
-    if (!canRetry) {
-      if (shouldEmitAuthLogout(apiError.status, apiError.code))
-        handleAuthDead();
-      throw apiError;
-    }
-
-    config._retry = true;
-
-    try {
-      await runReissueOnce();
-      clearAuthHeader(config.headers);
-      return await instance(config);
-    } catch {
-      throw apiError;
-    }
+    if (shouldEmitAuthLogout(apiError.status, apiError.code)) handleAuthDead();
+    throw apiError;
   }
 );

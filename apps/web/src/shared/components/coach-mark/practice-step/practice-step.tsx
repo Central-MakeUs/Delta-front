@@ -13,6 +13,7 @@ import { ROUTES } from "@/shared/constants/routes";
 import * as s from "@/shared/components/coach-mark/practice-step/practice-step.css";
 
 const TOAST_BOTTOM_OFFSET_REM = 6.5;
+const TOAST_DELAY_MS = 1000;
 
 export const PracticeStep = () => {
   const router = useRouter();
@@ -20,8 +21,15 @@ export const PracticeStep = () => {
 
   useEffect(() => {
     if (hasToastedRef.current) return;
-    hasToastedRef.current = true;
-    toastSuccess(COACH_MARK_PRACTICE.TOAST, TOAST_BOTTOM_OFFSET_REM);
+
+    const timer = setTimeout(() => {
+      hasToastedRef.current = true;
+      toastSuccess(COACH_MARK_PRACTICE.TOAST, TOAST_BOTTOM_OFFSET_REM);
+    }, TOAST_DELAY_MS);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   const handleViewList = () => {

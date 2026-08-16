@@ -75,9 +75,9 @@ const WrongCard = ({
         <div className={s.chipRow}>
           <Chip label={chips.primary} size="md" shape="pill" tone="solid" />
           <div className={s.subChipRow}>
-            {chips.secondary.map((label) => (
+            {chips.secondary.map((label, index) => (
               <Chip
-                key={label}
+                key={`${index}-${label}`}
                 label={label}
                 size="xs"
                 shape="square"

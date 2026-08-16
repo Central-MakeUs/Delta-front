@@ -44,9 +44,9 @@ export const ScanCard = ({
         <div className={s.cardBody}>
           <div className={s.cardContent}>
             <div className={s.chipWrap}>
-              {unitNames.map((unitName) => (
+              {unitNames.map((unitName, index) => (
                 <Chip
-                  key={unitName}
+                  key={`${index}-${unitName}`}
                   as="span"
                   label={unitName}
                   size="xs"

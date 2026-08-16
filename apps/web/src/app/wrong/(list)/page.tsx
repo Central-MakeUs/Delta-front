@@ -12,6 +12,9 @@ import { useProblemScrollInfiniteQuery } from "@/shared/apis/problem-list/hooks/
 import { mapProblemListItemToCard } from "@/app/wrong/(list)/utils/map-problem-list-to-cards";
 import { LOADING_MESSAGES } from "@/shared/constants/loading-messages";
 import Chip from "@/shared/components/chip/chip";
+import { useCoachMarkStep } from "@/shared/components/coach-mark/coach-mark-store";
+import { COACH_MARK_STEPS } from "@/shared/components/coach-mark/constants/coach-mark";
+import { COACH_MARK_PRACTICE_PROBLEMS } from "@/shared/components/coach-mark/constants/practice-problems";
 
 import {
   CHAPTER_FILTERS,
@@ -56,8 +59,14 @@ const WrongPage = () => {
     [selectedChapterIds, selectedTypeIds, selectedDropdownIds, selectedSortId]
   );
 
+  const coachMarkStep = useCoachMarkStep();
+  const isCoachMarkPreview = coachMarkStep === COACH_MARK_STEPS.GRAPH_NUDGE;
+
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useProblemScrollInfiniteQuery({ params: scrollParams });
+    useProblemScrollInfiniteQuery({
+      params: scrollParams,
+      enabled: !isCoachMarkPreview,
+    });
   const [showScrollToTop, setShowScrollToTop] = useState(false);
   const pageRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLElement | null>(null);
@@ -93,13 +102,30 @@ const WrongPage = () => {
   }, [hasNextPage, fetchNextPage]);
 
   const visibleCards = useMemo(() => {
+    if (isCoachMarkPreview) {
+      return COACH_MARK_PRACTICE_PROBLEMS.map((problem) => ({
+        id: problem.id,
+        title: problem.title,
+        date: undefined,
+        imageSrc: problem.imageSrc,
+        chips: {
+          primary: problem.subjectName,
+          secondary: [problem.unitName, ...problem.typeNames],
+        },
+        href: undefined,
+        isCompleted: problem.isCompleted,
+      }));
+    }
+
     if (!data?.pages) return [];
     return data.pages.flatMap((page) =>
       page.content.map(mapProblemListItemToCard)
     );
-  }, [data]);
+  }, [data, isCoachMarkPreview]);
 
-  const totalElements = data?.pages?.[0]?.totalElements ?? 0;
+  const totalElements = isCoachMarkPreview
+    ? COACH_MARK_PRACTICE_PROBLEMS.length
+    : (data?.pages?.[0]?.totalElements ?? 0);
 
   useEffect(() => {
     const container = scrollContainerRef.current;

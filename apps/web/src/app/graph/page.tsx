@@ -20,6 +20,12 @@ import { computeDomain } from "@/app/graph/utils/graph-domain";
 import { toBarRowsTuple } from "@/app/graph/utils/to-bar-rows-tuple";
 import { useGraphGroups } from "@/app/graph/hooks/use-graph-groups";
 import EmptyState from "@/shared/components/empty-state/empty-state";
+import { useCoachMarkStep } from "@/shared/components/coach-mark/coach-mark-store";
+import { COACH_MARK_STEPS } from "@/shared/components/coach-mark/constants/coach-mark";
+import {
+  COACH_MARK_PRACTICE_TYPE_GRAPH_GROUPS,
+  COACH_MARK_PRACTICE_UNIT_GRAPH_GROUPS,
+} from "@/shared/components/coach-mark/constants/practice-problems";
 
 const isGraphTab = (v: string | null): v is GraphTab =>
   v === GRAPH_TABS.UNIT || v === GRAPH_TABS.WRONG;
@@ -51,7 +57,21 @@ const GraphPage = () => {
 
   const apiSort = SORT_TO_API[effectiveSortId] ?? "DEFAULT";
 
-  const { groups: graphGroups } = useGraphGroups(tab, apiSort);
+  const coachMarkStep = useCoachMarkStep();
+  const isCoachMarkPreview = coachMarkStep === COACH_MARK_STEPS.HOME_NUDGE;
+
+  const { groups: queryGroups } = useGraphGroups(
+    tab,
+    apiSort,
+    !isCoachMarkPreview
+  );
+
+  const graphGroups = useMemo(() => {
+    if (!isCoachMarkPreview) return queryGroups;
+    return tab === GRAPH_TABS.UNIT
+      ? [...COACH_MARK_PRACTICE_UNIT_GRAPH_GROUPS]
+      : [...COACH_MARK_PRACTICE_TYPE_GRAPH_GROUPS];
+  }, [isCoachMarkPreview, queryGroups, tab]);
 
   const { minValue: domainMin, maxValue: domainMax } = useMemo(
     () => computeDomain(graphGroups),

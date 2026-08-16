@@ -1,23 +1,28 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/shared/components/button/button/button";
 import Icon from "@/shared/components/icon/icon";
 import ScanCard from "@/shared/components/scan-card/scan-card";
-import sampleImage from "@/shared/assets/images/wrong-sample.png";
 import CoachMarkOverlay from "@/shared/components/coach-mark/coach-mark-overlay/coach-mark-overlay";
-import {
-  COACH_MARK_PRACTICE,
-  COACH_MARK_PRACTICE_SAMPLE,
-} from "@/shared/components/coach-mark/constants/coach-mark";
-import { useRegisterPracticeProblems } from "@/shared/components/coach-mark/practice-step/hooks/use-register-practice-problems";
+import { COACH_MARK_PRACTICE } from "@/shared/components/coach-mark/constants/coach-mark";
+import { COACH_MARK_PRACTICE_PROBLEMS } from "@/shared/components/coach-mark/constants/practice-problems";
+import { toastSuccess } from "@/shared/components/toast/toast";
 import { ROUTES } from "@/shared/constants/routes";
 import * as s from "@/shared/components/coach-mark/practice-step/practice-step.css";
 
+const TOAST_BOTTOM_OFFSET_REM = 6.5;
+
 export const PracticeStep = () => {
   const router = useRouter();
+  const hasToastedRef = useRef(false);
 
-  useRegisterPracticeProblems();
+  useEffect(() => {
+    if (hasToastedRef.current) return;
+    hasToastedRef.current = true;
+    toastSuccess(COACH_MARK_PRACTICE.TOAST, TOAST_BOTTOM_OFFSET_REM);
+  }, []);
 
   const handleViewList = () => {
     router.replace(ROUTES.WRONG.ROOT);
@@ -48,14 +53,14 @@ export const PracticeStep = () => {
       </div>
 
       <div className={s.grid}>
-        {COACH_MARK_PRACTICE_SAMPLE.PREVIEW_CARD_IDS.map((id) => (
+        {COACH_MARK_PRACTICE_PROBLEMS.map((problem) => (
           <ScanCard
-            key={id}
-            title={COACH_MARK_PRACTICE_SAMPLE.TITLE}
-            subjectName={COACH_MARK_PRACTICE_SAMPLE.TAG}
-            unitNames={COACH_MARK_PRACTICE_SAMPLE.CHIPS}
-            imageSrc={sampleImage}
-            imageAlt={COACH_MARK_PRACTICE_SAMPLE.TITLE}
+            key={problem.id}
+            title={problem.title}
+            subjectName={problem.subjectName}
+            unitNames={[problem.unitName, ...problem.typeNames]}
+            imageSrc={problem.imageSrc}
+            imageAlt={problem.title}
           />
         ))}
       </div>

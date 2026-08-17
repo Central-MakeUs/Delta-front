@@ -2,7 +2,7 @@ import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 
 export const FAB_SIZE = "6.4rem";
-export const FAB_DOCK_BOTTOM = "calc(8.7rem + env(safe-area-inset-bottom))";
+export const FAB_DOCK_BOTTOM = "8.7rem";
 
 export const fabButton = style({
   width: FAB_SIZE,

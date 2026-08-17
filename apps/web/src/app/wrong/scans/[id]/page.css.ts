@@ -322,7 +322,7 @@ export const divider = style({
 export const sheetFooter = style([
   bgColor["grayscale-0"],
   {
-    padding: "2rem 1.6rem calc(2rem + env(safe-area-inset-bottom))",
+    padding: "2rem 1.6rem",
     display: "flex",
     flexDirection: "column",
     gap: "0.8rem",

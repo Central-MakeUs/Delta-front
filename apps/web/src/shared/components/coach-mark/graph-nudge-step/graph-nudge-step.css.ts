@@ -5,7 +5,7 @@ import { riseIn } from "@/shared/components/coach-mark/coach-mark-animation.css"
 export const dock = style({
   position: "fixed",
   left: "50%",
-  bottom: "calc(6.5rem + env(safe-area-inset-bottom))",
+  bottom: "6.5rem",
   transform: "translateX(-50%)",
   width: "100%",
   maxWidth: "43rem",

@@ -19,12 +19,6 @@ export const overlay = style([
     display: "flex",
     flexDirection: "column",
     boxSizing: "border-box",
-
-    "@supports": {
-      "(top: env(safe-area-inset-top))": {
-        top: `calc(${APP_BAR_HEIGHT} + env(safe-area-inset-top))`,
-      },
-    },
   },
 ]);
 
@@ -47,10 +41,4 @@ export const footer = style({
   flex: "0 0 auto",
   padding: "1.6rem",
   boxSizing: "border-box",
-
-  "@supports": {
-    "(padding-bottom: env(safe-area-inset-bottom))": {
-      paddingBottom: "calc(1.6rem + env(safe-area-inset-bottom))",
-    },
-  },
 });

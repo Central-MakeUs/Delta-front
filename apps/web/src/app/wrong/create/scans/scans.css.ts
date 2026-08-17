@@ -101,6 +101,5 @@ export const footer = style([
     right: 0,
     bottom: 0,
     padding: "1.6rem",
-    paddingBottom: "calc(1.6rem + env(safe-area-inset-bottom))",
   },
 ]);

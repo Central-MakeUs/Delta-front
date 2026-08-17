@@ -1,5 +1,6 @@
 import React, { useCallback, useRef } from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import WebView from "react-native-webview";
 import * as Linking from "expo-linking";
 import type {
@@ -146,33 +147,36 @@ const WebViewScreen = () => {
   );
 
   if (initialScript === undefined) {
-    return <View style={styles.webview} />;
+    return <SafeAreaView style={styles.safeArea} />;
   }
 
   return (
-    <WebView
-      ref={webViewRef}
-      style={styles.webview}
-      source={{ uri: `${WEB_BASE_URL}/?platform=${Platform.OS}` }}
-      javaScriptEnabled
-      domStorageEnabled
-      sharedCookiesEnabled
-      thirdPartyCookiesEnabled
-      allowsInlineMediaPlayback
-      mediaCapturePermissionGrantType="prompt"
-      originWhitelist={["*"]}
-      injectedJavaScriptBeforeContentLoaded={initialScript}
-      onShouldStartLoadWithRequest={handleShouldStart}
-      onOpenWindow={handleOpenWindow}
-      onMessage={handleMessage}
-      onError={handleError}
-      onHttpError={handleHttpError}
-      onContentProcessDidTerminate={() => webViewRef.current?.reload()}
-    />
+    <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
+      <WebView
+        ref={webViewRef}
+        style={styles.webview}
+        source={{ uri: `${WEB_BASE_URL}/?platform=${Platform.OS}` }}
+        javaScriptEnabled
+        domStorageEnabled
+        sharedCookiesEnabled
+        thirdPartyCookiesEnabled
+        allowsInlineMediaPlayback
+        mediaCapturePermissionGrantType="prompt"
+        originWhitelist={["*"]}
+        injectedJavaScriptBeforeContentLoaded={initialScript}
+        onShouldStartLoadWithRequest={handleShouldStart}
+        onOpenWindow={handleOpenWindow}
+        onMessage={handleMessage}
+        onError={handleError}
+        onHttpError={handleHttpError}
+        onContentProcessDidTerminate={() => webViewRef.current?.reload()}
+      />
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: { flex: 1, backgroundColor: "#FFFFFF" },
   webview: { flex: 1, backgroundColor: "#FFFFFF" },
 });
 

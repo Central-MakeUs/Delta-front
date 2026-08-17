@@ -8,7 +8,6 @@ export const overlay = style({
   transform: "translateX(-50%)",
   width: "100%",
   maxWidth: "43rem",
-  paddingTop: "env(safe-area-inset-top)",
   pointerEvents: "none",
   zIndex: vars.zIndex.splash,
   opacity: "0.8",

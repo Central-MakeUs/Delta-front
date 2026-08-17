@@ -1,9 +1,12 @@
 import { style } from "@vanilla-extract/css";
 import { vars } from "@/shared/styles/theme.css";
 
+export const FAB_SIZE = "6.4rem";
+export const FAB_DOCK_BOTTOM = "8.7rem";
+
 export const fabButton = style({
-  width: "6.4rem",
-  height: "6.4rem",
+  width: FAB_SIZE,
+  height: FAB_SIZE,
   padding: 0,
   border: "none",
   borderRadius: vars.radius.full,
@@ -25,7 +28,7 @@ export const icon = style({
 export const fabDock = style({
   position: "fixed",
   left: "50%",
-  bottom: "calc(8.7rem + env(safe-area-inset-bottom))",
+  bottom: FAB_DOCK_BOTTOM,
   transform: "translateX(-50%)",
   width: "100%",
   maxWidth: "43rem",

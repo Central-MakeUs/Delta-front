@@ -4,6 +4,7 @@ import type { MouseEvent } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import FabButton from "@/shared/components/button/fab-button/fab-button";
 import { ROUTES } from "@/shared/constants/routes";
+import { buildWrongCreateHref } from "@/shared/utils/wrong-create-href";
 
 type Props = {
   icon?: "file" | string;
@@ -33,12 +34,7 @@ const CreateWrongFab = ({ onClick }: Props) => {
     const qs = sp.toString();
     const from = `${pathname}${qs ? `?${qs}` : ""}`;
 
-    const nextParams = new URLSearchParams();
-    nextParams.set("step", "1");
-    nextParams.set("total", "4");
-    nextParams.set("from", from);
-
-    router.push(`${ROUTES.WRONG.CREATE}?${nextParams.toString()}`);
+    router.push(buildWrongCreateHref(from));
   };
 
   return <FabButton onFabClick={handleFabClick} />;

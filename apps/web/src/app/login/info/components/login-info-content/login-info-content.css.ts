@@ -9,14 +9,7 @@ export const page = style({
   height: "100%",
   display: "flex",
   flexDirection: "column",
-  "@supports": {
-    "(padding-top: env(safe-area-inset-top))": {
-      paddingTop: "calc(1.6rem + env(safe-area-inset-top))",
-    },
-    "(padding-top: constant(safe-area-inset-top))": {
-      paddingTop: "calc(1.6rem + constant(safe-area-inset-top))",
-    },
-  },
+  paddingTop: "1.6rem",
 });
 
 export const contentWrapper = style({

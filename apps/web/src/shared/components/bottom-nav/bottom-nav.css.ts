@@ -18,7 +18,7 @@ export const root = style([
     paddingLeft: "2.4rem",
     paddingRight: "2.4rem",
     paddingTop: "0.9rem",
-    paddingBottom: `calc(0.9rem + env(safe-area-inset-bottom))`,
+    paddingBottom: "0.9rem",
   },
 ]);
 
@@ -47,6 +47,14 @@ export const item = style({
   padding: 0,
   cursor: "pointer",
 });
+
+export const itemEmphasized = style([
+  bgColor["grayscale-0"],
+  {
+    borderRadius: vars.radius.r12,
+    boxShadow: vars.shadow.e300,
+  },
+]);
 
 export const iconWrap = style({
   width: "2.4rem",

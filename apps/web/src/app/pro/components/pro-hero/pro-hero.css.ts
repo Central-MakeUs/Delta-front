@@ -18,11 +18,6 @@ export const backWrapper = style([
     maxWidth: "43rem",
     width: "100%",
     zIndex: vars.zIndex.header,
-    "@supports": {
-      "(padding-top: env(safe-area-inset-top))": {
-        marginTop: "env(safe-area-inset-top)",
-      },
-    },
   },
 ]);
 

@@ -19,18 +19,6 @@ export const hero = style({
   boxSizing: "border-box",
 });
 
-export const heroNotchSafeArea = style({
-  maxHeight: "30rem",
-  minHeight: "30rem",
-
-  "@supports": {
-    "(padding-top: env(safe-area-inset-top))": {
-      paddingTop: `calc(env(safe-area-inset-top) + ${APP_BAR_HEIGHT})`,
-      paddingBottom: `calc(2.0rem + env(safe-area-inset-bottom))`,
-    },
-  },
-});
-
 export const profileBlock = style({
   position: "relative",
   zIndex: vars.zIndex.contentOverlayHigh,

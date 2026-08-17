@@ -1,0 +1,34 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import CoachMarkTooltip from "@/shared/components/coach-mark/coach-mark-tooltip/coach-mark-tooltip";
+import { COACH_MARK_GRAPH_NUDGE } from "@/shared/components/coach-mark/constants/coach-mark";
+import { useDelayedVisible } from "@/shared/components/coach-mark/hooks/use-delayed-visible";
+import { GRAPH_TABS, ROUTES } from "@/shared/constants/routes";
+import * as s from "@/shared/components/coach-mark/graph-nudge-step/graph-nudge-step.css";
+
+export const GraphNudgeStep = () => {
+  const router = useRouter();
+  const isVisible = useDelayedVisible(
+    true,
+    COACH_MARK_GRAPH_NUDGE.SHOW_DELAY_MS
+  );
+
+  const handleGoGraph = () => {
+    router.push(ROUTES.GRAPH.tab(GRAPH_TABS.UNIT));
+  };
+
+  if (!isVisible) return null;
+
+  return (
+    <div className={s.dock}>
+      <CoachMarkTooltip
+        className={s.tooltip}
+        message={COACH_MARK_GRAPH_NUDGE.TOOLTIP}
+        onClick={handleGoGraph}
+      />
+    </div>
+  );
+};
+
+export default GraphNudgeStep;

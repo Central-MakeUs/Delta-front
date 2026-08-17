@@ -10,6 +10,7 @@ import BottomNav from "@/shared/components/bottom-nav/bottom-nav";
 import CreateWrongFab from "@/app/create-wrong-fab";
 import Splash from "@/shared/components/splash/splash";
 import QueryLoadingOverlay from "@/shared/components/loading/query-loading-overlay";
+import CoachMarkGate from "@/shared/components/coach-mark/coach-mark-gate";
 
 type ClientShellProps = {
   children: ReactNode;
@@ -28,6 +29,7 @@ const ClientShell = ({ children }: ClientShellProps) => {
       <div key={contentKey}>{children}</div>
       <BottomNav />
       <CreateWrongFab />
+      <CoachMarkGate />
     </QueryProvider>
   );
 };

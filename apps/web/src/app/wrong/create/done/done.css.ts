@@ -6,7 +6,6 @@ export const page = style({
   display: "flex",
   flexDirection: "column",
   gap: "2.4rem",
-  paddingBottom: "env(safe-area-inset-bottom)",
 });
 
 export const textBlock = style({

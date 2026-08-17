@@ -12,12 +12,6 @@ export const page = style({
   flexDirection: "column",
   paddingTop: 0,
 
-  "@supports": {
-    "(padding-top: env(safe-area-inset-top))": {
-      paddingTop: "env(safe-area-inset-top)",
-    },
-  },
-
   selectors: {
     "&::before": {
       content: '""',
@@ -62,7 +56,7 @@ export const actions = style({
   marginTop: "auto",
   paddingLeft: "1.6rem",
   paddingRight: "1.6rem",
-  paddingBottom: "calc(env(safe-area-inset-bottom) + 1.6rem)",
+  paddingBottom: "1.6rem",
   display: "flex",
   flexDirection: "column",
   gap: "1.2rem",

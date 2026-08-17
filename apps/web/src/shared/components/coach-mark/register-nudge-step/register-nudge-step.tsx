@@ -1,0 +1,56 @@
+"use client";
+
+import { useRef } from "react";
+import { useRouter } from "next/navigation";
+import Icon from "@/shared/components/icon/icon";
+import { useDialogFocus } from "@/shared/hooks/use-dialog-focus";
+import * as fabStyles from "@/shared/components/button/fab-button/fab-button.css";
+import CoachMarkTooltip from "@/shared/components/coach-mark/coach-mark-tooltip/coach-mark-tooltip";
+import { COACH_MARK_REGISTER_NUDGE } from "@/shared/components/coach-mark/constants/coach-mark";
+import { ROUTES } from "@/shared/constants/routes";
+import { buildWrongCreateHref } from "@/shared/utils/wrong-create-href";
+import * as s from "@/shared/components/coach-mark/register-nudge-step/register-nudge-step.css";
+
+export const RegisterNudgeStep = () => {
+  const router = useRouter();
+  const containerRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(containerRef);
+
+  const handleRegister = () => {
+    router.push(buildWrongCreateHref(ROUTES.HOME));
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={COACH_MARK_REGISTER_NUDGE.ARIA_LABEL}
+      tabIndex={-1}
+    >
+      <div className={s.dim} />
+
+      <div className={s.dock}>
+        <CoachMarkTooltip
+          className={s.tooltip}
+          message={COACH_MARK_REGISTER_NUDGE.TOOLTIP}
+          onClick={handleRegister}
+        />
+
+        <div className={s.fabWrap}>
+          <button
+            type="button"
+            className={fabStyles.fabButton}
+            aria-label="오답 등록하기"
+            onClick={handleRegister}
+          >
+            <Icon name="file" size={2.4} className={fabStyles.icon} />
+          </button>
+          <Icon name="coach-hand" size={6.3} className={s.hand} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RegisterNudgeStep;

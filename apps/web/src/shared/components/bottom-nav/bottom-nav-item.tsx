@@ -3,11 +3,12 @@ import Icon from "@/shared/components/icon/icon";
 import type { IconName } from "@/shared/components/bottom-nav/constants/bottom-nav";
 import * as s from "@/shared/components/bottom-nav/bottom-nav.css";
 
-type Props = {
+type BottomNavItemProps = {
   isActive: boolean;
   label: string;
   iconName: IconName;
   onClick: () => void;
+  isEmphasized?: boolean;
 };
 
 export const BottomNavItem = ({
@@ -15,11 +16,12 @@ export const BottomNavItem = ({
   label,
   iconName,
   onClick,
-}: Props) => {
+  isEmphasized = false,
+}: BottomNavItemProps) => {
   return (
     <button
       type="button"
-      className={s.item}
+      className={clsx(s.item, isEmphasized && s.itemEmphasized)}
       aria-current={isActive ? "page" : undefined}
       onClick={onClick}
     >

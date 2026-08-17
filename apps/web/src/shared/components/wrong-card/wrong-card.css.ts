@@ -13,6 +13,10 @@ export const card = style({
   cursor: "pointer",
 });
 
+export const cardStatic = style({
+  cursor: "default",
+});
+
 export const image = style({
   objectFit: "cover",
 });

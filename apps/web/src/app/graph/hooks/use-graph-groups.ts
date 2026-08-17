@@ -4,15 +4,19 @@ import type { ProblemStatsSort } from "@/shared/apis/graph/graph-types";
 import { useGraphUnitStatsQuery } from "@/shared/apis/graph/hooks/use-graph-unit-stats-query";
 import { useGraphTypeStatsQuery } from "@/shared/apis/graph/hooks/use-graph-type-stats-query";
 
-export const useGraphGroups = (tab: GraphTab, sort: ProblemStatsSort) => {
+export const useGraphGroups = (
+  tab: GraphTab,
+  sort: ProblemStatsSort,
+  enabled = true
+) => {
   const unitStatsQuery = useGraphUnitStatsQuery({
     sort,
-    enabled: tab === GRAPH_TABS.UNIT,
+    enabled: enabled && tab === GRAPH_TABS.UNIT,
   });
 
   const typeStatsQuery = useGraphTypeStatsQuery({
     sort,
-    enabled: tab === GRAPH_TABS.WRONG,
+    enabled: enabled && tab === GRAPH_TABS.WRONG,
   });
 
   const unitGroups = unitStatsQuery.data ?? [];

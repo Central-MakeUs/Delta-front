@@ -75,7 +75,7 @@ const GROUPS: readonly Group[] = [
 
 type TabId = "all" | (typeof GROUPS)[number]["id"];
 
-function ColorBox({ token }: { token: Key }) {
+const ColorBox = ({ token }: { token: Key }) => {
   return (
     <div className={styles.box}>
       <div className={`${styles.swatch} ${bgColor[token]}`} />
@@ -85,13 +85,13 @@ function ColorBox({ token }: { token: Key }) {
   );
 }
 
-function ColorGroup({
+const ColorGroup = ({
   title,
   tokens,
 }: {
   title: string;
   tokens: readonly Key[];
-}) {
+}) => {
   return (
     <section className={styles.group}>
       <h3 className={styles.groupTitle}>{title}</h3>
@@ -104,7 +104,7 @@ function ColorGroup({
   );
 }
 
-function ColorPage() {
+const ColorPage = () => {
   const [active, setActive] = useState<TabId>("main");
 
   const activeGroup = useMemo(() => {

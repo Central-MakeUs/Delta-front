@@ -36,9 +36,7 @@ const clearAuthHeader = (headers: unknown) => {
 
 const syncTokensFromResponseHeaders = (headers: Record<string, unknown>) => {
   const accessRaw = readHeader(headers, ACCESS_HEADER);
-  const refreshRaw =
-    readHeader(headers, REFRESH_TOKEN_HEADER) ||
-    readHeader(headers, "x-refresh-token");
+  const refreshRaw = readHeader(headers, REFRESH_TOKEN_HEADER);
 
   const accessToken = accessRaw ? stripBearer(accessRaw) : null;
   const refreshToken = refreshRaw ?? null;
@@ -64,7 +62,6 @@ const runReissueOnce = async () => {
   reissuePromise = (async () => {
     const { refreshToken } = tokenStorage.getTokens();
     if (!refreshToken) {
-      handleAuthDead();
       throw new Error("refresh token missing");
     }
 
@@ -74,14 +71,9 @@ const runReissueOnce = async () => {
     };
 
     await instance.post(API_PATHS.AUTH.REISSUE, null, config);
-  })()
-    .catch((e) => {
-      handleAuthDead();
-      throw e;
-    })
-    .finally(() => {
-      reissuePromise = null;
-    });
+  })().finally(() => {
+    reissuePromise = null;
+  });
 
   return reissuePromise;
 };
@@ -95,15 +87,16 @@ instance.interceptors.request.use(async (config) => {
     if (!accessToken && refreshToken) {
       try {
         await runReissueOnce();
-      } catch {
-        // runReissueOnce 내부에서 handleAuthDead 처리됨
-      }
+      } catch {}
     }
   }
 
   const { accessToken } = tokenStorage.getTokens();
 
-  if (accessToken) {
+  // reissue는 refresh-token 헤더만으로 동작해야 하는 엔드포인트다. 만료된
+  // 액세스 토큰까지 같이 보내면 서버가 이를 파싱하다 500을 낼 수 있으므로
+  // 애초에 Authorization 헤더를 붙이지 않는다.
+  if (accessToken && config.url !== API_PATHS.AUTH.REISSUE) {
     config.headers = config.headers ?? {};
     const h = config.headers as Record<string, unknown>;
 
@@ -151,6 +144,7 @@ instance.interceptors.response.use(
           clearAuthHeader(config.headers);
           return await instance(config);
         } catch {
+          handleAuthDead();
           throw err;
         }
       }

@@ -24,7 +24,8 @@ const ErrorBoundary = ({ error }: ErrorPageProps) => {
   const pathname = usePathname();
 
   const status =
-    (error as ApiError).status || (error as { status?: number }).status;
+    (error as ApiError).status ??
+    (error as { response?: { status?: number } }).response?.status;
 
   useEffect(() => {
     if (process.env.NODE_ENV === "development") {

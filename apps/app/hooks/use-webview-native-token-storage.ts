@@ -13,7 +13,11 @@ type Tokens = {
 };
 
 export type TokenBridgeMessage =
-  | { type: "TOKEN_UPDATE"; accessToken: string | null; refreshToken: string | null }
+  | {
+      type: "TOKEN_UPDATE";
+      accessToken: string | null;
+      refreshToken: string | null;
+    }
   | { type: "TOKEN_CLEAR" };
 
 const readTokens = async (): Promise<Tokens> => {
@@ -50,20 +54,29 @@ const clearTokens = async (): Promise<void> => {
   } catch {}
 };
 
-const buildInjectionScript = ({ accessToken, refreshToken }: Tokens): string => {
+const buildInjectionScript = ({
+  accessToken,
+  refreshToken,
+}: Tokens): string => {
   const sets: string[] = [];
   if (accessToken) {
-    sets.push(`localStorage.setItem(${JSON.stringify(WEB_ACCESS_KEY)},${JSON.stringify(accessToken)});`);
+    sets.push(
+      `localStorage.setItem(${JSON.stringify(WEB_ACCESS_KEY)},${JSON.stringify(accessToken)});`,
+    );
   }
   if (refreshToken) {
-    sets.push(`localStorage.setItem(${JSON.stringify(WEB_REFRESH_KEY)},${JSON.stringify(refreshToken)});`);
+    sets.push(
+      `localStorage.setItem(${JSON.stringify(WEB_REFRESH_KEY)},${JSON.stringify(refreshToken)});`,
+    );
   }
   if (!sets.length) return "true;";
   return `(function(){try{${sets.join("")}}catch(e){}})();true;`;
 };
 
 export function useWebViewNativeTokenStorage() {
-  const [initialScript, setInitialScript] = useState<string | undefined>(undefined);
+  const [initialScript, setInitialScript] = useState<string | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     void readTokens().then((tokens) => {
@@ -73,9 +86,17 @@ export function useWebViewNativeTokenStorage() {
 
   const handleTokenMessage = (msg: TokenBridgeMessage) => {
     if (msg.type === "TOKEN_UPDATE") {
-      void saveTokens({ accessToken: msg.accessToken, refreshToken: msg.refreshToken });
+      const tokens = {
+        accessToken: msg.accessToken,
+        refreshToken: msg.refreshToken,
+      };
+      void saveTokens(tokens);
+      setInitialScript(buildInjectionScript(tokens));
     } else if (msg.type === "TOKEN_CLEAR") {
       void clearTokens();
+      setInitialScript(
+        buildInjectionScript({ accessToken: null, refreshToken: null }),
+      );
     }
   };
 

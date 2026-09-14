@@ -80,7 +80,9 @@ module.exports = {
       reactCompiler: true,
     },
     extra: {
-      eas: {},
+      eas: {
+        projectId: "bce9a825-13bd-4c0c-a468-d28fd61dbf83",
+      },
     },
   },
 };

@@ -15,6 +15,15 @@ export const REFRESH_TOKEN_HEADER = API_HEADERS.REFRESH_TOKEN;
 const ACCESS_HEADER = API_HEADERS.AUTHORIZATION;
 const TRACE_HEADER = API_HEADERS.TRACE_ID;
 
+const UNAUTHENTICATED_PATHS: string[] = [
+  API_PATHS.AUTH.REISSUE,
+  API_PATHS.AUTH.KAKAO_LOGIN,
+  API_PATHS.AUTH.KAKAO_TOKEN_LOGIN,
+  API_PATHS.AUTH.GOOGLE_LOGIN,
+  API_PATHS.AUTH.APPLE_LOGIN,
+  API_PATHS.AUTH.APPLE_EXCHANGE,
+];
+
 export type RetryConfig = AxiosRequestConfig & {
   _retry?: boolean;
   _skipAuthRefresh?: boolean;
@@ -93,10 +102,7 @@ instance.interceptors.request.use(async (config) => {
 
   const { accessToken } = tokenStorage.getTokens();
 
-  // reissue는 refresh-token 헤더만으로 동작해야 하는 엔드포인트다. 만료된
-  // 액세스 토큰까지 같이 보내면 서버가 이를 파싱하다 500을 낼 수 있으므로
-  // 애초에 Authorization 헤더를 붙이지 않는다.
-  if (accessToken && config.url !== API_PATHS.AUTH.REISSUE) {
+  if (accessToken && !UNAUTHENTICATED_PATHS.includes(config.url ?? "")) {
     config.headers = config.headers ?? {};
     const h = config.headers as Record<string, unknown>;
 

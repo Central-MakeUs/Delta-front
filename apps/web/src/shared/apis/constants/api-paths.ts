@@ -3,6 +3,7 @@ const API_V1 = "/api/v1" as const;
 export const API_PATHS = {
   AUTH: {
     KAKAO_LOGIN: `${API_V1}/auth/kakao`,
+    KAKAO_TOKEN_LOGIN: `${API_V1}/auth/kakao/token`,
     APPLE_LOGIN: `${API_V1}/auth/apple`,
     APPLE_EXCHANGE: `${API_V1}/auth/apple/exchange`,
     GOOGLE_LOGIN: `${API_V1}/auth/google`,

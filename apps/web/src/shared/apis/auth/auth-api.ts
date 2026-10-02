@@ -19,7 +19,7 @@ export type AppleUserFromApple = {
 export const authApi = {
   kakaoNativeLogin: async (params: { accessToken: string }) => {
     const res = await instance.post<ApiResponse<SocialLoginData>>(
-      API_PATHS.AUTH.KAKAO_LOGIN,
+      API_PATHS.AUTH.KAKAO_TOKEN_LOGIN,
       { accessToken: params.accessToken }
     );
     return unwrapApiResponse(res.data);
